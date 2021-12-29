@@ -23,11 +23,15 @@ import java.util.ArrayList;
  */
 public class CategoryPanel extends JPanel {
 
+    // TODO: forse è il caso di implementare un tree model personalizzato per le
+    // categorie
+
     private User user;
     private CategoryDAO categoryDAO = new CategoryDAOPostgreSQL();// TODO: cambia se diventa singleton
 
     private DefaultTreeModel categoriesTreeModel;
     private DefaultMutableTreeNode lastSelectedTreeNode;
+    private JTree categoriesTree;
 
     /**
      * Crea {@code CategoryPanel} con tutte le categorie dell'utente.
@@ -72,7 +76,7 @@ public class CategoryPanel extends JPanel {
         deleteCategoryButton.setToolTipText("Elimina categoria");
         deleteCategoryButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                deleteCategory();
+                deleteCategory((Category) lastSelectedTreeNode.getUserObject());
             }
         });
 
@@ -89,14 +93,16 @@ public class CategoryPanel extends JPanel {
 
     private void createCategory() {
         try {
-            Category newCategory = new Category(getStringFromUser("Nuova categoria"));
+            Category newCategory = new Category(
+                    getStringFromUser("Nuova categoria"), (Category) lastSelectedTreeNode.getUserObject());
 
-            categoryDAO.saveCategory(newCategory);
+            categoryDAO.saveCategory(newCategory, user);
 
             DefaultMutableTreeNode newTreeNode = new DefaultMutableTreeNode(newCategory.getName());
             lastSelectedTreeNode.add(newTreeNode);
 
             categoriesTreeModel.reload();
+
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Impossibile creare una nuova categoria");
         }
@@ -120,10 +126,9 @@ public class CategoryPanel extends JPanel {
         }
     }
 
-    private void deleteCategory() {
+    private void deleteCategory(Category category) {
         try {
-            // TODO: rimuovi dal database la categoria e le sue sottocategorie
-
+            categoryDAO.deleteCategory(category);
             lastSelectedTreeNode.removeFromParent();
             categoriesTreeModel.reload();
         } catch (Exception e) {
@@ -132,7 +137,7 @@ public class CategoryPanel extends JPanel {
     }
 
     private void moveCategory() {
-
+        // TODO: implementa
     }
 
     private String getStringFromUser(String defaultString) throws Exception {
@@ -153,14 +158,12 @@ public class CategoryPanel extends JPanel {
         // http://www.javaknowledge.info/populate-jtree-from-mysql-database/
 
         try {
-
-            ArrayList<Category> categories = categoryDAO.getAllCategory(user);
-            // categoriesTreeHashMap = new HashMap<DefaultMutableTreeNode, Category>();
-
-            DefaultMutableTreeNode categoriesTreeRoot = new DefaultMutableTreeNode(new Category("Tutti i riferimenti"));
+            ArrayList<Category> categories = categoryDAO.getAllUserCategory(user);
+            DefaultMutableTreeNode categoriesTreeRoot = new DefaultMutableTreeNode(
+                    new Category("Tutti i riferimenti", null));
             categoriesTreeModel = new DefaultTreeModel(categoriesTreeRoot);
 
-            JTree categoriesTree = new JTree(categoriesTreeModel);
+            categoriesTree = new JTree(categoriesTreeModel);
             categoriesTree.setEditable(false);
             categoriesTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
             categoriesTree.setShowsRootHandles(false);
@@ -175,12 +178,17 @@ public class CategoryPanel extends JPanel {
 
             for (Category category : categories) {
 
-                // NOTE: il nome del nodo viene preso dalla funzione toString() dell'oggetto
+                // NOTE: il nome del nodo viene preso dal toString() dell'oggetto passato
                 DefaultMutableTreeNode newTreeNode = new DefaultMutableTreeNode(category);
 
                 // FIXME: per ora tutti i nuovi nodi sono figli di root
                 lastSelectedTreeNode.add(newTreeNode);
             }
+
+            // Espandi tutti i nodi
+            // TODO: rivedi
+            for (int i = 0; i < categoriesTree.getRowCount(); i++)
+                categoriesTree.expandRow(i);
 
             return categoriesTree;
         } catch (Exception e) {

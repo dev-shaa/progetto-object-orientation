@@ -15,7 +15,7 @@ import javax.swing.JPanel;
  * sotto forma di albero, con ogni nodo che rappresenta una categoria.
  * 
  * @version 0.1
- * @dev-shaa
+ * @author Salvatore Di Gennaro
  * @see MainWindow
  */
 public class ReferencePanel extends JPanel {
@@ -96,6 +96,7 @@ public class ReferencePanel extends JPanel {
     }
 
     private JScrollPane getReferenceListPanel() {
+        // TODO: gestisci colonne
         String[] referenceTableColumns = { "Nome", "Autori", "Data pubblicazione" };
 
         referenceTableModel = new DefaultTableModel(referenceTableColumns, 0) {
@@ -151,11 +152,12 @@ public class ReferencePanel extends JPanel {
     }
 
     private void createReference() {
-        // TODO: implementa
+        // TODO: apri pagina di creazione del riferimento
     }
 
     private void editReference() {
-        // TODO: implementa
+        // TODO: apri pagina di creazione del riferimento (passando i valori attuali del
+        // riferimento)
     }
 
     private void deleteReference() {
@@ -163,8 +165,13 @@ public class ReferencePanel extends JPanel {
                 "Elimina riferimento",
                 JOptionPane.YES_NO_OPTION);
 
-        if (result == 0) {
-            // TODO: cancella dal database
+        if (result == JOptionPane.YES_OPTION) {
+            try {
+                // TODO: cancella dal database
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Impossibile eliminare il riferimento");
+            }
         }
     }
 
