@@ -1,3 +1,5 @@
+// PLACEHOLDER
+
 import java.util.Date;
 
 public class Riferimento {

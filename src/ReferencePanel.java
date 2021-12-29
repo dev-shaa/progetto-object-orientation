@@ -10,12 +10,23 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import javax.swing.JPanel;
 
+/**
+ * Classe che si occupa di mostrare un pannello con le categorie dell'utente
+ * sotto forma di albero, con ogni nodo che rappresenta una categoria.
+ * 
+ * @version 0.1
+ * @dev-shaa
+ * @see MainWindow
+ */
 public class ReferencePanel extends JPanel {
 
     ArrayList<Riferimento> riferimenti;
     DefaultTableModel referenceTableModel;
+    DefaultTableModel referencePreviewTableModel;
 
     public ReferencePanel() {
+        riferimenti = new ArrayList<Riferimento>(); // FIXME: prendi dal database
+
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -85,43 +96,41 @@ public class ReferencePanel extends JPanel {
     }
 
     private JScrollPane getReferenceListPanel() {
-        // String[] referenceTableColumns = { "Nome", "Autore", "Data pubblicazione" };
+        String[] referenceTableColumns = { "Nome", "Autori", "Data pubblicazione" };
 
-        // referenceTableModel = new DefaultTableModel(referenceTableColumns, 0) {
-        // @Override
-        // public boolean isCellEditable(int row, int column) {
-        // return false;
-        // }
-        // };
+        referenceTableModel = new DefaultTableModel(referenceTableColumns, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
 
-        // updateReferences();
+        updateReferences();
 
-        // //
         // https://stackoverflow.com/questions/10128064/jtable-selected-row-click-event
 
-        // JTable referenceTable = new JTable(referenceTableModel);
-        // referenceTable.setFillsViewportHeight(true);
-        // referenceTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        // referenceTable.setAutoCreateRowSorter(true); // FIXME: eccezione out of
-        // bounds quando si cambia l'ordine mentre
-        // // è selezionata una riga
-        // referenceTable.getSelectionModel().addListSelectionListener(new
-        // ListSelectionListener() {
-        // public void valueChanged(ListSelectionEvent event) {
-        // displayReference(referenceTable.getSelectedRow(),
-        // referencePreviewTableModel);
-        // }
-        // });
+        JTable referenceTable = new JTable(referenceTableModel);
+        referenceTable.setFillsViewportHeight(true);
+        referenceTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        referenceTable.setAutoCreateRowSorter(true); // FIXME: eccezione out of bounds quando si cambia l'ordine mentre
+                                                     // è selezionata una riga
+        referenceTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent event) {
+                displayReference(referenceTable.getSelectedRow(), referencePreviewTableModel);
+            }
+        });
 
-        // JScrollPane referencePanel = new JScrollPane(referenceTable);
-        JScrollPane referencePanel = new JScrollPane();
+        JScrollPane referencePanel = new JScrollPane(referenceTable);
 
         return referencePanel;
     }
 
     private JScrollPane getReferenceViewPanel() {
-        String[] referencePreviewTableColumns = new String[2];
-        DefaultTableModel referencePreviewTableModel = new DefaultTableModel(referencePreviewTableColumns, 0) {
+        // due colonne: a sinistra il tipo di informazione, a destra il dato
+        // "Titolo" : "Progetto"
+        // "Autore" : "Mario Rossi"
+
+        referencePreviewTableModel = new DefaultTableModel(0, 2) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -176,6 +185,7 @@ public class ReferencePanel extends JPanel {
     private void displayReference(int index, DefaultTableModel tableModel) {
         clearTable(tableModel);
 
+        // TODO: implementa
         tableModel.addRow(new Object[] { "nome", riferimenti.get(index).nome });
         tableModel.addRow(new Object[] { "autore", riferimenti.get(index).autore });
         tableModel.addRow(new Object[] { "anno", riferimenti.get(index).data });
