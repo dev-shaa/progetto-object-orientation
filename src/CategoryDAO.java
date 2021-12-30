@@ -1,5 +1,3 @@
-// PLACEHOLDER
-
 import java.util.ArrayList;
 
 /**

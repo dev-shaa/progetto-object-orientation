@@ -49,9 +49,22 @@ public class MainWindow extends JFrame {
         userLabel.setBorder(new EmptyBorder(5, 5, 5, 5));
         userLabel.setIcon(new ImageIcon("images/user.png"));
 
+        // FIXME: riempie l'intero pannello
+        JButton logoutButton = new JButton(new ImageIcon("images/logout.png"));
+        logoutButton.setToolTipText("Log out");
+        logoutButton.setMaximumSize(new Dimension(16, 16));
+        logoutButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Controller.logout();
+            }
+        });
+
+        ReferencePanel referencePanel = new ReferencePanel(user);
+        CategoryPanel categoryPanel = new CategoryPanel(user, referencePanel);
+
         contentPane.add(userLabel, BorderLayout.NORTH);
-        contentPane.add(new CategoryPanel(user), BorderLayout.WEST);
-        contentPane.add(new ReferencePanel(), BorderLayout.CENTER);
+        contentPane.add(referencePanel, BorderLayout.CENTER);
+        contentPane.add(categoryPanel, BorderLayout.WEST);
     }
 
 }

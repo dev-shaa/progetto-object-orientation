@@ -23,14 +23,15 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
     @Override
     public void saveCategory(Category category, User user) throws Exception {
         try {
-            Connection connection = DBController.getInstance().getConnection();
+            // Connection connection = DBController.getInstance().getConnection();
 
-            Statement statement = connection.createStatement();
-            String query = "insert into " + categoryTableName + " values ("; // TODO: correggi
-            statement.execute(query);
+            // Statement statement = connection.createStatement();
+            // String query = "insert into " + categoryTableName + " values ("; // TODO:
+            // correggi
+            // statement.execute(query);
 
-            statement.close();
-            connection.close();
+            // statement.close();
+            // connection.close();
         } catch (Exception e) {
             throw new Exception();
         }
@@ -40,14 +41,14 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
     public void updateCategory(Category category, String name) throws Exception {
         // TODO: Auto-generated method stub
         try {
-            Connection connection = DBController.getInstance().getConnection();
+            // Connection connection = DBController.getInstance().getConnection();
 
-            Statement statement = connection.createStatement();
-            String query = ""; // TODO: correggi
-            statement.execute(query);
+            // Statement statement = connection.createStatement();
+            // String query = ""; // TODO: correggi
+            // statement.execute(query);
 
-            statement.close();
-            connection.close();
+            // statement.close();
+            // connection.close();
         } catch (Exception e) {
             throw new Exception();
         }
@@ -56,46 +57,49 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
     @Override
     public void deleteCategory(Category category) throws Exception {
         // TODO: Auto-generated method stub
-        try {
-            Connection connection = DBController.getInstance().getConnection();
+        // try {
+        // Connection connection = DBController.getInstance().getConnection();
 
-            Statement statement = connection.createStatement();
-            String query = ""; // TODO: correggi
-            statement.execute(query);
+        // Statement statement = connection.createStatement();
+        // String query = ""; // TODO: correggi
+        // statement.execute(query);
 
-            statement.close();
-            connection.close();
-        } catch (Exception e) {
-            throw new Exception();
-        }
+        // statement.close();
+        // connection.close();
+        // } catch (Exception e) {
+        // throw new Exception();
+        // }
     }
 
     // TODO: vedi se convertirlo ad array semplice
     @Override
     public ArrayList<Category> getAllUserCategory(User user) throws Exception {
-        try {
-            Connection connection = DBController.getInstance().getConnection();
 
-            Statement statement = connection.createStatement();
-            String query = "";
-            ResultSet resultSet = statement.executeQuery(query);
+        // DEBUG:
+        ArrayList<Category> categories = new ArrayList<Category>();
+        categories.add(new Category("AAA", null));
+        categories.add(new Category("BBB", null));
+        categories.add(new Category("CCC", null));
+        return categories;
 
-            ArrayList<Category> categories = new ArrayList<Category>();
+        // try {
+        // Connection connection = DBController.getInstance().getConnection();
 
-            while (resultSet.next()) {
-                // categories.add(new Category(name, parent)); // FIXME:
-            }
+        // Statement statement = connection.createStatement();
+        // String query = "";
+        // ResultSet resultSet = statement.executeQuery(query);
 
-            // DEBUG:
-            categories.add(new Category("AAA", null));
-            categories.add(new Category("BBB", null));
-            categories.add(new Category("CCC", null));
+        // ArrayList<Category> categories = new ArrayList<Category>();
 
-            connection.close();
+        // while (resultSet.next()) {
+        // // categories.add(new Category(name, parent)); // FIXME:
+        // }
 
-            return categories;
-        } catch (Exception e) {
-            throw new Exception();
-        }
+        // connection.close();
+
+        // return categories;
+        // } catch (Exception e) {
+        // throw new Exception();
+        // }
     }
 }

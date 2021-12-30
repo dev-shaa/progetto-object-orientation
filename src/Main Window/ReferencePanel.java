@@ -11,8 +11,7 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 
 /**
- * Classe che si occupa di mostrare un pannello con le categorie dell'utente
- * sotto forma di albero, con ogni nodo che rappresenta una categoria.
+ * Classe che si occupa di mostrare i riferimenti presenti in una categoria.
  * 
  * @version 0.1
  * @author Salvatore Di Gennaro
@@ -20,12 +19,15 @@ import javax.swing.JPanel;
  */
 public class ReferencePanel extends JPanel {
 
+    private User user;
+
     ArrayList<Riferimento> riferimenti;
     DefaultTableModel referenceTableModel;
     DefaultTableModel referencePreviewTableModel;
+    JTextArea foo;
 
-    public ReferencePanel() {
-        riferimenti = new ArrayList<Riferimento>(); // FIXME: prendi dal database
+    public ReferencePanel(User user) {
+        this.user = user;
 
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -106,7 +108,7 @@ public class ReferencePanel extends JPanel {
             }
         };
 
-        updateReferences();
+        // updateReferences();
 
         // https://stackoverflow.com/questions/10128064/jtable-selected-row-click-event
 
@@ -138,17 +140,14 @@ public class ReferencePanel extends JPanel {
             }
         };
 
-        JTable referenceViewTable = new JTable(referencePreviewTableModel);
-        referenceViewTable.setTableHeader(null);
-        referenceViewTable.setFillsViewportHeight(true);
+        // JTable referenceViewTable = new JTable(referencePreviewTableModel);
+        // referenceViewTable.setTableHeader(null);
+        // referenceViewTable.setFillsViewportHeight(true);
 
-        JScrollPane referencePreviewPanel = new JScrollPane(referenceViewTable);
+        foo = new JTextArea();
+        JScrollPane referencePreviewPanel = new JScrollPane(foo);
 
         return referencePreviewPanel;
-    }
-
-    private void addReferenceToPanel(DefaultTableModel model, Riferimento riferimento) {
-        model.addRow(new Object[] { riferimento.nome, riferimento.autore, riferimento.data });
     }
 
     private void createReference() {
@@ -181,26 +180,37 @@ public class ReferencePanel extends JPanel {
         String[] words = input.split("");
     }
 
-    private void updateReferences() {
-        clearTable(referenceTableModel);
+    private void displayReference(int index) {
+        // foo.setText(riferimenti.get(0).toString());
+    }
+
+    /**
+     * Carica nel pannello della lista tutti i riferimenti presenti nella categoria
+     * di input.
+     * 
+     * @param category categoria in cui cercare i riferimenti
+     * @param user     utente che ha eseguito l'accesso
+     */
+    public void loadReferences(Category category, User user) {
+        // TODO: carica riferimenti dal database
+        // riferimenti = RiferimentoDAO.load();
+
+        removeAllReferencesFromList(referenceTableModel);
 
         for (Riferimento riferimento : riferimenti) {
-            addReferenceToPanel(referenceTableModel, riferimento);
+            addReferenceToList(referenceTableModel, riferimento);
         }
+
     }
 
-    private void displayReference(int index, DefaultTableModel tableModel) {
-        clearTable(tableModel);
-
-        // TODO: implementa
-        tableModel.addRow(new Object[] { "nome", riferimenti.get(index).nome });
-        tableModel.addRow(new Object[] { "autore", riferimenti.get(index).autore });
-        tableModel.addRow(new Object[] { "anno", riferimenti.get(index).data });
-    }
-
-    private void clearTable(DefaultTableModel tableModel) {
+    private void removeAllReferencesFromList(DefaultTableModel tableModel) {
         while (tableModel.getRowCount() > 0)
             tableModel.removeRow(0);
+    }
+
+    private void addReferenceToList(DefaultTableModel model, Riferimento riferimento) {
+        // model.addRow(new Object[] { riferimento.nome, riferimento.autore,
+        // riferimento.data });
     }
 
 }
