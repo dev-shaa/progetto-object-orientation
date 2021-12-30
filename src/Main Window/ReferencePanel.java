@@ -3,30 +3,42 @@ import javax.swing.border.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.event.*;
 import java.awt.*;
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-// import java.awt.GridLayout;
 import java.awt.event.*;
+import java.awt.FlowLayout;
 import java.util.ArrayList;
-import javax.swing.JPanel;
 
 /**
  * Classe che si occupa di mostrare i riferimenti presenti in una categoria.
  * 
- * @version 0.1
+ * @version 0.2
  * @author Salvatore Di Gennaro
  * @see MainWindow
  */
-public class ReferencePanel extends JPanel {
+public class ReferencePanel extends JSplitPane {
 
     private User user;
 
-    ArrayList<Riferimento> riferimenti;
-    DefaultTableModel referenceTableModel;
-    DefaultTableModel referencePreviewTableModel;
-    JTextArea foo;
+    private ArrayList<Riferimento> referenceList;
+    private DefaultTableModel referenceListTableModel;
+    private JTextArea referenceDetailsArea;
 
+    /**
+     * Crea {@code ReferencePanel} con i dati relativi all'utente.
+     * 
+     * @param user
+     * @since 0.1
+     * @author Salvatore Di Gennaro
+     */
     public ReferencePanel(User user) {
+        // DEBUG:
+        referenceList = new ArrayList<Riferimento>();
+        referenceList.add(new Riferimento("aaa", "autore1"));
+        referenceList.add(new Riferimento("bbb", "autore2"));
+        referenceList.add(new Riferimento("ccc", "autore3"));
+        referenceList.add(new Riferimento("ddd", "autore4"));
+
+        // TODO: questo pannello è piccolo
+
         this.user = user;
 
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
@@ -36,9 +48,9 @@ public class ReferencePanel extends JPanel {
 
         add(getButtonsPanel());
         add(Box.createRigidArea(spacingAreaSize));
-        add(getReferenceListPanel());
+        add(getReferenceListPane());
         add(Box.createRigidArea(spacingAreaSize));
-        add(getReferenceViewPanel());
+        add(getReferenceDetailsPane());
     }
 
     private JPanel getButtonsPanel() {
@@ -62,7 +74,7 @@ public class ReferencePanel extends JPanel {
             }
         });
 
-        JButton deleteReferenceButton = new JButton(new ImageIcon("images/folder_delete.png"));
+        JButton deleteReferenceButton = new JButton(new ImageIcon("images/file_remove.png"));
         deleteReferenceButton.setToolTipText("Elimina riferimento");
         deleteReferenceButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -70,82 +82,63 @@ public class ReferencePanel extends JPanel {
             }
         });
 
-        JTextField searchBox = new JTextField();
-        searchBox.setToolTipText("Cerca riferimento per nome, autore o parole chiave");
-        searchBox.setMaximumSize(new Dimension(300, Integer.MAX_VALUE));
-        searchBox.addActionListener(new ActionListener() {
-            // viene triggerato quando si preme enter mentre è selezionato
-            public void actionPerformed(ActionEvent e) {
-                searchReferences(searchBox.getText());
-            }
-        });
+        // ActionListener searchListener = new ActionListener() {
+        // public void actionPerformed(ActionEvent e) {
+        // // TODO: cerca
+        // // searchReferences(searchBox.getText());
+        // }
+        // };
 
-        JButton searchButton = new JButton(new ImageIcon("images/search.png"));
-        searchButton.setToolTipText("Cerca riferimento per nome, autore o parole chiave");
-        searchButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                searchReferences(searchBox.getText());
-            }
-        });
+        // JTextField searchBox = new JTextField();
+        // searchBox.setToolTipText("Cerca riferimento per nome, autore o parole
+        // chiave");
+        // searchBox.setMaximumSize(new Dimension(300, Integer.MAX_VALUE));
+        // searchBox.addActionListener(searchListener);
+
+        // JButton searchButton = new JButton(new ImageIcon("images/search.png"));
+        // searchButton.setToolTipText("Cerca riferimento per nome, autore o parole
+        // chiave");
+        // searchButton.addActionListener(searchListener);
 
         buttonsPanel.add(createReferenceButton);
         buttonsPanel.add(editReferenceButton);
         buttonsPanel.add(deleteReferenceButton);
-        buttonsPanel.add(searchBox);
-        buttonsPanel.add(searchButton);
+        // buttonsPanel.add(searchBox);
+        // buttonsPanel.add(searchButton);
 
         return buttonsPanel;
     }
 
-    private JScrollPane getReferenceListPanel() {
-        // TODO: gestisci colonne
-        String[] referenceTableColumns = { "Nome", "Autori", "Data pubblicazione" };
+    private JScrollPane getReferenceListPane() {
+        String[] referenceListTableColumns = { "Nome", "Autori", "Data pubblicazione", "Citazioni ricevute" };
 
-        referenceTableModel = new DefaultTableModel(referenceTableColumns, 0) {
+        referenceListTableModel = new DefaultTableModel(referenceListTableColumns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
 
-        // updateReferences();
-
-        // https://stackoverflow.com/questions/10128064/jtable-selected-row-click-event
-
-        JTable referenceTable = new JTable(referenceTableModel);
-        referenceTable.setFillsViewportHeight(true);
-        referenceTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        referenceTable.setAutoCreateRowSorter(true); // FIXME: eccezione out of bounds quando si cambia l'ordine mentre
-                                                     // è selezionata una riga
-        referenceTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        JTable referenceListTable = new JTable(referenceListTableModel);
+        referenceListTable.setFillsViewportHeight(true);
+        referenceListTable.setAutoCreateRowSorter(true); // FIXME: eccezione out of bounds quando si cambia l'ordine
+                                                         // mentre è selezionata una riga
+        referenceListTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        referenceListTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent event) {
-                displayReference(referenceTable.getSelectedRow(), referencePreviewTableModel);
+                displayReferenceDetails(referenceListTable.getSelectedRow());
             }
         });
 
-        JScrollPane referencePanel = new JScrollPane(referenceTable);
+        JScrollPane referenceListPane = new JScrollPane(referenceListTable);
 
-        return referencePanel;
+        return referenceListPane;
     }
 
-    private JScrollPane getReferenceViewPanel() {
-        // due colonne: a sinistra il tipo di informazione, a destra il dato
-        // "Titolo" : "Progetto"
-        // "Autore" : "Mario Rossi"
-
-        referencePreviewTableModel = new DefaultTableModel(0, 2) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-
-        // JTable referenceViewTable = new JTable(referencePreviewTableModel);
-        // referenceViewTable.setTableHeader(null);
-        // referenceViewTable.setFillsViewportHeight(true);
-
-        foo = new JTextArea();
-        JScrollPane referencePreviewPanel = new JScrollPane(foo);
+    private JScrollPane getReferenceDetailsPane() {
+        referenceDetailsArea = new JTextArea();
+        referenceDetailsArea.setEditable(false);
+        JScrollPane referencePreviewPanel = new JScrollPane(referenceDetailsArea);
 
         return referencePreviewPanel;
     }
@@ -174,14 +167,8 @@ public class ReferencePanel extends JPanel {
         }
     }
 
-    private void searchReferences(String input) {
-        // TODO: implementa ricerca
-
-        String[] words = input.split("");
-    }
-
-    private void displayReference(int index) {
-        // foo.setText(riferimenti.get(0).toString());
+    public void searchReferences() {
+        // TODO: implementa
     }
 
     /**
@@ -191,26 +178,30 @@ public class ReferencePanel extends JPanel {
      * @param category categoria in cui cercare i riferimenti
      * @param user     utente che ha eseguito l'accesso
      */
-    public void loadReferences(Category category, User user) {
+    public void loadReferencesListFromCategory(Category category, User user) {
         // TODO: carica riferimenti dal database
         // riferimenti = RiferimentoDAO.load();
 
-        removeAllReferencesFromList(referenceTableModel);
+        removeAllReferencesFromTable(referenceListTableModel);
 
-        for (Riferimento riferimento : riferimenti) {
-            addReferenceToList(referenceTableModel, riferimento);
+        for (Riferimento riferimento : referenceList) {
+            addReferenceToTable(referenceListTableModel, riferimento);
         }
 
     }
 
-    private void removeAllReferencesFromList(DefaultTableModel tableModel) {
+    private void removeAllReferencesFromTable(DefaultTableModel tableModel) {
         while (tableModel.getRowCount() > 0)
             tableModel.removeRow(0);
     }
 
-    private void addReferenceToList(DefaultTableModel model, Riferimento riferimento) {
+    private void addReferenceToTable(DefaultTableModel model, Riferimento riferimento) {
         // model.addRow(new Object[] { riferimento.nome, riferimento.autore,
         // riferimento.data });
+    }
+
+    private void displayReferenceDetails(int selectedReferenceIndex) {
+        // TODO: implementa
     }
 
 }

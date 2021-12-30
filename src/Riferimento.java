@@ -5,22 +5,17 @@ import java.util.Date;
 
 public class Riferimento {
     public String nome;
-    public ArrayList<String> autori;
+    public String autore;
     public Date data;
 
-    public Riferimento(String nome, ArrayList<String> autori) {
+    public Riferimento(String nome, String autore) {
         this.nome = nome;
-        this.autori = autori;
+        this.autore = autore;
         this.data = new Date();
     }
 
     @Override
     public String toString() {
-        String foo = "";
-        for (String string : autori) {
-            foo += string + ", ";
-        }
-
-        return "Nome:\t" + this.nome + "\nAutore:\t" + foo + "\nData:\t" + this.data.toString();
+        return "Nome:\t" + this.nome + "\nAutore:\t" + autore + "\nData:\t" + this.data.toString();
     }
 }

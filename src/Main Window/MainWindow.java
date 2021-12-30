@@ -2,13 +2,12 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.BorderLayout;
 import javax.swing.*;
-import javax.swing.border.*;
 
 /**
  * Classe che si occupa di impostare le componenti base della pagina principale,
  * che mostra tutti i riferimenti e le categorie.
  * 
- * @version 0.1
+ * @version 0.2
  * @author Salvatore Di Gennaro
  * @see CategoryPanel
  * @see ReferencePanel
@@ -22,49 +21,71 @@ public class MainWindow extends JFrame {
      * @since 0.1
      * @author Salvatore Di Gennaro
      */
-    public MainWindow(User user) {
+    public MainWindow(Controller controller, User user) {
         setTitle("Pagina principale");
         setMinimumSize(new Dimension(400, 400));
         setBounds(100, 100, 720, 540);
+        setCloseOperation();
+
+        JPanel contentPane = new JPanel();
+        contentPane.setLayout(new BorderLayout(5, 5));
+        setContentPane(contentPane);
+
+        ReferencePanel referencePanel = new ReferencePanel(user);
+        CategoryPanel categoryPanel = new CategoryPanel(user, referencePanel);
+        ReferenceSearchPanel referenceSearchPanel = new ReferenceSearchPanel();
+
+        JSplitPane subSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, categoryPanel, referencePanel);
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, subSplitPane, referenceSearchPanel);
+
+        contentPane.add(getUserInfoPanel(controller, user), BorderLayout.NORTH);
+        contentPane.add(splitPane, BorderLayout.CENTER);
+        // contentPane.add(referencePanel, BorderLayout.CENTER);
+        // contentPane.add(categoryPanel, BorderLayout.WEST);
+        // contentPane.add(referenceSearchPanel, BorderLayout.EAST);
+    }
+
+    private void setCloseOperation() {
+        // TODO: sarebbe meglio delegare la chiusura del programma al controller
 
         // mostra un messaggio di conferma quando l'utente tenta di uscire
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-                int confirmDialogBoxOption = JOptionPane.showConfirmDialog(null,
-                        "Sicuro di volere uscire?\nTutte le modifiche non salvate saranno perse.", "Esci",
+                int confirmDialogBoxOption = JOptionPane.showConfirmDialog(null, "Sicuro di volere uscire?", "Esci",
                         JOptionPane.YES_NO_OPTION);
 
                 if (confirmDialogBoxOption == JOptionPane.YES_OPTION)
                     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             }
         });
+    }
 
-        JPanel contentPane = new JPanel();
-        contentPane.setLayout(new BorderLayout(5, 5));
-        setContentPane(contentPane);
+    private JPanel getUserInfoPanel(Controller controller, User user) {
 
-        JLabel userLabel = new JLabel(user.name, SwingConstants.RIGHT);
-        userLabel.setHorizontalTextPosition(SwingConstants.LEFT);
-        userLabel.setBorder(new EmptyBorder(5, 5, 5, 5));
+        // FIXME: alignment
+
+        JPanel userInfoPanel = new JPanel();
+        userInfoPanel.setLayout(new FlowLayout());
+        userInfoPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 16));
+
+        JLabel userLabel = new JLabel(user.name, SwingConstants.LEFT);
+        userLabel.setHorizontalTextPosition(SwingConstants.RIGHT);
         userLabel.setIcon(new ImageIcon("images/user.png"));
 
-        // FIXME: riempie l'intero pannello
         JButton logoutButton = new JButton(new ImageIcon("images/logout.png"));
+        logoutButton.setHorizontalAlignment(SwingConstants.RIGHT);
         logoutButton.setToolTipText("Log out");
-        logoutButton.setMaximumSize(new Dimension(16, 16));
         logoutButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // Controller.logout();
+                controller.logout();
             }
         });
 
-        ReferencePanel referencePanel = new ReferencePanel(user);
-        CategoryPanel categoryPanel = new CategoryPanel(user, referencePanel);
+        userInfoPanel.add(userLabel);
+        userInfoPanel.add(logoutButton);
 
-        contentPane.add(userLabel, BorderLayout.NORTH);
-        contentPane.add(referencePanel, BorderLayout.CENTER);
-        contentPane.add(categoryPanel, BorderLayout.WEST);
+        return userInfoPanel;
     }
 
 }

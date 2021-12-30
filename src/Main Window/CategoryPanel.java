@@ -7,6 +7,7 @@ import javax.swing.event.*;
 import javax.swing.border.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 /**
@@ -20,16 +21,15 @@ import javax.swing.tree.TreeSelectionModel;
  */
 public class CategoryPanel extends JPanel {
 
-    // private MainWindow mainWindow;
     private User user;
     private ReferencePanel referencePanel;
     private CategoryDAO categoryDAO = new CategoryDAOPostgreSQL();// TODO: cambia se diventa singleton
 
     private DefaultTreeModel categoriesTreeModel;
     private DefaultMutableTreeNode lastSelectedTreeNode;
-
-    JButton editCategoryButton;
-    JButton removeCategoryButton;
+    private JTree categoriesTree;
+    private JButton editCategoryButton;
+    private JButton removeCategoryButton;
 
     /**
      * Crea {@code CategoryPanel} con tutte le categorie associate dell'utente.
@@ -75,7 +75,7 @@ public class CategoryPanel extends JPanel {
         removeCategoryButton.setToolTipText("Elimina categoria");
         removeCategoryButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                removeCategory((Category) lastSelectedTreeNode.getUserObject());
+                removeCategory();
             }
         });
 
@@ -91,33 +91,28 @@ public class CategoryPanel extends JPanel {
     }
 
     private JTree getCategoriesTree() {
-
-        // http://www.javaknowledge.info/populate-jtree-from-mysql-database/
-
         try {
             ArrayList<Category> categories = categoryDAO.getAllUserCategory(user);
 
             DefaultMutableTreeNode root = new DefaultMutableTreeNode();
             categoriesTreeModel = new DefaultTreeModel(root);
 
-            JTree categoriesTree = new JTree(categoriesTreeModel);
+            categoriesTree = new JTree(categoriesTreeModel);
             categoriesTree.setEditable(false);
-            categoriesTree.setShowsRootHandles(false);
             categoriesTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
             categoriesTree.addTreeSelectionListener(new TreeSelectionListener() {
-
-                // azionato quando viene selezionato un nodo
                 @Override
                 public void valueChanged(TreeSelectionEvent e) {
                     lastSelectedTreeNode = (DefaultMutableTreeNode) categoriesTree.getLastSelectedPathComponent();
 
                     // il nodo root non esiste veramente nel database
                     // modificarlo/eliminarlo non ha senso, quindi disabilita i pulsanti
-                    editCategoryButton.setEnabled(lastSelectedTreeNode != root);
-                    removeCategoryButton.setEnabled(lastSelectedTreeNode != root);
+                    editCategoryButton.setEnabled(lastSelectedTreeNode != null && lastSelectedTreeNode != root);
+                    removeCategoryButton.setEnabled(lastSelectedTreeNode != null && lastSelectedTreeNode != root);
 
-                    // TODO: carica riferimenti presenti nella categoria selezionata
-                    referencePanel.loadReferences(category, user);
+                    if (lastSelectedTreeNode != null)
+                        referencePanel.loadReferencesListFromCategory((Category) lastSelectedTreeNode.getUserObject(),
+                                user);
                 }
             });
 
@@ -155,9 +150,11 @@ public class CategoryPanel extends JPanel {
             categoryDAO.saveCategory(newCategory, user);
 
             DefaultMutableTreeNode newTreeNode = new DefaultMutableTreeNode(newCategory);
-            lastSelectedTreeNode.add(newTreeNode);
 
-            categoriesTreeModel.reload();
+            categoriesTreeModel.insertNodeInto(newTreeNode, lastSelectedTreeNode, lastSelectedTreeNode.getChildCount());
+            categoriesTree.setSelectionPath(new TreePath(newTreeNode.getPath()));
+        } catch (InvalidInputException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Impossibile creare una nuova categoria");
         }
@@ -169,16 +166,24 @@ public class CategoryPanel extends JPanel {
             categoryDAO.updateCategory(category, newName);
             category.setName(newName);
             categoriesTreeModel.reload();
+        } catch (InvalidInputException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Impossibile modificare la categoria");
         }
     }
 
-    private void removeCategory(Category category) {
+    private void removeCategory() {
         try {
-            categoryDAO.deleteCategory(category);
-            lastSelectedTreeNode.removeFromParent();
-            categoriesTreeModel.reload();
+            int confirmDialogBoxOption = JOptionPane.showConfirmDialog(null,
+                    "Sicuro di volere eliminare questa categoria?", "Elimina categoria",
+                    JOptionPane.YES_NO_OPTION);
+
+            if (confirmDialogBoxOption == JOptionPane.YES_OPTION) {
+                categoryDAO.deleteCategory((Category) lastSelectedTreeNode.getUserObject());
+                lastSelectedTreeNode.removeFromParent();
+                categoriesTreeModel.reload();
+            }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Impossibile eliminare la categoria");
         }
@@ -189,13 +194,11 @@ public class CategoryPanel extends JPanel {
     }
 
     private String getStringFromUser(String defaultString) throws Exception {
-        String categoryName = (String) JOptionPane.showInputDialog(null, "Nome categoria:",
-                "Nuova categoria",
-                JOptionPane.PLAIN_MESSAGE,
-                null, null, defaultString);
+        String categoryName = (String) JOptionPane.showInputDialog(null, "Nome categoria:", "Nuova categoria",
+                JOptionPane.PLAIN_MESSAGE, null, null, defaultString);
 
         if (categoryName.isEmpty())
-            throw new Exception("Nome vuoto"); // TODO: creazione nuovo tipo di eccezione
+            throw new InvalidInputException("Il nome della categoria non può essere vuoto.");
 
         return categoryName;
     }
