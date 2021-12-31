@@ -10,6 +10,8 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
+import Exceptions.InvalidInputException;
+
 /**
  * Classe che si occupa di mostrare un pannello con le categorie dell'utente
  * sotto forma di albero, con ogni nodo che rappresenta una categoria.
@@ -42,12 +44,11 @@ public class CategoryPanel extends JPanel {
         this.user = user;
         this.referencePanel = referencePanel;
 
-        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+        setLayout(new BorderLayout(5, 5));
         setBorder(new EmptyBorder(5, 5, 5, 5));
 
-        add(getButtonsPanel());
-        add(Box.createRigidArea(new Dimension(0, 10)));
-        add(getCategoriesTreePanel());
+        add(getButtonsPanel(), BorderLayout.NORTH);
+        add(getCategoriesTreePanel(), BorderLayout.CENTER);
     }
 
     private JPanel getButtonsPanel() {

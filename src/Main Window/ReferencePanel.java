@@ -5,6 +5,8 @@ import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.FlowLayout;
+// import java.awt.GridLayout;
+// import java.awt.GridBagLayout;
 import java.util.ArrayList;
 
 /**
@@ -14,7 +16,7 @@ import java.util.ArrayList;
  * @author Salvatore Di Gennaro
  * @see MainWindow
  */
-public class ReferencePanel extends JSplitPane {
+public class ReferencePanel extends JPanel {
 
     private User user;
 
@@ -30,6 +32,7 @@ public class ReferencePanel extends JSplitPane {
      * @author Salvatore Di Gennaro
      */
     public ReferencePanel(User user) {
+
         // DEBUG:
         referenceList = new ArrayList<Riferimento>();
         referenceList.add(new Riferimento("aaa", "autore1"));
@@ -37,26 +40,24 @@ public class ReferencePanel extends JSplitPane {
         referenceList.add(new Riferimento("ccc", "autore3"));
         referenceList.add(new Riferimento("ddd", "autore4"));
 
-        // TODO: questo pannello è piccolo
-
         this.user = user;
 
-        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+        setLayout(new BorderLayout(5, 5));
         setBorder(new EmptyBorder(5, 5, 5, 5));
 
-        Dimension spacingAreaSize = new Dimension(0, 10);
+        JSplitPane referenceSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, getReferenceListPane(),
+                getReferenceDetailsPane());
+        referenceSplitPane.setDividerSize(10);
+        referenceSplitPane.setResizeWeight(0.6f);
 
-        add(getButtonsPanel());
-        add(Box.createRigidArea(spacingAreaSize));
-        add(getReferenceListPane());
-        add(Box.createRigidArea(spacingAreaSize));
-        add(getReferenceDetailsPane());
+        add(getButtonsPanel(), BorderLayout.NORTH);
+        add(referenceSplitPane, BorderLayout.CENTER);
     }
 
     private JPanel getButtonsPanel() {
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
-        buttonsPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 32));
+        // buttonsPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 32));
 
         JButton createReferenceButton = new JButton(new ImageIcon("images/file_add.png"));
         createReferenceButton.setToolTipText("Nuovo riferimento");
@@ -131,6 +132,7 @@ public class ReferencePanel extends JSplitPane {
         });
 
         JScrollPane referenceListPane = new JScrollPane(referenceListTable);
+        // referenceListPane.setMinimumSize(new Dimension(0, 70));
 
         return referenceListPane;
     }
@@ -167,8 +169,14 @@ public class ReferencePanel extends JSplitPane {
         }
     }
 
-    public void searchReferences() {
-        // TODO: implementa
+    public void setReferences(ArrayList<Riferimento> references) {
+        this.referenceList = references;
+
+        removeAllReferencesFromTable(referenceListTableModel);
+
+        for (Riferimento riferimento : referenceList) {
+            addReferenceToTable(referenceListTableModel, riferimento);
+        }
     }
 
     /**

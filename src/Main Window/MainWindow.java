@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Date;
 import java.awt.BorderLayout;
 import javax.swing.*;
 
@@ -13,6 +14,10 @@ import javax.swing.*;
  * @see ReferencePanel
  */
 public class MainWindow extends JFrame {
+
+    ReferencePanel referencePanel;
+    CategoryPanel categoryPanel;
+    ReferenceSearchPanel referenceSearchPanel;
 
     /**
      * Crea {@code MainWindow} con i dati relativi all'utente.
@@ -33,10 +38,15 @@ public class MainWindow extends JFrame {
 
         ReferencePanel referencePanel = new ReferencePanel(user);
         CategoryPanel categoryPanel = new CategoryPanel(user, referencePanel);
-        ReferenceSearchPanel referenceSearchPanel = new ReferenceSearchPanel();
+        ReferenceSearchPanel referenceSearchPanel = new ReferenceSearchPanel(this);
 
         JSplitPane subSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, categoryPanel, referencePanel);
+        // subSplitPane.setDividerSize(10);
+        subSplitPane.setResizeWeight(0.15);
+
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, subSplitPane, referenceSearchPanel);
+        // splitPane.setDividerSize(10);
+        splitPane.setResizeWeight(0.8);
 
         contentPane.add(getUserInfoPanel(controller, user), BorderLayout.NORTH);
         contentPane.add(splitPane, BorderLayout.CENTER);
@@ -86,6 +96,12 @@ public class MainWindow extends JFrame {
         userInfoPanel.add(logoutButton);
 
         return userInfoPanel;
+    }
+
+    public void searchReferences(String[] keywords, Category[] categories, Date startDate, Date endDate) {
+        // TODO: implementa
+
+        // referencePanel.setReferences(null);
     }
 
 }
