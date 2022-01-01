@@ -5,13 +5,17 @@ import com.formdev.flatlaf.*;
 
 public class Controller {
 
+    private MainWindow homepage;
+
     public Controller() {
         setupLookAndFeel();
 
         User user = new User("Nuovo Utente");
 
-        MainWindow mainWindow = new MainWindow(this, user);
-        mainWindow.setVisible(true);
+        homepage = new MainWindow(this, user);
+
+        openHomePage();
+        // mainWindow.setVisible(true);
     }
 
     private void setupLookAndFeel() {
@@ -22,7 +26,20 @@ public class Controller {
         }
     }
 
+    public void openHomePage() {
+        homepage.setVisible(true);
+    }
+
+    public void openReferenceCreatorPage() {
+        // TODO:
+    }
+
+    public void openReferenceCreatorPage(Riferimento riferimento) {
+        // TODO:
+    }
+
     public void logout() {
         // TODO: implementa
     }
+
 }

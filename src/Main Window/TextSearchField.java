@@ -1,7 +1,5 @@
 import java.awt.*;
 import javax.swing.*;
-// import java.util.*;
-// import java.util.Date;
 
 public class TextSearchField extends JPanel {
 
@@ -10,12 +8,10 @@ public class TextSearchField extends JPanel {
     public TextSearchField(String label, String tooltip) {
         setLayout(new GridLayout(0, 1));
 
-        JLabel labelField = new JLabel(label);
-
         textField = new JTextField();
         textField.setToolTipText(tooltip);
 
-        add(labelField);
+        add(new JLabel(label));
         add(textField);
     }
 

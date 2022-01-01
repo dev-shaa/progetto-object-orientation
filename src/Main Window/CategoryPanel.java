@@ -26,9 +26,10 @@ public class CategoryPanel extends JPanel {
     private User user;
     private ReferencePanel referencePanel;
     private CategoryDAO categoryDAO = new CategoryDAOPostgreSQL();// TODO: cambia se diventa singleton
-    private ArrayList<Category> categories;
+    // private ArrayList<Category> categories;
 
     private DefaultTreeModel categoriesTreeModel;
+    private DefaultMutableTreeNode categoriesTreeRoot;
     private DefaultMutableTreeNode lastSelectedTreeNode;
     private JTree categoriesTree;
     private JButton editCategoryButton;
@@ -94,10 +95,8 @@ public class CategoryPanel extends JPanel {
 
     private JTree getCategoriesTree() {
         try {
-            categories = categoryDAO.getAllUserCategory(user);
-
-            DefaultMutableTreeNode root = new DefaultMutableTreeNode();
-            categoriesTreeModel = new DefaultTreeModel(root);
+            categoriesTreeRoot = categoryDAO.getUserCategoriesTree(user);
+            categoriesTreeModel = new DefaultTreeModel(categoriesTreeRoot);
 
             categoriesTree = new JTree(categoriesTreeModel);
             categoriesTree.setEditable(false);
@@ -109,8 +108,8 @@ public class CategoryPanel extends JPanel {
 
                     // il nodo root non esiste veramente nel database
                     // modificarlo/eliminarlo non ha senso, quindi disabilita i pulsanti
-                    editCategoryButton.setEnabled(lastSelectedTreeNode != null && lastSelectedTreeNode != root);
-                    removeCategoryButton.setEnabled(lastSelectedTreeNode != null && lastSelectedTreeNode != root);
+                    editCategoryButton.setEnabled(lastSelectedTreeNode != null && !lastSelectedTreeNode.isRoot());
+                    removeCategoryButton.setEnabled(lastSelectedTreeNode != null && !lastSelectedTreeNode.isRoot());
 
                     if (lastSelectedTreeNode != null)
                         referencePanel.loadReferencesListFromCategory((Category) lastSelectedTreeNode.getUserObject(),
@@ -120,15 +119,6 @@ public class CategoryPanel extends JPanel {
 
             // seleziona il nodo root
             categoriesTree.setSelectionRow(0);
-
-            for (Category category : categories) {
-
-                // NOTE: il nome del nodo viene preso dal toString() dell'oggetto passato
-                DefaultMutableTreeNode newTreeNode = new DefaultMutableTreeNode(category);
-
-                // FIXME: per ora tutti i nuovi nodi sono figli di root
-                lastSelectedTreeNode.add(newTreeNode);
-            }
 
             // Espandi tutti i nodi
             for (int i = 0; i < categoriesTree.getRowCount(); i++)
@@ -152,7 +142,6 @@ public class CategoryPanel extends JPanel {
             categoryDAO.saveCategory(newCategory, user);
 
             DefaultMutableTreeNode newTreeNode = new DefaultMutableTreeNode(newCategory);
-
             categoriesTreeModel.insertNodeInto(newTreeNode, lastSelectedTreeNode, lastSelectedTreeNode.getChildCount());
             categoriesTree.setSelectionPath(new TreePath(newTreeNode.getPath()));
         } catch (InvalidInputException e) {
@@ -203,10 +192,6 @@ public class CategoryPanel extends JPanel {
             throw new InvalidInputException("Il nome della categoria non può essere vuoto.");
 
         return categoryName;
-    }
-
-    public ArrayList<Category> getCategories() {
-        return this.categories;
     }
 
 }

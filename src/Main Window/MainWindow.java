@@ -1,8 +1,8 @@
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Date;
 import java.awt.BorderLayout;
 import javax.swing.*;
+import javax.swing.border.*;
 
 /**
  * Classe che si occupa di impostare le componenti base della pagina principale,
@@ -14,10 +14,6 @@ import javax.swing.*;
  * @see ReferencePanel
  */
 public class MainWindow extends JFrame {
-
-    ReferencePanel referencePanel;
-    CategoryPanel categoryPanel;
-    ReferenceSearchPanel referenceSearchPanel;
 
     /**
      * Crea {@code MainWindow} con i dati relativi all'utente.
@@ -41,24 +37,16 @@ public class MainWindow extends JFrame {
         ReferenceSearchPanel referenceSearchPanel = new ReferenceSearchPanel(this);
 
         JSplitPane subSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, categoryPanel, referencePanel);
-        // subSplitPane.setDividerSize(10);
         subSplitPane.setResizeWeight(0.15);
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, subSplitPane, referenceSearchPanel);
-        // splitPane.setDividerSize(10);
         splitPane.setResizeWeight(0.8);
 
-        contentPane.add(getUserInfoPanel(controller, user), BorderLayout.NORTH);
+        contentPane.add(getUserInfoPanel(controller, user.name), BorderLayout.NORTH);
         contentPane.add(splitPane, BorderLayout.CENTER);
-        // contentPane.add(referencePanel, BorderLayout.CENTER);
-        // contentPane.add(categoryPanel, BorderLayout.WEST);
-        // contentPane.add(referenceSearchPanel, BorderLayout.EAST);
     }
 
     private void setCloseOperation() {
-        // TODO: sarebbe meglio delegare la chiusura del programma al controller
-
-        // mostra un messaggio di conferma quando l'utente tenta di uscire
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -71,37 +59,28 @@ public class MainWindow extends JFrame {
         });
     }
 
-    private JPanel getUserInfoPanel(Controller controller, User user) {
-
-        // FIXME: alignment
-
+    private JPanel getUserInfoPanel(Controller controller, String username) {
         JPanel userInfoPanel = new JPanel();
-        userInfoPanel.setLayout(new FlowLayout());
+        userInfoPanel.setLayout(new BorderLayout(5, 0));
         userInfoPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 16));
+        userInfoPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 
-        JLabel userLabel = new JLabel(user.name, SwingConstants.LEFT);
+        JLabel userLabel = new JLabel("Bentornato, " + username, SwingConstants.LEFT);
         userLabel.setHorizontalTextPosition(SwingConstants.RIGHT);
         userLabel.setIcon(new ImageIcon("images/user.png"));
 
-        JButton logoutButton = new JButton(new ImageIcon("images/logout.png"));
+        JButton logoutButton = new JButton("Esci", new ImageIcon("images/logout.png"));
         logoutButton.setHorizontalAlignment(SwingConstants.RIGHT);
-        logoutButton.setToolTipText("Log out");
         logoutButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 controller.logout();
             }
         });
 
-        userInfoPanel.add(userLabel);
-        userInfoPanel.add(logoutButton);
+        userInfoPanel.add(userLabel, BorderLayout.WEST);
+        userInfoPanel.add(logoutButton, BorderLayout.EAST);
 
         return userInfoPanel;
-    }
-
-    public void searchReferences(String[] keywords, Category[] categories, Date startDate, Date endDate) {
-        // TODO: implementa
-
-        // referencePanel.setReferences(null);
     }
 
 }

@@ -18,6 +18,7 @@ import java.util.ArrayList;
  */
 public class ReferencePanel extends JPanel {
 
+    private Controller controller;
     private User user;
 
     private ArrayList<Riferimento> referenceList;
@@ -32,15 +33,8 @@ public class ReferencePanel extends JPanel {
      * @author Salvatore Di Gennaro
      */
     public ReferencePanel(User user) {
-
-        // DEBUG:
-        referenceList = new ArrayList<Riferimento>();
-        referenceList.add(new Riferimento("aaa", "autore1"));
-        referenceList.add(new Riferimento("bbb", "autore2"));
-        referenceList.add(new Riferimento("ccc", "autore3"));
-        referenceList.add(new Riferimento("ddd", "autore4"));
-
         this.user = user;
+        referenceList = new ArrayList<Riferimento>();
 
         setLayout(new BorderLayout(5, 5));
         setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -57,7 +51,6 @@ public class ReferencePanel extends JPanel {
     private JPanel getButtonsPanel() {
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
-        // buttonsPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 32));
 
         JButton createReferenceButton = new JButton(new ImageIcon("images/file_add.png"));
         createReferenceButton.setToolTipText("Nuovo riferimento");
@@ -83,29 +76,9 @@ public class ReferencePanel extends JPanel {
             }
         });
 
-        // ActionListener searchListener = new ActionListener() {
-        // public void actionPerformed(ActionEvent e) {
-        // // TODO: cerca
-        // // searchReferences(searchBox.getText());
-        // }
-        // };
-
-        // JTextField searchBox = new JTextField();
-        // searchBox.setToolTipText("Cerca riferimento per nome, autore o parole
-        // chiave");
-        // searchBox.setMaximumSize(new Dimension(300, Integer.MAX_VALUE));
-        // searchBox.addActionListener(searchListener);
-
-        // JButton searchButton = new JButton(new ImageIcon("images/search.png"));
-        // searchButton.setToolTipText("Cerca riferimento per nome, autore o parole
-        // chiave");
-        // searchButton.addActionListener(searchListener);
-
         buttonsPanel.add(createReferenceButton);
         buttonsPanel.add(editReferenceButton);
         buttonsPanel.add(deleteReferenceButton);
-        // buttonsPanel.add(searchBox);
-        // buttonsPanel.add(searchButton);
 
         return buttonsPanel;
     }
@@ -132,7 +105,6 @@ public class ReferencePanel extends JPanel {
         });
 
         JScrollPane referenceListPane = new JScrollPane(referenceListTable);
-        // referenceListPane.setMinimumSize(new Dimension(0, 70));
 
         return referenceListPane;
     }
@@ -146,12 +118,13 @@ public class ReferencePanel extends JPanel {
     }
 
     private void createReference() {
-        // TODO: apri pagina di creazione del riferimento
+        controller.openReferenceCreatorPage();
     }
 
     private void editReference() {
         // TODO: apri pagina di creazione del riferimento (passando i valori attuali del
         // riferimento)
+        // controller.openReferenceCreatorPage(riferimento);
     }
 
     private void deleteReference() {

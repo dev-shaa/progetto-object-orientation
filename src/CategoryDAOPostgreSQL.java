@@ -1,4 +1,7 @@
 import java.util.ArrayList;
+
+import javax.swing.tree.DefaultMutableTreeNode;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -73,14 +76,23 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
 
     // TODO: vedi se convertirlo ad array semplice
     @Override
-    public ArrayList<Category> getAllUserCategory(User user) throws Exception {
+    public DefaultMutableTreeNode getUserCategoriesTree(User user) throws Exception {
 
         // DEBUG:
-        ArrayList<Category> categories = new ArrayList<Category>();
-        categories.add(new Category("AAA", null));
-        categories.add(new Category("BBB", null));
-        categories.add(new Category("CCC", null));
-        return categories;
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode();
+
+        DefaultMutableTreeNode foo = new DefaultMutableTreeNode(new Category("AAA", null));
+
+        root.add(foo);
+        foo.add(new DefaultMutableTreeNode(new Category("BBB", null)));
+        root.add(new DefaultMutableTreeNode(new Category("CCC", null)));
+
+        return root;
+        // ArrayList<Category> categories = new ArrayList<Category>();
+        // categories.add(new Category("AAA", null));
+        // categories.add(new Category("BBB", null));
+        // categories.add(new Category("CCC", null));
+        // return categories;
 
         // try {
         // Connection connection = DBController.getInstance().getConnection();

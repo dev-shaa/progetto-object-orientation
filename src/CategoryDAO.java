@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 
+import javax.swing.tree.DefaultMutableTreeNode;
+
 /**
  * Interfaccia che si occupa di gestire la parte di database
  * relativo alle categorie.
@@ -49,5 +51,5 @@ public interface CategoryDAO {
      * @throws Exception
      * @since 0.1
      */
-    public ArrayList<Category> getAllUserCategory(User user) throws Exception;
+    public DefaultMutableTreeNode getUserCategoriesTree(User user) throws Exception;
 }
