@@ -11,7 +11,6 @@ public class TextSearchField extends JPanel {
         setLayout(new GridLayout(0, 1));
 
         JLabel labelField = new JLabel(label);
-        // labelField.setAlignmentX(JLabel.LEFT_ALIGNMENT);
 
         textField = new JTextField();
         textField.setToolTipText(tooltip);

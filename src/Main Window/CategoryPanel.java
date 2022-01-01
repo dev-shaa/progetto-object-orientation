@@ -26,6 +26,7 @@ public class CategoryPanel extends JPanel {
     private User user;
     private ReferencePanel referencePanel;
     private CategoryDAO categoryDAO = new CategoryDAOPostgreSQL();// TODO: cambia se diventa singleton
+    private ArrayList<Category> categories;
 
     private DefaultTreeModel categoriesTreeModel;
     private DefaultMutableTreeNode lastSelectedTreeNode;
@@ -93,7 +94,7 @@ public class CategoryPanel extends JPanel {
 
     private JTree getCategoriesTree() {
         try {
-            ArrayList<Category> categories = categoryDAO.getAllUserCategory(user);
+            categories = categoryDAO.getAllUserCategory(user);
 
             DefaultMutableTreeNode root = new DefaultMutableTreeNode();
             categoriesTreeModel = new DefaultTreeModel(root);
@@ -202,6 +203,10 @@ public class CategoryPanel extends JPanel {
             throw new InvalidInputException("Il nome della categoria non può essere vuoto.");
 
         return categoryName;
+    }
+
+    public ArrayList<Category> getCategories() {
+        return this.categories;
     }
 
 }

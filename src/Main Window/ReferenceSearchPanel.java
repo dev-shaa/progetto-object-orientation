@@ -1,5 +1,7 @@
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.plaf.PopupMenuUI;
+
 // import javax.swing.table.DefaultTableModel;
 // import javax.swing.event.*;
 import java.awt.*;
@@ -24,7 +26,6 @@ public class ReferenceSearchPanel extends JPanel {
     }
 
     private JPanel getSearchFieldPanel() {
-
         JPanel searchPanel = new JPanel();
         searchPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
         searchPanel.setLayout(new BoxLayout(searchPanel, BoxLayout.PAGE_AXIS));
@@ -48,6 +49,12 @@ public class ReferenceSearchPanel extends JPanel {
         searchPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
         // TODO: lista categorie
+        SelectionPopupMenu<String> categoriesSelectionMenu = new SelectionPopupMenu<String>(
+                new String[] { "aaa", "bbb" });
+        categoriesSelectionMenu.setAlignmentX(JButton.LEFT_ALIGNMENT);
+        categoriesSelectionMenu.setMaximumSize(new Dimension(Integer.MAX_VALUE, 24));
+
+        searchPanel.add(categoriesSelectionMenu);
 
         // Data
         DatePickerPanel earliestDate = new DatePickerPanel("Da:");
@@ -71,6 +78,7 @@ public class ReferenceSearchPanel extends JPanel {
         searchButton.setMaximumSize(new Dimension(100, 32));
         searchButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                // TODO: cerca
                 // controller.searchReferences(keywords, categories, startDate, endDate);
             }
         });
@@ -78,15 +86,6 @@ public class ReferenceSearchPanel extends JPanel {
         searchPanel.add(searchButton);
 
         return searchPanel;
-    }
-
-    private JSpinner getDateSpinner() {
-        Date today = new Date();
-
-        JSpinner dateSpinner = new JSpinner(new SpinnerDateModel(today, null, today, Calendar.MONTH));
-        dateSpinner.setEditor(new JSpinner.DateEditor(dateSpinner, "dd/MM/yyyy"));
-
-        return dateSpinner;
     }
 
 }
