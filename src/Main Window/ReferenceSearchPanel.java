@@ -94,7 +94,6 @@ public class ReferenceSearchPanel extends JPanel {
         searchButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // TODO: cerca
-                // controller.searchReferences(keywords, categories, startDate, endDate);
             }
         });
 

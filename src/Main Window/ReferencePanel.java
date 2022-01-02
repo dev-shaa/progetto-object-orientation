@@ -33,9 +33,9 @@ public class ReferencePanel extends JPanel {
      * 
      * @param user
      * @since 0.1
-     * @author Salvatore Di Gennaro
      */
-    public ReferencePanel(User user) {
+    public ReferencePanel(Controller controller, User user) {
+        this.controller = controller;
         this.user = user;
         referenceList = new ArrayList<Riferimento>();
 
@@ -131,6 +131,9 @@ public class ReferencePanel extends JPanel {
 
     private void createReference() {
         controller.openReferenceCreatorPage();
+
+        // DEBUG:
+        addReferenceToTable(new Riferimento("nome", "autore"));
     }
 
     private void editSelectedReference() {
@@ -179,7 +182,7 @@ public class ReferencePanel extends JPanel {
      * @param user
      *            utente che ha eseguito l'accesso
      */
-    public void setReferences(Category category, User user) {
+    public void setReferences(Category category) {
         // TODO: carica riferimenti dal database
 
         // DEBUG:
