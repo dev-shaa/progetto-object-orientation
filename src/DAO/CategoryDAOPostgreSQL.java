@@ -88,30 +88,26 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
         root.add(new DefaultMutableTreeNode(new Category("CCC", null)));
 
         return root;
-        // ArrayList<Category> categories = new ArrayList<Category>();
-        // categories.add(new Category("AAA", null));
-        // categories.add(new Category("BBB", null));
-        // categories.add(new Category("CCC", null));
-        // return categories;
 
         // try {
-        // Connection connection = DBController.getInstance().getConnection();
+            // Connection connection = DBController.getInstance().getConnection();
 
-        // Statement statement = connection.createStatement();
-        // String query = "";
-        // ResultSet resultSet = statement.executeQuery(query);
+            // Statement statement = connection.createStatement();
+            // String query = "";
+            // ResultSet resultSet = statement.executeQuery(query);
 
-        // ArrayList<Category> categories = new ArrayList<Category>();
+            // DefaultMutableTreeNode root = new DefaultMutableTreeNode("Tutte le categorie");
 
-        // while (resultSet.next()) {
-        // // categories.add(new Category(name, parent)); // FIXME:
-        // }
+            // while (resultSet.next()) {
+            // // TODO:
+            // }
 
-        // connection.close();
+            // statement.close();
+            // connection.close();
 
-        // return categories;
+            // return root;
         // } catch (Exception e) {
-        // throw new Exception();
+        //     throw new Exception();
         // }
     }
 }
