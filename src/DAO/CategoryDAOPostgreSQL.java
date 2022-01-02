@@ -1,12 +1,10 @@
 import java.util.ArrayList;
-
-import javax.swing.tree.DefaultMutableTreeNode;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
  * Implementazione dell'interfaccia CategoryDAO per database relazionali

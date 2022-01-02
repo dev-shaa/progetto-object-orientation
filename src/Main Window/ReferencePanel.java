@@ -23,8 +23,8 @@ public class ReferencePanel extends JPanel {
 
     private ArrayList<Riferimento> referenceList;
     private DefaultTableModel referenceListTableModel;
-    private JTable referenceListTable;
-    private JTextArea referenceDetailsArea;
+    // private JTable referenceListTable;
+    // private JTextArea referenceDetailsArea;
     private int selectedReferenceIndex;
 
     /**
@@ -61,7 +61,7 @@ public class ReferencePanel extends JPanel {
             }
         });
 
-        JButton editReferenceButton = new JButton(new ImageIcon("images/file_edit.png")); // TODO: modifica icona
+        JButton editReferenceButton = new JButton(new ImageIcon("images/file_edit.png"));
         editReferenceButton.setToolTipText("Modifica riferimento");
         editReferenceButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -94,7 +94,7 @@ public class ReferencePanel extends JPanel {
             }
         };
 
-        referenceListTable = new JTable(referenceListTableModel);
+        JTable referenceListTable = new JTable(referenceListTableModel);
         referenceListTable.setFillsViewportHeight(true);
         referenceListTable.setAutoCreateRowSorter(true);
         referenceListTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -112,7 +112,7 @@ public class ReferencePanel extends JPanel {
     }
 
     private JScrollPane getReferenceDetailsPane() {
-        referenceDetailsArea = new JTextArea();
+        JTextArea referenceDetailsArea = new JTextArea();
         referenceDetailsArea.setEditable(false);
         JScrollPane referencePreviewPanel = new JScrollPane(referenceDetailsArea);
 
@@ -124,8 +124,7 @@ public class ReferencePanel extends JPanel {
     }
 
     private void editSelectedReference() {
-        // TODO: apri pagina di creazione del riferimento (passando i valori attuali del
-        // riferimento)
+        // TODO: apri pagina di creazione del riferimento (passando i valori attuali del riferimento)
         // controller.openReferenceCreatorPage(riferimento);
     }
 

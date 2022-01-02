@@ -1,5 +1,3 @@
-// import java.util.ArrayList;
-
 import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
@@ -14,8 +12,10 @@ public interface CategoryDAO {
     /**
      * Salva una nuova categoria nel database.
      * 
-     * @param category Nuova categoria da salvare.
-     * @param user     Utente che ha creato la nuova categoria.
+     * @param category
+     *            Nuova categoria da salvare.
+     * @param user
+     *            Utente che ha creato la nuova categoria.
      * @throws Exception
      * @since 0.1
      */
@@ -24,8 +24,10 @@ public interface CategoryDAO {
     /**
      * Modifica una categoria nel database.
      * 
-     * @param category Categoria da modificare.
-     * @param newName  Nuovo nome da assegnare alla categoria.
+     * @param category
+     *            Categoria da modificare.
+     * @param newName
+     *            Nuovo nome da assegnare alla categoria.
      * @throws Exception
      * @since 0.1
      */
@@ -34,7 +36,8 @@ public interface CategoryDAO {
     /**
      * Elimina una categoria nel database.
      * 
-     * @param category Categoria da eliminare.
+     * @param category
+     *            Categoria da eliminare.
      * @throws Exception
      * @since 0.1
      */
@@ -43,7 +46,8 @@ public interface CategoryDAO {
     /**
      * Ottiene tutte le categorie appartenenti a un utente nel database.
      * 
-     * @param user Utente
+     * @param user
+     *            Utente
      * @return Lista contenente tutte le categorie dell'utente.
      * @throws Exception
      * @since 0.2

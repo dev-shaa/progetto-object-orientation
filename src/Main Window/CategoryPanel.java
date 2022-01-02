@@ -1,5 +1,3 @@
-
-// import java.util.ArrayList;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.FlowLayout;
@@ -10,8 +8,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
-
-import Exceptions.InvalidInputException;
 
 /**
  * Classe che si occupa di mostrare un pannello con le categorie dell'utente
