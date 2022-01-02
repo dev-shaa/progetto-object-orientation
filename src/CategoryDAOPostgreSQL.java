@@ -78,6 +78,8 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
     @Override
     public DefaultMutableTreeNode getUserCategoriesTree(User user) throws Exception {
 
+        // https://www.java-success.com/00-%E2%99%A6-creating-tree-list-flattening-back-list-java/
+
         // DEBUG:
         DefaultMutableTreeNode root = new DefaultMutableTreeNode();
 

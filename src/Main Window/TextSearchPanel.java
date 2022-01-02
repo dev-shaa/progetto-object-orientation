@@ -1,11 +1,11 @@
 import java.awt.*;
 import javax.swing.*;
 
-public class TextSearchField extends JPanel {
+public class TextSearchPanel extends JPanel {
 
     private JTextField textField;
 
-    public TextSearchField(String label, String tooltip) {
+    public TextSearchPanel(String label, String tooltip) {
         setLayout(new GridLayout(0, 1));
 
         textField = new JTextField();

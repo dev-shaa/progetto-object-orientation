@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+// import java.util.ArrayList;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -6,13 +6,10 @@ import javax.swing.tree.DefaultMutableTreeNode;
  * Interfaccia che si occupa di gestire la parte di database
  * relativo alle categorie.
  * 
- * @version 0.1
+ * @version 0.2
  * @author Salvatore Di Gennaro
  */
 public interface CategoryDAO {
-
-    // TODO: decidi se lasciarlo interfaccia o abstract class
-    // TODO: decidi se renderlo singleton
 
     /**
      * Salva una nuova categoria nel database.
@@ -49,7 +46,7 @@ public interface CategoryDAO {
      * @param user Utente
      * @return Lista contenente tutte le categorie dell'utente.
      * @throws Exception
-     * @since 0.1
+     * @since 0.2
      */
     public DefaultMutableTreeNode getUserCategoriesTree(User user) throws Exception;
 }

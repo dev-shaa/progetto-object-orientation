@@ -1,4 +1,5 @@
-import java.util.ArrayList;
+
+// import java.util.ArrayList;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.FlowLayout;
@@ -25,8 +26,7 @@ public class CategoryPanel extends JPanel {
 
     private User user;
     private ReferencePanel referencePanel;
-    private CategoryDAO categoryDAO = new CategoryDAOPostgreSQL();// TODO: cambia se diventa singleton
-    // private ArrayList<Category> categories;
+    private CategoryDAO categoryDAO;
 
     private DefaultTreeModel categoriesTreeModel;
     private DefaultMutableTreeNode categoriesTreeRoot;
@@ -45,6 +45,8 @@ public class CategoryPanel extends JPanel {
     public CategoryPanel(User user, ReferencePanel referencePanel) {
         this.user = user;
         this.referencePanel = referencePanel;
+
+        categoryDAO = new CategoryDAOPostgreSQL();
 
         setLayout(new BorderLayout(5, 5));
         setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -99,6 +101,12 @@ public class CategoryPanel extends JPanel {
             categoriesTreeModel = new DefaultTreeModel(categoriesTreeRoot);
 
             categoriesTree = new JTree(categoriesTreeModel);
+
+            // TODO: drag and drop
+            // categoriesTree.setDragEnabled(true);
+            // categoriesTree.setDropMode(DropMode.INSERT);
+            // categoriesTree.setTransferHandler(new TransferHandler("text"));
+
             categoriesTree.setEditable(false);
             categoriesTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
             categoriesTree.addTreeSelectionListener(new TreeSelectionListener() {
@@ -112,8 +120,7 @@ public class CategoryPanel extends JPanel {
                     removeCategoryButton.setEnabled(lastSelectedTreeNode != null && !lastSelectedTreeNode.isRoot());
 
                     if (lastSelectedTreeNode != null)
-                        referencePanel.loadReferencesListFromCategory((Category) lastSelectedTreeNode.getUserObject(),
-                                user);
+                        referencePanel.loadReferencesListFromCategory((Category) lastSelectedTreeNode.getUserObject(), user);
                 }
             });
 
@@ -126,6 +133,7 @@ public class CategoryPanel extends JPanel {
 
             return categoriesTree;
         } catch (Exception e) {
+            e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Impossibile caricare le categorie");
             return null;
         }
@@ -133,8 +141,7 @@ public class CategoryPanel extends JPanel {
 
     private void addCategory() {
         try {
-            Category newCategory = new Category(getStringFromUser("Nuova categoria"),
-                    (Category) lastSelectedTreeNode.getUserObject());
+            Category newCategory = new Category(getStringFromUser("Nuova categoria"), (Category) lastSelectedTreeNode.getUserObject());
 
             // NOTE:
             // il salvataggio nel database può andare storto, l'inserimento nell'albero no
@@ -166,9 +173,7 @@ public class CategoryPanel extends JPanel {
 
     private void removeCategory() {
         try {
-            int confirmDialogBoxOption = JOptionPane.showConfirmDialog(null,
-                    "Sicuro di volere eliminare questa categoria?", "Elimina categoria",
-                    JOptionPane.YES_NO_OPTION);
+            int confirmDialogBoxOption = JOptionPane.showConfirmDialog(null, "Sicuro di volere eliminare questa categoria?", "Elimina categoria", JOptionPane.YES_NO_OPTION);
 
             if (confirmDialogBoxOption == JOptionPane.YES_OPTION) {
                 categoryDAO.deleteCategory((Category) lastSelectedTreeNode.getUserObject());
@@ -185,8 +190,7 @@ public class CategoryPanel extends JPanel {
     }
 
     private String getStringFromUser(String defaultString) throws Exception {
-        String categoryName = (String) JOptionPane.showInputDialog(null, "Nome categoria:", "Nuova categoria",
-                JOptionPane.PLAIN_MESSAGE, null, null, defaultString);
+        String categoryName = (String) JOptionPane.showInputDialog(null, "Nome categoria:", "Nuova categoria", JOptionPane.PLAIN_MESSAGE, null, null, defaultString);
 
         if (categoryName.isEmpty())
             throw new InvalidInputException("Il nome della categoria non può essere vuoto.");

@@ -7,7 +7,7 @@ import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
 // import java.awt.GridBagLayout;
-import java.util.*;
+// import java.util.*;
 // import java.util.ArrayList;
 // import java.util.Date;
 
@@ -15,9 +15,9 @@ public class ReferenceSearchPanel extends JPanel {
 
     private MainWindow controller;
 
-    private TextSearchField tagSearchField;
-    private TextSearchField authorSearchField;
-    // private SelectionPopupMenu<Category> categoriesSelectionMenu;
+    private TextSearchPanel tagSearchField;
+    private TextSearchPanel authorSearchField;
+    private TextSearchPanel categoriesSearchField;
     private DatePickerPanel earliestDate;
     private DatePickerPanel latestDate;
 
@@ -41,8 +41,7 @@ public class ReferenceSearchPanel extends JPanel {
         searchPanel.setLayout(new BoxLayout(searchPanel, BoxLayout.PAGE_AXIS));
 
         // Parole chiave
-        tagSearchField = new TextSearchField("Parole chiave:",
-                "Parole chiave da ricercare, separate da virgole (esempio: Informatica, Programmazione)");
+        tagSearchField = new TextSearchPanel("Parole chiave:", "Parole chiave da ricercare, separate da virgole (esempio: Liste, Alberi)");
         tagSearchField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
         tagSearchField.setAlignmentX(JTextField.LEFT_ALIGNMENT);
 
@@ -50,8 +49,7 @@ public class ReferenceSearchPanel extends JPanel {
         searchPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
         // Autori
-        authorSearchField = new TextSearchField("Autori:",
-                "Autori da ricercare, separati da virgole (esempio: Mario Rossi, Ciro Esposito)");
+        authorSearchField = new TextSearchPanel("Autori:", "Autori da ricercare, separati da virgole (esempio: Mario Rossi, Ciro Esposito)");
         authorSearchField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
         authorSearchField.setAlignmentX(JTextField.LEFT_ALIGNMENT);
 
@@ -59,8 +57,7 @@ public class ReferenceSearchPanel extends JPanel {
         searchPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
         // Categorie
-        TextSearchField categoriesSearchField = new TextSearchField("Categorie:",
-                "Categorie in cui ricercare, separate da virgole");
+        categoriesSearchField = new TextSearchPanel("Categorie:", "Categorie in cui ricercare, separate da virgole (esempio: Informatica, Basi di Dati)");
         categoriesSearchField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
         categoriesSearchField.setAlignmentX(JTextField.LEFT_ALIGNMENT);
 
