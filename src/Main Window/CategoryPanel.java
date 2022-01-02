@@ -116,7 +116,7 @@ public class CategoryPanel extends JPanel {
                     removeCategoryButton.setEnabled(lastSelectedTreeNode != null && !lastSelectedTreeNode.isRoot());
 
                     if (lastSelectedTreeNode != null)
-                        referencePanel.loadReferencesListFromCategory((Category) lastSelectedTreeNode.getUserObject(), user);
+                        referencePanel.setReferences((Category) lastSelectedTreeNode.getUserObject(), user);
                 }
             });
 

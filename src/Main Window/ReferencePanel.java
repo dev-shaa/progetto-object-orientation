@@ -1,18 +1,16 @@
 import javax.swing.*;
+import javax.swing.event.*;
 import javax.swing.border.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.FlowLayout;
-// import java.awt.GridLayout;
-// import java.awt.GridBagLayout;
 import java.util.ArrayList;
 
 /**
- * Classe che si occupa di mostrare i riferimenti presenti in una categoria.
+ * Classe che si occupa di mostrare i riferimenti cercati o presenti in una categoria.
  * 
- * @version 0.3
+ * @version 0.4.5
  * @author Salvatore Di Gennaro
  * @see MainWindow
  */
@@ -23,9 +21,12 @@ public class ReferencePanel extends JPanel {
 
     private ArrayList<Riferimento> referenceList;
     private DefaultTableModel referenceListTableModel;
-    // private JTable referenceListTable;
-    // private JTextArea referenceDetailsArea;
+    private JTable referenceListTable;
+    private JTextArea referenceDetailsArea;
     private int selectedReferenceIndex;
+
+    private JButton editReferenceButton;
+    private JButton deleteReferenceButton;
 
     /**
      * Crea {@code ReferencePanel} con i dati relativi all'utente.
@@ -41,11 +42,12 @@ public class ReferencePanel extends JPanel {
         setLayout(new BorderLayout(5, 5));
         setBorder(new EmptyBorder(5, 5, 5, 5));
 
+        add(getButtonsPanel(), BorderLayout.NORTH);
+
         JSplitPane referenceSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, getReferenceListPane(), getReferenceDetailsPane());
         referenceSplitPane.setDividerSize(10);
         referenceSplitPane.setResizeWeight(0.6f);
 
-        add(getButtonsPanel(), BorderLayout.NORTH);
         add(referenceSplitPane, BorderLayout.CENTER);
     }
 
@@ -61,19 +63,21 @@ public class ReferencePanel extends JPanel {
             }
         });
 
-        JButton editReferenceButton = new JButton(new ImageIcon("images/file_edit.png"));
+        editReferenceButton = new JButton(new ImageIcon("images/file_edit.png"));
         editReferenceButton.setToolTipText("Modifica riferimento");
+        editReferenceButton.setEnabled(false);
         editReferenceButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 editSelectedReference();
             }
         });
 
-        JButton deleteReferenceButton = new JButton(new ImageIcon("images/file_remove.png"));
+        deleteReferenceButton = new JButton(new ImageIcon("images/file_remove.png"));
         deleteReferenceButton.setToolTipText("Elimina riferimento");
+        deleteReferenceButton.setEnabled(false);
         deleteReferenceButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                deleteSelectedReference();
+                removeSelectedReference();
             }
         });
 
@@ -94,15 +98,20 @@ public class ReferencePanel extends JPanel {
             }
         };
 
-        JTable referenceListTable = new JTable(referenceListTableModel);
+        referenceListTable = new JTable(referenceListTableModel);
         referenceListTable.setFillsViewportHeight(true);
         referenceListTable.setAutoCreateRowSorter(true);
         referenceListTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         referenceListTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent event) {
-                selectedReferenceIndex = referenceListTable.getSelectedRow();
+                if (!event.getValueIsAdjusting()) {
+                    selectedReferenceIndex = referenceListTable.getSelectedRow();
 
-                displayReferenceDetails(selectedReferenceIndex);
+                    editReferenceButton.setEnabled(!isSelectedRowNull());
+                    deleteReferenceButton.setEnabled(!isSelectedRowNull());
+
+                    displaySelectedReferenceDetails();
+                }
             }
         });
 
@@ -112,8 +121,9 @@ public class ReferencePanel extends JPanel {
     }
 
     private JScrollPane getReferenceDetailsPane() {
-        JTextArea referenceDetailsArea = new JTextArea();
+        referenceDetailsArea = new JTextArea();
         referenceDetailsArea.setEditable(false);
+
         JScrollPane referencePreviewPanel = new JScrollPane(referenceDetailsArea);
 
         return referencePreviewPanel;
@@ -128,74 +138,83 @@ public class ReferencePanel extends JPanel {
         // controller.openReferenceCreatorPage(riferimento);
     }
 
-    private void deleteSelectedReference() {
+    private void removeSelectedReference() {
         try {
-            if (selectedReferenceIndex != -1) {
-                int result = JOptionPane.showConfirmDialog(null, "Vuoi eliminare questo riferimento?", "Elimina riferimento", JOptionPane.YES_NO_OPTION);
+            int result = JOptionPane.showConfirmDialog(null, "Vuoi eliminare questo riferimento?", "Elimina riferimento", JOptionPane.YES_NO_OPTION);
 
-                if (result == JOptionPane.YES_OPTION) {
+            if (result == JOptionPane.YES_OPTION) {
 
-                    // TODO: cancella dal database
+                // TODO: cancella dal database
 
-                    referenceList.remove(selectedReferenceIndex);
-                    referenceListTableModel.removeRow(selectedReferenceIndex);
-                }
+                referenceList.remove(selectedReferenceIndex);
+                referenceListTableModel.removeRow(selectedReferenceIndex);
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Impossibile eliminare il riferimento");
         }
     }
 
+    /**
+     * Imposta i riferimenti da mostrare nell'elenco.
+     * 
+     * @param references
+     *            i riferimenti da mostrare
+     */
     public void setReferences(ArrayList<Riferimento> references) {
-        this.referenceList = references;
+        referenceListTable.clearSelection();
+        referenceList = new ArrayList<Riferimento>();
 
-        removeAllReferencesFromTable(referenceListTableModel);
+        clearTable();
 
-        for (Riferimento riferimento : referenceList) {
-            addReferenceToTable(referenceListTableModel, riferimento);
+        for (Riferimento riferimento : references) {
+            addReferenceToTable(riferimento);
         }
     }
 
     /**
-     * Carica nel pannello della lista tutti i riferimenti presenti nella categoria
-     * di input.
+     * Imposta i riferimenti da mostrare nell'elenco, caricandoli dalla categoria di input.
      * 
      * @param category
      *            categoria in cui cercare i riferimenti
      * @param user
      *            utente che ha eseguito l'accesso
      */
-    public void loadReferencesListFromCategory(Category category, User user) {
+    public void setReferences(Category category, User user) {
         // TODO: carica riferimenti dal database
 
         // DEBUG:
-        if (category != null) {
-            referenceList = new ArrayList<Riferimento>();
-            referenceList.add(new Riferimento("aaa " + category.getName(), "autore1"));
-            referenceList.add(new Riferimento("bbb " + category.getName(), "autore2"));
-            referenceList.add(new Riferimento("ccc " + category.getName(), "autore3"));
-        }
+        ArrayList<Riferimento> foo = new ArrayList<Riferimento>();
+        foo.add(new Riferimento("aaa", "autore1"));
+        foo.add(new Riferimento("bbb", "autore2"));
+        foo.add(new Riferimento("ccc", "autore3"));
 
-        removeAllReferencesFromTable(referenceListTableModel);
-
-        for (Riferimento riferimento : referenceList) {
-            addReferenceToTable(referenceListTableModel, riferimento);
-        }
-
+        setReferences(foo);
     }
 
-    private void removeAllReferencesFromTable(DefaultTableModel tableModel) {
-        while (tableModel.getRowCount() > 0)
-            tableModel.removeRow(0);
+    /**
+     * Aggiunge un riferimento all'attuale elenco.
+     * 
+     * @param reference
+     *            riferimento da aggiungere
+     */
+    public void addReferenceToTable(Riferimento reference) {
+        referenceList.add(reference);
+        referenceListTableModel.addRow(new Object[] { reference.nome, reference.autore, reference.data });
     }
 
-    private void addReferenceToTable(DefaultTableModel model, Riferimento riferimento) {
-        model.addRow(new Object[] { riferimento.nome, riferimento.autore,
-                riferimento.data });
+    private boolean isSelectedRowNull() {
+        return selectedReferenceIndex == -1;
     }
 
-    private void displayReferenceDetails(int selectedReferenceIndex) {
-        // TODO: implementa
+    private void clearTable() {
+        while (referenceListTableModel.getRowCount() > 0)
+            referenceListTableModel.removeRow(0);
+    }
+
+    private void displaySelectedReferenceDetails() {
+        String textToDisplay = selectedReferenceIndex == -1 ? "" : referenceList.get(selectedReferenceIndex).toString();
+
+        referenceDetailsArea.setText(textToDisplay);
     }
 
 }
