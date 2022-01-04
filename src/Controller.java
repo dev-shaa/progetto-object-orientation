@@ -13,6 +13,7 @@ public class Controller {
         User user = new User("Nuovo Utente");
 
         homepage = new MainWindow(this, user);
+        // homepage = new MainWindowFrame(this, user);
 
         openHomePage();
         // mainWindow.setVisible(true);

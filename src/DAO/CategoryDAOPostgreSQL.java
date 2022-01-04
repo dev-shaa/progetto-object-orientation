@@ -22,7 +22,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
     }
 
     @Override
-    public void saveCategory(Category category, User user) throws Exception {
+    public void addCategory(Category category, User user) throws Exception {
         try {
             // Connection connection = DBController.getInstance().getConnection();
 
@@ -90,24 +90,24 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
         return root;
 
         // try {
-            // Connection connection = DBController.getInstance().getConnection();
+        // Connection connection = DBController.getInstance().getConnection();
 
-            // Statement statement = connection.createStatement();
-            // String query = "";
-            // ResultSet resultSet = statement.executeQuery(query);
+        // Statement statement = connection.createStatement();
+        // String query = "";
+        // ResultSet resultSet = statement.executeQuery(query);
 
-            // DefaultMutableTreeNode root = new DefaultMutableTreeNode("Tutte le categorie");
+        // DefaultMutableTreeNode root = new DefaultMutableTreeNode("Tutte le categorie");
 
-            // while (resultSet.next()) {
-            // // TODO:
-            // }
+        // while (resultSet.next()) {
+        // // TODO:
+        // }
 
-            // statement.close();
-            // connection.close();
+        // statement.close();
+        // connection.close();
 
-            // return root;
+        // return root;
         // } catch (Exception e) {
-        //     throw new Exception();
+        // throw new Exception();
         // }
     }
 }

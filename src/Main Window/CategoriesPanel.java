@@ -5,7 +5,8 @@ import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.border.*;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
+// import javax.swing.tree.DefaultTreeModel;
+// import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
@@ -15,17 +16,16 @@ import javax.swing.tree.TreeSelectionModel;
  * 
  * @version 0.2
  * @author Salvatore Di Gennaro
- * @see MainWindow
+ * @see MainWindowFrame
  * @see ReferencePanel
  */
-public class CategoryPanel extends JPanel {
+public class CategoriesPanel extends JPanel {
 
-    private MainWindow mainWindow;
+    private MainWindowFrame mainWindow;
     private ReferencePanel referencePanel;
+    private CategoriesTree categoriesManager;
 
-    private DefaultTreeModel categoriesTreeModel;
-    private DefaultMutableTreeNode categoriesTreeRoot;
-    private DefaultMutableTreeNode lastSelectedTreeNode;
+    private DefaultMutableTreeNode lastSelectedNode;
     private JTree categoriesTree;
     private JButton editCategoryButton;
     private JButton removeCategoryButton;
@@ -36,9 +36,15 @@ public class CategoryPanel extends JPanel {
      * @param user
      * @since 0.1
      */
-    public CategoryPanel(MainWindow mainWindow, ReferencePanel referencePanel) {
+    public CategoriesPanel(MainWindowFrame mainWindow, ReferencePanel referencePanel) {
         this.mainWindow = mainWindow;
         this.referencePanel = referencePanel;
+
+        try {
+            this.categoriesManager = new CategoriesTree(mainWindow.getUser());
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
 
         setLayout(new BorderLayout(5, 5));
         setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -56,8 +62,20 @@ public class CategoryPanel extends JPanel {
         addCategoryButton.setToolTipText("Nuova categoria");
         addCategoryButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                mainWindow.createCategoryFromUserInput(getLastSelectedCategory());
+                try {
+                    String name = getCategoryNameFromUser("Nuova categoria");
 
+                    if (name != null) {
+                        DefaultMutableTreeNode newNode = categoriesManager.addCategoryNode(lastSelectedNode, name);
+                        selectTreeNode(newNode);
+                    }
+                } catch (IllegalArgumentException exception) {
+                    exception.printStackTrace();
+                    JOptionPane.showMessageDialog(null, exception.getMessage());
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                    JOptionPane.showMessageDialog(null, exception.getMessage());
+                }
             }
         });
 
@@ -65,8 +83,19 @@ public class CategoryPanel extends JPanel {
         editCategoryButton.setToolTipText("Modifica categoria");
         editCategoryButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                mainWindow.changeCategoryFromUserInput(getLastSelectedCategory());
+                try {
+                    String name = getCategoryNameFromUser(categoriesManager.getCategoryFromNode(lastSelectedNode).getName());
 
+                    if (name != null) {
+                        categoriesManager.changeCategoryNode(lastSelectedNode, name);
+                    }
+                } catch (IllegalArgumentException exception) {
+                    exception.printStackTrace();
+                    JOptionPane.showMessageDialog(null, exception.getMessage());
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                    JOptionPane.showMessageDialog(null, exception.getMessage());
+                }
             }
         });
 
@@ -74,24 +103,11 @@ public class CategoryPanel extends JPanel {
         removeCategoryButton.setToolTipText("Elimina categoria");
         removeCategoryButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                mainWindow.removeCategory(getLastSelectedCategory());
-            }
-        });
-
-        mainWindow.addCategoriesActionListener(new CategoriesActionListener() {
-            @Override
-            public void onCategoriesAdd(Category category) {
-                addChildrenToSelectedNode(category);
-            }
-
-            @Override
-            public void onCategoriesChange(Category category) {
-                changeCategory();
-            }
-
-            @Override
-            public void onCategoriesRemove(Category category) {
-                removeSelectedNode();
+                try {
+                    categoriesManager.removeCategoryNode(lastSelectedNode);
+                } catch (Exception exception) {
+                    JOptionPane.showMessageDialog(null, exception.getMessage());
+                }
             }
         });
 
@@ -108,32 +124,29 @@ public class CategoryPanel extends JPanel {
 
     private JTree getCategoriesTree() {
         try {
-            categoriesTreeRoot = mainWindow.getUserCategories();
-            categoriesTreeModel = new DefaultTreeModel(categoriesTreeRoot);
-
-            categoriesTree = new JTree(categoriesTreeModel);
+            categoriesTree = new JTree(categoriesManager.getTree());
 
             categoriesTree.setEditable(false);
             categoriesTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
             categoriesTree.addTreeSelectionListener(new TreeSelectionListener() {
                 @Override
                 public void valueChanged(TreeSelectionEvent e) {
-                    lastSelectedTreeNode = (DefaultMutableTreeNode) categoriesTree.getLastSelectedPathComponent();
+                    lastSelectedNode = (DefaultMutableTreeNode) categoriesTree.getLastSelectedPathComponent();
 
                     // il nodo root non esiste veramente nel database
                     // modificarlo/eliminarlo non ha senso, quindi disabilita i pulsanti
-                    editCategoryButton.setEnabled(lastSelectedTreeNode != null && !lastSelectedTreeNode.isRoot());
-                    removeCategoryButton.setEnabled(lastSelectedTreeNode != null && !lastSelectedTreeNode.isRoot());
+                    editCategoryButton.setEnabled(canNodeBeChanged(lastSelectedNode));
+                    removeCategoryButton.setEnabled(canNodeBeChanged(lastSelectedNode));
 
-                    if (lastSelectedTreeNode != null)
-                        referencePanel.setReferences(getLastSelectedCategory());
+                    if (lastSelectedNode != null)
+                        referencePanel.setReferences(categoriesManager.getCategoryFromNode(lastSelectedNode));
                 }
             });
 
             // seleziona il nodo root
             categoriesTree.setSelectionRow(0);
 
-            // Espandi tutti i nodi
+            // espandi tutti i no di
             for (int i = 0; i < categoriesTree.getRowCount(); i++)
                 categoriesTree.expandRow(i);
 
@@ -144,23 +157,16 @@ public class CategoryPanel extends JPanel {
         }
     }
 
-    private void addChildrenToSelectedNode(Category category) {
-        DefaultMutableTreeNode node = new DefaultMutableTreeNode(category);
-        categoriesTreeModel.insertNodeInto(node, lastSelectedTreeNode, lastSelectedTreeNode.getChildCount());
+    private void selectTreeNode(DefaultMutableTreeNode node) {
         categoriesTree.setSelectionPath(new TreePath(node.getPath()));
     }
 
-    private void changeCategory() {
-        categoriesTreeModel.reload();
+    private boolean canNodeBeChanged(DefaultMutableTreeNode node) {
+        return node != null && !node.isRoot();
     }
 
-    private void removeSelectedNode() {
-        lastSelectedTreeNode.removeFromParent();
-        categoriesTreeModel.reload();
-    }
-
-    private Category getLastSelectedCategory() {
-        return (Category) lastSelectedTreeNode.getUserObject();
+    private String getCategoryNameFromUser(String defaultString) {
+        return (String) JOptionPane.showInputDialog(null, "Nome categoria:", "Nuova categoria", JOptionPane.PLAIN_MESSAGE, null, null, defaultString);
     }
 
 }

@@ -13,7 +13,7 @@ import java.awt.event.*;
 
 public class ReferenceSearchPanel extends JPanel {
 
-    private MainWindow controller;
+    private MainWindowFrame controller;
 
     private TextSearchPanel tagSearchField;
     private TextSearchPanel authorSearchField;
@@ -21,7 +21,7 @@ public class ReferenceSearchPanel extends JPanel {
     private DatePickerPanel earliestDate;
     private DatePickerPanel latestDate;
 
-    public ReferenceSearchPanel(MainWindow controller) {
+    public ReferenceSearchPanel(MainWindowFrame controller) {
         this.controller = controller;
 
         setLayout(new BorderLayout(5, 5));

@@ -19,7 +19,7 @@ public interface CategoryDAO {
      * @throws Exception
      * @since 0.1
      */
-    public void saveCategory(Category category, User user) throws Exception;
+    public void addCategory(Category category, User user) throws Exception;
 
     /**
      * Modifica una categoria nel database.
