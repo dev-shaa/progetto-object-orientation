@@ -13,15 +13,14 @@ import java.awt.event.*;
 
 public class ReferenceSearchPanel extends JPanel {
 
-    private MainWindowFrame controller;
+    private MainWindow controller;
 
     private TextSearchPanel tagSearchField;
     private TextSearchPanel authorSearchField;
     private TextSearchPanel categoriesSearchField;
-    private DatePickerPanel earliestDate;
-    private DatePickerPanel latestDate;
+    private DatePickerPanel datePicker;
 
-    public ReferenceSearchPanel(MainWindowFrame controller) {
+    public ReferenceSearchPanel(MainWindow controller) {
         this.controller = controller;
 
         setLayout(new BorderLayout(5, 5));
@@ -46,7 +45,6 @@ public class ReferenceSearchPanel extends JPanel {
         tagSearchField.setAlignmentX(JTextField.LEFT_ALIGNMENT);
 
         searchPanel.add(tagSearchField);
-        searchPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
         // Autori
         authorSearchField = new TextSearchPanel("Autori:", "Autori da ricercare, separati da virgole (esempio: Mario Rossi, Ciro Esposito)");
@@ -54,7 +52,6 @@ public class ReferenceSearchPanel extends JPanel {
         authorSearchField.setAlignmentX(JTextField.LEFT_ALIGNMENT);
 
         searchPanel.add(authorSearchField);
-        searchPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
         // Categorie
         categoriesSearchField = new TextSearchPanel("Categorie:", "Categorie in cui ricercare, separate da virgole (esempio: Informatica, Basi di Dati)");
@@ -64,22 +61,17 @@ public class ReferenceSearchPanel extends JPanel {
         // TODO: suggerimenti
 
         searchPanel.add(categoriesSearchField);
-        searchPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
         // Data
-        earliestDate = new DatePickerPanel("Da:");
-        earliestDate.setAlignmentX(DatePickerPanel.LEFT_ALIGNMENT);
-        earliestDate.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
+        datePicker = new DatePickerPanel();
+        datePicker.setMaximumSize(new Dimension(Integer.MAX_VALUE, 106));
+        datePicker.setAlignmentX(DatePickerPanel.LEFT_ALIGNMENT);
 
-        searchPanel.add(earliestDate);
-        searchPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        searchPanel.add(datePicker);
 
-        latestDate = new DatePickerPanel("A:");
-        latestDate.setAlignmentX(DatePickerPanel.LEFT_ALIGNMENT);
-        latestDate.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
-
-        searchPanel.add(latestDate);
-        searchPanel.add(Box.createRigidArea(new Dimension(0, 50)));
+        Component spacing = Box.createVerticalGlue();
+        spacing.setMaximumSize(new Dimension(Integer.MAX_VALUE, 32));
+        searchPanel.add(spacing);
 
         searchPanel.add(getSearchButton());
 
