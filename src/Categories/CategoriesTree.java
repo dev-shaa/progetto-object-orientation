@@ -10,6 +10,11 @@ public class CategoriesTree {
     private CategoryDAO categoryDAO;
     private DefaultTreeModel categoriesTreeModel;
 
+    /**
+     * 
+     * @param user
+     * @throws Exception
+     */
     public CategoriesTree(User user) throws Exception {
         this.user = user;
         categoryDAO = new CategoryDAOPostgreSQL();
@@ -44,9 +49,6 @@ public class CategoriesTree {
      */
     public DefaultMutableTreeNode addCategoryNode(DefaultMutableTreeNode parent, String name) throws IllegalArgumentException, Exception {
         try {
-            if (name == null || name.isEmpty())
-                throw new IllegalArgumentException("Il nome della categoria non può essere nullo.");
-
             Category category = new Category(name, getCategoryFromNode(parent));
 
             categoryDAO.addCategory(category, user);
@@ -55,30 +57,34 @@ public class CategoriesTree {
             categoriesTreeModel.insertNodeInto(newCategoryNode, parent, parent.getChildCount());
 
             return newCategoryNode;
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
             throw e;
+        } catch (Exception e) {
+            throw new Exception("Impossibile creare una nuova categoria.");
         }
     }
 
     /**
+     * Modifica il nome della categoria associata a un nodo
      * 
      * @param node
+     *            il nodo di cui modificare la categoria
      * @param newName
+     *            il nuovo nome della categoria
      * @throws IllegalArgumentException
      * @throws Exception
      */
-    public void changeCategoryNode(DefaultMutableTreeNode node, String newName) throws IllegalArgumentException, Exception {
+    public void changeCategoryNodeName(DefaultMutableTreeNode node, String newName) throws IllegalArgumentException, Exception {
         try {
-            if (node == null || node.isRoot())
+            if (!canNodeBeChanged(node))
                 throw new IllegalArgumentException("Il nodo selezionato non può essere modificato.");
-
-            if (newName == null || newName.isEmpty())
-                throw new IllegalArgumentException("Il nome della categoria non può essere nullo.");
 
             Category category = getCategoryFromNode(node);
             categoryDAO.updateCategory(category, newName);
             category.setName(newName);
             categoriesTreeModel.reload(node);
+        } catch (IllegalArgumentException e) {
+            throw e;
         } catch (Exception e) {
             throw new Exception("Impossibile modificare questa categoria.");
         }
@@ -89,14 +95,14 @@ public class CategoriesTree {
      * 
      * @param node
      *            il nodo da rimuovere
-     * @throws IllegalArgumentException
      * @throws Exception
      */
     public void removeCategoryNode(DefaultMutableTreeNode node) throws IllegalArgumentException, Exception {
         try {
-            if (node == null || node.isRoot())
-                categoryDAO.deleteCategory(getCategoryFromNode(node));
+            if (!canNodeBeChanged(node))
+                throw new IllegalArgumentException("Il nodo selezionato non può essere modificato.");
 
+            categoryDAO.deleteCategory(getCategoryFromNode(node));
             TreeNode parent = node.getParent();
             node.removeFromParent();
             categoriesTreeModel.reload(parent);
@@ -116,6 +122,10 @@ public class CategoriesTree {
             return null;
 
         return (Category) node.getUserObject();
+    }
+
+    private boolean canNodeBeChanged(DefaultMutableTreeNode node) {
+        return node != null && !node.isRoot();
     }
 
 }
