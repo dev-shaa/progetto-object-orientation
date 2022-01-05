@@ -74,16 +74,16 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
 
     // TODO: vedi se convertirlo ad array semplice
     @Override
-    public DefaultMutableTreeNode getUserCategories(User user) throws CategoryDatabaseException {
+    public CategoryMutableTreeNode getUserCategories(User user) throws CategoryDatabaseException {
 
         // https://www.java-success.com/00-%E2%99%A6-creating-tree-list-flattening-back-list-java/
 
         // DEBUG:
 
         try {
-            DefaultMutableTreeNode root = new DefaultMutableTreeNode();
+            CategoryMutableTreeNode root = new CategoryMutableTreeNode();
 
-            DefaultMutableTreeNode foo = new DefaultMutableTreeNode(new Category("AAA", null));
+            CategoryMutableTreeNode foo = new CategoryMutableTreeNode(new Category("AAA", null));
 
             root.add(foo);
             foo.add(new DefaultMutableTreeNode(new Category("BBB", null)));
