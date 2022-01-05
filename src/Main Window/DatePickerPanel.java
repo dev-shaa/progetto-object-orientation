@@ -1,69 +1,94 @@
 import java.awt.GridLayout;
 
+import javax.swing.event.*;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerDateModel;
+import javax.swing.event.ChangeListener;
 
 import java.util.Date;
 import java.util.Calendar;
+import java.text.SimpleDateFormat;
 
+/**
+ * Un pannello con dei selettori che permettono di scegliere un intervallo tra una data di inizio e una di fine.
+ * 
+ * @version 1.0
+ * @author Salvatore Di Gennaro
+ */
 public class DatePickerPanel extends JPanel {
 
-    private JSpinner dateFrom;
-    private JSpinner dateTo;
+    private JSpinner startDate;
+    private JSpinner endDate;
+    private SpinnerDateModel endDateModel;
 
+    /**
+     * Crea un pannello in cui è possibile selezionare due date, una di inizio e una di fine.
+     * Gli elementi sono allineati verticalmente.
+     */
     public DatePickerPanel() {
         setLayout(new GridLayout(0, 1));
 
-        add(getDateFromPanel());
-        add(getDateToPanel());
+        Date earliestDatePossible = getMinimumDate();
+        Date today = new Date();
+
+        startDate = new JSpinner(new SpinnerDateModel(earliestDatePossible, null, today, Calendar.MONTH));
+        startDate.setEditor(new JSpinner.DateEditor(startDate, "dd/MM/yyyy G"));
+
+        // ovviamente vogliamo che startDate < endDate, quindi dobbiamo aggiornare il limite inferiore del selettore endDate
+        startDate.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                setDateToLowerLimit();
+            }
+        });
+
+        endDateModel = new SpinnerDateModel(today, earliestDatePossible, today, Calendar.MONTH);
+        endDate = new JSpinner(endDateModel);
+        endDate.setEditor(new JSpinner.DateEditor(endDate, "dd/MM/yyyy G"));
+
+        add(new JLabel("Da:"));
+        add(startDate);
+
+        add(new JLabel("A:"));
+        add(endDate);
     }
 
     /**
+     * Restituisce la data di inizio dell'intervallo.
      * 
-     * @return
+     * @return data di inizio
      */
-    public Date getEarliestDate() {
-        return (Date) dateFrom.getValue();
+    public Date getStartDate() {
+        return (Date) startDate.getValue();
     }
 
     /**
+     * Restituisce la data di fine dell'intervallo.
      * 
-     * @return
+     * @return data di fine
      */
-    public Date getLatestDate() {
-        return (Date) dateTo.getValue();
+    public Date getEndDate() {
+        return (Date) endDate.getValue();
     }
 
-    private JPanel getDateFromPanel() {
-        JPanel panel = new JPanel(new GridLayout(0, 1));
+    private Date getMinimumDate() {
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy G");
 
-        // FIXME: trova una data che sia accettabile
-        Date earliestDatePossible = new Date(Long.MIN_VALUE);
-        Date today = new Date();
-
-        dateFrom = new JSpinner(new SpinnerDateModel(earliestDatePossible, null, today, Calendar.MONTH));
-        dateFrom.setEditor(new JSpinner.DateEditor(dateFrom, "dd/MM/yyyy G"));
-
-        panel.add(new JLabel("Da:"));
-        panel.add(dateFrom);
-
-        return panel;
+        try {
+            return format.parse("01/01/3000 a.C."); // più o meno l'inizio della scrittura umana, credo vada bene
+        } catch (Exception e) {
+            return new Date(Long.MIN_VALUE); // tipo il 2 milione a.C., suppongo sia eccessivo
+        }
     }
 
-    private JPanel getDateToPanel() {
-        JPanel panel = new JPanel(new GridLayout(0, 1));
+    private void setDateToLowerLimit() {
+        Date newLowerLimit = getStartDate();
 
-        Date today = new Date();
+        endDateModel.setStart(newLowerLimit);
 
-        dateTo = new JSpinner(new SpinnerDateModel(today, null, today, Calendar.MONTH));
-        dateTo.setEditor(new JSpinner.DateEditor(dateTo, "dd/MM/yyyy G"));
-
-        panel.add(new JLabel("A:"));
-        panel.add(dateTo);
-
-        return panel;
+        if (getEndDate().before(newLowerLimit))
+            endDate.setValue(newLowerLimit);
     }
 
 }
