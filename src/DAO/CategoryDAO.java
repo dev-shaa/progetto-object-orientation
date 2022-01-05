@@ -52,5 +52,5 @@ public interface CategoryDAO {
      * @throws Exception
      * @since 0.2
      */
-    public DefaultMutableTreeNode getUserCategoriesTree(User user) throws Exception;
+    public DefaultMutableTreeNode getUserCategories(User user) throws Exception;
 }

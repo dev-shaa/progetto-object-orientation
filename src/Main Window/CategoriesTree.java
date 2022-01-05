@@ -15,7 +15,7 @@ public class CategoriesTree {
         categoryDAO = new CategoryDAOPostgreSQL();
 
         try {
-            categoriesTreeModel = new DefaultTreeModel(categoryDAO.getUserCategoriesTree(user));
+            categoriesTreeModel = new DefaultTreeModel(categoryDAO.getUserCategories(user));
         } catch (Exception e) {
             throw new Exception("Impossibile accedere alle categorie dell'utente");
         }
