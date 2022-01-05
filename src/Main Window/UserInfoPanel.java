@@ -17,6 +17,7 @@ public class UserInfoPanel extends JPanel {
 
         JButton logoutButton = new JButton("Esci", new ImageIcon("images/logout.png"));
         logoutButton.setHorizontalAlignment(SwingConstants.RIGHT);
+        logoutButton.setBorderPainted(false);
         logoutButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 controller.logout();
@@ -25,6 +26,5 @@ public class UserInfoPanel extends JPanel {
 
         add(userLabel, BorderLayout.WEST);
         add(logoutButton, BorderLayout.EAST);
-        add(new JSeparator(), BorderLayout.SOUTH);
     }
 }
