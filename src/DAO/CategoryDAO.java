@@ -19,7 +19,7 @@ public interface CategoryDAO {
      * @throws Exception
      * @since 0.1
      */
-    public void addCategory(Category category, User user) throws Exception;
+    public void addCategory(Category category, User user) throws CategoryDatabaseException;
 
     /**
      * Modifica una categoria nel database.
@@ -31,7 +31,7 @@ public interface CategoryDAO {
      * @throws Exception
      * @since 0.1
      */
-    public void updateCategory(Category category, String newName) throws Exception;
+    public void updateCategory(Category category, String newName) throws CategoryDatabaseException;
 
     /**
      * Elimina una categoria nel database.
@@ -41,7 +41,7 @@ public interface CategoryDAO {
      * @throws Exception
      * @since 0.1
      */
-    public void deleteCategory(Category category) throws Exception;
+    public void deleteCategory(Category category) throws CategoryDatabaseException;
 
     /**
      * Ottiene tutte le categorie appartenenti a un utente nel database.
@@ -52,5 +52,5 @@ public interface CategoryDAO {
      * @throws Exception
      * @since 0.2
      */
-    public DefaultMutableTreeNode getUserCategories(User user) throws Exception;
+    public DefaultMutableTreeNode getUserCategories(User user) throws CategoryDatabaseException;
 }

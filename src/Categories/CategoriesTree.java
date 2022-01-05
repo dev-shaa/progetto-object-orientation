@@ -12,17 +12,18 @@ public class CategoriesTree {
 
     /**
      * 
+     * 
      * @param user
      * @throws Exception
      */
-    public CategoriesTree(User user) throws Exception {
+    public CategoriesTree(User user) throws CategoryDatabaseException {
         this.user = user;
         categoryDAO = new CategoryDAOPostgreSQL();
 
         try {
             categoriesTreeModel = new DefaultTreeModel(categoryDAO.getUserCategories(user));
         } catch (Exception e) {
-            throw new Exception("Impossibile accedere alle categorie dell'utente");
+            throw e;
         }
     }
 
@@ -37,7 +38,6 @@ public class CategoriesTree {
 
     /**
      * Aggiunge un nuovo nodo categoria all'albero come figlio del nodo {@code parent} e lo salva nel database.
-     * Lancia un IllegalArgumentException se {@code name == null } o {@code name.isEmpty()}.
      * 
      * @param parent
      *            il nodo parente della nuova categoria
@@ -45,9 +45,10 @@ public class CategoriesTree {
      *            il nome della nuova categoria
      * @return il nodo creato
      * @throws IllegalArgumentException
+     *             se {@code name == null } o {@code name.isEmpty()}
      * @throws Exception
      */
-    public DefaultMutableTreeNode addCategoryNode(DefaultMutableTreeNode parent, String name) throws IllegalArgumentException, Exception {
+    public DefaultMutableTreeNode addCategoryNode(DefaultMutableTreeNode parent, String name) throws IllegalArgumentException, CategoryDatabaseException {
         try {
             Category category = new Category(name, getCategoryFromNode(parent));
 
@@ -60,7 +61,7 @@ public class CategoriesTree {
         } catch (IllegalArgumentException e) {
             throw e;
         } catch (Exception e) {
-            throw new Exception("Impossibile creare una nuova categoria.");
+            throw e;
         }
     }
 
@@ -72,9 +73,10 @@ public class CategoriesTree {
      * @param newName
      *            il nuovo nome della categoria
      * @throws IllegalArgumentException
+     * 
      * @throws Exception
      */
-    public void changeCategoryNodeName(DefaultMutableTreeNode node, String newName) throws IllegalArgumentException, Exception {
+    public void changeCategoryNodeName(DefaultMutableTreeNode node, String newName) throws IllegalArgumentException, CategoryDatabaseException {
         try {
             if (!canNodeBeChanged(node))
                 throw new IllegalArgumentException("Il nodo selezionato non può essere modificato.");
@@ -86,7 +88,7 @@ public class CategoriesTree {
         } catch (IllegalArgumentException e) {
             throw e;
         } catch (Exception e) {
-            throw new Exception("Impossibile modificare questa categoria.");
+            throw e;
         }
     }
 
@@ -95,9 +97,11 @@ public class CategoriesTree {
      * 
      * @param node
      *            il nodo da rimuovere
+     * @throws IllegalArgumentException
+     *             se {@code node} non può essere eliminato (è nullo o è il nodo radice)
      * @throws Exception
      */
-    public void removeCategoryNode(DefaultMutableTreeNode node) throws IllegalArgumentException, Exception {
+    public void removeCategoryNode(DefaultMutableTreeNode node) throws IllegalArgumentException, CategoryDatabaseException {
         try {
             if (!canNodeBeChanged(node))
                 throw new IllegalArgumentException("Il nodo selezionato non può essere modificato.");
@@ -106,25 +110,34 @@ public class CategoriesTree {
             TreeNode parent = node.getParent();
             node.removeFromParent();
             categoriesTreeModel.reload(parent);
-        } catch (Exception e) {
-            throw new Exception("Impossibile eliminare questa categoria.");
+        } catch (CategoryDatabaseException e) {
+            throw e;
         }
     }
 
     /**
+     * Restituisce la categoria associata a {@code node}.
      * 
      * @param node
      *            nodo dell'albero
-     * @return la {@code Category} associata al nodo
+     * @return la {@code Category} associata a {@code node}, {@code null} se non vi è associata una categoria
+     * @throws IllegalArgumentException
+     *             se {@code node == null}
      */
-    public Category getCategoryFromNode(DefaultMutableTreeNode node) {
+    public Category getCategoryFromNode(DefaultMutableTreeNode node) throws IllegalArgumentException {
         if (node == null)
-            return null;
+            throw new IllegalArgumentException("Il nodo non può essere nullo.");
 
         return (Category) node.getUserObject();
     }
 
-    private boolean canNodeBeChanged(DefaultMutableTreeNode node) {
+    /**
+     * 
+     * 
+     * @param node
+     * @return
+     */
+    public boolean canNodeBeChanged(DefaultMutableTreeNode node) {
         return node != null && !node.isRoot();
     }
 
