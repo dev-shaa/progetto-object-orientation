@@ -1,27 +1,27 @@
 import javax.swing.*;
 import javax.swing.border.*;
-// import javax.swing.plaf.PopupMenuUI;
-
-// import javax.swing.table.DefaultTableModel;
-// import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
-// import java.awt.GridBagLayout;
-// import java.util.*;
-// import java.util.ArrayList;
-// import java.util.Date;
 
+/**
+ * Pannello per la ricerca dei riferimenti per parole chiave, autori, categorie e data.
+ */
 public class ReferenceSearchPanel extends JPanel {
 
-    private Homepage controller;
+    private Homepage homepage;
 
     private TextSearchPanel tagSearchField;
     private TextSearchPanel authorSearchField;
     private TextSearchPanel categoriesSearchField;
     private DatePickerPanel datePicker;
 
-    public ReferenceSearchPanel(Homepage controller) {
-        this.controller = controller;
+    /**
+     * Crea {@code ReferenceSearchPanel}.
+     * 
+     * @param homepage
+     */
+    public ReferenceSearchPanel(Homepage homepage) {
+        this.homepage = homepage;
 
         setLayout(new BorderLayout(5, 5));
         setBorder(new EmptyBorder(5, 5, 5, 5));

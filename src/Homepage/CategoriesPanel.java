@@ -10,6 +10,7 @@ import javax.swing.tree.TreeSelectionModel;
 
 /**
  * Pannello con le categorie dell'utente sotto forma di albero, con ogni nodo che rappresenta una categoria.
+ * Sono presenti dei pulsanti per aggiungere, modificare o rimuovere una categoria.
  * 
  * @version 0.3
  * @author Salvatore Di Gennaro
@@ -33,11 +34,11 @@ public class CategoriesPanel extends JPanel {
      * @param referencePanel
      * @since 0.3
      */
-    public CategoriesPanel(User user, ReferencePanel referencePanel, CategoryDAO categoryDAO) throws Exception {
+    public CategoriesPanel(ReferencePanel referencePanel, CategoryDAO categoryDAO) throws Exception {
         this.referencePanel = referencePanel;
 
         try {
-            this.categoriesTree = new CategoriesTree(categoryDAO, user);
+            this.categoriesTree = new CategoriesTree(categoryDAO);
             setLayout(new BorderLayout(5, 5));
             setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -98,9 +99,7 @@ public class CategoriesPanel extends JPanel {
 
                 // il nodo root non esiste veramente nel database
                 // modificarlo/eliminarlo non ha senso, quindi disabilita i pulsanti
-
-                boolean nodeCanBeChanged = categoriesTree.canNodeBeChanged(lastSelectedNode);
-
+                boolean nodeCanBeChanged = lastSelectedNode != null && lastSelectedNode.canBeChanged();
                 changeCategoryButton.setEnabled(nodeCanBeChanged);
                 removeCategoryButton.setEnabled(nodeCanBeChanged);
 

@@ -61,7 +61,7 @@ public class DisplayedReferences {
     /**
      * Apre la pagina di creazione di un riferimento.
      */
-    public void createReference() {
+    public void addReference() {
         controller.openReferenceCreatorPage();
     }
 
@@ -73,7 +73,7 @@ public class DisplayedReferences {
      * @throws IndexOutOfBoundsException
      *             se l'indice è fuori dagli estremi dell'array dei riferimenti ({@code index < 0 || index >= size()})
      */
-    public void editReference(int index) throws IndexOutOfBoundsException {
+    public void changeReference(int index) throws IndexOutOfBoundsException {
         try {
             // TODO: apri pagina di creazione del riferimento (passando i valori attuali del riferimento)
             // controller.openReferenceCreatorPage(riferimento);
@@ -137,7 +137,7 @@ public class DisplayedReferences {
      */
     public void addReferenceToTable(BibliographicReference reference) {
         displayedReferences.add(reference);
-        displayedReferencesTableModel.addRow(new Object[] { reference.name, reference.author, reference.date });
+        displayedReferencesTableModel.addRow(new Object[] { reference.name, reference.author, reference.pubblicationDate });
     }
 
     private void clearTable() {

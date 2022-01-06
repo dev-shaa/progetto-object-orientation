@@ -7,20 +7,20 @@ import javax.swing.*;
  * Classe che si occupa di impostare le componenti base della pagina principale,
  * che mostra tutti i riferimenti e le categorie.
  * 
- * @version 0.2
+ * @version 0.3
  * @author Salvatore Di Gennaro
+ * @see UserInfoPanel
  * @see CategoriesPanel
  * @see ReferencePanel
  */
 public class Homepage extends JFrame {
 
     /**
-     * Crea {@code MainWindow} con i dati relativi all'utente.
+     * Crea {@code Homepage} con i dati relativi all'utente.
      * 
      * @param user
      *            l'utente che ha eseguito l'accesso
      * @since 0.1
-     * @author Salvatore Di Gennaro
      */
     public Homepage(Controller controller, User user, CategoryDAO categoryDAO) {
 
@@ -34,8 +34,8 @@ public class Homepage extends JFrame {
         setContentPane(contentPane);
 
         try {
-            ReferencePanel referencePanel = new ReferencePanel(controller, user);
-            CategoriesPanel categoryPanel = new CategoriesPanel(user, referencePanel, categoryDAO);
+            ReferencePanel referencePanel = new ReferencePanel(controller);
+            CategoriesPanel categoryPanel = new CategoriesPanel(referencePanel, categoryDAO);
             ReferenceSearchPanel referenceSearchPanel = new ReferenceSearchPanel(this);
 
             JSplitPane subSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, categoryPanel, referencePanel);

@@ -5,16 +5,16 @@ import com.formdev.flatlaf.*;
 
 public class Controller {
 
-    private MainWindow homepage;
+    private Homepage homepage;
 
     public Controller() {
         setupLookAndFeel();
 
         User user = new User("Nuovo Utente");
 
-        CategoryDAO categoryDAO = new CategoryDAOPostgreSQL();
+        CategoryDAO categoryDAO = new CategoryDAOPostgreSQL(user);
 
-        homepage = new MainWindow(this, user, categoryDAO);
+        homepage = new Homepage(this, user, categoryDAO);
 
         openHomePage();
     }

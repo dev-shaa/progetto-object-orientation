@@ -8,14 +8,12 @@ import java.awt.FlowLayout;
 /**
  * Classe che si occupa di mostrare i riferimenti cercati o presenti in una categoria.
  * 
- * @version 0.4.5
- * @author Salvatore Di Gennaro
+ * @version 0.5
  * @see Homepage
  */
 public class ReferencePanel extends JPanel {
 
     private Controller controller;
-    private User user;
 
     private DisplayedReferences displayedReferences;
     private JTable referencesTable;
@@ -31,9 +29,8 @@ public class ReferencePanel extends JPanel {
      * @param user
      * @since 0.1
      */
-    public ReferencePanel(Controller controller, User user) {
+    public ReferencePanel(Controller controller) {
         this.controller = controller;
-        this.user = user;
         this.displayedReferences = new DisplayedReferences(controller);
 
         setLayout(new BorderLayout(5, 5));
@@ -122,11 +119,11 @@ public class ReferencePanel extends JPanel {
     }
 
     private void createReference() {
-        displayedReferences.createReference();
+        displayedReferences.addReference();
     }
 
     private void editSelectedReference() {
-        displayedReferences.editReference(selectedReferenceIndex);
+        displayedReferences.changeReference(selectedReferenceIndex);
     }
 
     private void removeSelectedReference() {
