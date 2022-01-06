@@ -4,7 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
  * Implementazione dell'interfaccia CategoryDAO per database relazionali
@@ -72,24 +71,28 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
         }
     }
 
-    // TODO: vedi se convertirlo ad array semplice
     @Override
-    public CategoryMutableTreeNode getUserCategories(User user) throws CategoryDatabaseException {
+    public ArrayList<Category> getUserCategories(User user) throws CategoryDatabaseException {
 
         // https://www.java-success.com/00-%E2%99%A6-creating-tree-list-flattening-back-list-java/
 
-        // DEBUG:
-
         try {
-            CategoryMutableTreeNode root = new CategoryMutableTreeNode();
 
-            CategoryMutableTreeNode foo = new CategoryMutableTreeNode(new Category("AAA", null));
-
-            root.add(foo);
-            foo.add(new DefaultMutableTreeNode(new Category("BBB", null)));
-            root.add(new DefaultMutableTreeNode(new Category("CCC", null)));
-
-            return root;
+            // DEBUG:
+            ArrayList<Category> list = new ArrayList<Category>();
+            Category cat1 = new Category("category1", null);
+            Category cat2 = new Category("category2", null);
+            Category cat3 = new Category("category3", null);
+            Category cat4 = new Category("category4", cat1);
+            Category cat5 = new Category("category5", cat4);
+            Category cat6 = new Category("category6", cat2);
+            list.add(cat1);
+            list.add(cat2);
+            list.add(cat3);
+            list.add(cat4);
+            list.add(cat5);
+            list.add(cat6);
+            return list;
 
             // Connection connection = DBController.getInstance().getConnection();
 

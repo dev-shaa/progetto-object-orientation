@@ -1,3 +1,6 @@
+import java.util.List;
+import java.util.HashMap;
+
 import javax.swing.tree.DefaultTreeModel;
 
 /**
@@ -34,7 +37,8 @@ public class CategoriesTree {
         this.categoryDAO = categoryDAO;
 
         try {
-            categoriesTreeModel = new DefaultTreeModel(categoryDAO.getUserCategories(user));
+            CategoryMutableTreeNode tree = getTreeFromList(categoryDAO.getUserCategories(user));
+            categoriesTreeModel = new DefaultTreeModel(tree);
         } catch (Exception e) {
             throw e;
         }
@@ -147,6 +151,34 @@ public class CategoriesTree {
      */
     public boolean canNodeBeChanged(CategoryMutableTreeNode node) {
         return node != null && !node.isRoot();
+    }
+
+    private CategoryMutableTreeNode getTreeFromList(List<Category> categories) throws IllegalArgumentException {
+        if (categories == null)
+            throw new IllegalArgumentException("La lista delle categorie non può essere nulla.");
+
+        HashMap<Category, CategoryMutableTreeNode> categoriesNodeMap = new HashMap<Category, CategoryMutableTreeNode>();
+
+        CategoryMutableTreeNode root = new CategoryMutableTreeNode();
+        categoriesNodeMap.put(null, root);
+
+        for (Category current : categories) {
+            categoriesNodeMap.put(current, new CategoryMutableTreeNode(current));
+        }
+
+        for (Category current : categories) {
+            Category parent = current.getParent();
+
+            CategoryMutableTreeNode currentNode = categoriesNodeMap.get(current);
+            CategoryMutableTreeNode parentNode = categoriesNodeMap.get(parent);
+
+            parentNode.insert(currentNode, parentNode.getChildCount());
+
+            categoriesNodeMap.put(parent, parentNode);
+            categoriesNodeMap.put(current, currentNode);
+        }
+
+        return root;
     }
 
 }

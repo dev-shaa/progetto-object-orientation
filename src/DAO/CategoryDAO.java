@@ -1,3 +1,5 @@
+import java.util.List;
+
 /**
  * Interfaccia che si occupa di gestire la parte di database
  * relativo alle categorie.
@@ -50,5 +52,5 @@ public interface CategoryDAO {
      * @throws Exception
      * @since 0.2
      */
-    public CategoryMutableTreeNode getUserCategories(User user) throws CategoryDatabaseException;
+    public List<Category> getUserCategories(User user) throws CategoryDatabaseException;
 }
