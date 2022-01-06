@@ -9,19 +9,28 @@ import java.sql.Statement;
  * Implementazione dell'interfaccia CategoryDAO per database relazionali
  * PostgreSQL.
  * 
- * @version 0.1
+ * @version 0.2
  * @author Salvatore Di Gennaro
  * @see CategoryDAO
  */
-public class CategoryDAOPostgreSQL implements CategoryDAO {
+public class CategoryDAOPostgreSQL extends CategoryDAO {
 
     private String categoryTableName = ""; // TODO: sistema
 
-    public CategoryDAOPostgreSQL() {
+    /**
+     * Crea {@code CategoryDAOPostgreSQL} per interfacciarsi al database PostgreSQL relativo alle categorie dell'utente.
+     * 
+     * @param user
+     *            l'utente che accede al database
+     * @throws IllegalArgumentException
+     *             se l'utente di input è {@code null}
+     */
+    public CategoryDAOPostgreSQL(User user) {
+        super(user);
     }
 
     @Override
-    public void addCategory(Category category, User user) throws CategoryDatabaseException {
+    public void addCategory(Category category) throws CategoryDatabaseException {
         try {
             // Connection connection = DBController.getInstance().getConnection();
 
@@ -72,7 +81,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
     }
 
     @Override
-    public ArrayList<Category> getUserCategories(User user) throws CategoryDatabaseException {
+    public ArrayList<Category> getUserCategories() throws CategoryDatabaseException {
 
         // https://www.java-success.com/00-%E2%99%A6-creating-tree-list-flattening-back-list-java/
 
@@ -94,6 +103,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
             list.add(cat6);
             return list;
 
+            // TODO: implementa
             // Connection connection = DBController.getInstance().getConnection();
 
             // Statement statement = connection.createStatement();
@@ -103,7 +113,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
             // DefaultMutableTreeNode root = new DefaultMutableTreeNode("Tutte le categorie");
 
             // while (resultSet.next()) {
-            // // TODO:
+
             // }
 
             // statement.close();
