@@ -12,14 +12,14 @@ import java.util.ArrayList;
  * 
  * @version 0.4.5
  * @author Salvatore Di Gennaro
- * @see MainWindowFrame
+ * @see Homepage
  */
 public class ReferencePanel extends JPanel {
 
     private Controller controller;
     private User user;
 
-    private ArrayList<Riferimento> displayedReferences;
+    private ArrayList<BibliographicReference> displayedReferences;
     private DefaultTableModel referencesTableModel;
     private JTable referencesTable;
     private JTextArea referenceDetails;
@@ -37,7 +37,7 @@ public class ReferencePanel extends JPanel {
     public ReferencePanel(Controller controller, User user) {
         this.controller = controller;
         this.user = user;
-        displayedReferences = new ArrayList<Riferimento>();
+        displayedReferences = new ArrayList<BibliographicReference>();
 
         setLayout(new BorderLayout(5, 5));
         setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -133,7 +133,7 @@ public class ReferencePanel extends JPanel {
         controller.openReferenceCreatorPage();
 
         // DEBUG:
-        addReferenceToTable(new Riferimento("nome", "autore"));
+        addReferenceToTable(new BibliographicReference("nome", "autore"));
     }
 
     private void editSelectedReference() {
@@ -163,13 +163,13 @@ public class ReferencePanel extends JPanel {
      * @param references
      *            i riferimenti da mostrare
      */
-    public void setReferences(ArrayList<Riferimento> references) {
+    public void setReferences(ArrayList<BibliographicReference> references) {
         referencesTable.clearSelection();
-        displayedReferences = new ArrayList<Riferimento>();
+        displayedReferences = new ArrayList<BibliographicReference>();
 
         clearTable();
 
-        for (Riferimento riferimento : references) {
+        for (BibliographicReference riferimento : references) {
             addReferenceToTable(riferimento);
         }
     }
@@ -186,10 +186,10 @@ public class ReferencePanel extends JPanel {
         // TODO: carica riferimenti dal database
 
         // DEBUG:
-        ArrayList<Riferimento> foo = new ArrayList<Riferimento>();
-        foo.add(new Riferimento("aaa", "autore1"));
-        foo.add(new Riferimento("bbb", "autore2"));
-        foo.add(new Riferimento("ccc", "autore3"));
+        ArrayList<BibliographicReference> foo = new ArrayList<BibliographicReference>();
+        foo.add(new BibliographicReference("aaa", "autore1"));
+        foo.add(new BibliographicReference("bbb", "autore2"));
+        foo.add(new BibliographicReference("ccc", "autore3"));
 
         setReferences(foo);
     }
@@ -200,9 +200,9 @@ public class ReferencePanel extends JPanel {
      * @param reference
      *            riferimento da aggiungere
      */
-    public void addReferenceToTable(Riferimento reference) {
+    public void addReferenceToTable(BibliographicReference reference) {
         displayedReferences.add(reference);
-        referencesTableModel.addRow(new Object[] { reference.nome, reference.autore, reference.data });
+        referencesTableModel.addRow(new Object[] { reference.name, reference.author, reference.data });
     }
 
     private boolean isSelectedRowNull() {

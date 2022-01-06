@@ -12,12 +12,7 @@ import javax.swing.*;
  * @see CategoriesPanel
  * @see ReferencePanel
  */
-public class MainWindow extends JFrame {
-
-    // private MainWindow mainWindow;
-    private Controller controller;
-    private User user;
-    // private CategoriesTree categoriesTree;
+public class Homepage extends JFrame {
 
     /**
      * Crea {@code MainWindow} con i dati relativi all'utente.
@@ -27,22 +22,18 @@ public class MainWindow extends JFrame {
      * @since 0.1
      * @author Salvatore Di Gennaro
      */
-    public MainWindow(Controller controller, User user, CategoryDAO categoryDAO) {
-
-        // this.mainWindow = mainWindow;
-        this.controller = controller;
-        this.user = user;
+    public Homepage(Controller controller, User user, CategoryDAO categoryDAO) {
 
         setTitle("Pagina principale");
         setMinimumSize(new Dimension(400, 400));
         setBounds(100, 100, 720, 540);
         setCloseOperation();
 
-        try {
-            JPanel contentPane = new JPanel();
-            contentPane.setLayout(new BorderLayout(5, 5));
-            setContentPane(contentPane);
+        JPanel contentPane = new JPanel();
+        contentPane.setLayout(new BorderLayout(5, 5));
+        setContentPane(contentPane);
 
+        try {
             ReferencePanel referencePanel = new ReferencePanel(controller, user);
             CategoriesPanel categoryPanel = new CategoriesPanel(user, referencePanel, categoryDAO);
             ReferenceSearchPanel referenceSearchPanel = new ReferenceSearchPanel(this);
@@ -56,7 +47,14 @@ public class MainWindow extends JFrame {
             contentPane.add(new UserInfoPanel(controller, user), BorderLayout.NORTH);
             contentPane.add(splitPane, BorderLayout.CENTER);
         } catch (Exception e) {
-            // TODO: pagina vuota con pulsante "ricarica" (?)
+            // TODO: pagina di ricarica
+
+            JLabel errorLabel = new JLabel(e.getMessage());
+            JButton reloadButton = new JButton("Ricarica");
+            reloadButton.setMaximumSize(new Dimension(50, 50));
+
+            contentPane.add(errorLabel, BorderLayout.CENTER);
+            contentPane.add(reloadButton, BorderLayout.CENTER);
         }
     }
 
@@ -70,18 +68,6 @@ public class MainWindow extends JFrame {
                     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             }
         });
-    }
-
-    public void setController(Controller controller) {
-        this.controller = controller;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public User getUser() {
-        return this.user;
     }
 
 }

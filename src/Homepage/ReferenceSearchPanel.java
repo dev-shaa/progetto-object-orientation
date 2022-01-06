@@ -13,14 +13,14 @@ import java.awt.event.*;
 
 public class ReferenceSearchPanel extends JPanel {
 
-    private MainWindow controller;
+    private Homepage controller;
 
     private TextSearchPanel tagSearchField;
     private TextSearchPanel authorSearchField;
     private TextSearchPanel categoriesSearchField;
     private DatePickerPanel datePicker;
 
-    public ReferenceSearchPanel(MainWindow controller) {
+    public ReferenceSearchPanel(Homepage controller) {
         this.controller = controller;
 
         setLayout(new BorderLayout(5, 5));

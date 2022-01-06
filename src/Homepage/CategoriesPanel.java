@@ -14,7 +14,7 @@ import javax.swing.tree.TreeSelectionModel;
  * 
  * @version 0.3
  * @author Salvatore Di Gennaro
- * @see MainWindow
+ * @see Homepage
  * @see ReferencePanel
  */
 public class CategoriesPanel extends JPanel {
