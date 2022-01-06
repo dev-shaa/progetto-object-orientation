@@ -12,10 +12,11 @@ public class Controller {
 
         User user = new User("Nuovo Utente");
 
-        homepage = new MainWindow(this, user);
+        CategoryDAO categoryDAO = new CategoryDAOPostgreSQL();
+
+        homepage = new MainWindow(this, user, categoryDAO);
 
         openHomePage();
-        // mainWindow.setVisible(true);
     }
 
     private void setupLookAndFeel() {
@@ -34,7 +35,7 @@ public class Controller {
         // TODO:
     }
 
-    public void openReferenceCreatorPage(Riferimento riferimento) {
+    public void openReferenceCreatorPage(BibliographicReference riferimento) {
         // TODO:
     }
 

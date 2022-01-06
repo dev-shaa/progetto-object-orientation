@@ -12,17 +12,17 @@ import java.util.ArrayList;
  * 
  * @version 0.4.5
  * @author Salvatore Di Gennaro
- * @see MainWindow
+ * @see MainWindowFrame
  */
 public class ReferencePanel extends JPanel {
 
     private Controller controller;
     private User user;
 
-    private ArrayList<Riferimento> referenceList;
-    private DefaultTableModel referenceListTableModel;
-    private JTable referenceListTable;
-    private JTextArea referenceDetailsArea;
+    private ArrayList<Riferimento> displayedReferences;
+    private DefaultTableModel referencesTableModel;
+    private JTable referencesTable;
+    private JTextArea referenceDetails;
     private int selectedReferenceIndex;
 
     private JButton editReferenceButton;
@@ -33,11 +33,11 @@ public class ReferencePanel extends JPanel {
      * 
      * @param user
      * @since 0.1
-     * @author Salvatore Di Gennaro
      */
-    public ReferencePanel(User user) {
+    public ReferencePanel(Controller controller, User user) {
+        this.controller = controller;
         this.user = user;
-        referenceList = new ArrayList<Riferimento>();
+        displayedReferences = new ArrayList<Riferimento>();
 
         setLayout(new BorderLayout(5, 5));
         setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -91,21 +91,21 @@ public class ReferencePanel extends JPanel {
     private JScrollPane getReferenceListPane() {
         String[] referenceListTableColumns = { "Nome", "Autori", "Data pubblicazione", "Citazioni ricevute" };
 
-        referenceListTableModel = new DefaultTableModel(referenceListTableColumns, 0) {
+        referencesTableModel = new DefaultTableModel(referenceListTableColumns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
 
-        referenceListTable = new JTable(referenceListTableModel);
-        referenceListTable.setFillsViewportHeight(true);
-        referenceListTable.setAutoCreateRowSorter(true);
-        referenceListTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        referenceListTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        referencesTable = new JTable(referencesTableModel);
+        referencesTable.setFillsViewportHeight(true);
+        referencesTable.setAutoCreateRowSorter(true);
+        referencesTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        referencesTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent event) {
                 if (!event.getValueIsAdjusting()) {
-                    selectedReferenceIndex = referenceListTable.getSelectedRow();
+                    selectedReferenceIndex = referencesTable.getSelectedRow();
 
                     editReferenceButton.setEnabled(!isSelectedRowNull());
                     deleteReferenceButton.setEnabled(!isSelectedRowNull());
@@ -115,22 +115,25 @@ public class ReferencePanel extends JPanel {
             }
         });
 
-        JScrollPane referenceListPane = new JScrollPane(referenceListTable);
+        JScrollPane referenceListPane = new JScrollPane(referencesTable);
 
         return referenceListPane;
     }
 
     private JScrollPane getReferenceDetailsPane() {
-        referenceDetailsArea = new JTextArea();
-        referenceDetailsArea.setEditable(false);
+        referenceDetails = new JTextArea();
+        referenceDetails.setEditable(false);
 
-        JScrollPane referencePreviewPanel = new JScrollPane(referenceDetailsArea);
+        JScrollPane referencePreviewPanel = new JScrollPane(referenceDetails);
 
         return referencePreviewPanel;
     }
 
     private void createReference() {
         controller.openReferenceCreatorPage();
+
+        // DEBUG:
+        addReferenceToTable(new Riferimento("nome", "autore"));
     }
 
     private void editSelectedReference() {
@@ -146,8 +149,8 @@ public class ReferencePanel extends JPanel {
 
                 // TODO: cancella dal database
 
-                referenceList.remove(selectedReferenceIndex);
-                referenceListTableModel.removeRow(selectedReferenceIndex);
+                displayedReferences.remove(selectedReferenceIndex);
+                referencesTableModel.removeRow(selectedReferenceIndex);
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Impossibile eliminare il riferimento");
@@ -161,8 +164,8 @@ public class ReferencePanel extends JPanel {
      *            i riferimenti da mostrare
      */
     public void setReferences(ArrayList<Riferimento> references) {
-        referenceListTable.clearSelection();
-        referenceList = new ArrayList<Riferimento>();
+        referencesTable.clearSelection();
+        displayedReferences = new ArrayList<Riferimento>();
 
         clearTable();
 
@@ -179,7 +182,7 @@ public class ReferencePanel extends JPanel {
      * @param user
      *            utente che ha eseguito l'accesso
      */
-    public void setReferences(Category category, User user) {
+    public void setReferences(Category category) {
         // TODO: carica riferimenti dal database
 
         // DEBUG:
@@ -198,8 +201,8 @@ public class ReferencePanel extends JPanel {
      *            riferimento da aggiungere
      */
     public void addReferenceToTable(Riferimento reference) {
-        referenceList.add(reference);
-        referenceListTableModel.addRow(new Object[] { reference.nome, reference.autore, reference.data });
+        displayedReferences.add(reference);
+        referencesTableModel.addRow(new Object[] { reference.nome, reference.autore, reference.data });
     }
 
     private boolean isSelectedRowNull() {
@@ -207,14 +210,14 @@ public class ReferencePanel extends JPanel {
     }
 
     private void clearTable() {
-        while (referenceListTableModel.getRowCount() > 0)
-            referenceListTableModel.removeRow(0);
+        while (referencesTableModel.getRowCount() > 0)
+            referencesTableModel.removeRow(0);
     }
 
     private void displaySelectedReferenceDetails() {
-        String textToDisplay = selectedReferenceIndex == -1 ? "" : referenceList.get(selectedReferenceIndex).toString();
+        String textToDisplay = selectedReferenceIndex == -1 ? "" : displayedReferences.get(selectedReferenceIndex).toString();
 
-        referenceDetailsArea.setText(textToDisplay);
+        referenceDetails.setText(textToDisplay);
     }
 
 }

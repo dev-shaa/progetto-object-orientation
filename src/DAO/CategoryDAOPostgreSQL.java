@@ -22,7 +22,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
     }
 
     @Override
-    public void saveCategory(Category category, User user) throws Exception {
+    public void addCategory(Category category, User user) throws CategoryDatabaseException {
         try {
             // Connection connection = DBController.getInstance().getConnection();
 
@@ -34,12 +34,12 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
             // statement.close();
             // connection.close();
         } catch (Exception e) {
-            throw new Exception();
+            throw new CategoryDatabaseException("Impossibile aggiungere nuova categoria.");
         }
     }
 
     @Override
-    public void updateCategory(Category category, String name) throws Exception {
+    public void updateCategory(Category category, String name) throws CategoryDatabaseException {
         // TODO: Auto-generated method stub
         try {
             // Connection connection = DBController.getInstance().getConnection();
@@ -51,67 +51,65 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
             // statement.close();
             // connection.close();
         } catch (Exception e) {
-            throw new Exception();
+            throw new CategoryDatabaseException("Impossibile modificare questa categoria.");
         }
     }
 
     @Override
-    public void deleteCategory(Category category) throws Exception {
+    public void deleteCategory(Category category) throws CategoryDatabaseException {
         // TODO: Auto-generated method stub
-        // try {
-        // Connection connection = DBController.getInstance().getConnection();
+        try {
+            // Connection connection = DBController.getInstance().getConnection();
 
-        // Statement statement = connection.createStatement();
-        // String query = ""; // TODO: correggi
-        // statement.execute(query);
+            // Statement statement = connection.createStatement();
+            // String query = ""; // TODO: correggi
+            // statement.execute(query);
 
-        // statement.close();
-        // connection.close();
-        // } catch (Exception e) {
-        // throw new Exception();
-        // }
+            // statement.close();
+            // connection.close();
+        } catch (Exception e) {
+            throw new CategoryDatabaseException("Impossibile rimuovere questa categoria.");
+        }
     }
 
     // TODO: vedi se convertirlo ad array semplice
     @Override
-    public DefaultMutableTreeNode getUserCategoriesTree(User user) throws Exception {
+    public CategoryMutableTreeNode getUserCategories(User user) throws CategoryDatabaseException {
 
         // https://www.java-success.com/00-%E2%99%A6-creating-tree-list-flattening-back-list-java/
 
         // DEBUG:
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode();
 
-        DefaultMutableTreeNode foo = new DefaultMutableTreeNode(new Category("AAA", null));
+        try {
+            CategoryMutableTreeNode root = new CategoryMutableTreeNode();
 
-        root.add(foo);
-        foo.add(new DefaultMutableTreeNode(new Category("BBB", null)));
-        root.add(new DefaultMutableTreeNode(new Category("CCC", null)));
+            CategoryMutableTreeNode foo = new CategoryMutableTreeNode(new Category("AAA", null));
 
-        return root;
-        // ArrayList<Category> categories = new ArrayList<Category>();
-        // categories.add(new Category("AAA", null));
-        // categories.add(new Category("BBB", null));
-        // categories.add(new Category("CCC", null));
-        // return categories;
+            root.add(foo);
+            foo.add(new DefaultMutableTreeNode(new Category("BBB", null)));
+            root.add(new DefaultMutableTreeNode(new Category("CCC", null)));
 
-        // try {
-        // Connection connection = DBController.getInstance().getConnection();
+            return root;
 
-        // Statement statement = connection.createStatement();
-        // String query = "";
-        // ResultSet resultSet = statement.executeQuery(query);
+            // Connection connection = DBController.getInstance().getConnection();
 
-        // ArrayList<Category> categories = new ArrayList<Category>();
+            // Statement statement = connection.createStatement();
+            // String query = "";
+            // ResultSet resultSet = statement.executeQuery(query);
 
-        // while (resultSet.next()) {
-        // // categories.add(new Category(name, parent)); // FIXME:
-        // }
+            // DefaultMutableTreeNode root = new DefaultMutableTreeNode("Tutte le categorie");
 
-        // connection.close();
+            // while (resultSet.next()) {
+            // // TODO:
+            // }
 
-        // return categories;
-        // } catch (Exception e) {
-        // throw new Exception();
-        // }
+            // statement.close();
+            // connection.close();
+
+            // return root;
+        } catch (Exception e) {
+            throw new CategoryDatabaseException("Impossibile recuperare le categorie dell'utente.");
+        }
     }
+
 }
