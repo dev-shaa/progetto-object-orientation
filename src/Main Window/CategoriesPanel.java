@@ -34,18 +34,18 @@ public class CategoriesPanel extends JPanel {
      * @param referencePanel
      * @since 0.3
      */
-    public CategoriesPanel(User user, ReferencePanel referencePanel) throws Exception {
+    public CategoriesPanel(User user, ReferencePanel referencePanel, CategoryDAO categoryDAO) throws Exception {
         this.referencePanel = referencePanel;
 
         try {
-            this.categoriesTree = new CategoriesTree(user);
+            this.categoriesTree = new CategoriesTree(categoryDAO, user);
             setLayout(new BorderLayout(5, 5));
             setBorder(new EmptyBorder(5, 5, 5, 5));
 
             add(getButtonsPanel(), BorderLayout.NORTH);
             add(getCategoriesTreePanel(), BorderLayout.CENTER);
         } catch (Exception e) {
-            throw new Exception("Impossibile caricare le categorie.");
+            throw e;
         }
     }
 
@@ -94,14 +94,16 @@ public class CategoriesPanel extends JPanel {
         displayTree.setEditable(false);
         displayTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         displayTree.addTreeSelectionListener(new TreeSelectionListener() {
-            @Override
             public void valueChanged(TreeSelectionEvent e) {
-                lastSelectedNode = (CategoryMutableTreeNode) displayTree.getLastSelectedPathComponent();
+                // FIXME: class cast exception
+                lastSelectedNode = (CategoryMutableTreeNode) e.getPath().getLastPathComponent();
+
+                boolean nodeCanBeChanged = categoriesTree.canNodeBeChanged(lastSelectedNode);
 
                 // il nodo root non esiste veramente nel database
                 // modificarlo/eliminarlo non ha senso, quindi disabilita i pulsanti
 
-                boolean nodeCanBeChanged = categoriesTree.canNodeBeChanged(lastSelectedNode);
+                // boolean nodeCanBeChanged = categoriesTree.canNodeBeChanged(lastSelectedNode);
 
                 changeCategoryButton.setEnabled(nodeCanBeChanged);
                 removeCategoryButton.setEnabled(nodeCanBeChanged);
@@ -130,10 +132,8 @@ public class CategoriesPanel extends JPanel {
                 displayTree.setSelectionPath(new TreePath(newNode.getPath()));
             }
         } catch (IllegalArgumentException exception) {
-            exception.printStackTrace();
             JOptionPane.showMessageDialog(null, exception.getMessage());
         } catch (Exception exception) {
-            exception.printStackTrace();
             JOptionPane.showMessageDialog(null, exception.getMessage());
         }
     }
@@ -146,10 +146,8 @@ public class CategoriesPanel extends JPanel {
                 categoriesTree.changeCategoryNodeName(lastSelectedNode, name);
             }
         } catch (IllegalArgumentException exception) {
-            exception.printStackTrace();
             JOptionPane.showMessageDialog(null, exception.getMessage());
         } catch (Exception exception) {
-            exception.printStackTrace();
             JOptionPane.showMessageDialog(null, exception.getMessage());
         }
     }

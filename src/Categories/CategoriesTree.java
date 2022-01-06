@@ -1,6 +1,4 @@
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeNode;
 
 // TODO: commenta
 
@@ -16,9 +14,9 @@ public class CategoriesTree {
      * @param user
      * @throws Exception
      */
-    public CategoriesTree(User user) throws CategoryDatabaseException {
+    public CategoriesTree(CategoryDAO categoryDAO, User user) throws CategoryDatabaseException {
         this.user = user;
-        categoryDAO = new CategoryDAOPostgreSQL();
+        this.categoryDAO = categoryDAO;
 
         try {
             categoriesTreeModel = new DefaultTreeModel(categoryDAO.getUserCategories(user));

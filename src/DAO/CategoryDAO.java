@@ -1,5 +1,3 @@
-import javax.swing.tree.DefaultMutableTreeNode;
-
 /**
  * Interfaccia che si occupa di gestire la parte di database
  * relativo alle categorie.

@@ -27,7 +27,7 @@ public class MainWindow extends JFrame {
      * @since 0.1
      * @author Salvatore Di Gennaro
      */
-    public MainWindow(Controller controller, User user) {
+    public MainWindow(Controller controller, User user, CategoryDAO categoryDAO) {
 
         // this.mainWindow = mainWindow;
         this.controller = controller;
@@ -44,7 +44,7 @@ public class MainWindow extends JFrame {
             setContentPane(contentPane);
 
             ReferencePanel referencePanel = new ReferencePanel(controller, user);
-            CategoriesPanel categoryPanel = new CategoriesPanel(user, referencePanel);
+            CategoriesPanel categoryPanel = new CategoriesPanel(user, referencePanel, categoryDAO);
             ReferenceSearchPanel referenceSearchPanel = new ReferenceSearchPanel(this);
 
             JSplitPane subSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, categoryPanel, referencePanel);
