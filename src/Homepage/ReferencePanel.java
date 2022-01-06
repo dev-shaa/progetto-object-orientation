@@ -1,11 +1,9 @@
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.border.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.FlowLayout;
-import java.util.ArrayList;
 
 /**
  * Classe che si occupa di mostrare i riferimenti cercati o presenti in una categoria.
@@ -19,8 +17,7 @@ public class ReferencePanel extends JPanel {
     private Controller controller;
     private User user;
 
-    private ArrayList<BibliographicReference> displayedReferences;
-    private DefaultTableModel referencesTableModel;
+    private DisplayedReferences displayedReferences;
     private JTable referencesTable;
     private JTextArea referenceDetails;
     private int selectedReferenceIndex;
@@ -37,7 +34,7 @@ public class ReferencePanel extends JPanel {
     public ReferencePanel(Controller controller, User user) {
         this.controller = controller;
         this.user = user;
-        displayedReferences = new ArrayList<BibliographicReference>();
+        this.displayedReferences = new DisplayedReferences(controller);
 
         setLayout(new BorderLayout(5, 5));
         setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -49,6 +46,10 @@ public class ReferencePanel extends JPanel {
         referenceSplitPane.setResizeWeight(0.6f);
 
         add(referenceSplitPane, BorderLayout.CENTER);
+    }
+
+    public DisplayedReferences getDisplayedReferences() {
+        return this.displayedReferences;
     }
 
     private JPanel getButtonsPanel() {
@@ -89,16 +90,7 @@ public class ReferencePanel extends JPanel {
     }
 
     private JScrollPane getReferenceListPane() {
-        String[] referenceListTableColumns = { "Nome", "Autori", "Data pubblicazione", "Citazioni ricevute" };
-
-        referencesTableModel = new DefaultTableModel(referenceListTableColumns, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-
-        referencesTable = new JTable(referencesTableModel);
+        referencesTable = new JTable(displayedReferences.getDisplayedReferencesModel());
         referencesTable.setFillsViewportHeight(true);
         referencesTable.setAutoCreateRowSorter(true);
         referencesTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -130,15 +122,11 @@ public class ReferencePanel extends JPanel {
     }
 
     private void createReference() {
-        controller.openReferenceCreatorPage();
-
-        // DEBUG:
-        addReferenceToTable(new BibliographicReference("nome", "autore"));
+        displayedReferences.createReference();
     }
 
     private void editSelectedReference() {
-        // TODO: apri pagina di creazione del riferimento (passando i valori attuali del riferimento)
-        // controller.openReferenceCreatorPage(riferimento);
+        displayedReferences.editReference(selectedReferenceIndex);
     }
 
     private void removeSelectedReference() {
@@ -146,76 +134,19 @@ public class ReferencePanel extends JPanel {
             int result = JOptionPane.showConfirmDialog(null, "Vuoi eliminare questo riferimento?", "Elimina riferimento", JOptionPane.YES_NO_OPTION);
 
             if (result == JOptionPane.YES_OPTION) {
-
-                // TODO: cancella dal database
-
-                displayedReferences.remove(selectedReferenceIndex);
-                referencesTableModel.removeRow(selectedReferenceIndex);
+                displayedReferences.removeReference(selectedReferenceIndex);
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Impossibile eliminare il riferimento");
         }
     }
 
-    /**
-     * Imposta i riferimenti da mostrare nell'elenco.
-     * 
-     * @param references
-     *            i riferimenti da mostrare
-     */
-    public void setReferences(ArrayList<BibliographicReference> references) {
-        referencesTable.clearSelection();
-        displayedReferences = new ArrayList<BibliographicReference>();
-
-        clearTable();
-
-        for (BibliographicReference riferimento : references) {
-            addReferenceToTable(riferimento);
-        }
-    }
-
-    /**
-     * Imposta i riferimenti da mostrare nell'elenco, caricandoli dalla categoria di input.
-     * 
-     * @param category
-     *            categoria in cui cercare i riferimenti
-     * @param user
-     *            utente che ha eseguito l'accesso
-     */
-    public void setReferences(Category category) {
-        // TODO: carica riferimenti dal database
-
-        // DEBUG:
-        ArrayList<BibliographicReference> foo = new ArrayList<BibliographicReference>();
-        foo.add(new BibliographicReference("aaa", "autore1"));
-        foo.add(new BibliographicReference("bbb", "autore2"));
-        foo.add(new BibliographicReference("ccc", "autore3"));
-
-        setReferences(foo);
-    }
-
-    /**
-     * Aggiunge un riferimento all'attuale elenco.
-     * 
-     * @param reference
-     *            riferimento da aggiungere
-     */
-    public void addReferenceToTable(BibliographicReference reference) {
-        displayedReferences.add(reference);
-        referencesTableModel.addRow(new Object[] { reference.name, reference.author, reference.data });
-    }
-
     private boolean isSelectedRowNull() {
         return selectedReferenceIndex == -1;
     }
 
-    private void clearTable() {
-        while (referencesTableModel.getRowCount() > 0)
-            referencesTableModel.removeRow(0);
-    }
-
     private void displaySelectedReferenceDetails() {
-        String textToDisplay = selectedReferenceIndex == -1 ? "" : displayedReferences.get(selectedReferenceIndex).toString();
+        String textToDisplay = selectedReferenceIndex == -1 ? "" : displayedReferences.getReference(selectedReferenceIndex).getFormattedDetails();
 
         referenceDetails.setText(textToDisplay);
     }

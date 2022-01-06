@@ -9,8 +9,7 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 /**
- * Classe che si occupa di mostrare un pannello con le categorie dell'utente
- * sotto forma di albero, con ogni nodo che rappresenta una categoria.
+ * Pannello con le categorie dell'utente sotto forma di albero, con ogni nodo che rappresenta una categoria.
  * 
  * @version 0.3
  * @author Salvatore Di Gennaro
@@ -106,7 +105,7 @@ public class CategoriesPanel extends JPanel {
                 removeCategoryButton.setEnabled(nodeCanBeChanged);
 
                 if (lastSelectedNode != null)
-                    referencePanel.setReferences(lastSelectedNode.getCategory());
+                    referencePanel.getDisplayedReferences().setReferences(lastSelectedNode.getCategory());
             }
         });
 
