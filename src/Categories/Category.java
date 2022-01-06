@@ -30,7 +30,7 @@ public class Category {
      *             se {@code name == null} o {@code name.isBlank()}
      */
     public void setName(String name) throws IllegalArgumentException {
-        if (name == null || name.isBlank())
+        if (!isNameValid(name))
             throw new IllegalArgumentException("Il nome della categoria non può essere nullo.");
 
         this.name = name;
@@ -43,6 +43,19 @@ public class Category {
      */
     public String getName() {
         return this.name;
+    }
+
+    /**
+     * Controlla se il nome di input può essere accettato come nome di una categoria.
+     * Un nome valido deve essere non nullo e non vuoto.
+     * 
+     * @param name
+     *            nome da controllare
+     * @return
+     *         {@code true} se il nome è valido
+     */
+    public boolean isNameValid(String name) {
+        return name != null && !name.isBlank();
     }
 
     /**

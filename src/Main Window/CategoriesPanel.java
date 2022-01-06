@@ -95,15 +95,12 @@ public class CategoriesPanel extends JPanel {
         displayTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         displayTree.addTreeSelectionListener(new TreeSelectionListener() {
             public void valueChanged(TreeSelectionEvent e) {
-                // FIXME: class cast exception
-                lastSelectedNode = (CategoryMutableTreeNode) e.getPath().getLastPathComponent();
-
-                boolean nodeCanBeChanged = categoriesTree.canNodeBeChanged(lastSelectedNode);
+                lastSelectedNode = (CategoryMutableTreeNode) displayTree.getLastSelectedPathComponent();
 
                 // il nodo root non esiste veramente nel database
                 // modificarlo/eliminarlo non ha senso, quindi disabilita i pulsanti
 
-                // boolean nodeCanBeChanged = categoriesTree.canNodeBeChanged(lastSelectedNode);
+                boolean nodeCanBeChanged = categoriesTree.canNodeBeChanged(lastSelectedNode);
 
                 changeCategoryButton.setEnabled(nodeCanBeChanged);
                 removeCategoryButton.setEnabled(nodeCanBeChanged);
