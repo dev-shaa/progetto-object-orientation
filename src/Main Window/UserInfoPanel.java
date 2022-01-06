@@ -26,7 +26,9 @@ public class UserInfoPanel extends JPanel {
         setBorder(new EmptyBorder(15, 15, 15, 15));
         setBackground(darkGray);
 
-        JLabel icon = new JLabel("Bentornato, " + user.name, SwingConstants.LEFT);
+        String welcomeMessage = "<html><b>Bentornato, " + user.getName() + "</b></html>";
+
+        JLabel icon = new JLabel(welcomeMessage, SwingConstants.LEFT);
         icon.setHorizontalTextPosition(SwingConstants.RIGHT);
         icon.setIcon(new ImageIcon("images/bookmark_light.png"));
         icon.setForeground(Color.WHITE);
