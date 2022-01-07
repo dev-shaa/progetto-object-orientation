@@ -26,4 +26,9 @@ public class Book extends Publication {
         return this.ISBN;
     }
 
+    @Override
+    public String getFormattedDetails() {
+        return super.getFormattedDetails() + "ISBN:\t" + getISBN() + "\n";
+    }
+
 }

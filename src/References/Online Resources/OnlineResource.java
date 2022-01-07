@@ -49,4 +49,9 @@ public abstract class OnlineResource extends BibliographicReference {
         return URL != null && !URL.isBlank();
     }
 
+    @Override
+    public String getFormattedDetails() {
+        return super.getFormattedDetails() + "URL:\t" + getURL() + "\n";
+    }
+
 }

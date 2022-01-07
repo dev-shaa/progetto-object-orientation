@@ -126,7 +126,10 @@ public abstract class BibliographicReference {
      * @param language
      *            lingua del riferimento
      */
-    public void setLanguage(ReferenceLanguage language) {
+    public void setLanguage(ReferenceLanguage language) throws IllegalArgumentException {
+        if (language == null)
+            throw new IllegalArgumentException("La lingua del riferimento non può essere nulla.");
+
         this.language = language;
     }
 
@@ -172,12 +175,34 @@ public abstract class BibliographicReference {
         return name != null && !name.isBlank();
     }
 
+    // TODO: commenta
     /**
+     * Restituisce una stringa di testo formattato contenente tutte le informazioni relative a questo riferimento.
      * 
      * @return
      */
     public String getFormattedDetails() {
-        return "Nome:\t" + getTitle() + "\nAutore:\t" + this.author + "\nData:\t" + getPubblicationDate().toString();
+        return "Titolo:\t" + getTitle() +
+                "\nAutori:\t" + getAuthorsAsSingleString() +
+                "\nData di pubblicazione:\t" + getPubblicationDate().toString() +
+                "\nDOI:\t" + getDOI() +
+                "\nDescrizione:\t" + getDescription() +
+                "\nLingua:\t" + getLanguage().toString() +
+                "\nParole chiave:\t" + getTagsAsSingleString() + "\n";
+    }
+
+    private String getAuthorsAsSingleString() {
+        return "";
+    }
+
+    private String getTagsAsSingleString() {
+        String string = "";
+
+        for (String tag : getTags()) {
+            string += tag + ", ";
+        }
+
+        return string;
     }
 
 }
