@@ -39,7 +39,7 @@ public class DatePickerPanel extends JPanel {
         // ovviamente vogliamo che startDate < endDate, quindi dobbiamo aggiornare il limite inferiore del selettore endDate
         startDate.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
-                setDateToLowerLimit();
+                setDateToLowerLimit(getStartDate());
             }
         });
 
@@ -82,9 +82,7 @@ public class DatePickerPanel extends JPanel {
         }
     }
 
-    private void setDateToLowerLimit() {
-        Date newLowerLimit = getStartDate();
-
+    private void setDateToLowerLimit(Date newLowerLimit) {
         endDateModel.setStart(newLowerLimit);
 
         if (getEndDate().before(newLowerLimit))

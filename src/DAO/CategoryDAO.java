@@ -19,11 +19,7 @@ public abstract class CategoryDAO {
      *             se l'utente di input è {@code null}
      */
     public CategoryDAO(User user) throws IllegalArgumentException {
-        try {
-            setUser(user);
-        } catch (IllegalArgumentException e) {
-            throw e;
-        }
+        setUser(user);
     }
 
     /**
@@ -59,9 +55,7 @@ public abstract class CategoryDAO {
      *             se l'aggiunta della categoria al database non va a buon fine
      * @since 0.1
      */
-    public void addCategory(Category category) throws CategoryDatabaseException {
-
-    };
+    public abstract void addCategory(Category category) throws CategoryDatabaseException;
 
     /**
      * Modifica una categoria nel database.
@@ -74,9 +68,7 @@ public abstract class CategoryDAO {
      *             se la modifica della categoria nel database non va a buon fine
      * @since 0.1
      */
-    public void updateCategory(Category category, String newName) throws CategoryDatabaseException {
-
-    };
+    public abstract void changeCategory(Category category, String newName) throws CategoryDatabaseException;
 
     /**
      * Elimina una categoria nel database.
@@ -87,9 +79,7 @@ public abstract class CategoryDAO {
      *             se la rimozione della categoria dal database non va a buon fine
      * @since 0.1
      */
-    public void deleteCategory(Category category) throws CategoryDatabaseException {
-
-    };
+    public abstract void removeCategory(Category category) throws CategoryDatabaseException;
 
     /**
      * Ottiene tutte le categorie appartenenti a un utente nel database.
@@ -99,7 +89,5 @@ public abstract class CategoryDAO {
      *             se il recupero delle categorie dal database non va a buon fine
      * @since 0.2
      */
-    public List<Category> getUserCategories() throws CategoryDatabaseException {
-        return null;
-    };
+    public abstract List<Category> getUserCategories() throws CategoryDatabaseException;
 }

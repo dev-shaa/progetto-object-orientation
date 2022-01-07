@@ -33,24 +33,18 @@ public class Homepage extends JFrame {
         contentPane.setLayout(new BorderLayout(5, 5));
         setContentPane(contentPane);
 
-        try {
-            ReferencePanel referencePanel = new ReferencePanel(controller);
-            CategoriesPanel categoryPanel = new CategoriesPanel(referencePanel, categoryDAO);
-            ReferenceSearchPanel referenceSearchPanel = new ReferenceSearchPanel(this);
+        ReferencePanel referencePanel = new ReferencePanel(controller);
+        CategoriesPanel categoryPanel = new CategoriesPanel(referencePanel, categoryDAO);
+        ReferenceSearchPanel referenceSearchPanel = new ReferenceSearchPanel(this);
 
-            JSplitPane subSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, categoryPanel, referencePanel);
-            subSplitPane.setResizeWeight(0.15);
+        JSplitPane subSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, categoryPanel, referencePanel);
+        subSplitPane.setResizeWeight(0.15);
 
-            JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, subSplitPane, referenceSearchPanel);
-            splitPane.setResizeWeight(0.8);
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, subSplitPane, referenceSearchPanel);
+        splitPane.setResizeWeight(0.8);
 
-            contentPane.add(new UserInfoPanel(controller, user), BorderLayout.NORTH);
-            contentPane.add(splitPane, BorderLayout.CENTER);
-        } catch (IllegalArgumentException e) {
-            throw e;
-        } catch (CategoryDatabaseException e) {
-            throw e;
-        }
+        contentPane.add(new UserInfoPanel(controller, user), BorderLayout.NORTH);
+        contentPane.add(splitPane, BorderLayout.CENTER);
     }
 
     private void setCloseOperation() {

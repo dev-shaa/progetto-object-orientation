@@ -19,8 +19,10 @@ public class Controller {
             openHomePage();
         } catch (IllegalArgumentException e) {
             // TODO: handle exception
+            e.printStackTrace();
         } catch (CategoryDatabaseException e) {
             // TODO: handle exception
+            e.printStackTrace();
         }
     }
 

@@ -10,6 +10,19 @@ public class Category {
     private Category parent;
 
     /**
+     * Crea {@code Category} con un nome e nessun genitore.
+     * 
+     * @param name
+     *            il nome della categoria
+     * @throws IllegalArgumentException
+     *             se {@code name == null} o {@code name.isBlank()}
+     */
+    public Category(String name) throws IllegalArgumentException {
+        setName(name);
+        setParent(null);
+    }
+
+    /**
      * Crea {@code Category} con un nome e una categoria genitore (che può essere {@code null}).
      * 
      * @param name
@@ -20,12 +33,8 @@ public class Category {
      *             se {@code name == null} o {@code name.isBlank()}
      */
     public Category(String name, Category parent) throws IllegalArgumentException {
-        try {
-            setName(name);
-            setParent(parent);
-        } catch (IllegalArgumentException e) {
-            throw e;
-        }
+        setName(name);
+        setParent(parent);
     }
 
     /**

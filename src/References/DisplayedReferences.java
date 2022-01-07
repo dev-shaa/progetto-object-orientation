@@ -61,11 +61,7 @@ public class DisplayedReferences {
      *             se l'indice è fuori dagli estremi dell'array dei riferimenti ({@code index < 0 || index >= displayedReferences.size()})
      */
     public BibliographicReference getReference(int modelIndex) throws IndexOutOfBoundsException {
-        try {
-            return displayedReferences.get(modelIndex);
-        } catch (IndexOutOfBoundsException e) {
-            throw e;
-        }
+        return displayedReferences.get(modelIndex);
     }
 
     /**
@@ -84,11 +80,7 @@ public class DisplayedReferences {
      *             se l'indice è fuori dagli estremi dell'array dei riferimenti ({@code index < 0 || index >= displayedReferences.size()})
      */
     public void changeReference(int modelIndex) throws IndexOutOfBoundsException {
-        try {
-            controller.openReferenceCreatorPage(displayedReferences.get(modelIndex));
-        } catch (Exception e) {
-            throw e;
-        }
+        controller.openReferenceCreatorPage(displayedReferences.get(modelIndex));
     }
 
     /**
@@ -100,14 +92,10 @@ public class DisplayedReferences {
      *             se l'indice è fuori dagli estremi del\l'array dei riferimenti ({@code index < 0 || index >= size()})
      */
     public void removeReference(int modelIndex) throws IndexOutOfBoundsException {
-        try {
-            // TODO: rimuovi riferimento dal database
+        // TODO: rimuovi riferimento dal database
 
-            displayedReferences.remove(modelIndex);
-            displayedReferencesTableModel.removeRow(modelIndex);
-        } catch (IndexOutOfBoundsException e) {
-            throw e;
-        }
+        displayedReferences.remove(modelIndex);
+        displayedReferencesTableModel.removeRow(modelIndex);
     }
 
     /**
@@ -150,7 +138,7 @@ public class DisplayedReferences {
     /**
      * Rimuove tutte le righe dalla tabella.
      */
-    private void clearTable() {
+    public void clearTable() {
         displayedReferences = new ArrayList<BibliographicReference>();
 
         while (displayedReferencesTableModel.getRowCount() > 0)

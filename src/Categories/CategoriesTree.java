@@ -32,14 +32,8 @@ public class CategoriesTree {
 
         this.categoryDAO = categoryDAO;
 
-        try {
-            CategoryMutableTreeNode tree = getTreeFromList(categoryDAO.getUserCategories());
-            categoriesTreeModel = new DefaultTreeModel(tree);
-        } catch (IllegalArgumentException e) {
-            throw e;
-        } catch (CategoryDatabaseException e) {
-            throw e;
-        }
+        CategoryMutableTreeNode tree = getTreeFromList(categoryDAO.getUserCategories());
+        categoriesTreeModel = new DefaultTreeModel(tree);
     }
 
     /**
@@ -66,22 +60,15 @@ public class CategoriesTree {
      * @see Category
      */
     public CategoryMutableTreeNode addCategoryNode(CategoryMutableTreeNode parent, String name) throws IllegalArgumentException, CategoryDatabaseException {
-        try {
-            Category parentCategory = parent == null ? null : parent.getUserObject();
+        Category parentCategory = parent == null ? null : parent.getUserObject();
+        Category newCategory = new Category(name, parentCategory);
 
-            Category newCategory = new Category(name, parentCategory);
+        categoryDAO.addCategory(newCategory);
 
-            categoryDAO.addCategory(newCategory);
+        CategoryMutableTreeNode newCategoryNode = new CategoryMutableTreeNode(newCategory);
+        categoriesTreeModel.insertNodeInto(newCategoryNode, parent, parent.getChildCount());
 
-            CategoryMutableTreeNode newCategoryNode = new CategoryMutableTreeNode(newCategory);
-            categoriesTreeModel.insertNodeInto(newCategoryNode, parent, parent.getChildCount());
-
-            return newCategoryNode;
-        } catch (IllegalArgumentException e) {
-            throw e;
-        } catch (CategoryDatabaseException e) {
-            throw e;
-        }
+        return newCategoryNode;
     }
 
     /**
@@ -98,23 +85,17 @@ public class CategoriesTree {
      * @see CategoryMutableTreeNode
      */
     public void changeCategoryNodeName(CategoryMutableTreeNode node, String newName) throws IllegalArgumentException, CategoryDatabaseException {
-        try {
-            if (!node.canBeChanged())
-                throw new IllegalArgumentException("Il nodo selezionato non può essere modificato.");
+        if (!node.canBeChanged())
+            throw new IllegalArgumentException("Il nodo selezionato non può essere modificato.");
 
-            Category category = node.getUserObject();
+        Category category = node.getUserObject();
 
-            if (!category.isNameValid(newName))
-                throw new IllegalArgumentException("Il nome della categoria non può essere nullo.");
+        if (!category.isNameValid(newName))
+            throw new IllegalArgumentException("Il nome della categoria non può essere nullo.");
 
-            categoryDAO.updateCategory(category, newName);
-            category.setName(newName);
-            categoriesTreeModel.reload(node);
-        } catch (IllegalArgumentException e) {
-            throw e;
-        } catch (CategoryDatabaseException e) {
-            throw e;
-        }
+        categoryDAO.changeCategory(category, newName);
+        category.setName(newName);
+        categoriesTreeModel.reload(node);
     }
 
     /**
@@ -129,17 +110,13 @@ public class CategoriesTree {
      * @see CategoryMutableTreeNode
      */
     public void removeCategoryNode(CategoryMutableTreeNode node) throws IllegalArgumentException, CategoryDatabaseException {
-        try {
-            if (!node.canBeChanged())
-                throw new IllegalArgumentException("Il nodo selezionato non può essere modificato.");
+        if (!node.canBeChanged())
+            throw new IllegalArgumentException("Il nodo selezionato non può essere modificato.");
 
-            categoryDAO.deleteCategory(node.getUserObject());
-            CategoryMutableTreeNode parent = node.getParent();
-            node.removeFromParent();
-            categoriesTreeModel.reload(parent);
-        } catch (CategoryDatabaseException e) {
-            throw e;
-        }
+        categoryDAO.removeCategory(node.getUserObject());
+        CategoryMutableTreeNode parent = node.getParent();
+        node.removeFromParent();
+        categoriesTreeModel.reload(parent);
     }
 
     /**

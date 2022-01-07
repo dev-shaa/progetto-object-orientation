@@ -36,19 +36,13 @@ public class CategoriesPanel extends JPanel {
      */
     public CategoriesPanel(ReferencePanel referencePanel, CategoryDAO categoryDAO) throws IllegalArgumentException, CategoryDatabaseException {
         this.referencePanel = referencePanel;
+        this.categoriesTree = new CategoriesTree(categoryDAO);
 
-        try {
-            this.categoriesTree = new CategoriesTree(categoryDAO);
-            setLayout(new BorderLayout(5, 5));
-            setBorder(new EmptyBorder(5, 5, 5, 5));
+        setLayout(new BorderLayout(5, 5));
+        setBorder(new EmptyBorder(5, 5, 5, 5));
 
-            add(getButtonsPanel(), BorderLayout.NORTH);
-            add(getCategoriesTreePanel(), BorderLayout.CENTER);
-        } catch (IllegalArgumentException e) {
-            throw e;
-        } catch (CategoryDatabaseException e) {
-            throw e;
-        }
+        add(getButtonsPanel(), BorderLayout.NORTH);
+        add(getCategoriesTreePanel(), BorderLayout.CENTER);
     }
 
     private JPanel getButtonsPanel() {
