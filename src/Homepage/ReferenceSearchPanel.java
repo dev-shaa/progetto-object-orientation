@@ -54,11 +54,12 @@ public class ReferenceSearchPanel extends JPanel {
         searchPanel.add(authorSearchField);
 
         // Categorie
+        // TODO:
+        // http://www.java2s.com/Code/Java/Swing-JFC/CheckBoxNodeTreeSample.htm
+
         categoriesSearchField = new TextSearchPanel("Categorie:", "Categorie in cui ricercare, separate da virgole (esempio: Informatica, Basi di Dati)");
         categoriesSearchField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
         categoriesSearchField.setAlignmentX(JTextField.LEFT_ALIGNMENT);
-
-        // TODO: suggerimenti
 
         searchPanel.add(categoriesSearchField);
 
