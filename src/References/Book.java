@@ -2,8 +2,8 @@ public class Book extends Publication {
 
     private String ISBN;
 
-    public Book(String name) throws IllegalArgumentException {
-        super(name);
+    public Book(String title) throws IllegalArgumentException {
+        super(title);
     }
 
     /**

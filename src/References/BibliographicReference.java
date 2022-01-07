@@ -5,7 +5,7 @@ import java.util.Date;
  * 
  */
 public abstract class BibliographicReference {
-    private String name;
+    private String title;
     private String author; // FIXME: crea classe apposita
     private Date pubblicationDate;
     private String DOI;
@@ -16,29 +16,29 @@ public abstract class BibliographicReference {
     /**
      * Crea un riferimento bibliografico con il titolo specificato.
      * 
-     * @param name
+     * @param title
      *            titolo del riferimento
      * @throws IllegalArgumentException
      *             se il titolo non è una stringa valida
      */
-    public BibliographicReference(String name) throws IllegalArgumentException {
-        setName(name);
+    public BibliographicReference(String title) throws IllegalArgumentException {
+        setTitle(title);
         setLanguage(ReferenceLanguage.NOTSPECIFIED);
     }
 
     /**
      * Imposta il titolo del riferimento.
      * 
-     * @param name
+     * @param title
      *            titolo del riferimento
      * @throws IllegalArgumentException
      *             se il titolo non è una stringa valida
      */
-    public void setName(String name) throws IllegalArgumentException {
-        if (!isNameValid(name))
+    public void setTitle(String title) throws IllegalArgumentException {
+        if (!isNameValid(title))
             throw new IllegalArgumentException("Il nome del riferimento non può essere nullo.");
 
-        this.name = name;
+        this.title = title;
     }
 
     /**
@@ -47,8 +47,8 @@ public abstract class BibliographicReference {
      * @return
      *         titolo del riferimento
      */
-    public String getName() {
-        return this.name;
+    public String getTitle() {
+        return this.title;
     }
 
     public void setAuthors() {
@@ -177,7 +177,7 @@ public abstract class BibliographicReference {
      * @return
      */
     public String getFormattedDetails() {
-        return "Nome:\t" + getName() + "\nAutore:\t" + this.author + "\nData:\t" + getPubblicationDate().toString();
+        return "Nome:\t" + getTitle() + "\nAutore:\t" + this.author + "\nData:\t" + getPubblicationDate().toString();
     }
 
 }
