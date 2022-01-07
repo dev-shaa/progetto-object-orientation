@@ -1,8 +1,12 @@
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.table.DefaultTableModel;
 
 /**
- * Classe che si occupa di gestire i riferimenti mostrati.
+ * Classe che si occupa di gestire la tabella dei riferimenti mostrati.
+ * 
+ * @version 0.9
+ * @author Salvatore Di Gennaro
  */
 public class DisplayedReferences {
 
@@ -15,10 +19,16 @@ public class DisplayedReferences {
      * Crea {@code DisplayedReferences}.
      * 
      * @param controller
+     *            controller dell'applicazione
+     * @since 0.9
+     * @throws IllegalArgumentException
+     *             se {@code controller == null}
      */
-    public DisplayedReferences(Controller controller) {
-        this.controller = controller;
+    public DisplayedReferences(Controller controller) throws IllegalArgumentException {
+        if (controller == null)
+            throw new IllegalArgumentException("controller non può essere null.");
 
+        this.controller = controller;
         this.displayedReferences = new ArrayList<BibliographicReference>();
 
         String[] referenceListTableColumns = { "Nome", "Autori", "Data pubblicazione", "Citazioni ricevute" };
@@ -43,16 +53,16 @@ public class DisplayedReferences {
     /**
      * Restituisce il riferimento che si trova in posizione {@code index}.
      * 
-     * @param index
-     *            indice del riferimento voluto
+     * @param modelIndex
+     *            indice nel table model del riferimento voluto
      * @return
      *         riferimento di indice {@code index}
      * @throws IndexOutOfBoundsException
-     *             se l'indice è fuori dagli estremi dell'array dei riferimenti ({@code index < 0 || index >= size()})
+     *             se l'indice è fuori dagli estremi dell'array dei riferimenti ({@code index < 0 || index >= displayedReferences.size()})
      */
-    public BibliographicReference getReference(int index) throws IndexOutOfBoundsException {
+    public BibliographicReference getReference(int modelIndex) throws IndexOutOfBoundsException {
         try {
-            return displayedReferences.get(index);
+            return displayedReferences.get(modelIndex);
         } catch (IndexOutOfBoundsException e) {
             throw e;
         }
@@ -68,34 +78,33 @@ public class DisplayedReferences {
     /**
      * Apre la pagina di modifica di un riferimento.
      * 
-     * @param index
-     *            indice del riferimento da modificare
+     * @param modelIndex
+     *            indice nel table model del riferimento da modificare
      * @throws IndexOutOfBoundsException
-     *             se l'indice è fuori dagli estremi dell'array dei riferimenti ({@code index < 0 || index >= size()})
+     *             se l'indice è fuori dagli estremi dell'array dei riferimenti ({@code index < 0 || index >= displayedReferences.size()})
      */
-    public void changeReference(int index) throws IndexOutOfBoundsException {
+    public void changeReference(int modelIndex) throws IndexOutOfBoundsException {
         try {
-            // TODO: apri pagina di creazione del riferimento (passando i valori attuali del riferimento)
-            // controller.openReferenceCreatorPage(riferimento);
+            controller.openReferenceCreatorPage(displayedReferences.get(modelIndex));
         } catch (Exception e) {
-            // TODO: handle exception
+            throw e;
         }
     }
 
     /**
      * Rimove un riferimento dal database e dalla tabella.
      * 
-     * @param index
-     *            indice del riferimento da modificare
+     * @param modelIndex
+     *            indice nel table model del riferimento da modificare
      * @throws IndexOutOfBoundsException
-     *             se l'indice è fuori dagli estremi dell'array dei riferimenti ({@code index < 0 || index >= size()})
+     *             se l'indice è fuori dagli estremi del\l'array dei riferimenti ({@code index < 0 || index >= size()})
      */
-    public void removeReference(int index) throws IndexOutOfBoundsException {
+    public void removeReference(int modelIndex) throws IndexOutOfBoundsException {
         try {
             // TODO: rimuovi riferimento dal database
 
-            displayedReferences.remove(index);
-            displayedReferencesTableModel.removeRow(index);
+            displayedReferences.remove(modelIndex);
+            displayedReferencesTableModel.removeRow(modelIndex);
         } catch (IndexOutOfBoundsException e) {
             throw e;
         }
@@ -107,9 +116,7 @@ public class DisplayedReferences {
      * @param references
      *            i riferimenti da mostrare
      */
-    public void setReferences(ArrayList<BibliographicReference> references) {
-        displayedReferences = new ArrayList<BibliographicReference>();
-
+    public void setReferences(List<BibliographicReference> references) {
         clearTable();
 
         for (BibliographicReference riferimento : references) {
@@ -140,8 +147,14 @@ public class DisplayedReferences {
         displayedReferencesTableModel.addRow(new Object[] { reference.name, reference.author, reference.pubblicationDate });
     }
 
+    /**
+     * Rimuove tutte le righe dalla tabella.
+     */
     private void clearTable() {
+        displayedReferences = new ArrayList<BibliographicReference>();
+
         while (displayedReferencesTableModel.getRowCount() > 0)
             displayedReferencesTableModel.removeRow(0);
     }
+
 }

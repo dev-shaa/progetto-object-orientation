@@ -12,9 +12,6 @@ import java.awt.FlowLayout;
  * @see Homepage
  */
 public class ReferencePanel extends JPanel {
-
-    private Controller controller;
-
     private DisplayedReferences displayedReferences;
     private JTable referencesTable;
     private JTextArea referenceDetails;
@@ -30,7 +27,6 @@ public class ReferencePanel extends JPanel {
      * @since 0.1
      */
     public ReferencePanel(Controller controller) {
-        this.controller = controller;
         this.displayedReferences = new DisplayedReferences(controller);
 
         setLayout(new BorderLayout(5, 5));
@@ -57,7 +53,7 @@ public class ReferencePanel extends JPanel {
         createReferenceButton.setToolTipText("Nuovo riferimento");
         createReferenceButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                createReference();
+                addReference();
             }
         });
 
@@ -66,7 +62,7 @@ public class ReferencePanel extends JPanel {
         editReferenceButton.setEnabled(false);
         editReferenceButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                editSelectedReference();
+                changeSelectedReference();
             }
         });
 
@@ -96,8 +92,10 @@ public class ReferencePanel extends JPanel {
                 if (!event.getValueIsAdjusting()) {
                     selectedReferenceIndex = referencesTable.getSelectedRow();
 
-                    editReferenceButton.setEnabled(!isSelectedRowNull());
-                    deleteReferenceButton.setEnabled(!isSelectedRowNull());
+                    boolean shouldButtonsBeEnabled = !isSelectedRowNull();
+
+                    editReferenceButton.setEnabled(shouldButtonsBeEnabled);
+                    deleteReferenceButton.setEnabled(shouldButtonsBeEnabled);
 
                     displaySelectedReferenceDetails();
                 }
@@ -118,12 +116,12 @@ public class ReferencePanel extends JPanel {
         return referencePreviewPanel;
     }
 
-    private void createReference() {
+    private void addReference() {
         displayedReferences.addReference();
     }
 
-    private void editSelectedReference() {
-        displayedReferences.changeReference(selectedReferenceIndex);
+    private void changeSelectedReference() {
+        displayedReferences.changeReference(getSelectedReferenceModelIndex());
     }
 
     private void removeSelectedReference() {
@@ -131,7 +129,7 @@ public class ReferencePanel extends JPanel {
             int result = JOptionPane.showConfirmDialog(null, "Vuoi eliminare questo riferimento?", "Elimina riferimento", JOptionPane.YES_NO_OPTION);
 
             if (result == JOptionPane.YES_OPTION) {
-                displayedReferences.removeReference(selectedReferenceIndex);
+                displayedReferences.removeReference(getSelectedReferenceModelIndex());
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Impossibile eliminare il riferimento");
@@ -146,6 +144,10 @@ public class ReferencePanel extends JPanel {
         String textToDisplay = selectedReferenceIndex == -1 ? "" : displayedReferences.getReference(selectedReferenceIndex).getFormattedDetails();
 
         referenceDetails.setText(textToDisplay);
+    }
+
+    private int getSelectedReferenceModelIndex() {
+        return referencesTable.convertRowIndexToModel(selectedReferenceIndex);
     }
 
 }
