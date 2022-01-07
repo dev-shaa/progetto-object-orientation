@@ -10,20 +10,25 @@ public class Controller {
     public Controller() {
         setupLookAndFeel();
 
-        User user = new User("Nuovo Utente");
+        try {
 
-        CategoryDAO categoryDAO = new CategoryDAOPostgreSQL(user);
+            User user = new User("Nuovo Utente");
 
-        homepage = new Homepage(this, user, categoryDAO);
-
-        openHomePage();
+            CategoryDAO categoryDAO = new CategoryDAOPostgreSQL(user);
+            homepage = new Homepage(this, user, categoryDAO);
+            openHomePage();
+        } catch (IllegalArgumentException e) {
+            // TODO: handle exception
+        } catch (CategoryDatabaseException e) {
+            // TODO: handle exception
+        }
     }
 
     private void setupLookAndFeel() {
         try {
             UIManager.setLookAndFeel(new FlatLightLaf());
-        } catch (Exception ex) {
-            System.err.println("Impossibile inizializzare FlatLightLaf");
+        } catch (UnsupportedLookAndFeelException ex) {
+            ex.printStackTrace();
         }
     }
 

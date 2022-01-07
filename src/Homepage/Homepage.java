@@ -22,7 +22,7 @@ public class Homepage extends JFrame {
      *            l'utente che ha eseguito l'accesso
      * @since 0.1
      */
-    public Homepage(Controller controller, User user, CategoryDAO categoryDAO) {
+    public Homepage(Controller controller, User user, CategoryDAO categoryDAO) throws IllegalArgumentException, CategoryDatabaseException {
 
         setTitle("Pagina principale");
         setMinimumSize(new Dimension(400, 400));
@@ -46,15 +46,10 @@ public class Homepage extends JFrame {
 
             contentPane.add(new UserInfoPanel(controller, user), BorderLayout.NORTH);
             contentPane.add(splitPane, BorderLayout.CENTER);
-        } catch (Exception e) {
-            // TODO: pagina di ricarica
-
-            JLabel errorLabel = new JLabel(e.getMessage());
-            JButton reloadButton = new JButton("Ricarica");
-            reloadButton.setMaximumSize(new Dimension(50, 50));
-
-            contentPane.add(errorLabel, BorderLayout.CENTER);
-            contentPane.add(reloadButton, BorderLayout.CENTER);
+        } catch (IllegalArgumentException e) {
+            throw e;
+        } catch (CategoryDatabaseException e) {
+            throw e;
         }
     }
 

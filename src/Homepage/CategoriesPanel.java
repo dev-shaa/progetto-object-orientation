@@ -34,7 +34,7 @@ public class CategoriesPanel extends JPanel {
      * @param referencePanel
      * @since 0.3
      */
-    public CategoriesPanel(ReferencePanel referencePanel, CategoryDAO categoryDAO) throws Exception {
+    public CategoriesPanel(ReferencePanel referencePanel, CategoryDAO categoryDAO) throws IllegalArgumentException, CategoryDatabaseException {
         this.referencePanel = referencePanel;
 
         try {
@@ -44,7 +44,9 @@ public class CategoriesPanel extends JPanel {
 
             add(getButtonsPanel(), BorderLayout.NORTH);
             add(getCategoriesTreePanel(), BorderLayout.CENTER);
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
+            throw e;
+        } catch (CategoryDatabaseException e) {
             throw e;
         }
     }
