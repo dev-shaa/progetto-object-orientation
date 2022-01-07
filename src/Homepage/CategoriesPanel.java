@@ -106,7 +106,7 @@ public class CategoriesPanel extends JPanel {
                 removeCategoryButton.setEnabled(nodeCanBeChanged);
 
                 if (lastSelectedNode != null)
-                    referencePanel.getDisplayedReferences().setReferences(lastSelectedNode.getCategory());
+                    referencePanel.getDisplayedReferences().setReferences(lastSelectedNode.getUserObject());
             }
         });
 
@@ -137,7 +137,7 @@ public class CategoriesPanel extends JPanel {
 
     private void tryChangeCategory() {
         try {
-            String name = getCategoryNameFromUser(lastSelectedNode.getCategory().getName());
+            String name = getCategoryNameFromUser(lastSelectedNode.getUserObject().getName());
 
             if (name != null) {
                 categoriesTree.changeCategoryNodeName(lastSelectedNode, name);

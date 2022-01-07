@@ -48,8 +48,9 @@ public class CategoryMutableTreeNode extends DefaultMutableTreeNode {
      * @return
      *         la categoria di questo nodo (può essere {@code null})
      */
-    public Category getCategory() {
-        return (Category) userObject;
+    @Override
+    public Category getUserObject() {
+        return (Category) super.getUserObject();
     }
 
     /**
@@ -58,6 +59,7 @@ public class CategoryMutableTreeNode extends DefaultMutableTreeNode {
      * @return
      *         il nodo genitore
      */
+    @Override
     public CategoryMutableTreeNode getParent() {
         return (CategoryMutableTreeNode) super.getParent();
     }
@@ -81,7 +83,7 @@ public class CategoryMutableTreeNode extends DefaultMutableTreeNode {
      *         {@code true} se il nodo può essere modificato
      */
     public boolean canBeChanged() {
-        return !isRoot() && getCategory() != null;
+        return !isRoot() && getUserObject() != null;
     }
 
 }

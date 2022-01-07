@@ -67,7 +67,7 @@ public class CategoriesTree {
      */
     public CategoryMutableTreeNode addCategoryNode(CategoryMutableTreeNode parent, String name) throws IllegalArgumentException, CategoryDatabaseException {
         try {
-            Category parentCategory = parent == null ? null : parent.getCategory();
+            Category parentCategory = parent == null ? null : parent.getUserObject();
 
             Category newCategory = new Category(name, parentCategory);
 
@@ -102,7 +102,7 @@ public class CategoriesTree {
             if (!node.canBeChanged())
                 throw new IllegalArgumentException("Il nodo selezionato non può essere modificato.");
 
-            Category category = node.getCategory();
+            Category category = node.getUserObject();
 
             if (!category.isNameValid(newName))
                 throw new IllegalArgumentException("Il nome della categoria non può essere nullo.");
@@ -133,7 +133,7 @@ public class CategoriesTree {
             if (!node.canBeChanged())
                 throw new IllegalArgumentException("Il nodo selezionato non può essere modificato.");
 
-            categoryDAO.deleteCategory(node.getCategory());
+            categoryDAO.deleteCategory(node.getUserObject());
             CategoryMutableTreeNode parent = node.getParent();
             node.removeFromParent();
             categoriesTreeModel.reload(parent);
@@ -161,6 +161,7 @@ public class CategoriesTree {
         HashMap<Category, CategoryMutableTreeNode> categoriesNodeMap = new HashMap<Category, CategoryMutableTreeNode>();
 
         CategoryMutableTreeNode root = new CategoryMutableTreeNode();
+
         categoriesNodeMap.put(null, root);
 
         for (Category current : categories) {
