@@ -132,7 +132,7 @@ public class DisplayedReferences {
      */
     public void addReferenceToTable(BibliographicReference reference) {
         displayedReferences.add(reference);
-        displayedReferencesTableModel.addRow(new Object[] { reference.name, reference.author, reference.pubblicationDate });
+        displayedReferencesTableModel.addRow(new Object[] { reference.getName(), reference.getAuthors(), reference.getPubblicationDate().toString() });
     }
 
     /**
