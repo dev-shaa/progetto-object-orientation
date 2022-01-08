@@ -94,8 +94,10 @@ public class ReferenceListPanel extends JScrollPane {
     /**
      * Rimuove tutte le righe dalla tabella.
      */
-    public void clearTable() throws IllegalArgumentException {
-        displayedReferences.clear();
+    public void clearTable() {
+        if (displayedReferences != null)
+            displayedReferences.clear();
+
         referencesTableModel.setRowCount(0);
     }
 
