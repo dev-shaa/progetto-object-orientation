@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /**
  * 
  */
@@ -49,9 +51,19 @@ public abstract class OnlineResource extends BibliographicReference {
         return URL != null && !URL.isBlank();
     }
 
+    // @Override
+    // public String getFormattedDetails() {
+    // return super.getFormattedDetails() +
+    // "URL:\t" + getURL() + "\n";
+    // }
+
     @Override
-    public String getFormattedDetails() {
-        return super.getFormattedDetails() + "URL:\t" + getURL() + "\n";
+    public ArrayList<BibliographicReferenceField> getInfoAsStrings() {
+        ArrayList<BibliographicReferenceField> fields = super.getInfoAsStrings();
+
+        fields.add(new BibliographicReferenceField("URL", getURL()));
+
+        return fields;
     }
 
 }

@@ -1,9 +1,11 @@
+import java.util.ArrayList;
+
 /**
  * 
  */
 public abstract class Publication extends BibliographicReference {
 
-    private int pageCount;
+    private Integer pageCount;
     private String URL;
     private String publisher;
 
@@ -26,8 +28,8 @@ public abstract class Publication extends BibliographicReference {
      * @throws IllegalArgumentException
      *             se {@code pageCount <= 0}
      */
-    public void setPageCount(int pageCount) throws IllegalArgumentException {
-        if (pageCount <= 0)
+    public void setPageCount(Integer pageCount) throws IllegalArgumentException {
+        if (pageCount != null && pageCount <= 0)
             throw new IllegalArgumentException("Il numero di pagine del libro non può essere inferiore a 1");
 
         this.pageCount = pageCount;
@@ -37,9 +39,9 @@ public abstract class Publication extends BibliographicReference {
      * Restituisce il numero di pagine della pubblicazione.
      * 
      * @return
-     *         numero di pagine della pubblicazione
+     *         numero di pagine della pubblicazione ({@code null} se non è indicato)
      */
-    public int getPageCount() {
+    public Integer getPageCount() {
         return this.pageCount;
     }
 
@@ -57,7 +59,7 @@ public abstract class Publication extends BibliographicReference {
      * Restituisce l'URL del riferimento.
      * 
      * @return
-     *         URL del riferimento
+     *         URL del riferimento ({@code null} se non è indicato)
      */
     public String getURL() {
         return this.URL;
@@ -77,15 +79,29 @@ public abstract class Publication extends BibliographicReference {
      * Restituisce l'editore della pubblicazione.
      * 
      * @return
-     *         editore della pubblicazione
+     *         editore della pubblicazione ({@code null} se non è indicato)
      */
     public String getPublisher() {
         return this.publisher;
     }
 
+    // @Override
+    // public String getFormattedDetails() {
+    // return super.getFormattedDetails() +
+    // "Numero di pagine:\t" + getPageCount() +
+    // "\nURL:\t" + getURL() +
+    // "\nEditore:\t" + getPublisher() + "\n";
+    // }
+
     @Override
-    public String getFormattedDetails() {
-        return super.getFormattedDetails() + "Numero di pagine:\t" + getPageCount() + "\nURL:\t" + getURL() + "\nEditore:\t" + getPublisher() + "\n";
+    public ArrayList<BibliographicReferenceField> getInfoAsStrings() {
+        ArrayList<BibliographicReferenceField> fields = super.getInfoAsStrings();
+
+        fields.add(new BibliographicReferenceField("Numero di pagine", getPageCount()));
+        fields.add(new BibliographicReferenceField("URL", getURL()));
+        fields.add(new BibliographicReferenceField("Editore", getPublisher()));
+
+        return fields;
     }
 
 }

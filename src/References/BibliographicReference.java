@@ -23,7 +23,8 @@ public abstract class BibliographicReference {
      */
     public BibliographicReference(String title) throws IllegalArgumentException {
         setTitle(title);
-        setLanguage(ReferenceLanguage.NOTSPECIFIED);
+        setLanguage(ReferenceLanguage.NonSpecificato);
+        setTags(new ArrayList<String>(1));
     }
 
     /**
@@ -51,10 +52,17 @@ public abstract class BibliographicReference {
         return this.title;
     }
 
+    /**
+     * 
+     */
     public void setAuthors() {
         // TODO: implementa
     }
 
+    /**
+     * 
+     * @return
+     */
     public String getAuthors() {
         // TODO: implementa
         return null;
@@ -74,7 +82,7 @@ public abstract class BibliographicReference {
      * Restituisce la data di pubblicazione del riferimento.
      * 
      * @return
-     *         data di pubblicazione del riferimento ({@code null} se non è presente)
+     *         data di pubblicazione del riferimento ({@code null} se non è indicata)
      */
     public Date getPubblicationDate() {
         return this.pubblicationDate;
@@ -94,7 +102,7 @@ public abstract class BibliographicReference {
      * Restituisce il codice identificativo DOI del riferimento.
      * 
      * @return
-     *         codice DOI del riferimento
+     *         codice DOI del riferimento ({@code null} se non è indicato)
      */
     public String getDOI() {
         return this.DOI;
@@ -114,7 +122,7 @@ public abstract class BibliographicReference {
      * Restituisce la descrizione del riferimento.
      * 
      * @return
-     *         descrizione del riferimento ({@code null} se non è presente)
+     *         descrizione del riferimento ({@code null} se non è indicata)
      */
     public String getDescription() {
         return this.description;
@@ -180,18 +188,35 @@ public abstract class BibliographicReference {
      * Restituisce una stringa di testo formattato contenente tutte le informazioni relative a questo riferimento.
      * 
      * @return
+     *         un paragrafo di testo contenente le informazioni del riferimento
      */
-    public String getFormattedDetails() {
-        return "Titolo:\t" + getTitle() +
-                "\nAutori:\t" + getAuthorsAsSingleString() +
-                "\nData di pubblicazione:\t" + getPubblicationDate().toString() +
-                "\nDOI:\t" + getDOI() +
-                "\nDescrizione:\t" + getDescription() +
-                "\nLingua:\t" + getLanguage().toString() +
-                "\nParole chiave:\t" + getTagsAsSingleString() + "\n";
+    // public String getFormattedDetails() {
+    // return "Titolo:\t" + getTitle() +
+    // "\nAutori:\t" + getAuthorsAsSingleString() +
+    // // "\nData di pubblicazione:\t" + getPubblicationDate().toString() +
+    // "\nDOI:\t" + getDOI() +
+    // "\nDescrizione:\t" + getDescription() +
+    // "\nLingua:\t" + getLanguage().toString() +
+    // "\nParole chiave:\t" + getTagsAsSingleString() + "\n";
+    // }
+
+    // TODO: sistema
+    public ArrayList<BibliographicReferenceField> getInfoAsStrings() {
+        ArrayList<BibliographicReferenceField> fields = new ArrayList<>();
+
+        fields.add(new BibliographicReferenceField("Titolo", getTitle()));
+        fields.add(new BibliographicReferenceField("Autori", getAuthorsAsSingleString()));
+        // fields.add(new BibliographicReferenceField("Data di pubblicazione", getPubblicationDate().toString()));
+        fields.add(new BibliographicReferenceField("DOI", getDOI()));
+        fields.add(new BibliographicReferenceField("Descrizione", getDescription()));
+        fields.add(new BibliographicReferenceField("Lingua", getLanguage()));
+        fields.add(new BibliographicReferenceField("Parole chiave", getTagsAsSingleString()));
+
+        return fields;
     }
 
     private String getAuthorsAsSingleString() {
+        // TODO: implementa
         return "";
     }
 
@@ -208,5 +233,5 @@ public abstract class BibliographicReference {
 }
 
 enum ReferenceLanguage {
-    NOTSPECIFIED, ENGLISH, ITALIAN, FRENCH, GERMAN, SPANISH, RUSSIAN, JAPANESE, CHINESE, ARAB, OTHER
+    NonSpecificato, Italiano, Inglese, FRENCH, GERMAN, SPANISH, RUSSIAN, JAPANESE, CHINESE, ARAB, OTHER
 }

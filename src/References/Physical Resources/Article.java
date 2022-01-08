@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /**
  * 
  */
@@ -6,6 +8,7 @@ public class Article extends Publication {
     private String ISSN;
 
     /**
+     * Crea un riferimento a un articolo di una pubblicazione con un titolo indicato.
      * 
      * @param title
      *            titolo dell'articolo
@@ -30,15 +33,24 @@ public class Article extends Publication {
      * Restituisce il codice identificativo ISSN dell'articolo.
      * 
      * @return
-     *         codice identificativo ISSN
+     *         codice identificativo ISSN ({@code null} se non è indicato)
      */
     public String getISSN() {
         return this.ISSN;
     }
 
-    @Override
-    public String getFormattedDetails() {
-        return super.getFormattedDetails() + "ISSN:\t" + getISSN() + "\n";
-    }
+    // @Override
+    // public String getFormattedDetails() {
+    // return super.getFormattedDetails() +
+    // "ISSN:\t" + getISSN() + "\n";
+    // }
 
+    @Override
+    public ArrayList<BibliographicReferenceField> getInfoAsStrings() {
+        ArrayList<BibliographicReferenceField> fields = super.getInfoAsStrings();
+
+        fields.add(new BibliographicReferenceField("ISSN", getISSN()));
+
+        return fields;
+    }
 }

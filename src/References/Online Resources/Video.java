@@ -1,12 +1,14 @@
+import java.util.ArrayList;
+
 /**
  * 
  */
 public class Video extends OnlineResource {
 
-    private int width;
-    private int height;
-    private int frameRate;
-    private float duration;
+    private Integer width;
+    private Integer height;
+    private Integer frameRate;
+    private Float duration;
 
     /**
      * 
@@ -27,7 +29,7 @@ public class Video extends OnlineResource {
      * @param width
      *            larghezza del video
      */
-    public void setWidth(int width) {
+    public void setWidth(Integer width) {
         this.width = width;
     }
 
@@ -37,7 +39,7 @@ public class Video extends OnlineResource {
      * @return
      *         larghezza del video
      */
-    public int getWidth() {
+    public Integer getWidth() {
         return this.width;
     }
 
@@ -47,7 +49,7 @@ public class Video extends OnlineResource {
      * @param height
      *            altezza del video
      */
-    public void setHeight(int height) {
+    public void setHeight(Integer height) {
         this.height = height;
     }
 
@@ -57,7 +59,7 @@ public class Video extends OnlineResource {
      * @return
      *         altezza del video
      */
-    public int getHeight() {
+    public Integer getHeight() {
         return this.height;
     }
 
@@ -65,7 +67,7 @@ public class Video extends OnlineResource {
      * 
      * @param frameRate
      */
-    public void setFrameRate(int frameRate) {
+    public void setFrameRate(Integer frameRate) {
         this.frameRate = frameRate;
     }
 
@@ -73,29 +75,49 @@ public class Video extends OnlineResource {
      * 
      * @return
      */
-    public int getFrameRate() {
+    public Integer getFrameRate() {
         return this.frameRate;
     }
 
     /**
+     * Imposta la durata del video.
      * 
      * @param duration
+     *            durata del video
      */
-    public void setDuration(float duration) {
+    public void setDuration(Float duration) {
         this.duration = duration;
     }
 
     /**
+     * Restituisce la durata del video.
      * 
      * @return
+     *         durata del video
      */
-    public float getDuration() {
+    public Float getDuration() {
         return this.duration;
     }
 
+    // @Override
+    // public String getFormattedDetails() {
+    // return super.getFormattedDetails() +
+    // "Larghezza:\t" + getWidth() +
+    // "\nAltezza:\t" + getHeight() +
+    // "\nFrequenza:\t" + getFrameRate() +
+    // "\nDurata:\t" + getDuration() + "\n";
+    // }
+
     @Override
-    public String getFormattedDetails() {
-        return super.getFormattedDetails() + "Larghezza:\t" + getWidth() + "\nAltezza:\t" + getHeight() + "\nFrequenza:\t" + getFrameRate() + "\nDurata:\t" + getDuration() + "\n";
+    public ArrayList<BibliographicReferenceField> getInfoAsStrings() {
+        ArrayList<BibliographicReferenceField> fields = super.getInfoAsStrings();
+
+        fields.add(new BibliographicReferenceField("Larghezza", getWidth()));
+        fields.add(new BibliographicReferenceField("Altezza", getHeight()));
+        fields.add(new BibliographicReferenceField("Frequenza fotogrammi", getFrameRate()));
+        fields.add(new BibliographicReferenceField("Durata", getDuration()));
+
+        return fields;
     }
 
 }

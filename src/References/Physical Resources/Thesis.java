@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /**
  * Riferimento bibliografico di una tesi universitaria.
  */
@@ -7,7 +9,7 @@ public class Thesis extends Publication {
     private String faculty;
 
     /**
-     * Crea una nuovo riferimento a una tesi dal titolo indicato.
+     * Crea un riferimento a una tesi universitaria dal titolo indicato.
      * 
      * @param title
      *            titolo della tesi
@@ -32,7 +34,7 @@ public class Thesis extends Publication {
      * Restituisce l'università da cui proviene questa tesi.
      * 
      * @return
-     *         università della tesi
+     *         università della tesi ({@code null} se non è indicata)
      */
     public String getUniversity() {
         return this.university;
@@ -52,15 +54,25 @@ public class Thesis extends Publication {
      * Restituisce la facoltà da cui proviene questa tesi.
      * 
      * @return
-     *         facoltà della tesi
+     *         facoltà della tesi ({@code null} se non è indicata)
      */
     public String getFaculty() {
         return this.faculty;
     }
 
+    // @Override
+    // public String getFormattedDetails() {
+    // return super.getFormattedDetails() + "Università:\t" + getUniversity() + "\nFacoltà:\t" + getFaculty() + "\n";
+    // }
+
     @Override
-    public String getFormattedDetails() {
-        return super.getFormattedDetails() + "Università:\t" + getUniversity() + "\nFacoltà:\t" + getFaculty()  + "\n";
+    public ArrayList<BibliographicReferenceField> getInfoAsStrings() {
+        ArrayList<BibliographicReferenceField> fields = super.getInfoAsStrings();
+
+        fields.add(new BibliographicReferenceField("Università", getUniversity()));
+        fields.add(new BibliographicReferenceField("Facoltà", getFaculty()));
+
+        return fields;
     }
 
 }

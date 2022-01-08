@@ -12,9 +12,11 @@ import java.awt.FlowLayout;
  * @see Homepage
  */
 public class ReferencePanel extends JPanel {
+
     private DisplayedReferences displayedReferences;
     private JTable referencesTable;
-    private JTextArea referenceDetails;
+    // private JTextArea referenceDetails;
+    private ReferenceDisplayPanel referenceDisplayPanel;
     private int selectedReferenceIndex;
 
     private JButton editReferenceButton;
@@ -28,13 +30,14 @@ public class ReferencePanel extends JPanel {
      */
     public ReferencePanel(Controller controller) {
         this.displayedReferences = new DisplayedReferences(controller);
+        this.referenceDisplayPanel = new ReferenceDisplayPanel();
 
         setLayout(new BorderLayout(5, 5));
         setBorder(new EmptyBorder(5, 5, 5, 5));
 
         add(getButtonsPanel(), BorderLayout.NORTH);
 
-        JSplitPane referenceSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, getReferenceListPane(), getReferenceDetailsPane());
+        JSplitPane referenceSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, getReferenceListPane(), referenceDisplayPanel);
         referenceSplitPane.setDividerSize(10);
         referenceSplitPane.setResizeWeight(0.6f);
 
@@ -97,7 +100,11 @@ public class ReferencePanel extends JPanel {
                     editReferenceButton.setEnabled(shouldButtonsBeEnabled);
                     deleteReferenceButton.setEnabled(shouldButtonsBeEnabled);
 
-                    displaySelectedReferenceDetails();
+                    try {
+                        referenceDisplayPanel.showReference(displayedReferences.getReference(getSelectedReferenceModelIndex()));
+                    } catch (Exception e) {
+                        referenceDisplayPanel.showReference(null);
+                    }
                 }
             }
         });
@@ -107,14 +114,14 @@ public class ReferencePanel extends JPanel {
         return referenceListPane;
     }
 
-    private JScrollPane getReferenceDetailsPane() {
-        referenceDetails = new JTextArea();
-        referenceDetails.setEditable(false);
+    // private JScrollPane getReferenceDetailsPane() {
+    // referenceDetails = new JTextArea();
+    // referenceDetails.setEditable(false);
 
-        JScrollPane referencePreviewPanel = new JScrollPane(referenceDetails);
+    // JScrollPane referencePreviewPanel = new JScrollPane(referenceDetails);
 
-        return referencePreviewPanel;
-    }
+    // return referencePreviewPanel;
+    // }
 
     private void addReference() {
         displayedReferences.addReference();
@@ -140,11 +147,14 @@ public class ReferencePanel extends JPanel {
         return selectedReferenceIndex == -1;
     }
 
-    private void displaySelectedReferenceDetails() {
-        String textToDisplay = selectedReferenceIndex == -1 ? "" : displayedReferences.getReference(selectedReferenceIndex).getFormattedDetails();
-
-        referenceDetails.setText(textToDisplay);
-    }
+    // private void displaySelectedReferenceDetails() {
+    // try {
+    // String textToDisplay = displayedReferences.getReference(selectedReferenceIndex).getFormattedDetails();
+    // referenceDetails.setText(textToDisplay);
+    // } catch (IndexOutOfBoundsException e) {
+    // referenceDetails.setText(null);
+    // }
+    // }
 
     private int getSelectedReferenceModelIndex() {
         return referencesTable.convertRowIndexToModel(selectedReferenceIndex);

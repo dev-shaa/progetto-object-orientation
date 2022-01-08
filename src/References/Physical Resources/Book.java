@@ -1,7 +1,17 @@
+import java.util.ArrayList;
+
+/**
+ * 
+ */
 public class Book extends Publication {
 
     private String ISBN;
 
+    /**
+     * 
+     * @param title
+     * @throws IllegalArgumentException
+     */
     public Book(String title) throws IllegalArgumentException {
         super(title);
     }
@@ -26,9 +36,19 @@ public class Book extends Publication {
         return this.ISBN;
     }
 
+    // @Override
+    // public String getFormattedDetails() {
+    // return super.getFormattedDetails() +
+    // "ISBN:\t" + getISBN() + "\n";
+    // }
+
     @Override
-    public String getFormattedDetails() {
-        return super.getFormattedDetails() + "ISBN:\t" + getISBN() + "\n";
+    public ArrayList<BibliographicReferenceField> getInfoAsStrings() {
+        ArrayList<BibliographicReferenceField> fields = super.getInfoAsStrings();
+
+        fields.add(new BibliographicReferenceField("ISBN", getISBN()));
+
+        return fields;
     }
 
 }
