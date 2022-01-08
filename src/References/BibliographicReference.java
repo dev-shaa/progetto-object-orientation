@@ -12,6 +12,7 @@ public abstract class BibliographicReference {
     private String description;
     private ReferenceLanguage language;
     private ArrayList<String> tags;
+    private ArrayList<BibliographicReference> relatedReferences; // FIXME:
 
     /**
      * Crea un riferimento bibliografico con il titolo specificato.
@@ -23,8 +24,10 @@ public abstract class BibliographicReference {
      */
     public BibliographicReference(String title) throws IllegalArgumentException {
         setTitle(title);
-        setLanguage(ReferenceLanguage.NonSpecificato);
-        setTags(new ArrayList<String>(1));
+        setLanguage(ReferenceLanguage.Sconosciuta);
+
+        setTags(new ArrayList<String>(2));
+        setRelatedReferences(new ArrayList<BibliographicReference>(2));
     }
 
     /**
@@ -172,6 +175,24 @@ public abstract class BibliographicReference {
     }
 
     /**
+     * TODO:
+     * 
+     * @param relatedReferences
+     */
+    public void setRelatedReferences(ArrayList<BibliographicReference> relatedReferences) {
+        this.relatedReferences = relatedReferences;
+    }
+
+    /**
+     * TODO:
+     * 
+     * @return
+     */
+    public ArrayList<BibliographicReference> getRelatedReferences() {
+        return this.relatedReferences;
+    }
+
+    /**
      * Controlla se la stringa passata è un nome valido per un riferimento.
      * 
      * @param name
@@ -183,24 +204,11 @@ public abstract class BibliographicReference {
         return name != null && !name.isBlank();
     }
 
-    // TODO: commenta
+    // TODO: sistema
     /**
-     * Restituisce una stringa di testo formattato contenente tutte le informazioni relative a questo riferimento.
      * 
      * @return
-     *         un paragrafo di testo contenente le informazioni del riferimento
      */
-    // public String getFormattedDetails() {
-    // return "Titolo:\t" + getTitle() +
-    // "\nAutori:\t" + getAuthorsAsSingleString() +
-    // // "\nData di pubblicazione:\t" + getPubblicationDate().toString() +
-    // "\nDOI:\t" + getDOI() +
-    // "\nDescrizione:\t" + getDescription() +
-    // "\nLingua:\t" + getLanguage().toString() +
-    // "\nParole chiave:\t" + getTagsAsSingleString() + "\n";
-    // }
-
-    // TODO: sistema
     public ArrayList<BibliographicReferenceField> getInfoAsStrings() {
         ArrayList<BibliographicReferenceField> fields = new ArrayList<>();
 
@@ -233,5 +241,5 @@ public abstract class BibliographicReference {
 }
 
 enum ReferenceLanguage {
-    NonSpecificato, Italiano, Inglese, FRENCH, GERMAN, SPANISH, RUSSIAN, JAPANESE, CHINESE, ARAB, OTHER
+    Sconosciuta, Italiano, Inglese, Francese, Tedesco, Spagnolo, Russo, Giapponese, Cinese, Arabo, Altro
 }

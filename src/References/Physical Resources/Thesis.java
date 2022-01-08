@@ -60,11 +60,6 @@ public class Thesis extends Publication {
         return this.faculty;
     }
 
-    // @Override
-    // public String getFormattedDetails() {
-    // return super.getFormattedDetails() + "Università:\t" + getUniversity() + "\nFacoltà:\t" + getFaculty() + "\n";
-    // }
-
     @Override
     public ArrayList<BibliographicReferenceField> getInfoAsStrings() {
         ArrayList<BibliographicReferenceField> fields = super.getInfoAsStrings();

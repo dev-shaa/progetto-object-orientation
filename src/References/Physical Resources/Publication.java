@@ -85,14 +85,6 @@ public abstract class Publication extends BibliographicReference {
         return this.publisher;
     }
 
-    // @Override
-    // public String getFormattedDetails() {
-    // return super.getFormattedDetails() +
-    // "Numero di pagine:\t" + getPageCount() +
-    // "\nURL:\t" + getURL() +
-    // "\nEditore:\t" + getPublisher() + "\n";
-    // }
-
     @Override
     public ArrayList<BibliographicReferenceField> getInfoAsStrings() {
         ArrayList<BibliographicReferenceField> fields = super.getInfoAsStrings();

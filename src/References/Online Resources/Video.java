@@ -99,15 +99,6 @@ public class Video extends OnlineResource {
         return this.duration;
     }
 
-    // @Override
-    // public String getFormattedDetails() {
-    // return super.getFormattedDetails() +
-    // "Larghezza:\t" + getWidth() +
-    // "\nAltezza:\t" + getHeight() +
-    // "\nFrequenza:\t" + getFrameRate() +
-    // "\nDurata:\t" + getDuration() + "\n";
-    // }
-
     @Override
     public ArrayList<BibliographicReferenceField> getInfoAsStrings() {
         ArrayList<BibliographicReferenceField> fields = super.getInfoAsStrings();

@@ -39,12 +39,6 @@ public class Article extends Publication {
         return this.ISSN;
     }
 
-    // @Override
-    // public String getFormattedDetails() {
-    // return super.getFormattedDetails() +
-    // "ISSN:\t" + getISSN() + "\n";
-    // }
-
     @Override
     public ArrayList<BibliographicReferenceField> getInfoAsStrings() {
         ArrayList<BibliographicReferenceField> fields = super.getInfoAsStrings();

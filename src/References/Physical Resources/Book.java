@@ -36,12 +36,6 @@ public class Book extends Publication {
         return this.ISBN;
     }
 
-    // @Override
-    // public String getFormattedDetails() {
-    // return super.getFormattedDetails() +
-    // "ISBN:\t" + getISBN() + "\n";
-    // }
-
     @Override
     public ArrayList<BibliographicReferenceField> getInfoAsStrings() {
         ArrayList<BibliographicReferenceField> fields = super.getInfoAsStrings();
