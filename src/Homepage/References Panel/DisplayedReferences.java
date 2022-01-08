@@ -122,6 +122,20 @@ public class DisplayedReferences {
      */
     public void setReferences(Category category) {
         // TODO: carica riferimenti dal database
+
+        // TODO: DEBUG:
+        ArrayList<BibliographicReference> references = new ArrayList<>(2);
+        Book book = new Book("Libro");
+        book.setDOI("DOI1234");
+        book.setLanguage(ReferenceLanguage.Inglese);
+        ArrayList<String> tags = new ArrayList<String>(2);
+        tags.add("tag1");
+        tags.add("tag2");
+        book.setTags(tags);
+
+        references.add(book);
+        references.add(new Video("Video", "url"));
+        setReferences(references);
     }
 
     /**
@@ -132,7 +146,7 @@ public class DisplayedReferences {
      */
     public void addReferenceToTable(BibliographicReference reference) {
         displayedReferences.add(reference);
-        displayedReferencesTableModel.addRow(new Object[] { reference.getTitle(), reference.getAuthors(), reference.getPubblicationDate().toString() });
+        displayedReferencesTableModel.addRow(new Object[] { reference.getTitle(), reference.getAuthors(), reference.getPubblicationDate() });
     }
 
     /**
