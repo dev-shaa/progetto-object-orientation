@@ -22,7 +22,7 @@ public class Homepage extends JFrame {
      *            l'utente che ha eseguito l'accesso
      * @since 0.1
      */
-    public Homepage(Controller controller, User user, CategoryDAO categoryDAO) throws IllegalArgumentException, CategoryDatabaseException {
+    public Homepage(Controller controller, User user, CategoryDAO categoryDAO, BibliographicReferenceDAO bibliographicReferenceDAO) throws IllegalArgumentException, CategoryDatabaseException {
 
         setTitle("Pagina principale");
         setMinimumSize(new Dimension(400, 400));
@@ -33,9 +33,9 @@ public class Homepage extends JFrame {
         contentPane.setLayout(new BorderLayout(5, 5));
         setContentPane(contentPane);
 
-        ReferencePanel referencePanel = new ReferencePanel(controller);
-        CategoriesPanel categoryPanel = new CategoriesPanel(referencePanel, categoryDAO);
-        ReferenceSearchPanel referenceSearchPanel = new ReferenceSearchPanel(this);
+        ReferencePanel referencePanel = new ReferencePanel(controller, bibliographicReferenceDAO);
+        CategoriesPanel categoryPanel = new CategoriesPanel(categoryDAO, referencePanel);
+        ReferenceSearchPanel referenceSearchPanel = new ReferenceSearchPanel();
 
         JSplitPane subSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, categoryPanel, referencePanel);
         subSplitPane.setResizeWeight(0.15);

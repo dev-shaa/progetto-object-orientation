@@ -3,22 +3,28 @@ import javax.swing.event.*;
 import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 import java.awt.FlowLayout;
+
+// TODO: commenta
 
 /**
  * Classe che si occupa di mostrare i riferimenti cercati o presenti in una categoria.
  * 
- * @version 0.5
+ * @version 0.6
  * @see Homepage
+ * @see ReferenceListPanel
+ * @see ReferenceInfoPanel
  */
 public class ReferencePanel extends JPanel {
 
-    private DisplayedReferences displayedReferences;
-    private JTable referencesTable;
-    // private JTextArea referenceDetails;
-    private ReferenceDisplayPanel referenceDisplayPanel;
-    private int selectedReferenceIndex;
+    private Controller controller;
+    private BibliographicReferenceDAO bibliographicReferenceDAO;
 
+    private ReferenceListPanel listPanel;
+    private ReferenceInfoPanel infoPanel;
+
+    private JButton createReferenceButton;
     private JButton editReferenceButton;
     private JButton deleteReferenceButton;
 
@@ -26,33 +32,72 @@ public class ReferencePanel extends JPanel {
      * Crea {@code ReferencePanel} con i dati relativi all'utente.
      * 
      * @param user
-     * @since 0.1
+     * @since 0.6
      */
-    public ReferencePanel(Controller controller) {
-        this.displayedReferences = new DisplayedReferences(controller);
-        this.referenceDisplayPanel = new ReferenceDisplayPanel();
+    public ReferencePanel(Controller controller, BibliographicReferenceDAO bibliographicReferenceDAO) throws IllegalArgumentException {
+        setController(controller);
+        setBibiliographicReferenceDAO(bibliographicReferenceDAO);
+
+        this.infoPanel = new ReferenceInfoPanel();
+
+        this.listPanel = new ReferenceListPanel();
+        this.listPanel.addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent event) {
+                if (!event.getValueIsAdjusting()) {
+                    boolean shouldButtonsBeEnabled = !listPanel.isSelectedRowNull();
+
+                    editReferenceButton.setEnabled(shouldButtonsBeEnabled);
+                    deleteReferenceButton.setEnabled(shouldButtonsBeEnabled);
+
+                    infoPanel.showReference(listPanel.getSelectedReference());
+                }
+            }
+        });
 
         setLayout(new BorderLayout(5, 5));
         setBorder(new EmptyBorder(5, 5, 5, 5));
 
-        add(getButtonsPanel(), BorderLayout.NORTH);
-
-        JSplitPane referenceSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, getReferenceListPane(), referenceDisplayPanel);
+        JSplitPane referenceSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, listPanel, infoPanel);
         referenceSplitPane.setDividerSize(10);
         referenceSplitPane.setResizeWeight(0.6f);
 
+        add(getButtonsPanel(), BorderLayout.NORTH);
         add(referenceSplitPane, BorderLayout.CENTER);
     }
 
-    public DisplayedReferences getDisplayedReferences() {
-        return this.displayedReferences;
+    /**
+     * 
+     * @param controller
+     * @throws IllegalArgumentException
+     */
+    public void setController(Controller controller) throws IllegalArgumentException {
+        if (controller == null)
+            throw new IllegalArgumentException("controller non può essere null");
+
+        this.controller = controller;
     }
 
+    /**
+     * 
+     * @param bibliographicReferenceDAO
+     * @throws IllegalArgumentException
+     */
+    public void setBibiliographicReferenceDAO(BibliographicReferenceDAO bibliographicReferenceDAO) throws IllegalArgumentException {
+        if (bibliographicReferenceDAO == null)
+            throw new IllegalArgumentException("bibliographicReferenceDAO non può essere null");
+
+        this.bibliographicReferenceDAO = bibliographicReferenceDAO;
+    }
+
+    /**
+     * 
+     * @return
+     */
     private JPanel getButtonsPanel() {
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
 
-        JButton createReferenceButton = new JButton(new ImageIcon("images/file_add.png"));
+        createReferenceButton = new JButton(new ImageIcon("images/file_add.png"));
         createReferenceButton.setToolTipText("Nuovo riferimento");
         createReferenceButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -85,79 +130,48 @@ public class ReferencePanel extends JPanel {
         return buttonsPanel;
     }
 
-    private JScrollPane getReferenceListPane() {
-        referencesTable = new JTable(displayedReferences.getDisplayedReferencesModel());
-        referencesTable.setFillsViewportHeight(true);
-        referencesTable.setAutoCreateRowSorter(true);
-        referencesTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        referencesTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            public void valueChanged(ListSelectionEvent event) {
-                if (!event.getValueIsAdjusting()) {
-                    selectedReferenceIndex = referencesTable.getSelectedRow();
-
-                    boolean shouldButtonsBeEnabled = !isSelectedRowNull();
-
-                    editReferenceButton.setEnabled(shouldButtonsBeEnabled);
-                    deleteReferenceButton.setEnabled(shouldButtonsBeEnabled);
-
-                    try {
-                        referenceDisplayPanel.showReference(displayedReferences.getReference(getSelectedReferenceModelIndex()));
-                    } catch (Exception e) {
-                        referenceDisplayPanel.showReference(null);
-                    }
-                }
-            }
-        });
-
-        JScrollPane referenceListPane = new JScrollPane(referencesTable);
-
-        return referenceListPane;
-    }
-
-    // private JScrollPane getReferenceDetailsPane() {
-    // referenceDetails = new JTextArea();
-    // referenceDetails.setEditable(false);
-
-    // JScrollPane referencePreviewPanel = new JScrollPane(referenceDetails);
-
-    // return referencePreviewPanel;
-    // }
-
+    /**
+     * Apre la pagina di creazione di un riferimento.
+     */
     private void addReference() {
-        displayedReferences.addReference();
+        controller.openReferenceCreatorPage();
     }
 
+    /**
+     * Apre la pagina di modifica del riferimento selezionato.
+     */
     private void changeSelectedReference() {
-        displayedReferences.changeReference(getSelectedReferenceModelIndex());
+        try {
+            controller.openReferenceCreatorPage(listPanel.getSelectedReference());
+        } catch (IndexOutOfBoundsException e) {
+            JOptionPane.showMessageDialog(null, "Impossibile modificare il riferimento");
+        }
     }
 
+    /**
+     * Rimuove il riferimento selezionato, chiedendo prima conferma all'utente.
+     */
     private void removeSelectedReference() {
         try {
             int result = JOptionPane.showConfirmDialog(null, "Vuoi eliminare questo riferimento?", "Elimina riferimento", JOptionPane.YES_NO_OPTION);
 
             if (result == JOptionPane.YES_OPTION) {
-                displayedReferences.removeReference(getSelectedReferenceModelIndex());
+                // TODO: rimuovi dal database
+
+                listPanel.removeSelectedReference();
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Impossibile eliminare il riferimento");
         }
     }
 
-    private boolean isSelectedRowNull() {
-        return selectedReferenceIndex == -1;
-    }
-
-    // private void displaySelectedReferenceDetails() {
-    // try {
-    // String textToDisplay = displayedReferences.getReference(selectedReferenceIndex).getFormattedDetails();
-    // referenceDetails.setText(textToDisplay);
-    // } catch (IndexOutOfBoundsException e) {
-    // referenceDetails.setText(null);
-    // }
-    // }
-
-    private int getSelectedReferenceModelIndex() {
-        return referencesTable.convertRowIndexToModel(selectedReferenceIndex);
+    /**
+     * 
+     * @param category
+     */
+    public void showReferencesOfCategory(Category category) {
+        ArrayList<BibliographicReference> references = bibliographicReferenceDAO.getReferences(category);
+        listPanel.setReferences(references);
     }
 
 }

@@ -1,28 +1,43 @@
 import java.util.List;
-
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
-public class ReferenceDisplayPanel extends JScrollPane {
+/**
+ * Pannello che mostra le informazioni relative a un riferimento bibliografico.
+ */
+public class ReferenceInfoPanel extends JScrollPane {
 
-    private JTable detailsTable;
     private DefaultTableModel detailsModel;
 
-    public ReferenceDisplayPanel() {
-        this.detailsModel = new DefaultTableModel(0, 2) {
+    /**
+     * Crea un pannello contenente una tabella composta da due colonne,
+     * la prima contenente il nome dell'informazione e la seconda l'informazione stessa.
+     */
+    public ReferenceInfoPanel() {
+        detailsModel = new DefaultTableModel(0, 2) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
 
-        this.detailsTable = new JTable(this.detailsModel);
-        this.detailsTable.setTableHeader(null);
+        JTable detailsTable = new JTable(detailsModel);
+        detailsTable.setTableHeader(null);
+        detailsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        detailsTable.setCellSelectionEnabled(true);
 
         setViewportView(detailsTable);
     }
 
+    /**
+     * Imposta il riferimento bibliografico di cui mostrare i dettagli.
+     * Se {@code reference == null}, verrà mostrata una schermata vuota.
+     * 
+     * @param reference
+     *            riferimento da mostrare
+     */
     public void showReference(BibliographicReference reference) {
         if (reference == null) {
             detailsModel.setRowCount(0);
