@@ -6,7 +6,7 @@ import java.util.Date;
  */
 public abstract class BibliographicReference {
     private String title;
-    private String author; // FIXME: crea classe apposita
+    private ArrayList<Author> authors;
     private Date pubblicationDate;
     private String DOI;
     private String description;
@@ -16,6 +16,7 @@ public abstract class BibliographicReference {
 
     /**
      * Crea un riferimento bibliografico con il titolo specificato.
+     * La lingua verrà impostata come Sconosciuta.
      * 
      * @param title
      *            titolo del riferimento
@@ -26,8 +27,9 @@ public abstract class BibliographicReference {
         setTitle(title);
         setLanguage(ReferenceLanguage.Sconosciuta);
 
-        setTags(new ArrayList<String>(2));
-        setRelatedReferences(new ArrayList<BibliographicReference>(2));
+        setAuthors(new ArrayList<Author>(1));
+        setTags(new ArrayList<String>(5));
+        setRelatedReferences(new ArrayList<BibliographicReference>(5));
     }
 
     /**
@@ -39,7 +41,7 @@ public abstract class BibliographicReference {
      *             se il titolo non è una stringa valida
      */
     public void setTitle(String title) throws IllegalArgumentException {
-        if (!isNameValid(title))
+        if (!isTitleValid(title))
             throw new IllegalArgumentException("Il nome del riferimento non può essere nullo.");
 
         this.title = title;
@@ -57,18 +59,36 @@ public abstract class BibliographicReference {
 
     /**
      * 
+     * @param authors
+     * @throws IllegalArgumentException
      */
-    public void setAuthors() {
-        // TODO: implementa
+    public void setAuthors(ArrayList<Author> authors) throws IllegalArgumentException {
+        if (authors == null)
+            throw new IllegalArgumentException("authors non può essere null");
+
+        this.authors = authors;
+    }
+
+    /**
+     * Aggiunge un autore a questo riferimento.
+     * 
+     * @param author
+     *            autore da aggiungere
+     * @throws IllegalArgumentException
+     */
+    public void addAuthor(Author author) throws IllegalArgumentException {
+        if (author == null)
+            throw new IllegalArgumentException("authors non può essere null");
+
+        authors.add(author);
     }
 
     /**
      * 
      * @return
      */
-    public String getAuthors() {
-        // TODO: implementa
-        return null;
+    public ArrayList<Author> getAuthors() {
+        return authors;
     }
 
     /**
@@ -88,7 +108,7 @@ public abstract class BibliographicReference {
      *         data di pubblicazione del riferimento ({@code null} se non è indicata)
      */
     public Date getPubblicationDate() {
-        return this.pubblicationDate;
+        return pubblicationDate;
     }
 
     /**
@@ -108,7 +128,7 @@ public abstract class BibliographicReference {
      *         codice DOI del riferimento ({@code null} se non è indicato)
      */
     public String getDOI() {
-        return this.DOI;
+        return DOI;
     }
 
     /**
@@ -128,7 +148,7 @@ public abstract class BibliographicReference {
      *         descrizione del riferimento ({@code null} se non è indicata)
      */
     public String getDescription() {
-        return this.description;
+        return description;
     }
 
     /**
@@ -151,7 +171,7 @@ public abstract class BibliographicReference {
      *         lingua del riferimento
      */
     public ReferenceLanguage getLanguage() {
-        return this.language;
+        return language;
     }
 
     /**
@@ -171,7 +191,7 @@ public abstract class BibliographicReference {
      *         parole chiave del riferimento
      */
     public ArrayList<String> getTags() {
-        return this.tags;
+        return tags;
     }
 
     /**
@@ -189,32 +209,31 @@ public abstract class BibliographicReference {
      * @return
      */
     public ArrayList<BibliographicReference> getRelatedReferences() {
-        return this.relatedReferences;
+        return relatedReferences;
     }
 
     /**
-     * Controlla se la stringa passata è un nome valido per un riferimento.
+     * Controlla se la stringa passata è un titolo valido per un riferimento.
      * 
-     * @param name
-     *            nome da controllare
+     * @param title
+     *            titolo da controllare
      * @return
      *         {@code true} se la stringa non è nulla o vuota
      */
-    private boolean isNameValid(String name) {
-        return name != null && !name.isBlank();
+    public boolean isTitleValid(String title) {
+        return title != null && !title.isBlank();
     }
 
-    // TODO: sistema
     /**
      * 
      * @return
      */
-    public ArrayList<BibliographicReferenceField> getInfoAsStrings() {
+    public ArrayList<BibliographicReferenceField> getReferenceFields() {
         ArrayList<BibliographicReferenceField> fields = new ArrayList<>();
 
         fields.add(new BibliographicReferenceField("Titolo", getTitle()));
-        fields.add(new BibliographicReferenceField("Autori", getAuthorsAsSingleString()));
-        // fields.add(new BibliographicReferenceField("Data di pubblicazione", getPubblicationDate().toString()));
+        fields.add(new BibliographicReferenceField("Autori", getAuthorsAsString()));
+        fields.add(new BibliographicReferenceField("Data di pubblicazione", getPubblicationDate()));
         fields.add(new BibliographicReferenceField("DOI", getDOI()));
         fields.add(new BibliographicReferenceField("Descrizione", getDescription()));
         fields.add(new BibliographicReferenceField("Lingua", getLanguage()));
@@ -223,19 +242,26 @@ public abstract class BibliographicReference {
         return fields;
     }
 
-    private String getAuthorsAsSingleString() {
-        // TODO: implementa
-        return "";
+    /**
+     * Restituisce gli autori di questo riferimento come un'unica stringa.
+     * Esempio: "Mario Rossi, Ciro Esposito"
+     * 
+     * @return
+     *         gli autori come unica stringa
+     */
+    public String getAuthorsAsString() {
+        return getAuthors().toString().substring(1).replace("]", "").trim();
     }
 
-    private String getTagsAsSingleString() {
-        String string = "";
-
-        for (String tag : getTags()) {
-            string += tag + ", ";
-        }
-
-        return string;
+    /**
+     * Restituisce le parole chiave di questo riferimento come un'unica stringa.
+     * Esempio: "Informatica, Object Orientation"
+     * 
+     * @return
+     *         le parole chiave come unica stringa
+     */
+    public String getTagsAsSingleString() {
+        return getTags().toString().substring(1).replace("]", "").trim();
     }
 
 }

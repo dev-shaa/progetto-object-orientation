@@ -100,8 +100,8 @@ public class Video extends OnlineResource {
     }
 
     @Override
-    public ArrayList<BibliographicReferenceField> getInfoAsStrings() {
-        ArrayList<BibliographicReferenceField> fields = super.getInfoAsStrings();
+    public ArrayList<BibliographicReferenceField> getReferenceFields() {
+        ArrayList<BibliographicReferenceField> fields = super.getReferenceFields();
 
         fields.add(new BibliographicReferenceField("Larghezza", getWidth()));
         fields.add(new BibliographicReferenceField("Altezza", getHeight()));

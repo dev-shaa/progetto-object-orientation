@@ -52,8 +52,8 @@ public abstract class OnlineResource extends BibliographicReference {
     }
 
     @Override
-    public ArrayList<BibliographicReferenceField> getInfoAsStrings() {
-        ArrayList<BibliographicReferenceField> fields = super.getInfoAsStrings();
+    public ArrayList<BibliographicReferenceField> getReferenceFields() {
+        ArrayList<BibliographicReferenceField> fields = super.getReferenceFields();
 
         fields.add(new BibliographicReferenceField("URL", getURL()));
 

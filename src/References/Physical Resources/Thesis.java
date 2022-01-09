@@ -61,8 +61,8 @@ public class Thesis extends Publication {
     }
 
     @Override
-    public ArrayList<BibliographicReferenceField> getInfoAsStrings() {
-        ArrayList<BibliographicReferenceField> fields = super.getInfoAsStrings();
+    public ArrayList<BibliographicReferenceField> getReferenceFields() {
+        ArrayList<BibliographicReferenceField> fields = super.getReferenceFields();
 
         fields.add(new BibliographicReferenceField("Università", getUniversity()));
         fields.add(new BibliographicReferenceField("Facoltà", getFaculty()));

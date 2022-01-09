@@ -37,8 +37,8 @@ public class Book extends Publication {
     }
 
     @Override
-    public ArrayList<BibliographicReferenceField> getInfoAsStrings() {
-        ArrayList<BibliographicReferenceField> fields = super.getInfoAsStrings();
+    public ArrayList<BibliographicReferenceField> getReferenceFields() {
+        ArrayList<BibliographicReferenceField> fields = super.getReferenceFields();
 
         fields.add(new BibliographicReferenceField("ISBN", getISBN()));
 
