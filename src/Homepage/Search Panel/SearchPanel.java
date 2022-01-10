@@ -1,7 +1,7 @@
-import javax.swing.*;
-import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.border.*;
 
 /**
  * Pannello per la ricerca dei riferimenti per parole chiave, autori, categorie e data.
@@ -12,8 +12,8 @@ public class SearchPanel extends JPanel {
     private TextSearchPanel authorSearchField;
     private TreeSelectionPanel categoriesSearchField;
     private DatePickerPanel datePicker;
+    private JButton searchButton;
 
-    private ReferencePanel referencePanel;
     private CategoriesTree categoriesTree;
 
     /**
@@ -23,8 +23,6 @@ public class SearchPanel extends JPanel {
      * @param categoriesTree
      */
     public SearchPanel(ReferencePanel referencePanel, CategoriesTree categoriesTree) {
-        // TODO: getter setter
-        this.referencePanel = referencePanel;
         this.categoriesTree = categoriesTree;
 
         setLayout(new BorderLayout(5, 5));
@@ -59,7 +57,8 @@ public class SearchPanel extends JPanel {
         spacing.setMaximumSize(new Dimension(Integer.MAX_VALUE, 32));
         searchPanel.add(spacing);
 
-        searchPanel.add(getSearchButton());
+        setupSearchButton();
+        searchPanel.add(searchButton);
 
         return searchPanel;
     }
@@ -88,8 +87,8 @@ public class SearchPanel extends JPanel {
         datePicker.setAlignmentX(DatePickerPanel.LEFT_ALIGNMENT);
     }
 
-    private JButton getSearchButton() {
-        JButton searchButton = new JButton("Cerca");
+    private void setupSearchButton() {
+        searchButton = new JButton("Cerca");
         searchButton.setIcon(new ImageIcon("images/search.png"));
         searchButton.setAlignmentX(JButton.LEFT_ALIGNMENT);
         searchButton.setMaximumSize(new Dimension(100, 32));
@@ -100,8 +99,6 @@ public class SearchPanel extends JPanel {
                 // TODO: imposta riferimenti da mostrare
             }
         });
-
-        return searchButton;
     }
 
 }
