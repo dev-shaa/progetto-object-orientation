@@ -12,7 +12,7 @@ public class Connesione{
 		try{
 			Connection connection = DriverManager.getConnection(url, user, password);
 			if (connection != null) {
-		    System.out.println("Connesione riuscita..................");
+		    System.out.println("Connesione riuscita");
 		}
 			else {
 				System.out.println("Connesione Fallita");
