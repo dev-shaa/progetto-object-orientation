@@ -5,50 +5,52 @@ import com.formdev.flatlaf.*;
 
 public class Controller {
 
+    private LoginFrame loginFrame;
     private Homepage homepage;
 
     public Controller() {
         setupLookAndFeel();
 
-        try {
-            User user = new User("Nuovo Utente");
+        loginFrame = new LoginFrame(this);
 
-            CategoryDAO categoryDAO = new CategoryDAOPostgreSQL(user);
-            BibliographicReferenceDAO bibliographicReferenceDAO = new BibliographicReferenceDAO();
-
-            homepage = new Homepage(this, user, categoryDAO, bibliographicReferenceDAO);
-            openHomePage();
-        } catch (IllegalArgumentException e) {
-            // TODO: handle exception
-            e.printStackTrace();
-        } catch (CategoryDatabaseException e) {
-            // TODO: handle exception
-            e.printStackTrace();
-        }
+        openLoginPage();
     }
 
     private void setupLookAndFeel() {
         try {
             UIManager.setLookAndFeel(new FlatLightLaf());
-        } catch (UnsupportedLookAndFeelException ex) {
-            ex.printStackTrace();
+        } catch (UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
         }
     }
 
-    public void openHomePage() {
-        homepage.setVisible(true);
+    public void openLoginPage() {
+        loginFrame.setVisible(true);
+
+        if (homepage != null)
+            homepage.setVisible(false);
+    }
+
+    public void openHomePage(User user) {
+        loginFrame.setVisible(false);
+
+        try {
+            homepage = new Homepage(this, user);
+            homepage.setVisible(true);
+        } catch (Exception e) {
+            // TODO: mostra schermata di errore
+        }
     }
 
     public void openReferenceCreatorPage() {
+        loginFrame.setVisible(false);
+        homepage.setVisible(false);
+
         // TODO:
     }
 
     public void openReferenceCreatorPage(BibliographicReference riferimento) {
         // TODO:
-    }
-
-    public void logout() {
-        // TODO: implementa
     }
 
 }

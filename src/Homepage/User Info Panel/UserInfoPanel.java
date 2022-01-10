@@ -40,7 +40,7 @@ public class UserInfoPanel extends JPanel {
         logout.setBorderPainted(false);
         logout.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                controller.logout();
+                controller.openLoginPage();
             }
         });
 

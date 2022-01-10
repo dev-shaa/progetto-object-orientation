@@ -22,12 +22,18 @@ public class Homepage extends JFrame {
      *            l'utente che ha eseguito l'accesso
      * @since 0.1
      */
-    public Homepage(Controller controller, User user, CategoryDAO categoryDAO, BibliographicReferenceDAO bibliographicReferenceDAO) throws IllegalArgumentException, CategoryDatabaseException {
+    public Homepage(Controller controller, User user) throws IllegalArgumentException, CategoryDatabaseException {
+
+        if (controller == null || user == null)
+            throw new IllegalArgumentException();
 
         setTitle("Pagina principale");
         setMinimumSize(new Dimension(400, 400));
         setBounds(100, 100, 800, 600);
         setCloseOperation();
+
+        CategoryDAO categoryDAO = new CategoryDAOPostgreSQL(user);
+        BibliographicReferenceDAO bibliographicReferenceDAO = new BibliographicReferenceDAO();// FIXME:
 
         JPanel contentPane = new JPanel();
         contentPane.setLayout(new BorderLayout(5, 5));
@@ -35,10 +41,10 @@ public class Homepage extends JFrame {
 
         CategoriesTree categoriesTree = new CategoriesTree(categoryDAO);
         ReferencePanel referencePanel = new ReferencePanel(controller, bibliographicReferenceDAO);
-        CategoriesPanel categoryPanel = new CategoriesPanel(categoriesTree, referencePanel);
+        CategoriesPanel categoriesPanel = new CategoriesPanel(categoriesTree, referencePanel);
         SearchPanel referenceSearchPanel = new SearchPanel(referencePanel, categoriesTree);
 
-        JSplitPane subSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, categoryPanel, referencePanel);
+        JSplitPane subSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, categoriesPanel, referencePanel);
         subSplitPane.setResizeWeight(0.15);
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, subSplitPane, referenceSearchPanel);
