@@ -11,11 +11,12 @@ public class Controller {
         setupLookAndFeel();
 
         try {
-
             User user = new User("Nuovo Utente");
 
             CategoryDAO categoryDAO = new CategoryDAOPostgreSQL(user);
-            homepage = new Homepage(this, user, categoryDAO);
+            BibliographicReferenceDAO bibliographicReferenceDAO = new BibliographicReferenceDAO();
+
+            homepage = new Homepage(this, user, categoryDAO, bibliographicReferenceDAO);
             openHomePage();
         } catch (IllegalArgumentException e) {
             // TODO: handle exception
