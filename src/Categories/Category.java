@@ -1,13 +1,23 @@
 /**
  * La classe {@code Category} rappresenta un modo di raggruppare riferimenti bibliografici
  * che condividono delle caratteristiche comuni.
- * 
- * @version 0.9
- * @author Salvatore Di Gennaro
  */
 public class Category {
     private String name;
     private Category parent;
+
+    /**
+     * Crea {@code Category} con un nome e nessun genitore.
+     * 
+     * @param name
+     *            il nome della categoria
+     * @throws IllegalArgumentException
+     *             se {@code name == null} o {@code name.isBlank()}
+     */
+    public Category(String name) throws IllegalArgumentException {
+        setName(name);
+        setParent(null);
+    }
 
     /**
      * Crea {@code Category} con un nome e una categoria genitore (che può essere {@code null}).
@@ -20,12 +30,8 @@ public class Category {
      *             se {@code name == null} o {@code name.isBlank()}
      */
     public Category(String name, Category parent) throws IllegalArgumentException {
-        try {
-            setName(name);
-            setParent(parent);
-        } catch (IllegalArgumentException e) {
-            throw e;
-        }
+        setName(name);
+        setParent(parent);
     }
 
     /**

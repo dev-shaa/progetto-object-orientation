@@ -22,35 +22,30 @@ public class Homepage extends JFrame {
      *            l'utente che ha eseguito l'accesso
      * @since 0.1
      */
-    public Homepage(Controller controller, User user, CategoryDAO categoryDAO) throws IllegalArgumentException, CategoryDatabaseException {
+    public Homepage(Controller controller, User user, CategoryDAO categoryDAO, BibliographicReferenceDAO bibliographicReferenceDAO) throws IllegalArgumentException, CategoryDatabaseException {
 
         setTitle("Pagina principale");
         setMinimumSize(new Dimension(400, 400));
-        setBounds(100, 100, 720, 540);
+        setBounds(100, 100, 800, 600);
         setCloseOperation();
 
         JPanel contentPane = new JPanel();
         contentPane.setLayout(new BorderLayout(5, 5));
         setContentPane(contentPane);
 
-        try {
-            ReferencePanel referencePanel = new ReferencePanel(controller);
-            CategoriesPanel categoryPanel = new CategoriesPanel(referencePanel, categoryDAO);
-            ReferenceSearchPanel referenceSearchPanel = new ReferenceSearchPanel(this);
+        CategoriesTree categoriesTree = new CategoriesTree(categoryDAO);
+        ReferencePanel referencePanel = new ReferencePanel(controller, bibliographicReferenceDAO);
+        CategoriesPanel categoryPanel = new CategoriesPanel(categoriesTree, referencePanel);
+        SearchPanel referenceSearchPanel = new SearchPanel(referencePanel, categoriesTree);
 
-            JSplitPane subSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, categoryPanel, referencePanel);
-            subSplitPane.setResizeWeight(0.15);
+        JSplitPane subSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, categoryPanel, referencePanel);
+        subSplitPane.setResizeWeight(0.15);
 
-            JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, subSplitPane, referenceSearchPanel);
-            splitPane.setResizeWeight(0.8);
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, subSplitPane, referenceSearchPanel);
+        splitPane.setResizeWeight(0.8);
 
-            contentPane.add(new UserInfoPanel(controller, user), BorderLayout.NORTH);
-            contentPane.add(splitPane, BorderLayout.CENTER);
-        } catch (IllegalArgumentException e) {
-            throw e;
-        } catch (CategoryDatabaseException e) {
-            throw e;
-        }
+        contentPane.add(new UserInfoPanel(controller, user), BorderLayout.NORTH);
+        contentPane.add(splitPane, BorderLayout.CENTER);
     }
 
     private void setCloseOperation() {
