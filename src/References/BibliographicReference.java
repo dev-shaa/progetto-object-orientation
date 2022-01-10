@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 /**
- * 
+ * Classe che rappresenta un riferimento bibiliografico.
  */
 public abstract class BibliographicReference {
     private String title;
@@ -12,7 +12,7 @@ public abstract class BibliographicReference {
     private String description;
     private ReferenceLanguage language;
     private ArrayList<String> tags;
-    private ArrayList<BibliographicReference> relatedReferences; // FIXME:
+    private ArrayList<BibliographicReference> relatedReferences;
 
     /**
      * Crea un riferimento bibliografico con il titolo specificato.
@@ -22,6 +22,7 @@ public abstract class BibliographicReference {
      *            titolo del riferimento
      * @throws IllegalArgumentException
      *             se il titolo non è una stringa valida
+     * @see #setTitle(String)
      */
     public BibliographicReference(String title) throws IllegalArgumentException {
         setTitle(title);
@@ -39,6 +40,7 @@ public abstract class BibliographicReference {
      *            titolo del riferimento
      * @throws IllegalArgumentException
      *             se il titolo non è una stringa valida
+     * @see #isTitleValid(String)
      */
     public void setTitle(String title) throws IllegalArgumentException {
         if (!isTitleValid(title))
@@ -58,9 +60,12 @@ public abstract class BibliographicReference {
     }
 
     /**
+     * Imposta gli autori di questo riferimento.
      * 
      * @param authors
+     *            autori del riferimento
      * @throws IllegalArgumentException
+     *             se {@code authors == null}
      */
     public void setAuthors(ArrayList<Author> authors) throws IllegalArgumentException {
         if (authors == null)
@@ -75,6 +80,7 @@ public abstract class BibliographicReference {
      * @param author
      *            autore da aggiungere
      * @throws IllegalArgumentException
+     *             se {@code author == null}
      */
     public void addAuthor(Author author) throws IllegalArgumentException {
         if (author == null)
@@ -84,18 +90,19 @@ public abstract class BibliographicReference {
     }
 
     /**
+     * Restituisce gli autori di questo riferimento.
      * 
-     * @return
+     * @return un array di {@code Author} contenente tutti gli autori
      */
-    public ArrayList<Author> getAuthors() {
-        return authors;
+    public Author[] getAuthors() {
+        return authors.toArray(new Author[authors.size()]);
     }
 
     /**
      * Imposta la data di pubblicazione del riferimento.
      * 
      * @param pubblicationDate
-     *            data di pubblicazione del riferimento
+     *            data di pubblicazione del riferimento ({@code null} se non è indicato)
      */
     public void setPubblicationDate(Date pubblicationDate) {
         this.pubblicationDate = pubblicationDate;
@@ -118,6 +125,8 @@ public abstract class BibliographicReference {
      *            codice DOI del riferimento
      */
     public void setDOI(String DOI) {
+        // TODO: controllo regex
+
         this.DOI = DOI;
     }
 
@@ -156,6 +165,8 @@ public abstract class BibliographicReference {
      * 
      * @param language
      *            lingua del riferimento
+     * @throws IllegalArgumentException
+     *             se {@code language == null}
      */
     public void setLanguage(ReferenceLanguage language) throws IllegalArgumentException {
         if (language == null)
@@ -195,18 +206,20 @@ public abstract class BibliographicReference {
     }
 
     /**
-     * TODO:
+     * Imposta i rimandi associati a questo riferimento.
      * 
      * @param relatedReferences
+     *            rimandi di questo riferimento
      */
     public void setRelatedReferences(ArrayList<BibliographicReference> relatedReferences) {
         this.relatedReferences = relatedReferences;
     }
 
     /**
-     * TODO:
+     * Restituisce i rimandi associati a questo riferimento.
      * 
      * @return
+     *         rimandi di questo riferimento
      */
     public ArrayList<BibliographicReference> getRelatedReferences() {
         return relatedReferences;
@@ -218,7 +231,7 @@ public abstract class BibliographicReference {
      * @param title
      *            titolo da controllare
      * @return
-     *         {@code true} se la stringa non è nulla o vuota
+     *         {@code false} se la stringa è nulla o vuota
      */
     public boolean isTitleValid(String title) {
         return title != null && !title.isBlank();
@@ -237,7 +250,8 @@ public abstract class BibliographicReference {
         fields.add(new BibliographicReferenceField("DOI", getDOI()));
         fields.add(new BibliographicReferenceField("Descrizione", getDescription()));
         fields.add(new BibliographicReferenceField("Lingua", getLanguage()));
-        fields.add(new BibliographicReferenceField("Parole chiave", getTagsAsSingleString()));
+        fields.add(new BibliographicReferenceField("Parole chiave", getTagsAsString()));
+        fields.add(new BibliographicReferenceField("Rimandi", getRelatedReferencesAsString()));
 
         return fields;
     }
@@ -247,21 +261,37 @@ public abstract class BibliographicReference {
      * Esempio: "Mario Rossi, Ciro Esposito"
      * 
      * @return
-     *         gli autori come unica stringa
+     *         autori come stringa
      */
     public String getAuthorsAsString() {
         return getAuthors().toString().substring(1).replace("]", "").trim();
     }
 
     /**
-     * Restituisce le parole chiave di questo riferimento come un'unica stringa.
+     * Restituisce le parole chiave di questo riferimento come stringa.
      * Esempio: "Informatica, Object Orientation"
      * 
      * @return
-     *         le parole chiave come unica stringa
+     *         parole chiave come stringa
      */
-    public String getTagsAsSingleString() {
+    public String getTagsAsString() {
         return getTags().toString().substring(1).replace("]", "").trim();
+    }
+
+    /**
+     * Restituisce i rimandi di questo riferimento come stringa.
+     * Esempio: "Rimando1, Rimando2"
+     * 
+     * @return
+     *         rimandi del riferimento come stringa
+     */
+    public String getRelatedReferencesAsString() {
+        return getRelatedReferences().toString().substring(1).replace("]", "").trim();
+    }
+
+    @Override
+    public String toString() {
+        return getTitle();
     }
 
 }
