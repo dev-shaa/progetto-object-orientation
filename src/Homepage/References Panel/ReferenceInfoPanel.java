@@ -42,7 +42,7 @@ public class ReferenceInfoPanel extends JScrollPane {
         if (reference == null) {
             detailsModel.setRowCount(0);
         } else {
-            List<BibliographicReferenceField> referenceInfo = reference.getInfoAsStrings();
+            List<BibliographicReferenceField> referenceInfo = reference.getReferenceFields();
 
             detailsModel.setRowCount(referenceInfo.size());
 

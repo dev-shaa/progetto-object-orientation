@@ -33,6 +33,8 @@ public class ReferenceListPanel extends JScrollPane {
             }
         };
 
+        displayedReferences = new ArrayList<>();
+
         referencesTable = new JTable(referencesTableModel);
         referencesTable.setFillsViewportHeight(true);
         referencesTable.setAutoCreateRowSorter(true);
@@ -68,7 +70,7 @@ public class ReferenceListPanel extends JScrollPane {
      */
     public void addReferenceToTable(BibliographicReference reference) {
         displayedReferences.add(reference);
-        referencesTableModel.addRow(new Object[] { reference.getTitle(), reference.getAuthors(), reference.getPubblicationDate() });
+        referencesTableModel.addRow(new Object[] { reference.getTitle(), reference.getAuthorsAsString(), reference.getPubblicationDate() });
     }
 
     /**
@@ -86,7 +88,7 @@ public class ReferenceListPanel extends JScrollPane {
     /**
      * Rimuove il riferimento selezionato attualmente dalla tabella.
      */
-    public void removeSelectedReference() throws IndexOutOfBoundsException {
+    public void removeSelectedReferenceFromTable() throws IndexOutOfBoundsException {
         // TODO: handle exception
         removeReferenceFromTable(getSelectedReferenceModelIndex());
     }
@@ -119,7 +121,7 @@ public class ReferenceListPanel extends JScrollPane {
      */
     public BibliographicReference getSelectedReference() {
         try {
-            return displayedReferences.get(getSelectedReferenceModelIndex());
+            return getReference(getSelectedReferenceModelIndex());
         } catch (IndexOutOfBoundsException e) {
             return null;
         }
