@@ -13,7 +13,7 @@ import java.util.Arrays;
 /**
  * Un pannello che consente di selezionare più categorie.
  */
-public class TreeSelectionPanel extends JPanel {
+public class CategoriesTreeSelectionPanel extends JPanel {
 
     private JLabel label;
     private JButton categoriesDropdownButton;
@@ -26,7 +26,7 @@ public class TreeSelectionPanel extends JPanel {
      * @throws IllegalArgumentException
      *             se {@code categoriesTree == null}
      */
-    public TreeSelectionPanel(CategoriesTree categoriesTree) throws IllegalArgumentException {
+    public CategoriesTreeSelectionPanel(CategoriesTree categoriesTree) throws IllegalArgumentException {
         if (categoriesTree == null)
             throw new IllegalArgumentException();
 

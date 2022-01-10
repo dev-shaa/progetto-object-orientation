@@ -10,7 +10,7 @@ public class SearchPanel extends JPanel {
 
     private TextSearchPanel tagSearchField;
     private TextSearchPanel authorSearchField;
-    private TreeSelectionPanel categoriesSearchField;
+    private CategoriesTreeSelectionPanel categoriesSearchField;
     private DatePickerPanel datePicker;
     private JButton searchButton;
 
@@ -76,9 +76,9 @@ public class SearchPanel extends JPanel {
     }
 
     private void setupCategoriesSearchField() {
-        categoriesSearchField = new TreeSelectionPanel(categoriesTree);
+        categoriesSearchField = new CategoriesTreeSelectionPanel(categoriesTree);
         categoriesSearchField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
-        categoriesSearchField.setAlignmentX(TreeSelectionPanel.LEFT_ALIGNMENT);
+        categoriesSearchField.setAlignmentX(CategoriesTreeSelectionPanel.LEFT_ALIGNMENT);
     }
 
     private void setupDatePicker() {
