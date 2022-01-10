@@ -1,10 +1,5 @@
-import java.util.List;
-
 /**
  * Classe astratta che si occupa di gestire la parte di database relativo alle categorie.
- * 
- * @version 0.3
- * @author Salvatore Di Gennaro
  */
 public abstract class CategoryDAO {
 
@@ -89,5 +84,5 @@ public abstract class CategoryDAO {
      *             se il recupero delle categorie dal database non va a buon fine
      * @since 0.2
      */
-    public abstract List<Category> getUserCategories() throws CategoryDatabaseException;
+    public abstract Category[] getUserCategories() throws CategoryDatabaseException;
 }
