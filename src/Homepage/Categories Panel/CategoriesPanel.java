@@ -40,13 +40,22 @@ public class CategoriesPanel extends JPanel {
         if (categoriesTree == null || referencePanel == null)
             throw new IllegalArgumentException();
 
-        this.categoriesTree = categoriesTree;
+        setCategoriesTree(categoriesTree);
 
         setLayout(new BorderLayout(5, 5));
         setBorder(new EmptyBorder(5, 5, 5, 5));
 
         add(getButtonsPanel(), BorderLayout.NORTH);
+
         add(getCategoriesTreePanel(referencePanel), BorderLayout.CENTER);
+    }
+
+    // FIXME:
+    public void setCategoriesTree(CategoriesTree categoriesTree) {
+        if (categoriesTree == null)
+            throw new IllegalArgumentException("categoriesTree non può essere null");
+
+        this.categoriesTree = categoriesTree;
     }
 
     private JPanel getButtonsPanel() {

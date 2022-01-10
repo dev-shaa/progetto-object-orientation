@@ -55,10 +55,10 @@ public class ReferenceListPanel extends JScrollPane {
         if (references == null)
             throw new IllegalArgumentException("references non può essere null");
 
-        clearTable();
+        removeAllReferences();
 
         for (BibliographicReference riferimento : references) {
-            addReferenceToTable(riferimento);
+            addReference(riferimento);
         }
     }
 
@@ -68,49 +68,27 @@ public class ReferenceListPanel extends JScrollPane {
      * @param reference
      *            riferimento da aggiungere
      */
-    public void addReferenceToTable(BibliographicReference reference) {
+    public void addReference(BibliographicReference reference) {
         displayedReferences.add(reference);
         referencesTableModel.addRow(new Object[] { reference.getTitle(), reference.getAuthorsAsString(), reference.getPubblicationDate() });
     }
 
     /**
-     * Rimuove un riferimento dall'elenco attuale.
-     * In caso il riferimento non fosse contenuto nell'elenco, non esegue nulla.
-     * 
-     * @param reference
-     *            riferimento da rimuovere
-     */
-    public void removeReferenceFromTable(int modelIndex) throws IndexOutOfBoundsException {
-        displayedReferences.remove(modelIndex);
-        referencesTableModel.removeRow(modelIndex);
-    }
-
-    /**
      * Rimuove il riferimento selezionato attualmente dalla tabella.
      */
-    public void removeSelectedReferenceFromTable() throws IndexOutOfBoundsException {
-        // TODO: handle exception
-        removeReferenceFromTable(getSelectedReferenceModelIndex());
+    public void removeSelectedReference() throws IndexOutOfBoundsException {
+        displayedReferences.remove(getSelectedReferenceIndex());
+        referencesTableModel.removeRow(getSelectedReferenceIndex());
     }
 
     /**
      * Rimuove tutte le righe dalla tabella.
      */
-    public void clearTable() {
+    private void removeAllReferences() {
         if (displayedReferences != null)
             displayedReferences.clear();
 
         referencesTableModel.setRowCount(0);
-    }
-
-    /**
-     * 
-     * @param modelIndex
-     * @return
-     * @throws IndexOutOfBoundsException
-     */
-    public BibliographicReference getReference(int modelIndex) throws IndexOutOfBoundsException {
-        return displayedReferences.get(modelIndex);
     }
 
     /**
@@ -121,28 +99,21 @@ public class ReferenceListPanel extends JScrollPane {
      */
     public BibliographicReference getSelectedReference() {
         try {
-            return getReference(getSelectedReferenceModelIndex());
+            return displayedReferences.get(getSelectedReferenceIndex());
         } catch (IndexOutOfBoundsException e) {
             return null;
         }
     }
 
     /**
-     * 
-     * 
-     * @return
-     *         {@code true} se non è selezionata nessuna riga
-     */
-    public boolean isSelectedRowNull() {
-        return referencesTable.getSelectedRow() == -1;
-    }
-
-    /**
+     * TODO: commenta
+     * Restituisce l'indice del riferimento selezionato.
      * 
      * @return
+     * 
      * @throws IndexOutOfBoundsException
      */
-    private int getSelectedReferenceModelIndex() throws IndexOutOfBoundsException {
+    private int getSelectedReferenceIndex() throws IndexOutOfBoundsException {
         return referencesTable.convertRowIndexToModel(referencesTable.getSelectedRow());
     }
 

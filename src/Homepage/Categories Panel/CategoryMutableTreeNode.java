@@ -30,19 +30,6 @@ public class CategoryMutableTreeNode extends DefaultMutableTreeNode {
     }
 
     /**
-     * Crea un nodo {@code CategoryMutableTreeNode} senza genitore, senza figli, che ammette figli se specificato
-     * e con una categoria associata.
-     * 
-     * @param category
-     *            la categoria associata a questo nodo
-     * @param allowsChildren
-     *            se {@code true} questo nodo potrà avere figli, altrimenti sarà sempre una foglia
-     */
-    public CategoryMutableTreeNode(Category category, boolean allowsChildren) {
-        super(category, allowsChildren);
-    }
-
-    /**
      * Restituisce la categoria associata a questo nodo.
      * 
      * @return

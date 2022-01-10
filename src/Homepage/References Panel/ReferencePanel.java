@@ -50,12 +50,14 @@ public class ReferencePanel extends JPanel {
         this.listPanel.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent event) {
                 if (!event.getValueIsAdjusting()) {
-                    boolean shouldButtonsBeEnabled = !listPanel.isSelectedRowNull();
+                    BibliographicReference selectedReference = listPanel.getSelectedReference();
 
+                    infoPanel.showReference(selectedReference);
+
+                    boolean shouldButtonsBeEnabled = selectedReference == null;
                     editReferenceButton.setEnabled(shouldButtonsBeEnabled);
                     deleteReferenceButton.setEnabled(shouldButtonsBeEnabled);
 
-                    infoPanel.showReference(listPanel.getSelectedReference());
                 }
             }
         });
@@ -211,7 +213,7 @@ public class ReferencePanel extends JPanel {
 
             if (result == JOptionPane.YES_OPTION) {
                 bibliographicReferenceDAO.removeReference(listPanel.getSelectedReference());
-                listPanel.removeSelectedReferenceFromTable();
+                listPanel.removeSelectedReference();
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Impossibile eliminare il riferimento");
