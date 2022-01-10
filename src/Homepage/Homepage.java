@@ -26,16 +26,17 @@ public class Homepage extends JFrame {
 
         setTitle("Pagina principale");
         setMinimumSize(new Dimension(400, 400));
-        setBounds(100, 100, 720, 540);
+        setBounds(100, 100, 800, 600);
         setCloseOperation();
 
         JPanel contentPane = new JPanel();
         contentPane.setLayout(new BorderLayout(5, 5));
         setContentPane(contentPane);
 
+        CategoriesTree categoriesTree = new CategoriesTree(categoryDAO);
         ReferencePanel referencePanel = new ReferencePanel(controller, bibliographicReferenceDAO);
-        CategoriesPanel categoryPanel = new CategoriesPanel(categoryDAO, referencePanel);
-        ReferenceSearchPanel referenceSearchPanel = new ReferenceSearchPanel();
+        CategoriesPanel categoryPanel = new CategoriesPanel(categoriesTree, referencePanel);
+        SearchPanel referenceSearchPanel = new SearchPanel(referencePanel, categoriesTree);
 
         JSplitPane subSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, categoryPanel, referencePanel);
         subSplitPane.setResizeWeight(0.15);
