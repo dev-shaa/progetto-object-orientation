@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 
 /**
@@ -201,8 +202,8 @@ public abstract class BibliographicReference {
      * @return
      *         parole chiave del riferimento
      */
-    public ArrayList<String> getTags() {
-        return tags;
+    public String[] getTags() {
+        return tags.toArray(new String[tags.size()]);
     }
 
     /**
@@ -264,7 +265,7 @@ public abstract class BibliographicReference {
      *         autori come stringa
      */
     public String getAuthorsAsString() {
-        return getAuthors().toString().substring(1).replace("]", "").trim();
+        return Arrays.toString(getAuthors()).substring(1).replace("]", "").trim();
     }
 
     /**
@@ -275,7 +276,7 @@ public abstract class BibliographicReference {
      *         parole chiave come stringa
      */
     public String getTagsAsString() {
-        return getTags().toString().substring(1).replace("]", "").trim();
+        return Arrays.toString(getTags()).substring(1).replace("]", "").trim();
     }
 
     /**

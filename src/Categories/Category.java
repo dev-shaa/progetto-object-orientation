@@ -1,9 +1,6 @@
 /**
  * La classe {@code Category} rappresenta un modo di raggruppare riferimenti bibliografici
  * che condividono delle caratteristiche comuni.
- * 
- * @version 0.9
- * @author Salvatore Di Gennaro
  */
 public class Category {
     private String name;
