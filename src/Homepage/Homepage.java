@@ -7,8 +7,6 @@ import javax.swing.*;
  * Classe che si occupa di impostare le componenti base della pagina principale,
  * che mostra tutti i riferimenti e le categorie.
  * 
- * @version 0.3
- * @author Salvatore Di Gennaro
  * @see UserInfoPanel
  * @see CategoriesPanel
  * @see ReferencePanel
