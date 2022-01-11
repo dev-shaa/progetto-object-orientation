@@ -9,7 +9,7 @@ public abstract class CategoryDAO {
      * Crea {@code CategoryDAO} per interfacciarsi al database relativo alle categorie dell'utente.
      * 
      * @param user
-     *            l'utente che accede al database
+     *            utente che accede al database
      * @throws IllegalArgumentException
      *             se l'utente di input è {@code null}
      */
@@ -21,7 +21,7 @@ public abstract class CategoryDAO {
      * Imposta l'utente di cui recuperare le categorie.
      * 
      * @param user
-     *            l'utente di cui recuperare le categorie.
+     *            utente di cui recuperare le categorie.
      * @throws IllegalArgumentException
      *             se l'utente di input è {@code null}
      */
@@ -35,7 +35,7 @@ public abstract class CategoryDAO {
     /**
      * Restituisce l'utente che accede al database.
      * 
-     * @return l'utente che accede al database
+     * @return utente che accede al database
      */
     public User getUser() {
         return this.user;
@@ -45,44 +45,53 @@ public abstract class CategoryDAO {
      * Salva una nuova categoria nel database.
      * 
      * @param category
-     *            Nuova categoria da salvare.
+     *            nuova categoria da salvare.
      * @throws CategoryDatabaseException
      *             se l'aggiunta della categoria al database non va a buon fine
-     * @since 0.1
      */
-    public abstract void addCategory(Category category) throws CategoryDatabaseException;
+
+    /**
+     * Salva una nuova categoria nel database.
+     * 
+     * @param category
+     *            nuova categoria da salvare.
+     * @throws IllegalArgumentException
+     *             se {@code category == null}
+     * @throws CategoryDatabaseException
+     *             se l'aggiunta della categoria al database non va a buon fine
+     */
+    public abstract void addCategory(Category category) throws IllegalArgumentException, CategoryDatabaseException;
 
     /**
      * Modifica una categoria nel database.
      * 
      * @param category
-     *            Categoria da modificare.
-     * @param newName
-     *            Nuovo nome da assegnare alla categoria.
+     *            categoria modificata da aggiornare nel database
+     * @throws IllegalArgumentException
+     *             se {@code category == null}
      * @throws CategoryDatabaseException
      *             se la modifica della categoria nel database non va a buon fine
-     * @since 0.1
      */
-    public abstract void changeCategory(Category category, String newName) throws CategoryDatabaseException;
+    public abstract void changeCategory(Category category) throws IllegalArgumentException, CategoryDatabaseException;
 
     /**
      * Elimina una categoria nel database.
      * 
      * @param category
-     *            Categoria da eliminare.
+     *            categoria da eliminare.
+     * @throws IllegalArgumentException
+     *             se {@code category == null}
      * @throws CategoryDatabaseException
      *             se la rimozione della categoria dal database non va a buon fine
-     * @since 0.1
      */
-    public abstract void removeCategory(Category category) throws CategoryDatabaseException;
+    public abstract void removeCategory(Category category) throws IllegalArgumentException, CategoryDatabaseException;
 
     /**
      * Ottiene tutte le categorie appartenenti a un utente nel database.
      * 
-     * @return Lista contenente tutte le categorie dell'utente.
+     * @return lista contenente tutte le categorie dell'utente.
      * @throws CategoryDatabaseException
      *             se il recupero delle categorie dal database non va a buon fine
-     * @since 0.2
      */
     public abstract Category[] getUserCategories() throws CategoryDatabaseException;
 }

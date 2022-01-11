@@ -100,13 +100,18 @@ public class CategoriesTree {
             throw new IllegalArgumentException("Il nodo selezionato non può essere modificato.");
 
         Category category = node.getUserObject();
+        String categoryNameBeforeChange = category.getName();
 
-        if (!category.isNameValid(newName))
-            throw new IllegalArgumentException("Il nome della categoria non può essere nullo.");
-
-        categoryDAO.changeCategory(category, newName);
-        category.setName(newName);
-        categoriesTreeModel.reload(node);
+        try {
+            category.setName(newName);
+            categoryDAO.changeCategory(category);
+            categoriesTreeModel.reload(node);
+        } catch (IllegalArgumentException e) {
+            throw e;
+        } catch (CategoryDatabaseException e) {
+            category.setName(categoryNameBeforeChange);
+            throw e;
+        }
     }
 
     /**

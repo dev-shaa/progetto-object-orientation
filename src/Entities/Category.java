@@ -3,6 +3,8 @@
  * che condividono delle caratteristiche comuni.
  */
 public class Category {
+
+    private int id;
     private String name;
     private Category parent;
 
@@ -20,6 +22,19 @@ public class Category {
     }
 
     /**
+     * TODO: commenta
+     * 
+     * @param name
+     * @param id
+     * @throws IllegalArgumentException
+     */
+    public Category(String name, int id) throws IllegalArgumentException {
+        setName(name);
+        setId(id);
+        setParent(null);
+    }
+
+    /**
      * Crea {@code Category} con un nome e una categoria genitore (che può essere {@code null}).
      * 
      * @param name
@@ -32,6 +47,27 @@ public class Category {
     public Category(String name, Category parent) throws IllegalArgumentException {
         setName(name);
         setParent(parent);
+    }
+
+    /**
+     * Imposta l'identificativo della categoria.
+     * Nota: dovrebbe essere chiamata solo durante la creazione di una nuova categoria.
+     * 
+     * @param id
+     *            identificativo della categoria
+     */
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    /**
+     * Restituisce l'identificativo della categoria.
+     * 
+     * @return
+     *         identificativo della categoria
+     */
+    public int getId() {
+        return id;
     }
 
     /**
