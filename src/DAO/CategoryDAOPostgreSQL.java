@@ -30,54 +30,54 @@ public class CategoryDAOPostgreSQL extends CategoryDAO {
 
     @Override
     public void addCategory(Category category) throws IllegalArgumentException, CategoryDatabaseException {
-        if (category == null)
-            throw new IllegalArgumentException("category non può essere null");
+        // if (category == null)
+        // throw new IllegalArgumentException("category non può essere null");
 
-        Connection connection = null;
-        Statement statement = null;
+        // Connection connection = null;
+        // Statement statement = null;
 
-        try {
-            connection = DatabaseController.getInstance().getConnection();
-            connection.setAutoCommit(false);
+        // try {
+        // connection = DatabaseController.getInstance().getConnection();
+        // connection.setAutoCommit(false);
 
-            statement = connection.createStatement();
+        // statement = connection.createStatement();
 
-            String parentID = category.getParent() == null ? "NULL" : String.valueOf(category.getParent().getId());
+        // String parentID = category.getParent() == null ? "NULL" : String.valueOf(category.getParent().getId());
 
-            String query = "insert into category(name, parent_category, parent_user) values("
-                    + category.getName() + ", "
-                    + parentID + ", "
-                    + user.getName() + ")";
+        // String query = "insert into category(name, parent_category, parent_user) values("
+        // + category.getName() + ", "
+        // + parentID + ", "
+        // + user.getName() + ")";
 
-            // il database genera un ID per ogni categoria, quindi vogliamo aggiornare la classe category prima di concludere ogni operazione
-            statement.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
+        // // il database genera un ID per ogni categoria, quindi vogliamo aggiornare la classe category prima di concludere ogni operazione
+        // statement.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
 
-            ResultSet set = statement.getGeneratedKeys();
+        // ResultSet set = statement.getGeneratedKeys();
 
-            if (set.first()) {
-                category.setId(set.getInt(1));
-            }
+        // if (set.first()) {
+        // category.setId(set.getInt(1));
+        // }
 
-            connection.commit();
-            statement.close();
-            DatabaseController.getInstance().closeConnection(connection);
-        } catch (Exception e) {
-            try {
-                connection.rollback();
-            } catch (Exception r) {
-                throw new CategoryDatabaseException("Impossibile aggiungere nuova categoria.");
-            }
+        // connection.commit();
+        // statement.close();
+        // DatabaseController.getInstance().closeConnection(connection);
+        // } catch (Exception e) {
+        // try {
+        // connection.rollback();
+        // } catch (Exception r) {
+        // throw new CategoryDatabaseException("Impossibile aggiungere nuova categoria.");
+        // }
 
-            throw new CategoryDatabaseException("Impossibile aggiungere nuova categoria.");
-        } finally {
-            try {
-                statement.close();
-                connection.close();
-            } catch (Exception e) {
-                // non fare niente
-                e.printStackTrace();
-            }
-        }
+        // throw new CategoryDatabaseException("Impossibile aggiungere nuova categoria.");
+        // } finally {
+        // try {
+        // statement.close();
+        // connection.close();
+        // } catch (Exception e) {
+        // // non fare niente
+        // e.printStackTrace();
+        // }
+        // }
     }
 
     @Override

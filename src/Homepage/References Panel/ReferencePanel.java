@@ -231,8 +231,12 @@ public class ReferencePanel extends JPanel {
      *            categoria di cui mostrare i riferimenti
      */
     public void showReferences(Category category) {
-        BibliographicReference[] references = bibliographicReferenceDAO.getReferences(category);
-        showReferences(references);
+        try {
+            BibliographicReference[] references = bibliographicReferenceDAO.getReferences(category);
+            showReferences(references);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
     }
 
 }

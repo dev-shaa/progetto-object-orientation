@@ -22,9 +22,9 @@ public class Connesione {
 		}
 	}
 
-	public static void main(String[] args) {
-		Connesione sqlConnect = new Connesione();
-		sqlConnect.connect();
-	}
+	// public static void main(String[] args) {
+	// Connesione sqlConnect = new Connesione();
+	// sqlConnect.connect();
+	// }
 
 }

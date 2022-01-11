@@ -31,7 +31,7 @@ public class Homepage extends JFrame {
         setCloseOperation();
 
         CategoryDAO categoryDAO = new CategoryDAOPostgreSQL(user);
-        BibliographicReferenceDAO bibliographicReferenceDAO = new BibliographicReferenceDAO();// FIXME:
+        BibliographicReferenceDAO bibliographicReferenceDAO = new BibliographicReferenceDAO();// TODO: sistema una volta implementato
 
         JPanel contentPane = new JPanel();
         contentPane.setLayout(new BorderLayout(5, 5));

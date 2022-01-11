@@ -32,13 +32,12 @@ public class Controller {
     }
 
     public void openHomePage(User user) {
-        loginFrame.setVisible(false);
-
         try {
             homepage = new Homepage(this, user);
             homepage.setVisible(true);
+            loginFrame.setVisible(false);
         } catch (Exception e) {
-            // TODO: mostra schermata di errore
+            JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }
 
