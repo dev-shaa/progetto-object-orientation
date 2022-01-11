@@ -126,8 +126,6 @@ public abstract class BibliographicReference {
      *            codice DOI del riferimento
      */
     public void setDOI(String DOI) {
-        // TODO: controllo regex
-
         this.DOI = DOI;
     }
 

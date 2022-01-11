@@ -12,9 +12,10 @@ public class Category {
      * Crea {@code Category} con un nome e nessun genitore.
      * 
      * @param name
-     *            il nome della categoria
+     *            nome della categoria
      * @throws IllegalArgumentException
-     *             se {@code name == null} o {@code name.isBlank()}
+     *             se il nome non è valido
+     * @see #isNameValid(String)
      */
     public Category(String name) throws IllegalArgumentException {
         setName(name);
@@ -22,27 +23,32 @@ public class Category {
     }
 
     /**
-     * TODO: commenta
+     * Crea {@code Category} con un nome, un ID e nessun genitore.
      * 
      * @param name
+     *            nome della categoria
      * @param id
+     *            identificativo della categoria
      * @throws IllegalArgumentException
+     *             se il nome non è valido
+     * @see #isNameValid(String)
      */
     public Category(String name, int id) throws IllegalArgumentException {
         setName(name);
-        setId(id);
         setParent(null);
+        setId(id);
     }
 
     /**
      * Crea {@code Category} con un nome e una categoria genitore (che può essere {@code null}).
      * 
      * @param name
-     *            il nome della categoria
+     *            nome della categoria
      * @param parent
-     *            la categoria genitore
+     *            categoria genitore
      * @throws IllegalArgumentException
-     *             se {@code name == null} o {@code name.isBlank()}
+     *             se il nome non è valido
+     * @see #isNameValid(String)
      */
     public Category(String name, Category parent) throws IllegalArgumentException {
         setName(name);
@@ -51,12 +57,12 @@ public class Category {
 
     /**
      * Imposta l'identificativo della categoria.
-     * Nota: dovrebbe essere chiamata solo durante la creazione di una nuova categoria.
+     * ATTENZIONE: dovrebbe essere chiamata solo durante la creazione di una nuova categoria, quindi la funzione è stata resa privata.
      * 
      * @param id
      *            identificativo della categoria
      */
-    public void setId(int id) {
+    private void setId(int id) {
         this.id = id;
     }
 
@@ -74,9 +80,10 @@ public class Category {
      * Imposta il nome di questa categoria.
      * 
      * @param name
-     *            il nome della categoria
+     *            nome della categoria
      * @throws IllegalArgumentException
-     *             se {@code name == null} o {@code name.isBlank()}
+     *             se il nome non è valido
+     * @see #isNameValid(String)
      */
     public void setName(String name) throws IllegalArgumentException {
         if (!isNameValid(name))

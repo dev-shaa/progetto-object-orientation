@@ -11,7 +11,6 @@ import javax.swing.tree.TreeSelectionModel;
  * Pannello con le categorie dell'utente sotto forma di albero, con ogni nodo che rappresenta una categoria.
  * Sono presenti dei pulsanti per aggiungere, modificare o rimuovere una categoria.
  * 
- * @see Homepage
  * @see ReferencePanel
  */
 public class CategoriesPanel extends JPanel {

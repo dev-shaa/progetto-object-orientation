@@ -95,8 +95,6 @@ public class SearchPanel extends JPanel {
         searchButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // TODO: cerca
-                // TODO: carica dal database
-                // TODO: imposta riferimenti da mostrare
             }
         });
     }

@@ -1,13 +1,18 @@
+import java.util.ArrayList;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionListener;
-import java.util.ArrayList;
-import java.util.List;
 import javax.swing.table.DefaultTableModel;
 
 /**
+ * Pannello che mostra una tabella in cui ogni riga mostra un riferimento.
+ * Sono presenti dei pulsanti per aggiungere, modificare o rimuovere un riferimento.
+ * Per ogni riferimento vengono mostrati il titolo, gli autori, la data di pubblicazione
+ * e il numero di citazioni ricevute da altri riferimenti.
+ * È possibile ordinare i riferimenti in base al dettaglio voluto.
  * 
+ * @see ReferencePanel
  */
 public class ReferenceListPanel extends JScrollPane {
 
@@ -22,7 +27,7 @@ public class ReferenceListPanel extends JScrollPane {
     private final String quotationCountLabel = "Citazione ricevute";
 
     /**
-     * 
+     * Crea un {@code ReferenceListPanel} vuoto.
      */
     public ReferenceListPanel() {
         String[] tableColumns = { titleLabel, authorsLabel, pubblicationDateLabel, quotationCountLabel };
@@ -44,18 +49,28 @@ public class ReferenceListPanel extends JScrollPane {
     }
 
     /**
+     * Crea un {@code ReferenceListPanel} con i riferimenti di input.
+     * 
+     * @param references
+     *            riferimenti da mostrare
+     * @see #setReferences(BibliographicReference[])
+     */
+    public ReferenceListPanel(BibliographicReference[] references) {
+        this();
+        setReferences(references);
+    }
+
+    /**
      * Imposta i riferimenti da mostrare nell'elenco.
      * 
      * @param references
-     *            i riferimenti da mostrare
-     * @throws IllegalArgumentException
-     *             se {@code references == null}
+     *            i riferimenti da mostrare (se {@code references == null} non viene mostrato nulla)
      */
-    public void setReferences(List<BibliographicReference> references) throws IllegalArgumentException {
-        if (references == null)
-            throw new IllegalArgumentException("references non può essere null");
-
+    public void setReferences(BibliographicReference[] references) {
         removeAllReferences();
+
+        if (references == null)
+            return;
 
         for (BibliographicReference riferimento : references) {
             addReference(riferimento);
@@ -106,12 +121,13 @@ public class ReferenceListPanel extends JScrollPane {
     }
 
     /**
-     * TODO: commenta
      * Restituisce l'indice del riferimento selezionato.
      * 
      * @return
-     * 
+     *         l'indice del riferimento selezionato
      * @throws IndexOutOfBoundsException
+     *             se l'ordinamento è attivo e l'indice del riferimento selezionato si trova al di fuori degli estremi della tabella
+     *             (non dovrebbe mai succedere)
      */
     private int getSelectedReferenceIndex() throws IndexOutOfBoundsException {
         return referencesTable.convertRowIndexToModel(referencesTable.getSelectedRow());

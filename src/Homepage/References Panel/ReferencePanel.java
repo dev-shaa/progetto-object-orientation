@@ -3,15 +3,13 @@ import javax.swing.event.*;
 import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
 import java.awt.FlowLayout;
 
-// TODO: commenta
+// TODO: forse è possibile rimuovere il riferimento a controller se la creazion riferimento viene creata come finestra di dialogo
 
 /**
  * Classe che si occupa di mostrare i riferimenti cercati o presenti in una categoria.
  * 
- * @see Homepage
  * @see ReferenceListPanel
  * @see ReferenceInfoPanel
  */
@@ -36,7 +34,7 @@ public class ReferencePanel extends JPanel {
      * @param bibliographicReferenceDAO
      *            classe DAO per interfacciarsi al database dei riferimenti
      * @throws IllegalArgumentException
-     *             se {@code controller == null} o {@code bibiliographicReferenceDAO == null}
+     *             se controller o bibiliographicReferenceDAO non sono validi
      * @see #setController(Controller)
      * @see #setBibiliographicReferenceDAO(BibliographicReferenceDAO)
      */
@@ -57,7 +55,6 @@ public class ReferencePanel extends JPanel {
                     boolean shouldButtonsBeEnabled = selectedReference == null;
                     editReferenceButton.setEnabled(shouldButtonsBeEnabled);
                     deleteReferenceButton.setEnabled(shouldButtonsBeEnabled);
-
                 }
             }
         });
@@ -77,8 +74,7 @@ public class ReferencePanel extends JPanel {
     }
 
     /**
-     * TODO: commenta meglio
-     * Imposta il controller.
+     * Imposta il controller responsabile delle finestre.
      * 
      * @param controller
      * @throws IllegalArgumentException
@@ -145,11 +141,9 @@ public class ReferencePanel extends JPanel {
     }
 
     /**
-     * TODO: commenta
+     * Configura il menu a tendina che appare quando viene premuto il tasto di creazione del riferimento.
      */
     private void setupNewCategorySelectionPopupMenu() {
-        // TODO: i pulsanti non fanno nulla ora
-
         newCategoryTypeSelection = new JPopupMenu();
 
         JMenuItem articleOption = new JMenuItem("Articolo");
@@ -221,10 +215,12 @@ public class ReferencePanel extends JPanel {
     }
 
     /**
+     * Mostra i riferimenti passati.
      * 
      * @param references
+     *            riferimenti da mostrare
      */
-    public void showReferences(ArrayList<BibliographicReference> references) {
+    public void showReferences(BibliographicReference[] references) {
         listPanel.setReferences(references);
     }
 
@@ -235,8 +231,8 @@ public class ReferencePanel extends JPanel {
      *            categoria di cui mostrare i riferimenti
      */
     public void showReferences(Category category) {
-        ArrayList<BibliographicReference> references = bibliographicReferenceDAO.getReferences(category);
-        listPanel.setReferences(references);
+        BibliographicReference[] references = bibliographicReferenceDAO.getReferences(category);
+        showReferences(references);
     }
 
 }
