@@ -1,3 +1,14 @@
+package GUI.Homepage;
+
+import GUI.*;
+import DAO.*;
+import Entities.*;
+import Exceptions.*;
+import GUI.Homepage.Categories.*;
+import GUI.Homepage.References.*;
+import GUI.Homepage.Search.*;
+import GUI.Homepage.User.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.BorderLayout;
@@ -17,7 +28,7 @@ public class Homepage extends JFrame {
      * Crea {@code Homepage} con i dati relativi all'utente.
      * 
      * @param user
-     *            l'utente che ha eseguito l'accesso
+     *             l'utente che ha eseguito l'accesso
      * @since 0.1
      */
     public Homepage(Controller controller, User user) throws IllegalArgumentException, CategoryDatabaseException {
@@ -31,7 +42,8 @@ public class Homepage extends JFrame {
         setCloseOperation();
 
         CategoryDAO categoryDAO = new CategoryDAOPostgreSQL(user);
-        BibliographicReferenceDAO bibliographicReferenceDAO = new BibliographicReferenceDAO();// TODO: sistema una volta implementato
+        BibliographicReferenceDAO bibliographicReferenceDAO = new BibliographicReferenceDAO();// TODO: sistema una volta
+                                                                                              // implementato
 
         JPanel contentPane = new JPanel();
         contentPane.setLayout(new BorderLayout(5, 5));
@@ -56,7 +68,8 @@ public class Homepage extends JFrame {
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-                int confirmDialogBoxOption = JOptionPane.showConfirmDialog(null, "Sicuro di volere uscire?", "Esci", JOptionPane.YES_NO_OPTION);
+                int confirmDialogBoxOption = JOptionPane.showConfirmDialog(null, "Sicuro di volere uscire?", "Esci",
+                        JOptionPane.YES_NO_OPTION);
 
                 if (confirmDialogBoxOption == JOptionPane.YES_OPTION)
                     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

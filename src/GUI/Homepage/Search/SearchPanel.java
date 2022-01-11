@@ -1,10 +1,16 @@
+package GUI.Homepage.Search;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
 
+import GUI.Homepage.Categories.*;
+import GUI.Homepage.References.*;
+
 /**
- * Pannello per la ricerca dei riferimenti per parole chiave, autori, categorie e data.
+ * Pannello per la ricerca dei riferimenti per parole chiave, autori, categorie
+ * e data.
  */
 public class SearchPanel extends JPanel {
 
@@ -64,13 +70,15 @@ public class SearchPanel extends JPanel {
     }
 
     private void setupTagSearchField() {
-        tagSearchField = new TextSearchPanel("Parole chiave:", "Parole chiave da ricercare, separate da virgole (esempio: Liste, Alberi)");
+        tagSearchField = new TextSearchPanel("Parole chiave:",
+                "Parole chiave da ricercare, separate da virgole (esempio: Liste, Alberi)");
         tagSearchField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
         tagSearchField.setAlignmentX(JTextField.LEFT_ALIGNMENT);
     }
 
     private void setupAuthorsSearchField() {
-        authorSearchField = new TextSearchPanel("Autori:", "Autori da ricercare, separati da virgole (esempio: Mario Rossi, Ciro Esposito)");
+        authorSearchField = new TextSearchPanel("Autori:",
+                "Autori da ricercare, separati da virgole (esempio: Mario Rossi, Ciro Esposito)");
         authorSearchField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
         authorSearchField.setAlignmentX(JTextField.LEFT_ALIGNMENT);
     }

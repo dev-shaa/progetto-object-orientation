@@ -1,3 +1,5 @@
+package Entities.References;
+
 public class BibliographicReferenceField {
     private String name;
     private Object value;

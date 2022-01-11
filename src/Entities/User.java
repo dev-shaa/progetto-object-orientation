@@ -1,3 +1,5 @@
+package Entities;
+
 // PLACEHOLDER
 
 public class User {

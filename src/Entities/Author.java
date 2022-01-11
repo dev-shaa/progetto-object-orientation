@@ -1,3 +1,5 @@
+package Entities;
+
 /**
  * Classe che rappresenta l'autore di un riferimento bibliografico.
  */
@@ -9,11 +11,12 @@ public class Author {
      * Crea un nuovo autore con il nome e cognome dati.
      * 
      * @param firstName
-     *            nome dell'autore
+     *                  nome dell'autore
      * @param lastName
-     *            cognome dell'autore
+     *                  cognome dell'autore
      * @throws IllegalArgumentException
-     *             se {@code firstName == null } o {@code lastName == null }
+     *                                  se {@code firstName == null } o
+     *                                  {@code lastName == null }
      */
     public Author(String firstName, String lastName) throws IllegalArgumentException {
         setFirstName(firstName);
@@ -24,9 +27,9 @@ public class Author {
      * Imposta il nome dell'autore.
      * 
      * @param firstName
-     *            nome dell'autore
+     *                  nome dell'autore
      * @throws IllegalArgumentException
-     *             se {@code firstName == null }
+     *                                  se {@code firstName == null }
      */
     public void setFirstName(String firstName) throws IllegalArgumentException {
         if (firstName == null)
@@ -49,9 +52,9 @@ public class Author {
      * Imposta il cognome dell'autore.
      * 
      * @param lastName
-     *            cognome dell'autore
+     *                 cognome dell'autore
      * @throws IllegalArgumentException
-     *             se {@code lastName == null }
+     *                                  se {@code lastName == null }
      */
     public void setLastName(String lastName) throws IllegalArgumentException {
         if (lastName == null)

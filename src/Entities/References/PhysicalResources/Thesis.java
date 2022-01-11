@@ -1,3 +1,6 @@
+package Entities.References.PhysicalResources;
+
+import Entities.References.*;
 import java.util.ArrayList;
 
 /**
@@ -12,9 +15,9 @@ public class Thesis extends Publication {
      * Crea un riferimento a una tesi universitaria dal titolo indicato.
      * 
      * @param title
-     *            titolo della tesi
+     *              titolo della tesi
      * @throws IllegalArgumentException
-     *             se il titolo della tesi non è valido
+     *                                  se il titolo della tesi non è valido
      */
     public Thesis(String title) throws IllegalArgumentException {
         super(title);
@@ -24,7 +27,7 @@ public class Thesis extends Publication {
      * Imposta l'università da cui proviene questa tesi.
      * 
      * @param university
-     *            università della tesi
+     *                   università della tesi
      */
     public void setUniversity(String university) {
         this.university = university;
@@ -44,7 +47,7 @@ public class Thesis extends Publication {
      * Imposta la facoltà da cui proviene questa tesi.
      * 
      * @param faculty
-     *            facoltà della tesi
+     *                facoltà della tesi
      */
     public void setFaculty(String faculty) {
         this.faculty = faculty;

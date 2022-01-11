@@ -1,3 +1,6 @@
+package GUI.Homepage.Categories;
+
+import Entities.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
@@ -11,7 +14,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 public class CategoryMutableTreeNode extends DefaultMutableTreeNode {
 
     /**
-     * Crea un nodo {@code CategoryMutableTreeNode} senza genitore, senza figli, che ammette figli
+     * Crea un nodo {@code CategoryMutableTreeNode} senza genitore, senza figli, che
+     * ammette figli
      * e senza una categoria associata.
      */
     public CategoryMutableTreeNode() {
@@ -19,11 +23,12 @@ public class CategoryMutableTreeNode extends DefaultMutableTreeNode {
     }
 
     /**
-     * Crea un nodo {@code CategoryMutableTreeNode} senza genitore, senza figli, che ammette figli
+     * Crea un nodo {@code CategoryMutableTreeNode} senza genitore, senza figli, che
+     * ammette figli
      * e con una categoria associata.
      * 
      * @param category
-     *            la categoria associata a questo nodo
+     *                 la categoria associata a questo nodo
      */
     public CategoryMutableTreeNode(Category category) {
         super(category);
@@ -52,19 +57,22 @@ public class CategoryMutableTreeNode extends DefaultMutableTreeNode {
     }
 
     /**
-     * Assegna questo nodo come genitore di {@code newChild} e gli viene aggiunto il nuovo figlio.
+     * Assegna questo nodo come genitore di {@code newChild} e gli viene aggiunto il
+     * nuovo figlio.
      *
      * @param newChild
-     *            il nodo da inserire come figlio
+     *                   il nodo da inserire come figlio
      * @param childIndex
-     *            l'indice dell'array di figli di questo nodo dove verrà inserito il nuovo figlio
+     *                   l'indice dell'array di figli di questo nodo dove verrà
+     *                   inserito il nuovo figlio
      */
     public void insert(CategoryMutableTreeNode newChild, int childIndex) {
         super.insert(newChild, childIndex);
     }
 
     /**
-     * Restituisce {@code true} se il nodo può essere modificato (quindi se non è la radice dell'albero e la sua categoria non è nulla), {@code false} altrimenti.
+     * Restituisce {@code true} se il nodo può essere modificato (quindi se non è la
+     * radice dell'albero e la sua categoria non è nulla), {@code false} altrimenti.
      * 
      * @return
      *         {@code true} se il nodo può essere modificato

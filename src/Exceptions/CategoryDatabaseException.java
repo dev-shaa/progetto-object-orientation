@@ -1,3 +1,5 @@
+package Exceptions;
+
 public class CategoryDatabaseException extends Exception {
     public CategoryDatabaseException() {
         super();

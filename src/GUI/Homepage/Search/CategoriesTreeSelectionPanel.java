@@ -1,3 +1,8 @@
+package GUI.Homepage.Search;
+
+import Entities.*;
+import GUI.Homepage.Categories.*;
+
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -22,9 +27,9 @@ public class CategoriesTreeSelectionPanel extends JPanel {
     /**
      * 
      * @param categoriesTree
-     *            l'albero delle categorie
+     *                       l'albero delle categorie
      * @throws IllegalArgumentException
-     *             se {@code categoriesTree == null}
+     *                                  se {@code categoriesTree == null}
      */
     public CategoriesTreeSelectionPanel(CategoriesTree categoriesTree) throws IllegalArgumentException {
         if (categoriesTree == null)
@@ -41,7 +46,8 @@ public class CategoriesTreeSelectionPanel extends JPanel {
             @Override
             public void valueChanged(TreeSelectionEvent e) {
                 Category[] selectedCategories = getSelectedCategories();
-                String textToDisplayOnButton = selectedCategories == null ? "Nessuna categoria selezionata" : Arrays.toString(selectedCategories);
+                String textToDisplayOnButton = selectedCategories == null ? "Nessuna categoria selezionata"
+                        : Arrays.toString(selectedCategories);
                 categoriesDropdownButton.setText(textToDisplayOnButton);
             }
 
@@ -122,7 +128,8 @@ public class CategoriesTreeSelectionPanel extends JPanel {
         Category[] selectedCategories = new Category[selectedPaths.length];
 
         for (int i = 0; i < selectedPaths.length; i++)
-            selectedCategories[i] = (Category) ((DefaultMutableTreeNode) selectedPaths[i].getLastPathComponent()).getUserObject();
+            selectedCategories[i] = (Category) ((DefaultMutableTreeNode) selectedPaths[i].getLastPathComponent())
+                    .getUserObject();
 
         return selectedCategories;
     }

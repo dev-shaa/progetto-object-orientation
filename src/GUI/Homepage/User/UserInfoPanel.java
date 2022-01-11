@@ -1,3 +1,7 @@
+package GUI.Homepage.User;
+
+import GUI.*;
+import Entities.*;
 import java.awt.event.*;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -14,9 +18,9 @@ public class UserInfoPanel extends JPanel {
      * Crea {@code UserInfoPanel} con i dati relativi all'utente.
      * 
      * @param controller
-     *            il controller del programma
+     *                   il controller del programma
      * @param user
-     *            l'utente che ha eseguito l'accesso
+     *                   l'utente che ha eseguito l'accesso
      */
     public UserInfoPanel(Controller controller, User user) {
 

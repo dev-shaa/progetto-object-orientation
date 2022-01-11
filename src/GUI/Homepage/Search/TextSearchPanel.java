@@ -1,3 +1,5 @@
+package GUI.Homepage.Search;
+
 import java.awt.*;
 import javax.swing.*;
 

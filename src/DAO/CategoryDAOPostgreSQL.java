@@ -1,3 +1,7 @@
+package DAO;
+
+import Entities.*;
+import Exceptions.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.sql.Connection;
@@ -17,12 +21,13 @@ public class CategoryDAOPostgreSQL extends CategoryDAO {
     private final String parentKey = "parent_category";
 
     /**
-     * Crea {@code CategoryDAOPostgreSQL} per interfacciarsi al database PostgreSQL relativo alle categorie dell'utente.
+     * Crea {@code CategoryDAOPostgreSQL} per interfacciarsi al database PostgreSQL
+     * relativo alle categorie dell'utente.
      * 
      * @param user
-     *            l'utente che accede al database
+     *             l'utente che accede al database
      * @throws IllegalArgumentException
-     *             se l'utente di input è {@code null}
+     *                                  se l'utente di input è {@code null}
      */
     public CategoryDAOPostgreSQL(User user) throws IllegalArgumentException {
         super(user);
@@ -42,14 +47,17 @@ public class CategoryDAOPostgreSQL extends CategoryDAO {
 
         // statement = connection.createStatement();
 
-        // String parentID = category.getParent() == null ? "NULL" : String.valueOf(category.getParent().getId());
+        // String parentID = category.getParent() == null ? "NULL" :
+        // String.valueOf(category.getParent().getId());
 
-        // String query = "insert into category(name, parent_category, parent_user) values("
+        // String query = "insert into category(name, parent_category, parent_user)
+        // values("
         // + category.getName() + ", "
         // + parentID + ", "
         // + user.getName() + ")";
 
-        // // il database genera un ID per ogni categoria, quindi vogliamo aggiornare la classe category prima di concludere ogni operazione
+        // // il database genera un ID per ogni categoria, quindi vogliamo aggiornare la
+        // classe category prima di concludere ogni operazione
         // statement.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
 
         // ResultSet set = statement.getGeneratedKeys();
@@ -65,10 +73,12 @@ public class CategoryDAOPostgreSQL extends CategoryDAO {
         // try {
         // connection.rollback();
         // } catch (Exception r) {
-        // throw new CategoryDatabaseException("Impossibile aggiungere nuova categoria.");
+        // throw new CategoryDatabaseException("Impossibile aggiungere nuova
+        // categoria.");
         // }
 
-        // throw new CategoryDatabaseException("Impossibile aggiungere nuova categoria.");
+        // throw new CategoryDatabaseException("Impossibile aggiungere nuova
+        // categoria.");
         // } finally {
         // try {
         // statement.close();

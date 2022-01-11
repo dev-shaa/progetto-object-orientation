@@ -1,3 +1,9 @@
+package DAO;
+
+import Entities.*;
+import Entities.References.*;
+import Entities.References.OnlineResources.*;
+import Entities.References.PhysicalResources.*;
 import java.util.ArrayList;
 
 // PLACEHOLDER

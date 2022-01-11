@@ -1,3 +1,6 @@
+package Entities.References;
+
+import Entities.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -20,9 +23,9 @@ public abstract class BibliographicReference {
      * La lingua verrà impostata come Sconosciuta.
      * 
      * @param title
-     *            titolo del riferimento
+     *              titolo del riferimento
      * @throws IllegalArgumentException
-     *             se il titolo non è una stringa valida
+     *                                  se il titolo non è una stringa valida
      * @see #setTitle(String)
      */
     public BibliographicReference(String title) throws IllegalArgumentException {
@@ -38,9 +41,9 @@ public abstract class BibliographicReference {
      * Imposta il titolo del riferimento.
      * 
      * @param title
-     *            titolo del riferimento
+     *              titolo del riferimento
      * @throws IllegalArgumentException
-     *             se il titolo non è una stringa valida
+     *                                  se il titolo non è una stringa valida
      * @see #isTitleValid(String)
      */
     public void setTitle(String title) throws IllegalArgumentException {
@@ -64,9 +67,9 @@ public abstract class BibliographicReference {
      * Imposta gli autori di questo riferimento.
      * 
      * @param authors
-     *            autori del riferimento
+     *                autori del riferimento
      * @throws IllegalArgumentException
-     *             se {@code authors == null}
+     *                                  se {@code authors == null}
      */
     public void setAuthors(ArrayList<Author> authors) throws IllegalArgumentException {
         if (authors == null)
@@ -79,9 +82,9 @@ public abstract class BibliographicReference {
      * Aggiunge un autore a questo riferimento.
      * 
      * @param author
-     *            autore da aggiungere
+     *               autore da aggiungere
      * @throws IllegalArgumentException
-     *             se {@code author == null}
+     *                                  se {@code author == null}
      */
     public void addAuthor(Author author) throws IllegalArgumentException {
         if (author == null)
@@ -103,7 +106,8 @@ public abstract class BibliographicReference {
      * Imposta la data di pubblicazione del riferimento.
      * 
      * @param pubblicationDate
-     *            data di pubblicazione del riferimento ({@code null} se non è indicato)
+     *                         data di pubblicazione del riferimento ({@code null}
+     *                         se non è indicato)
      */
     public void setPubblicationDate(Date pubblicationDate) {
         this.pubblicationDate = pubblicationDate;
@@ -113,7 +117,8 @@ public abstract class BibliographicReference {
      * Restituisce la data di pubblicazione del riferimento.
      * 
      * @return
-     *         data di pubblicazione del riferimento ({@code null} se non è indicata)
+     *         data di pubblicazione del riferimento ({@code null} se non è
+     *         indicata)
      */
     public Date getPubblicationDate() {
         return pubblicationDate;
@@ -143,7 +148,7 @@ public abstract class BibliographicReference {
      * Imposta la descrizione del riferimento.
      * 
      * @param description
-     *            descrizione del riferimento
+     *                    descrizione del riferimento
      */
     public void setDescription(String description) {
         this.description = description;
@@ -163,9 +168,9 @@ public abstract class BibliographicReference {
      * Imposta la lingua del riferimento.
      * 
      * @param language
-     *            lingua del riferimento
+     *                 lingua del riferimento
      * @throws IllegalArgumentException
-     *             se {@code language == null}
+     *                                  se {@code language == null}
      */
     public void setLanguage(ReferenceLanguage language) throws IllegalArgumentException {
         if (language == null)
@@ -188,7 +193,7 @@ public abstract class BibliographicReference {
      * Imposta le parole chiave associate al riferimento.
      * 
      * @param tags
-     *            parole chiave del riferimento
+     *             parole chiave del riferimento
      */
     public void setTags(ArrayList<String> tags) {
         this.tags = tags;
@@ -208,7 +213,7 @@ public abstract class BibliographicReference {
      * Imposta i rimandi associati a questo riferimento.
      * 
      * @param relatedReferences
-     *            rimandi di questo riferimento
+     *                          rimandi di questo riferimento
      */
     public void setRelatedReferences(ArrayList<BibliographicReference> relatedReferences) {
         this.relatedReferences = relatedReferences;
@@ -228,7 +233,7 @@ public abstract class BibliographicReference {
      * Controlla se la stringa passata è un titolo valido per un riferimento.
      * 
      * @param title
-     *            titolo da controllare
+     *              titolo da controllare
      * @return
      *         {@code false} se la stringa è nulla o vuota
      */
@@ -293,8 +298,4 @@ public abstract class BibliographicReference {
         return getTitle();
     }
 
-}
-
-enum ReferenceLanguage {
-    Sconosciuta, Italiano, Inglese, Francese, Tedesco, Spagnolo, Russo, Giapponese, Cinese, Arabo, Altro
 }

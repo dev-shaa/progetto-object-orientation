@@ -1,3 +1,6 @@
+package Entities.References.OnlineResources;
+
+import Entities.References.*;
 import java.util.ArrayList;
 
 /**
@@ -13,11 +16,11 @@ public class Video extends OnlineResource {
     /**
      * 
      * @param title
-     *            titolo del video
+     *              titolo del video
      * @param URL
-     *            url del video
+     *              url del video
      * @throws IllegalArgumentException
-     *             se il titolo o l'url non sono validi
+     *                                  se il titolo o l'url non sono validi
      */
     public Video(String title, String URL) throws IllegalArgumentException {
         super(title, URL);
@@ -27,7 +30,7 @@ public class Video extends OnlineResource {
      * Imposta la larghezza del video.
      * 
      * @param width
-     *            larghezza del video
+     *              larghezza del video
      */
     public void setWidth(Integer width) {
         this.width = width;
@@ -47,7 +50,7 @@ public class Video extends OnlineResource {
      * Imposta l'altezza del video.
      * 
      * @param height
-     *            altezza del video
+     *               altezza del video
      */
     public void setHeight(Integer height) {
         this.height = height;
@@ -83,7 +86,7 @@ public class Video extends OnlineResource {
      * Imposta la durata del video.
      * 
      * @param duration
-     *            durata del video
+     *                 durata del video
      */
     public void setDuration(Float duration) {
         this.duration = duration;

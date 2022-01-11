@@ -1,3 +1,5 @@
+package GUI.Homepage.Search;
+
 import java.awt.GridLayout;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
@@ -5,7 +7,8 @@ import com.toedter.calendar.JDateChooser;
 import java.util.Date;
 
 /**
- * Un pannello con dei selettori che permettono di scegliere un intervallo tra una data di inizio e una di fine.
+ * Un pannello con dei selettori che permettono di scegliere un intervallo tra
+ * una data di inizio e una di fine.
  * 
  * @version 1.0
  * @author Salvatore Di Gennaro
@@ -16,7 +19,8 @@ public class DatePickerPanel extends JPanel {
     private JDateChooser endDate;
 
     /**
-     * Crea un pannello in cui è possibile selezionare due date, una di inizio e una di fine.
+     * Crea un pannello in cui è possibile selezionare due date, una di inizio e una
+     * di fine.
      * Gli elementi sono allineati verticalmente.
      */
     public DatePickerPanel() {

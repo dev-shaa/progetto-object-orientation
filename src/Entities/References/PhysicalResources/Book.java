@@ -1,3 +1,6 @@
+package Entities.References.PhysicalResources;
+
+import Entities.References.*;
 import java.util.ArrayList;
 
 /**
@@ -20,7 +23,7 @@ public class Book extends Publication {
      * Imposta il codice identificativo ISBN del libro.
      * 
      * @param ISBN
-     *            codice ISBN del libro
+     *             codice ISBN del libro
      */
     public void setISBN(String ISBN) {
         this.ISBN = ISBN;

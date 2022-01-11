@@ -1,7 +1,12 @@
+package GUI;
 // PLACEHOLDER
 
 import javax.swing.*;
 import com.formdev.flatlaf.*;
+
+import Entities.*;
+import Entities.References.*;
+import GUI.Homepage.*;
 
 public class Controller {
 

@@ -1,3 +1,6 @@
+package Entities.References.PhysicalResources;
+
+import Entities.References.*;
 import java.util.ArrayList;
 
 /**
@@ -8,12 +11,13 @@ public class Article extends Publication {
     private String ISSN;
 
     /**
-     * Crea un riferimento a un articolo di una pubblicazione con un titolo indicato.
+     * Crea un riferimento a un articolo di una pubblicazione con un titolo
+     * indicato.
      * 
      * @param title
-     *            titolo dell'articolo
+     *              titolo dell'articolo
      * @throws IllegalArgumentException
-     *             se il titolo dell'articolo non è valido
+     *                                  se il titolo dell'articolo non è valido
      */
     public Article(String title) throws IllegalArgumentException {
         super(title);
@@ -23,7 +27,7 @@ public class Article extends Publication {
      * Imposta il codice identificativo ISSN dell'articolo.
      * 
      * @param ISSN
-     *            codice identificativo ISSN
+     *             codice identificativo ISSN
      */
     public void setISSN(String ISSN) {
         this.ISSN = ISSN;

@@ -1,17 +1,24 @@
+package DAO;
+
+import Entities.*;
+import Exceptions.*;
+
 /**
- * Classe astratta che si occupa di gestire la parte di database relativo alle categorie.
+ * Classe astratta che si occupa di gestire la parte di database relativo alle
+ * categorie.
  */
 public abstract class CategoryDAO {
 
     protected User user;
 
     /**
-     * Crea {@code CategoryDAO} per interfacciarsi al database relativo alle categorie dell'utente.
+     * Crea {@code CategoryDAO} per interfacciarsi al database relativo alle
+     * categorie dell'utente.
      * 
      * @param user
-     *            utente che accede al database
+     *             utente che accede al database
      * @throws IllegalArgumentException
-     *             se l'utente di input è {@code null}
+     *                                  se l'utente di input è {@code null}
      */
     public CategoryDAO(User user) throws IllegalArgumentException {
         setUser(user);
@@ -21,9 +28,9 @@ public abstract class CategoryDAO {
      * Imposta l'utente di cui recuperare le categorie.
      * 
      * @param user
-     *            utente di cui recuperare le categorie.
+     *             utente di cui recuperare le categorie.
      * @throws IllegalArgumentException
-     *             se l'utente di input è {@code null}
+     *                                  se l'utente di input è {@code null}
      */
     public void setUser(User user) throws IllegalArgumentException {
         if (user == null)
@@ -45,20 +52,22 @@ public abstract class CategoryDAO {
      * Salva una nuova categoria nel database.
      * 
      * @param category
-     *            nuova categoria da salvare.
+     *                 nuova categoria da salvare.
      * @throws CategoryDatabaseException
-     *             se l'aggiunta della categoria al database non va a buon fine
+     *                                   se l'aggiunta della categoria al database
+     *                                   non va a buon fine
      */
 
     /**
      * Salva una nuova categoria nel database.
      * 
      * @param category
-     *            nuova categoria da salvare.
+     *                 nuova categoria da salvare.
      * @throws IllegalArgumentException
-     *             se {@code category == null}
+     *                                   se {@code category == null}
      * @throws CategoryDatabaseException
-     *             se l'aggiunta della categoria al database non va a buon fine
+     *                                   se l'aggiunta della categoria al database
+     *                                   non va a buon fine
      */
     public abstract void addCategory(Category category) throws IllegalArgumentException, CategoryDatabaseException;
 
@@ -66,11 +75,12 @@ public abstract class CategoryDAO {
      * Modifica una categoria nel database.
      * 
      * @param category
-     *            categoria modificata da aggiornare nel database
+     *                 categoria modificata da aggiornare nel database
      * @throws IllegalArgumentException
-     *             se {@code category == null}
+     *                                   se {@code category == null}
      * @throws CategoryDatabaseException
-     *             se la modifica della categoria nel database non va a buon fine
+     *                                   se la modifica della categoria nel database
+     *                                   non va a buon fine
      */
     public abstract void changeCategory(Category category) throws IllegalArgumentException, CategoryDatabaseException;
 
@@ -78,11 +88,12 @@ public abstract class CategoryDAO {
      * Elimina una categoria nel database.
      * 
      * @param category
-     *            categoria da eliminare.
+     *                 categoria da eliminare.
      * @throws IllegalArgumentException
-     *             se {@code category == null}
+     *                                   se {@code category == null}
      * @throws CategoryDatabaseException
-     *             se la rimozione della categoria dal database non va a buon fine
+     *                                   se la rimozione della categoria dal
+     *                                   database non va a buon fine
      */
     public abstract void removeCategory(Category category) throws IllegalArgumentException, CategoryDatabaseException;
 
@@ -91,7 +102,8 @@ public abstract class CategoryDAO {
      * 
      * @return lista contenente tutte le categorie dell'utente.
      * @throws CategoryDatabaseException
-     *             se il recupero delle categorie dal database non va a buon fine
+     *                                   se il recupero delle categorie dal database
+     *                                   non va a buon fine
      */
     public abstract Category[] getUserCategories() throws CategoryDatabaseException;
 }
