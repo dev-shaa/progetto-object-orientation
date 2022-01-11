@@ -1,4 +1,3 @@
-package postgresql;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import javax.swing.JFrame;
@@ -31,10 +30,10 @@ public class LoginFrame extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	
+
 	public LoginFrame(Controller c) {
 		theController = c;
-		
+
 		setTitle("Login");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -42,53 +41,55 @@ public class LoginFrame extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
-		userName_TF  = new JTextField();
+
+		userName_TF = new JTextField();
 		userName_TF.setBounds(140, 64, 163, 19);
 		contentPane.add(userName_TF);
-		
+
 		passwordField = new JPasswordField();
 		passwordField.setBounds(140, 143, 163, 19);
 		contentPane.add(passwordField);
-		
+
 		JButton btnAccedi = new JButton("Accedi");
 		btnAccedi.setFont(new Font("Tahoma", Font.BOLD, 10));
 		btnAccedi.setBounds(330, 213, 85, 29);
 		contentPane.add(btnAccedi);
 		btnAccedi.addActionListener(new ActionListener() {
-			public void actionPerformed (ActionEvent e) {
+			public void actionPerformed(ActionEvent e) {
 				String username = userName_TF.getText();
-				String pwd = new String (passwordField.getPassword());
-				c.CheckUser(username, pwd);
-				
-//				if(!username.isEmpty() && !pwd.isEmpty()) 
-//					c.CheckUser(username, pwd);
-//				else
-//					JOptionPane.showMessageDialog(null, "Impossibile accedere");
+				String pwd = new String(passwordField.getPassword());
+				// c.CheckUser(username, pwd);
+
+				// if(!username.isEmpty() && !pwd.isEmpty())
+				// c.CheckUser(username, pwd);
+				// else
+				// JOptionPane.showMessageDialog(null, "Impossibile accedere");
+
+				// FIXME: DEBUG:
+				c.openHomePage(new User(username));
 			}
 		});
-		
+
 		JLabel lblNewLabel = new JLabel("Nome Utente");
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
 		lblNewLabel.setBounds(34, 52, 96, 39);
 		contentPane.add(lblNewLabel);
-		
+
 		JLabel lblPassword = new JLabel("Password");
 		lblPassword.setFont(new Font("Tahoma", Font.BOLD, 14));
 		lblPassword.setBounds(34, 131, 96, 39);
 		contentPane.add(lblPassword);
-		
+
 		JButton btnRegistrati = new JButton("Registrati");
 		btnRegistrati.setFont(new Font("Tahoma", Font.BOLD, 10));
 		btnRegistrati.setBounds(214, 213, 85, 29);
 		contentPane.add(btnRegistrati);
 		btnRegistrati.addActionListener(new ActionListener() {
-			public void actionPerformed (ActionEvent e) {
+			public void actionPerformed(ActionEvent e) {
 				String username = userName_TF.getText();
-				String pwd = new String (passwordField.getPassword());
-				c.CheckUser(username, pwd);
-			}		
-	});
+				String pwd = new String(passwordField.getPassword());
+				// c.CheckUser(username, pwd);
+			}
+		});
 	}
 }
-	
