@@ -14,13 +14,14 @@ public class Video extends OnlineResource {
     private Float duration;
 
     /**
+     * Crea un nuovo riferimento a un video con il titolo e l'url indicati
      * 
      * @param title
-     *              titolo del video
+     *            titolo del video
      * @param URL
-     *              url del video
+     *            url del video
      * @throws IllegalArgumentException
-     *                                  se il titolo o l'url non sono validi
+     *             se il titolo o l'url non sono validi
      */
     public Video(String title, String URL) throws IllegalArgumentException {
         super(title, URL);
@@ -30,7 +31,7 @@ public class Video extends OnlineResource {
      * Imposta la larghezza del video.
      * 
      * @param width
-     *              larghezza del video
+     *            larghezza del video
      */
     public void setWidth(Integer width) {
         this.width = width;
@@ -50,7 +51,7 @@ public class Video extends OnlineResource {
      * Imposta l'altezza del video.
      * 
      * @param height
-     *               altezza del video
+     *            altezza del video
      */
     public void setHeight(Integer height) {
         this.height = height;
@@ -86,7 +87,7 @@ public class Video extends OnlineResource {
      * Imposta la durata del video.
      * 
      * @param duration
-     *                 durata del video
+     *            durata del video
      */
     public void setDuration(Float duration) {
         this.duration = duration;
