@@ -4,6 +4,8 @@ package GUI;
 import javax.swing.*;
 import com.formdev.flatlaf.*;
 
+import DAO.BibliographicReferenceDAO;
+import DAO.CategoryDAOPostgreSQL;
 import Entities.*;
 import Entities.References.*;
 import GUI.Homepage.*;
@@ -38,7 +40,7 @@ public class Controller {
 
     public void openHomePage(User user) {
         try {
-            homepage = new Homepage(this, user);
+            homepage = new Homepage(this, user, new CategoryDAOPostgreSQL(user), new BibliographicReferenceDAO());
             homepage.setVisible(true);
             loginFrame.setVisible(false);
         } catch (Exception e) {

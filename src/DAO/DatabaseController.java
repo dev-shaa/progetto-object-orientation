@@ -1,11 +1,7 @@
 package DAO;
 
-// import java.util.ArrayList;
 import java.sql.Connection;
-// import java.sql.PreparedStatement;
-// import java.sql.ResultSet;
 import java.sql.SQLException;
-// import java.sql.Statement;
 import java.sql.DriverManager;
 
 public class DatabaseController {
@@ -28,14 +24,6 @@ public class DatabaseController {
 
     public Connection getConnection() throws SQLException {
         return DriverManager.getConnection(connectionURL, connectionUser, connectionPassword);
-    }
-
-    public void closeConnection(Connection connection) {
-        try {
-            connection.close();
-        } catch (SQLException e) {
-            // TODO: handle exception
-        }
     }
 
 }

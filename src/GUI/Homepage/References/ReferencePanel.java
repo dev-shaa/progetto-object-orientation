@@ -2,6 +2,8 @@ package GUI.Homepage.References;
 
 import DAO.*;
 import GUI.*;
+import GUI.Categories.CategoriesTreeManager;
+import GUI.ReferenceEditor.ThesisCreator;
 import Entities.*;
 import Entities.References.*;
 
@@ -12,8 +14,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.FlowLayout;
 
-// TODO: forse è possibile rimuovere il riferimento a controller se la creazion riferimento viene creata come finestra di dialogo
-
 /**
  * Classe che si occupa di mostrare i riferimenti cercati o presenti in una
  * categoria.
@@ -23,7 +23,7 @@ import java.awt.FlowLayout;
  */
 public class ReferencePanel extends JPanel {
 
-    private Controller controller;
+    private CategoriesTreeManager categoriesTreeManager;
     private BibliographicReferenceDAO bibliographicReferenceDAO;
 
     private ReferenceListPanel listPanel;
@@ -33,24 +33,21 @@ public class ReferencePanel extends JPanel {
     private JButton createReferenceButton;
     private JButton editReferenceButton;
     private JButton deleteReferenceButton;
-    private JPopupMenu newCategoryTypeSelection;
+    private JPopupMenu newReferenceTypeSelection;
 
     /**
      * Crea {@code ReferencePanel} con i dati relativi all'utente.
      * 
      * @param controller
      * @param bibliographicReferenceDAO
-     *                                  classe DAO per interfacciarsi al database
-     *                                  dei riferimenti
+     *            classe DAO per interfacciarsi al database dei riferimenti
      * @throws IllegalArgumentException
-     *                                  se controller o bibiliographicReferenceDAO
-     *                                  non sono validi
-     * @see #setController(Controller)
+     *             se controller o bibiliographicReferenceDAO non sono validi
+     * @see #setCategoriesTreeManager(Controller)
      * @see #setBibiliographicReferenceDAO(BibliographicReferenceDAO)
      */
-    public ReferencePanel(Controller controller, BibliographicReferenceDAO bibliographicReferenceDAO)
-            throws IllegalArgumentException {
-        setController(controller);
+    public ReferencePanel(CategoriesTreeManager categoriesTreeManager, BibliographicReferenceDAO bibliographicReferenceDAO) throws IllegalArgumentException {
+        setCategoriesTreeManager(categoriesTreeManager);
         setBibiliographicReferenceDAO(bibliographicReferenceDAO);
 
         this.infoPanel = new ReferenceInfoPanel();
@@ -85,17 +82,16 @@ public class ReferencePanel extends JPanel {
     }
 
     /**
-     * Imposta il controller responsabile delle finestre.
+     * TODO: commenta
      * 
-     * @param controller
+     * @param categoriesTreeManager
      * @throws IllegalArgumentException
-     *                                  se {@code controller == null}
      */
-    public void setController(Controller controller) throws IllegalArgumentException {
-        if (controller == null)
-            throw new IllegalArgumentException("controller non può essere null");
+    public void setCategoriesTreeManager(CategoriesTreeManager categoriesTreeManager) throws IllegalArgumentException {
+        if (categoriesTreeManager == null)
+            throw new IllegalArgumentException("categoriesTreeManager non può essere null");
 
-        this.controller = controller;
+        this.categoriesTreeManager = categoriesTreeManager;
     }
 
     /**
@@ -103,9 +99,9 @@ public class ReferencePanel extends JPanel {
      * riferimenti.
      * 
      * @param bibliographicReferenceDAO
-     *                                  classe DAO per i riferimenti
+     *            classe DAO per i riferimenti
      * @throws IllegalArgumentException
-     *                                  se {@code bibliographicReferenceDAO == null}
+     *             se {@code bibliographicReferenceDAO == null}
      */
     public void setBibiliographicReferenceDAO(BibliographicReferenceDAO bibliographicReferenceDAO)
             throws IllegalArgumentException {
@@ -158,12 +154,13 @@ public class ReferencePanel extends JPanel {
      * creazione del riferimento.
      */
     private void setupNewCategorySelectionPopupMenu() {
-        newCategoryTypeSelection = new JPopupMenu();
+        newReferenceTypeSelection = new JPopupMenu();
 
         JMenuItem articleOption = new JMenuItem("Articolo");
         articleOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // TODO: apri pagina creazione articolo
+
             }
         });
 
@@ -177,7 +174,7 @@ public class ReferencePanel extends JPanel {
         JMenuItem thesisOption = new JMenuItem("Tesi");
         thesisOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // TODO: apri pagina creazione tesi
+                // new ThesisCreator("Nuova tesi", categoriesTreeManager);
             }
         });
 
@@ -188,10 +185,10 @@ public class ReferencePanel extends JPanel {
             }
         });
 
-        newCategoryTypeSelection.add(articleOption);
-        newCategoryTypeSelection.add(bookOption);
-        newCategoryTypeSelection.add(thesisOption);
-        newCategoryTypeSelection.add(videoOption);
+        newReferenceTypeSelection.add(articleOption);
+        newReferenceTypeSelection.add(bookOption);
+        newReferenceTypeSelection.add(thesisOption);
+        newReferenceTypeSelection.add(videoOption);
     }
 
     /**
@@ -199,7 +196,7 @@ public class ReferencePanel extends JPanel {
      * creare.
      */
     private void showReferenceCreationOptions() {
-        newCategoryTypeSelection.show(createReferenceButton, 0, createReferenceButton.getHeight());
+        newReferenceTypeSelection.show(createReferenceButton, 0, createReferenceButton.getHeight());
     }
 
     /**
@@ -207,7 +204,8 @@ public class ReferencePanel extends JPanel {
      */
     private void changeSelectedReference() {
         try {
-            controller.openReferenceCreatorPage(listPanel.getSelectedReference());
+            // FIXME:
+            // controller.openReferenceCreatorPage(listPanel.getSelectedReference());
         } catch (IndexOutOfBoundsException e) {
             JOptionPane.showMessageDialog(null, "Impossibile modificare il riferimento");
         }
@@ -234,7 +232,7 @@ public class ReferencePanel extends JPanel {
      * Mostra i riferimenti passati.
      * 
      * @param references
-     *                   riferimenti da mostrare
+     *            riferimenti da mostrare
      */
     public void showReferences(BibliographicReference[] references) {
         listPanel.setReferences(references);
@@ -245,7 +243,7 @@ public class ReferencePanel extends JPanel {
      * a schermo.
      * 
      * @param category
-     *                 categoria di cui mostrare i riferimenti
+     *            categoria di cui mostrare i riferimenti
      */
     public void showReferences(Category category) {
         try {
