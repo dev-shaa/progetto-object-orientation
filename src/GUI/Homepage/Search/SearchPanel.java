@@ -146,7 +146,7 @@ public class SearchPanel extends JPanel {
 
     private void search() {
         try {
-            Search search = new Search(dateFrom.getDate(), dateTo.getDate(), stringToTags(this.tags.getSearchTerms()), categories.getSelectedCategories());
+            Search search = new Search(dateFrom.getDate(), dateTo.getDate(), stringToTags(this.tags.getTerms()), categories.getSelectedCategories());
             referencePanel.showReferences(search);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
