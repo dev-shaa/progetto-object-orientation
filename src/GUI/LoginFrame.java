@@ -61,13 +61,7 @@ public class LoginFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				String username = userName_TF.getText();
 				String pwd = new String(passwordField.getPassword());
-				// c.CheckUser(username, pwd);
-
-				// if(!username.isEmpty() && !pwd.isEmpty())
-				// c.CheckUser(username, pwd);
-				// else
-				// JOptionPane.showMessageDialog(null, "Impossibile accedere");
-
+				
 				// FIXME: DEBUG:
 				c.openHomePage(new User(username));
 			}
