@@ -1,6 +1,8 @@
-package GUI.Homepage.Categories;
+package GUI.Homepage;
 
 import Entities.*;
+import GUI.Categories.CategoriesTreeManager;
+import GUI.Categories.CategoryMutableTreeNode;
 import GUI.Homepage.References.*;
 
 import java.awt.*;
@@ -13,16 +15,14 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 /**
- * Pannello con le categorie dell'utente sotto forma di albero, con ogni nodo
- * che rappresenta una categoria.
- * Sono presenti dei pulsanti per aggiungere, modificare o rimuovere una
- * categoria.
+ * Pannello con le categorie dell'utente sotto forma di albero, con ogni nodo che rappresenta una categoria.
+ * Sono presenti dei pulsanti per aggiungere, modificare o rimuovere una categoria.
  * 
- * @see ReferencePanel
+ * @see CategoriesTreeManager
  */
 public class CategoriesPanel extends JPanel {
 
-    private CategoriesTree categoriesTree;
+    private CategoriesTreeManager categoriesTreeModel;
 
     private JTree displayTree;
     private CategoryMutableTreeNode selectedNode;
@@ -34,21 +34,19 @@ public class CategoriesPanel extends JPanel {
     /**
      * Crea {@code CategoryPanel} con tutte le categorie associate dell'utente.
      * 
-     * @param categoriesTree
-     *                       l'albero delle categorie dell'utente
+     * @param categoriesTreeModel
+     *            l'albero delle categorie dell'utente
      * @param referencePanel
-     *                       il pannello in cui vengono mostrati i riferimenti
+     *            il pannello in cui vengono mostrati i riferimenti
      * @throws IllegalArgumentException
-     *                                  se categoriesTree o referencePanel non sono
-     *                                  validi
-     * @see #setCategoriesTree(CategoriesTree)
+     *             se categoriesTree o referencePanel non sono validi
+     * @see #setCategoriesTree(CategoriesTreeManager)
      */
-    public CategoriesPanel(CategoriesTree categoriesTree, ReferencePanel referencePanel)
-            throws IllegalArgumentException {
+    public CategoriesPanel(CategoriesTreeManager categoriesTreeModel, ReferencePanel referencePanel) throws IllegalArgumentException {
         if (referencePanel == null)
             throw new IllegalArgumentException();
 
-        setCategoriesTree(categoriesTree);
+        setCategoriesTree(categoriesTreeModel);
 
         setLayout(new BorderLayout(5, 5));
         setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -60,16 +58,25 @@ public class CategoriesPanel extends JPanel {
     /**
      * Imposta l'albero delle categorie dell'utente.
      * 
-     * @param categoriesTree
-     *                       albero delle categorie
+     * @param categoriesTreeModel
+     *            albero delle categorie
      * @throws IllegalArgumentException
-     *                                  se {@code categoriesTree == null}
+     *             se {@code categoriesTree == null}
      */
-    public void setCategoriesTree(CategoriesTree categoriesTree) throws IllegalArgumentException {
-        if (categoriesTree == null)
+    public void setCategoriesTree(CategoriesTreeManager categoriesTreeModel) throws IllegalArgumentException {
+        if (categoriesTreeModel == null)
             throw new IllegalArgumentException("categoriesTree non può essere null");
 
-        this.categoriesTree = categoriesTree;
+        this.categoriesTreeModel = categoriesTreeModel;
+    }
+
+    /**
+     * TODO: commenta
+     * 
+     * @return
+     */
+    public CategoriesTreeManager getCategoriesTreeModel() {
+        return categoriesTreeModel;
     }
 
     /**
@@ -125,12 +132,12 @@ public class CategoriesPanel extends JPanel {
      * in {@code referencePanel}.
      * 
      * @param referencePanel
-     *                       pannello dei riferimenti
+     *            pannello dei riferimenti
      * @return
      *         pannello con le categorie dell'utente
      */
     private JScrollPane getCategoriesTreePanel(ReferencePanel referencePanel) {
-        displayTree = new JTree(categoriesTree.getTreeModel());
+        displayTree = new JTree(categoriesTreeModel.getTreeModel());
 
         displayTree.setEditable(false);
         displayTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
@@ -168,7 +175,7 @@ public class CategoriesPanel extends JPanel {
             String newCategoryName = getCategoryNameFromUser("Nuova categoria");
 
             if (newCategoryName != null) {
-                categoriesTree.addNode(new Category(newCategoryName), selectedNode);
+                categoriesTreeModel.addNode(new Category(newCategoryName), selectedNode);
 
                 // così è più comodo per l'utente
                 displayTree.expandPath(new TreePath(selectedNode.getPath()));
@@ -179,36 +186,32 @@ public class CategoriesPanel extends JPanel {
     }
 
     /**
-     * Mostra una finestra di dialogo in modo che l'utente possa scegliere un nuovo
-     * nome per la categoria selezionata.
+     * Mostra una finestra di dialogo in modo che l'utente possa scegliere un nuovo nome per la categoria selezionata.
      * Successivamente tenta di salvare nel database.
-     * In caso di fallimento, mostra una finestra di dialogo che comunica l'errore
-     * all'utente.
+     * In caso di fallimento, mostra una finestra di dialogo che comunica l'errore all'utente.
      */
     private void changeCategory() {
         try {
             String name = getCategoryNameFromUser(selectedNode.getUserObject().getName());
 
-            if (name != null)
-                categoriesTree.changeNode(selectedNode, name);
+            if (name != null) {
+                categoriesTreeModel.changeNode(selectedNode, name);
+            }
         } catch (Exception exception) {
             JOptionPane.showMessageDialog(null, exception.getMessage());
         }
     }
 
     /**
-     * Mostra una finestra di dialogo in modo che l'utente possa confermare se
-     * eliminare la categoria.
-     * In caso di fallimento, mostra una finestra di dialogo che comunica l'errore
-     * all'utente.
+     * Mostra una finestra di dialogo in modo che l'utente possa confermare se eliminare la categoria.
+     * In caso di fallimento, mostra una finestra di dialogo che comunica l'errore all'utente.
      */
     private void removeCategory() {
         try {
-            int confirmDialogBoxOption = JOptionPane.showConfirmDialog(null,
-                    "Sicuro di volere eliminare questa categoria?", "Elimina categoria", JOptionPane.YES_NO_OPTION);
+            int confirmDialogBoxOption = JOptionPane.showConfirmDialog(null, "Sicuro di volere eliminare questa categoria?", "Elimina categoria", JOptionPane.YES_NO_OPTION);
 
             if (confirmDialogBoxOption == JOptionPane.YES_OPTION)
-                categoriesTree.removeNode(selectedNode);
+                categoriesTreeModel.removeNode(selectedNode);
         } catch (Exception exception) {
             JOptionPane.showMessageDialog(null, exception.getMessage());
         }
@@ -218,22 +221,19 @@ public class CategoriesPanel extends JPanel {
      * Mostra un pannello in cui l'utente può inserire una stringa.
      * 
      * @param defaultName
-     *                    il testo di default che appare come input
+     *            il testo di default che appare come input
      * @return
-     *         restituisce il testo inserito, {@code null} se l'utente annulla
-     *         l'operazione
+     *         restituisce il testo inserito, {@code null} se l'utente annulla l'operazione
      */
     private String getCategoryNameFromUser(String defaultName) {
-        return (String) JOptionPane.showInputDialog(null, "Nome categoria:", "Nuova categoria",
-                JOptionPane.PLAIN_MESSAGE, null, null, defaultName);
+        return (String) JOptionPane.showInputDialog(null, "Nome categoria:", "Nuova categoria", JOptionPane.PLAIN_MESSAGE, null, null, defaultName);
     }
 
     /**
      * Controlla se il nodo selezionato è nullo.
      * 
      * @return
-     *         restituisce {@code true} se il nodo selezionato non è nullo,
-     *         {@code false} altrimenti
+     *         restituisce {@code true} se il nodo selezionato non è nullo, {@code false} altrimenti
      */
     public boolean isSelectedNodeNotNull() {
         return selectedNode != null;

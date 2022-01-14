@@ -1,4 +1,4 @@
-package GUI.Homepage.Categories;
+package GUI.Categories;
 
 import Entities.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -6,8 +6,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 /**
  * Wrapper di DefaultMutableTreeNode che accetta Category come unico oggetto.
  * 
- * @version 0.9
- * @author Salvatore Di Gennaro
  * @see DefaultMutableTreeNode
  * @see Category
  */
@@ -28,7 +26,7 @@ public class CategoryMutableTreeNode extends DefaultMutableTreeNode {
      * e con una categoria associata.
      * 
      * @param category
-     *                 la categoria associata a questo nodo
+     *            la categoria associata a questo nodo
      */
     public CategoryMutableTreeNode(Category category) {
         super(category);
@@ -61,10 +59,10 @@ public class CategoryMutableTreeNode extends DefaultMutableTreeNode {
      * nuovo figlio.
      *
      * @param newChild
-     *                   il nodo da inserire come figlio
+     *            il nodo da inserire come figlio
      * @param childIndex
-     *                   l'indice dell'array di figli di questo nodo dove verrà
-     *                   inserito il nuovo figlio
+     *            l'indice dell'array di figli di questo nodo dove verrà
+     *            inserito il nuovo figlio
      */
     public void insert(CategoryMutableTreeNode newChild, int childIndex) {
         super.insert(newChild, childIndex);

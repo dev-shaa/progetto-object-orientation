@@ -1,13 +1,12 @@
 package GUI.Homepage;
 
 import GUI.*;
+import GUI.Categories.*;
 import DAO.*;
 import Entities.*;
 import Exceptions.*;
-import GUI.Homepage.Categories.*;
 import GUI.Homepage.References.*;
 import GUI.Homepage.Search.*;
-import GUI.Homepage.User.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -28,10 +27,11 @@ public class Homepage extends JFrame {
      * Crea {@code Homepage} con i dati relativi all'utente.
      * 
      * @param user
-     *             l'utente che ha eseguito l'accesso
-     * @since 0.1
+     *            l'utente che ha eseguito l'accesso
      */
-    public Homepage(Controller controller, User user) throws IllegalArgumentException, CategoryDatabaseException {
+    public Homepage(Controller controller, User user, CategoryDAO categoryDAO, BibliographicReferenceDAO bibliographicReferenceDAO) throws IllegalArgumentException, CategoryDatabaseException {
+
+        // TODO: dao check
 
         if (controller == null || user == null)
             throw new IllegalArgumentException();
@@ -41,18 +41,14 @@ public class Homepage extends JFrame {
         setBounds(100, 100, 800, 600);
         setCloseOperation();
 
-        CategoryDAO categoryDAO = new CategoryDAOPostgreSQL(user);
-        BibliographicReferenceDAO bibliographicReferenceDAO = new BibliographicReferenceDAO();// TODO: sistema una volta
-                                                                                              // implementato
-
         JPanel contentPane = new JPanel();
         contentPane.setLayout(new BorderLayout(5, 5));
         setContentPane(contentPane);
 
-        CategoriesTree categoriesTree = new CategoriesTree(categoryDAO);
-        ReferencePanel referencePanel = new ReferencePanel(controller, bibliographicReferenceDAO);
-        CategoriesPanel categoriesPanel = new CategoriesPanel(categoriesTree, referencePanel);
-        SearchPanel referenceSearchPanel = new SearchPanel(referencePanel, categoriesTree);
+        CategoriesTreeManager categoriesTreeManager = new CategoriesTreeManager(categoryDAO);
+        ReferencePanel referencePanel = new ReferencePanel(categoriesTreeManager, bibliographicReferenceDAO);
+        CategoriesPanel categoriesPanel = new CategoriesPanel(categoriesTreeManager, referencePanel);
+        SearchPanel referenceSearchPanel = new SearchPanel(referencePanel, categoriesTreeManager);
 
         JSplitPane subSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, categoriesPanel, referencePanel);
         subSplitPane.setResizeWeight(0.15);
@@ -64,6 +60,10 @@ public class Homepage extends JFrame {
         contentPane.add(splitPane, BorderLayout.CENTER);
     }
 
+    /**
+     * TODO: commenta
+     * Imposta le operazioni di chiusura.
+     */
     private void setCloseOperation() {
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.addWindowListener(new WindowAdapter() {

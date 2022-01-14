@@ -1,13 +1,12 @@
-package GUI.Homepage.User;
+package GUI.Homepage;
 
-import GUI.*;
-import Entities.*;
+import GUI.Controller;
+import Entities.User;
 import java.awt.event.*;
 import java.awt.BorderLayout;
 import java.awt.Color;
-
 import javax.swing.*;
-import javax.swing.border.*;
+import javax.swing.border.EmptyBorder;
 
 /**
  * Pannello che mostra il nome utente e il pulsante per eseguire il logout.
@@ -18,9 +17,9 @@ public class UserInfoPanel extends JPanel {
      * Crea {@code UserInfoPanel} con i dati relativi all'utente.
      * 
      * @param controller
-     *                   il controller del programma
+     *            il controller del programma
      * @param user
-     *                   l'utente che ha eseguito l'accesso
+     *            l'utente che ha eseguito l'accesso
      */
     public UserInfoPanel(Controller controller, User user) {
 

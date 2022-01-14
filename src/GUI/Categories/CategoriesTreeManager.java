@@ -1,50 +1,48 @@
-package GUI.Homepage.Categories;
+package GUI.Categories;
 
-import DAO.*;
-import Entities.*;
-import Exceptions.*;
+// FIXME: sposta da qui
+
+import DAO.CategoryDAO;
+import Entities.Category;
+import Exceptions.CategoryDatabaseException;
 import java.util.HashMap;
 import javax.swing.tree.DefaultTreeModel;
 
 /**
- * Classe che gestisce l'albero delle categorie dell'utente,
- * con funzioni di inserimento, modifica e rimozione dal database.
+ * Classe che gestisce l'albero delle categorie dell'utente, con funzioni di inserimento, modifica e rimozione dal database.
  * 
  * @see CategoryDAO
  * @see CategoryMutableTreeNode
  */
-public class CategoriesTree {
+public class CategoriesTreeManager {
 
     private CategoryDAO categoryDAO;
     private DefaultTreeModel categoriesTreeModel;
-    private CategoryMutableTreeNode lastAddedNode;
 
     /**
      * Crea {@code CategoriesTree} con le categorie appartenenti all'utente.
      * 
      * @param categoryDAO
-     *                    classe DAO per recuperare le categorie dal database
+     *            classe DAO per recuperare le categorie dal database
      * @throws IllegalArgumentException
-     *                                   se {@code categoryDAO == null}
+     *             se {@code categoryDAO} non è valido
      * @throws CategoryDatabaseException
-     *                                   se il recupero delle categorie dal database
-     *                                   non va a buon fine
+     *             se il recupero delle categorie dal database non va a buon fine
      * @see #setCategoryDAO(CategoryDAO)
      */
-    public CategoriesTree(CategoryDAO categoryDAO) throws IllegalArgumentException, CategoryDatabaseException {
+    public CategoriesTreeManager(CategoryDAO categoryDAO) throws IllegalArgumentException, CategoryDatabaseException {
         setCategoryDAO(categoryDAO);
 
-        CategoryMutableTreeNode tree = getTreeFromArray(categoryDAO.getUserCategories());
-        categoriesTreeModel = new DefaultTreeModel(tree);
+        categoriesTreeModel = new DefaultTreeModel(getTreeFromArray(categoryDAO.getUserCategories()));
     }
 
     /**
      * Imposta la classe DAO per interfacciarsi col database delle categorie.
      * 
      * @param categoryDAO
-     *                    classe DAO per interfacciarsi col database delle categorie
+     *            classe DAO per interfacciarsi col database delle categorie
      * @throws IllegalArgumentException
-     *                                  se {@code categoryDAO == null}
+     *             se {@code categoryDAO == null}
      * @see CategoryDAO
      */
     public void setCategoryDAO(CategoryDAO categoryDAO) throws IllegalArgumentException {
@@ -57,7 +55,7 @@ public class CategoriesTree {
     /**
      * Restituisce l'albero delle categorie.
      * 
-     * @return l'albero delle categorie
+     * @return albero delle categorie
      * @see DefaultTreeModel
      */
     public DefaultTreeModel getTreeModel() {
@@ -65,48 +63,42 @@ public class CategoriesTree {
     }
 
     /**
-     * Aggiunge un nuovo nodo categoria all'albero come figlio del nodo
-     * {@code parent} e lo salva nel database.
+     * Aggiunge un nuovo nodo categoria all'albero come figlio del nodo {@code parent} e lo salva nel database.
      * 
      * @param newCategory
-     *                    categoria da aggiungere
+     *            categoria da aggiungere
      * @param parentNode
-     *                    il nodo genitore della categoria da aggiungere
+     *            il nodo genitore della categoria da aggiungere
      * @throws IllegalArgumentException
-     *                                   se il nome della categoria non è valido
+     *             se il nome della categoria non è valido
      * @throws CategoryDatabaseException
-     *                                   se la crezione della categoria nel database
-     *                                   non va a buon fine
+     *             se la crezione della categoria nel database non va a buon fine
      * @see Category
      */
-    public void addNode(Category newCategory, CategoryMutableTreeNode parentNode)
-            throws IllegalArgumentException, CategoryDatabaseException {
+    public void addNode(Category newCategory, CategoryMutableTreeNode parentNode) throws IllegalArgumentException, CategoryDatabaseException {
         newCategory.setParent(parentNode == null ? null : parentNode.getUserObject());
 
         categoryDAO.addCategory(newCategory);
 
         CategoryMutableTreeNode newCategoryNode = new CategoryMutableTreeNode(newCategory);
         categoriesTreeModel.insertNodeInto(newCategoryNode, parentNode, parentNode.getChildCount());
-
-        lastAddedNode = newCategoryNode;
     }
 
     /**
      * Modifica il nome della categoria associata a un nodo.
      * 
      * @param node
-     *                il nodo di cui modificare la categoria
+     *            il nodo di cui modificare la categoria
      * @param newName
-     *                il nuovo nome della categoria
+     *            il nuovo nome della categoria
      * @throws IllegalArgumentException
-     *                                   se il nodo non può essere modificato
+     *             se il nodo non può essere modificato
      * @throws CategoryDatabaseException
-     *                                   se la modifica della categoria nel database
-     *                                   non va a buon fine
+     *             se la modifica della categoria nel database
+     *             non va a buon fine
      * @see CategoryMutableTreeNode
      */
-    public void changeNode(CategoryMutableTreeNode node, String newName)
-            throws IllegalArgumentException, CategoryDatabaseException {
+    public void changeNode(CategoryMutableTreeNode node, String newName) throws IllegalArgumentException, CategoryDatabaseException {
         if (!node.canBeChanged())
             throw new IllegalArgumentException("Il nodo selezionato non può essere modificato.");
 
@@ -129,12 +121,12 @@ public class CategoriesTree {
      * Rimuove il nodo categoria indicato dall'albero e dal database.
      * 
      * @param node
-     *             il nodo da rimuovere
+     *            il nodo da rimuovere
      * @throws IllegalArgumentException
-     *                                   se {@code node} non può essere eliminato
+     *             se {@code node} non può essere eliminato
      * @throws CategoryDatabaseException
-     *                                   se la rimozione della categoria nel
-     *                                   database non va a buon fine
+     *             se la rimozione della categoria nel
+     *             database non va a buon fine
      * @see CategoryMutableTreeNode
      */
     public void removeNode(CategoryMutableTreeNode node) throws IllegalArgumentException, CategoryDatabaseException {
@@ -148,16 +140,6 @@ public class CategoriesTree {
     }
 
     /**
-     * Restituisce l'ultimo nodo aggiunto.
-     * 
-     * @return
-     *         l'ultimo nodo aggiunto, {@code null} se non è stato aggiunto niente
-     */
-    public CategoryMutableTreeNode getLastAddedNode() {
-        return lastAddedNode;
-    }
-
-    /**
      * Converte una lista di {@code Category} in un albero.
      * Il nodo radice contiene una categoria {@code null} e serve solo per contenere
      * tutte i nodi creati.
@@ -165,11 +147,11 @@ public class CategoriesTree {
      * inclusa nell'albero.
      * 
      * @param categories
-     *                   la lista di categoria da convertire in albero
+     *            la lista di categoria da convertire in albero
      * @return
      *         il nodo radice dell'albero
      * @throws IllegalArgumentException
-     *                                  se {@code categories == null}
+     *             se {@code categories == null}
      * @see CategoryMutableTreeNode
      */
     private CategoryMutableTreeNode getTreeFromArray(Category[] categories) throws IllegalArgumentException {
