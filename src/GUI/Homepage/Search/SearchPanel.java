@@ -5,8 +5,12 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
 
-import GUI.Homepage.Categories.*;
+import com.toedter.calendar.JDateChooser;
+
+import Entities.Tag;
+import GUI.Categories.*;
 import GUI.Homepage.References.*;
+import GUI.Utilities.JTextSearchField;
 
 /**
  * Pannello per la ricerca dei riferimenti per parole chiave, autori, categorie
@@ -14,22 +18,27 @@ import GUI.Homepage.References.*;
  */
 public class SearchPanel extends JPanel {
 
-    private TextSearchPanel tagSearchField;
-    private TextSearchPanel authorSearchField;
-    private CategoriesTreeSelectionPanel categoriesSearchField;
-    private DatePickerPanel datePicker;
+    private JTextSearchField tags;
+    private JTextSearchField authors;
+    private CategoriesSelectionPopupMenu categories;
+    private JDateChooser dateFrom;
+    private JDateChooser dateTo;
     private JButton searchButton;
 
-    private CategoriesTree categoriesTree;
+    private final Dimension maximumSize = new Dimension(Integer.MAX_VALUE, 24);
+    private final String searchFieldSeparator = ",";
+    private final float alignment = Container.LEFT_ALIGNMENT;
+
+    private CategoriesTreeManager categoriesTreeModel;
 
     /**
      * Crea {@code ReferenceSearchPanel}.
      * 
      * @param referencePanel
-     * @param categoriesTree
+     * @param categoriesTreeModel
      */
-    public SearchPanel(ReferencePanel referencePanel, CategoriesTree categoriesTree) {
-        this.categoriesTree = categoriesTree;
+    public SearchPanel(ReferencePanel referencePanel, CategoriesTreeManager categoriesTreeModel) {
+        this.categoriesTreeModel = categoriesTreeModel;
 
         setLayout(new BorderLayout(5, 5));
         setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -47,20 +56,20 @@ public class SearchPanel extends JPanel {
         searchPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
         searchPanel.setLayout(new BoxLayout(searchPanel, BoxLayout.PAGE_AXIS));
 
-        setupTagSearchField();
-        searchPanel.add(tagSearchField);
+        tags = new JTextSearchField(searchFieldSeparator);
+        authors = new JTextSearchField(searchFieldSeparator);
+        categories = new CategoriesSelectionPopupMenu(categoriesTreeModel);
+        dateFrom = new JDateChooser();
+        dateTo = new JDateChooser();
 
-        setupAuthorsSearchField();
-        searchPanel.add(authorSearchField);
-
-        setupCategoriesSearchField();
-        searchPanel.add(categoriesSearchField);
-
-        setupDatePicker();
-        searchPanel.add(datePicker);
+        addComponent("Parole chiave", tags, searchPanel, "Inserisci le parole chiave da ricercare nel riferimento, delimitate da '" + searchFieldSeparator + "'");
+        addComponent("Autori", authors, searchPanel, "Inserisci gli autori da ricercare, delimitati da '" + searchFieldSeparator + "'");
+        addComponent("Categorie", categories, searchPanel, "Seleziona le categorie in cui cercare il riferimento");
+        addComponent("Da", dateFrom, searchPanel);
+        addComponent("A", dateTo, searchPanel);
 
         Component spacing = Box.createVerticalGlue();
-        spacing.setMaximumSize(new Dimension(Integer.MAX_VALUE, 32));
+        spacing.setMaximumSize(new Dimension(100, 32));
         searchPanel.add(spacing);
 
         setupSearchButton();
@@ -69,30 +78,25 @@ public class SearchPanel extends JPanel {
         return searchPanel;
     }
 
-    private void setupTagSearchField() {
-        tagSearchField = new TextSearchPanel("Parole chiave:",
-                "Parole chiave da ricercare, separate da virgole (esempio: Liste, Alberi)");
-        tagSearchField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
-        tagSearchField.setAlignmentX(JTextField.LEFT_ALIGNMENT);
+    private void addComponent(JComponent component, JPanel panel) {
+        component.setMaximumSize(maximumSize);
+        component.setAlignmentX(alignment);
+
+        panel.add(component);
     }
 
-    private void setupAuthorsSearchField() {
-        authorSearchField = new TextSearchPanel("Autori:",
-                "Autori da ricercare, separati da virgole (esempio: Mario Rossi, Ciro Esposito)");
-        authorSearchField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
-        authorSearchField.setAlignmentX(JTextField.LEFT_ALIGNMENT);
+    private void addComponent(String label, JComponent component, JPanel panel) {
+        JLabel labelField = new JLabel(label);
+        labelField.setMaximumSize(maximumSize);
+        labelField.setAlignmentX(alignment);
+        panel.add(labelField);
+
+        addComponent(component, panel);
     }
 
-    private void setupCategoriesSearchField() {
-        categoriesSearchField = new CategoriesTreeSelectionPanel(categoriesTree);
-        categoriesSearchField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
-        categoriesSearchField.setAlignmentX(CategoriesTreeSelectionPanel.LEFT_ALIGNMENT);
-    }
-
-    private void setupDatePicker() {
-        datePicker = new DatePickerPanel();
-        datePicker.setMaximumSize(new Dimension(Integer.MAX_VALUE, 106));
-        datePicker.setAlignmentX(DatePickerPanel.LEFT_ALIGNMENT);
+    private void addComponent(String label, JComponent component, JPanel panel, String tooltip) {
+        component.setToolTipText(tooltip);
+        addComponent(label, component, panel);
     }
 
     private void setupSearchButton() {
@@ -102,9 +106,34 @@ public class SearchPanel extends JPanel {
         searchButton.setMaximumSize(new Dimension(100, 32));
         searchButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // TODO: cerca
+                search();
             }
         });
+    }
+
+    // TODO:
+    private Tag[] stringToTags(String[] strings) {
+        if (strings == null || strings.length == 0)
+            return null;
+
+        Tag[] tags = new Tag[strings.length];
+
+        for (int i = 0; i < tags.length; i++)
+            tags[i] = new Tag(strings[i].trim());
+
+        return tags;
+    }
+
+    private void search() {
+        // TODO: cerca
+
+        Tag[] tags = stringToTags(this.tags.getSearchTerms());
+
+        // Search search = new Search(datePicker.getStartDate(),
+        // datePicker.getEndDate(),
+        // stringToTags(tagSearchField.getSearchTerms()),
+        // categoriesSearchField.getCategories());
+
     }
 
 }
