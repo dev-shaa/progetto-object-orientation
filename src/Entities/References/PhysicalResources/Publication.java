@@ -4,7 +4,7 @@ import Entities.References.*;
 import java.util.ArrayList;
 
 /**
- * 
+ * TODO: commenta
  */
 public abstract class Publication extends BibliographicReference {
 
@@ -15,9 +15,9 @@ public abstract class Publication extends BibliographicReference {
     /**
      * 
      * @param title
-     *              titolo della pubblicazione
+     *            titolo della pubblicazione
      * @throws IllegalArgumentException
-     *                                  se il titolo non è valido
+     *             se il titolo non è valido
      */
     public Publication(String title) throws IllegalArgumentException {
         super(title);
@@ -27,9 +27,9 @@ public abstract class Publication extends BibliographicReference {
      * Imposta il numero di pagine della pubblicazione.
      * 
      * @param pageCount
-     *                  numero di pagine della pubblicazione
+     *            numero di pagine della pubblicazione
      * @throws IllegalArgumentException
-     *                                  se {@code pageCount <= 0}
+     *             se {@code pageCount <= 0}
      */
     public void setPageCount(Integer pageCount) throws IllegalArgumentException {
         if (pageCount != null && pageCount <= 0)
@@ -72,7 +72,7 @@ public abstract class Publication extends BibliographicReference {
      * Imposta l'editore della pubblicazione.
      * 
      * @param publisher
-     *                  editore della pubblicazione
+     *            editore della pubblicazione
      */
     public void setPublisher(String publisher) {
         this.publisher = publisher;
