@@ -6,7 +6,7 @@ import javax.swing.JTextField;
 /**
  * Un {@code JTextField} adattato come campo di ricerca, che restituisce i termini inseriti delimitati da un separatore.
  */
-public class JTextSearchField extends JTextField {
+public class JTermsField extends JTextField {
     private String separator;
 
     /**
@@ -15,7 +15,7 @@ public class JTextSearchField extends JTextField {
      * @param separator
      *            separatore dei termini
      */
-    public JTextSearchField(String separator) {
+    public JTermsField(String separator) {
         this.separator = separator;
     }
 
@@ -46,7 +46,7 @@ public class JTextSearchField extends JTextField {
      * I termini vuoti inseriti non vengono contati.
      * 
      * @return
-     *         i termini inseriti dall'utente
+     *         i termini inseriti dall'utente, {@code null} se non ci sono termini validi
      */
     public String[] getSearchTerms() {
         String[] text = getText().split(separator);
@@ -58,6 +58,9 @@ public class JTextSearchField extends JTextField {
             if (!text[i].isBlank())
                 terms.add(text[i]);
         }
+
+        if (terms.isEmpty())
+            return null;
 
         return terms.toArray(new String[terms.size()]);
     }
