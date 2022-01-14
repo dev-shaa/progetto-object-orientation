@@ -15,8 +15,9 @@ public class Author {
      * @param lastName
      *                  cognome dell'autore
      * @throws IllegalArgumentException
-     *                                  se {@code firstName == null } o
-     *                                  {@code lastName == null }
+     *                                  se firstName o lastName non sono validi
+     * @see #setFirstName(String)
+     * @see #setLastName(String)
      */
     public Author(String firstName, String lastName) throws IllegalArgumentException {
         setFirstName(firstName);

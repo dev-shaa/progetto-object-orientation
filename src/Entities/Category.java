@@ -15,9 +15,9 @@ public class Category {
      * Crea {@code Category} con un nome e nessun genitore.
      * 
      * @param name
-     *             nome della categoria
+     *            nome della categoria
      * @throws IllegalArgumentException
-     *                                  se il nome non è valido
+     *             se il nome non è valido
      * @see #isNameValid(String)
      */
     public Category(String name) throws IllegalArgumentException {
@@ -29,11 +29,11 @@ public class Category {
      * Crea {@code Category} con un nome, un ID e nessun genitore.
      * 
      * @param name
-     *             nome della categoria
+     *            nome della categoria
      * @param id
-     *             identificativo della categoria
+     *            identificativo della categoria
      * @throws IllegalArgumentException
-     *                                  se il nome non è valido
+     *             se il nome non è valido
      * @see #isNameValid(String)
      */
     public Category(String name, int id) throws IllegalArgumentException {
@@ -47,11 +47,11 @@ public class Category {
      * {@code null}).
      * 
      * @param name
-     *               nome della categoria
+     *            nome della categoria
      * @param parent
-     *               categoria genitore
+     *            categoria genitore
      * @throws IllegalArgumentException
-     *                                  se il nome non è valido
+     *             se il nome non è valido
      * @see #isNameValid(String)
      */
     public Category(String name, Category parent) throws IllegalArgumentException {
@@ -65,9 +65,9 @@ public class Category {
      * categoria, quindi la funzione è stata resa privata.
      * 
      * @param id
-     *           identificativo della categoria
+     *            identificativo della categoria
      */
-    private void setId(int id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -85,9 +85,9 @@ public class Category {
      * Imposta il nome di questa categoria.
      * 
      * @param name
-     *             nome della categoria
+     *            nome della categoria
      * @throws IllegalArgumentException
-     *                                  se il nome non è valido
+     *             se il nome non è valido
      * @see #isNameValid(String)
      */
     public void setName(String name) throws IllegalArgumentException {
@@ -112,7 +112,7 @@ public class Category {
      * Un nome valido deve essere non nullo e non vuoto.
      * 
      * @param name
-     *             nome da controllare
+     *            nome da controllare
      * @return
      *         {@code true} se il nome è valido
      */
@@ -124,7 +124,7 @@ public class Category {
      * Imposta il genitore di questa categoria
      * 
      * @param parent
-     *               il genitore della categoria
+     *            il genitore della categoria
      */
     public void setParent(Category parent) {
         this.parent = parent;

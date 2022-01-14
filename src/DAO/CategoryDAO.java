@@ -53,16 +53,6 @@ public abstract class CategoryDAO {
      * 
      * @param category
      *                 nuova categoria da salvare.
-     * @throws CategoryDatabaseException
-     *                                   se l'aggiunta della categoria al database
-     *                                   non va a buon fine
-     */
-
-    /**
-     * Salva una nuova categoria nel database.
-     * 
-     * @param category
-     *                 nuova categoria da salvare.
      * @throws IllegalArgumentException
      *                                   se {@code category == null}
      * @throws CategoryDatabaseException
