@@ -4,10 +4,6 @@ import Entities.*;
 import GUI.Categories.*;
 import GUI.Utilities.JPopupButton;
 
-import javax.swing.*;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-
 import java.awt.*;
 import java.awt.event.*;
 
@@ -38,6 +34,9 @@ public class CategoriesSelectionPopupMenu extends JPopupButton {
         addComponentToPopupMenu(categoriesSelectionTree);
     }
 
+    /**
+     * Invocato quando viene premuto il pulsante per aprire il popup.
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         categoriesSelectionTree.expandAllRows();
@@ -45,9 +44,10 @@ public class CategoriesSelectionPopupMenu extends JPopupButton {
     }
 
     /**
-     * TODO: commenta
+     * Restituisce le categorie selezionate dall'utente.
      * 
      * @return
+     *         categorie selezionate, {@code null} se non è selezionato niente
      */
     public Category[] getSelectedCategories() {
         return categoriesSelectionTree.getSelectedCategories();
