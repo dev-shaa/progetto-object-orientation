@@ -4,18 +4,25 @@ import GUI.Categories.*;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 
+import DAO.BibliographicReferenceDAO;
 import Entities.References.PhysicalResources.Book;
 
 public class BookCreator extends PublicationCreator {
 
     private JTextField ISBN;
 
-    public BookCreator(CategoriesTreeManager categoriesTreeManager) {
-        this("Libro", categoriesTreeManager);
+    /**
+     * TODO: commenta
+     * 
+     * @param categoriesTreeManager
+     * @param referenceDAO
+     */
+    public BookCreator(CategoriesTreeManager categoriesTreeManager, BibliographicReferenceDAO referenceDAO) {
+        this("Libro", categoriesTreeManager, referenceDAO);
     }
 
-    private BookCreator(String dialogueTitle, CategoriesTreeManager categoriesTreeManager) {
-        super(dialogueTitle, categoriesTreeManager);
+    private BookCreator(String dialogueTitle, CategoriesTreeManager categoriesTreeManager, BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
+        super(dialogueTitle, categoriesTreeManager, referenceDAO);
     }
 
     @Override
@@ -24,11 +31,15 @@ public class BookCreator extends PublicationCreator {
 
         ISBN = new JTextField();
 
-        addComponent("Università", ISBN);
+        addComponent("ISBN", ISBN);
+    }
+
+    protected String getISBN() {
+        return ISBN.getText().trim();
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    protected void onConfirmClick() {
         Book book = new Book(getReferenceTitle());
         book.setDOI(getDOI());
         book.setDescription(getDescription());
@@ -42,9 +53,5 @@ public class BookCreator extends PublicationCreator {
         // TODO: salva nel database
 
         // TODO: autori, page count
-    }
-
-    protected String getISBN() {
-        return ISBN.getText().trim();
     }
 }

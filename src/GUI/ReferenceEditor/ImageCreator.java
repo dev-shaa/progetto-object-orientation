@@ -2,6 +2,8 @@ package GUI.ReferenceEditor;
 
 import java.awt.event.ActionEvent;
 import javax.swing.JSpinner;
+
+import DAO.BibliographicReferenceDAO;
 import GUI.Categories.CategoriesTreeManager;
 
 /**
@@ -18,12 +20,12 @@ public class ImageCreator extends OnlineResourceCreator {
      * @param categoriesTreeManager
      *            TODO: commenta
      */
-    public ImageCreator(CategoriesTreeManager categoriesTreeManager) {
-        this("Immagine", categoriesTreeManager);
+    public ImageCreator(CategoriesTreeManager categoriesTreeManager, BibliographicReferenceDAO referenceDAO) {
+        this("Immagine", categoriesTreeManager, referenceDAO);
     }
 
-    private ImageCreator(String dialogueTitle, CategoriesTreeManager categoriesTreeManager) {
-        super(dialogueTitle, categoriesTreeManager);
+    private ImageCreator(String dialogueTitle, CategoriesTreeManager categoriesTreeManager, BibliographicReferenceDAO referenceDAO) {
+        super(dialogueTitle, categoriesTreeManager, referenceDAO);
     }
 
     @Override
@@ -38,8 +40,9 @@ public class ImageCreator extends OnlineResourceCreator {
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        // TODO: Auto-generated method stub
+    protected void onConfirmClick() {
+        // TODO Auto-generated method stub
+
     }
 
 }

@@ -3,18 +3,21 @@ package GUI.ReferenceEditor;
 import GUI.Categories.CategoriesTreeManager;
 import Entities.References.OnlineResources.ProgrammingLanguage;
 import javax.swing.JComboBox;
+
+import DAO.BibliographicReferenceDAO;
+
 import java.awt.event.ActionEvent;
 
 public class SourceCodeCreator extends OnlineResourceCreator {
 
     private JComboBox<ProgrammingLanguage> programmingLanguage;
 
-    public SourceCodeCreator(CategoriesTreeManager categoriesTreeManager) {
-        this("Codice sorgente", categoriesTreeManager);
+    public SourceCodeCreator(CategoriesTreeManager categoriesTreeManager, BibliographicReferenceDAO referenceDAO) {
+        this("Codice sorgente", categoriesTreeManager, referenceDAO);
     }
 
-    private SourceCodeCreator(String dialogueTitle, CategoriesTreeManager categoriesTreeManager) {
-        super(dialogueTitle, categoriesTreeManager);
+    private SourceCodeCreator(String dialogueTitle, CategoriesTreeManager categoriesTreeManager, BibliographicReferenceDAO referenceDAO) {
+        super(dialogueTitle, categoriesTreeManager, referenceDAO);
     }
 
     @Override
@@ -26,8 +29,9 @@ public class SourceCodeCreator extends OnlineResourceCreator {
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        // TODO: Auto-generated method stub
+    protected void onConfirmClick() {
+        // TODO Auto-generated method stub
+
     }
 
 }

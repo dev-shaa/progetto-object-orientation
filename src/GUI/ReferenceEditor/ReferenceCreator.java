@@ -13,10 +13,15 @@ import java.util.Date;
 import java.awt.BorderLayout;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-
 import com.toedter.calendar.JDateChooser;
+import DAO.BibliographicReferenceDAO;
 
-public abstract class ReferenceCreator extends JDialog implements ActionListener {
+/**
+ * TODO: commenta
+ */
+public abstract class ReferenceCreator extends JDialog {
+
+    // TODO: authors
 
     private JTextField title;
     private JDateChooser pubblicationDate;
@@ -28,11 +33,26 @@ public abstract class ReferenceCreator extends JDialog implements ActionListener
 
     private JPanel fieldPanel;
 
+    private BibliographicReferenceDAO referenceDAO;
+
     private final String searchFieldSeparator = ",";
     private final Dimension maximumSize = new Dimension(Integer.MAX_VALUE, 24);
     private final float alignment = Container.LEFT_ALIGNMENT;
 
-    public ReferenceCreator(String dialogueTitle, CategoriesTreeManager categoriesTreeManager) {
+    /**
+     * Crea {@code ReferenceCreator} con il titolo, le categorie e il DAO indicati.
+     * 
+     * @param dialogueTitle
+     *            titolo della finestra di dialogo
+     * @param categoriesTreeManager
+     *            manager dell'albero delle categorie
+     * @param referenceDAO
+     *            classe DAO dei riferimenti
+     * @throws IllegalArgumentException
+     *             se referenceDAO non è valido
+     * @see #setReferenceDAO(BibliographicReferenceDAO)
+     */
+    public ReferenceCreator(String dialogueTitle, CategoriesTreeManager categoriesTreeManager, BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
         super();
 
         setTitle(dialogueTitle);
@@ -54,6 +74,31 @@ public abstract class ReferenceCreator extends JDialog implements ActionListener
     }
 
     /**
+     * Imposta la classe DAO per interfacciarsi col database.
+     * 
+     * @param referenceDAO
+     *            classe DAO dei riferimenti
+     * @throws IllegalArgumentException
+     *             se {@code referenceDAO == null}
+     */
+    public void setReferenceDAO(BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
+        if (referenceDAO == null)
+            throw new IllegalArgumentException("referenceDAO non può essere null");
+
+        this.referenceDAO = referenceDAO;
+    }
+
+    /**
+     * Restituisce la classe DAO per interfacciarsi al database dei riferimenti.
+     * 
+     * @return
+     *         classe DAO dei riferimenti
+     */
+    public BibliographicReferenceDAO getReferenceDAO() {
+        return referenceDAO;
+    }
+
+    /**
      * TODO: commenta
      * 
      * @param categoriesTreeManager
@@ -69,7 +114,7 @@ public abstract class ReferenceCreator extends JDialog implements ActionListener
         JScrollPane scrollPane = new JScrollPane(fieldPanel);
         contentPane.add(scrollPane);
 
-        title = new JTextField();
+        title = new JTextField(); // TODO: required field
         tags = new JTermsField(searchFieldSeparator);
         DOI = new JTextField();
         pubblicationDate = new JDateChooser();
@@ -84,7 +129,14 @@ public abstract class ReferenceCreator extends JDialog implements ActionListener
         addComponent("Categorie", categories);
 
         JButton confirmButton = new JButton("OK");
-        confirmButton.addActionListener(this);
+        confirmButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onConfirmClick();
+            }
+
+        });
         contentPane.add(confirmButton, BorderLayout.SOUTH);
     }
 
@@ -131,32 +183,72 @@ public abstract class ReferenceCreator extends JDialog implements ActionListener
         addComponent(label, component);
     }
 
-    @Override
-    public abstract void actionPerformed(ActionEvent e);
+    /**
+     * Funzione chiamata quando viene premuto il tasto di conferma.
+     */
+    protected abstract void onConfirmClick();
+
+    protected void setReferenceTitle(String text) {
+        title.setText(text);
+    }
 
     protected String getReferenceTitle() {
         return title.getText().trim();
+    }
+
+    protected void setPubblicationDate(Date date) {
+        pubblicationDate.setDate(date);
     }
 
     protected Date getPubblicationDate() {
         return pubblicationDate.getDate();
     }
 
+    protected void setDOI(String doi) {
+        DOI.setText(doi);
+    }
+
     protected String getDOI() {
         return DOI.getText().trim();
+    }
+
+    protected void setDescription(String description) {
+        this.description.setText(description);
     }
 
     protected String getDescription() {
         return description.getText().trim();
     }
 
+    protected void setTags(Tag[] tags) {
+        // TODO:
+    }
+
     protected Tag[] getTags() {
-        // FIXME:
-        return null;
+        String[] tagsString = tags.getTerms();
+
+        if (tagsString == null)
+            return null;
+
+        Tag[] tags = new Tag[tagsString.length];
+
+        for (int i = 0; i < tags.length; i++) {
+            tags[i] = new Tag(tagsString[i]);
+        }
+
+        return tags;
+    }
+
+    protected void setLanguage(ReferenceLanguage language) {
+        this.language.setSelectedItem(language);
     }
 
     protected ReferenceLanguage getLanguage() {
         return (ReferenceLanguage) language.getSelectedItem();
+    }
+
+    protected void setCategories(Category[] categories) {
+        // TODO:
     }
 
     protected Category[] getCategories() {

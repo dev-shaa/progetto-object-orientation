@@ -1,22 +1,24 @@
 package GUI.ReferenceEditor;
 
 import GUI.Categories.*;
-
+import DAO.BibliographicReferenceDAO;
 import java.awt.event.ActionEvent;
-
 import javax.swing.JTextField;
 
+/**
+ * TODO: commenta
+ */
 public class ThesisCreator extends PublicationCreator {
 
     private JTextField university;
     private JTextField faculty;
 
-    public ThesisCreator(CategoriesTreeManager categoriesTreeManager) {
-        this("Tesi", categoriesTreeManager);
+    public ThesisCreator(CategoriesTreeManager categoriesTreeManager, BibliographicReferenceDAO referenceDAO) {
+        this("Tesi", categoriesTreeManager, referenceDAO);
     }
 
-    private ThesisCreator(String dialogueTitle, CategoriesTreeManager categoriesTreeManager) {
-        super(dialogueTitle, categoriesTreeManager);
+    private ThesisCreator(String dialogueTitle, CategoriesTreeManager categoriesTreeManager, BibliographicReferenceDAO referenceDAO) {
+        super(dialogueTitle, categoriesTreeManager, referenceDAO);
     }
 
     @Override
@@ -31,7 +33,7 @@ public class ThesisCreator extends PublicationCreator {
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    protected void onConfirmClick() {
         // TODO Auto-generated method stub
 
     }

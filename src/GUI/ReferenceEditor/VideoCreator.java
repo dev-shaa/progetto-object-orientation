@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.JSpinner;
 
+import DAO.BibliographicReferenceDAO;
 import GUI.Categories.CategoriesTreeManager;
 
 /**
@@ -16,12 +17,12 @@ public class VideoCreator extends OnlineResourceCreator {
     private JSpinner frameRate;
     // TODO: durata
 
-    public VideoCreator(CategoriesTreeManager categoriesTreeManager) {
-        this("Video", categoriesTreeManager);
+    public VideoCreator(CategoriesTreeManager categoriesTreeManager, BibliographicReferenceDAO referenceDAO) {
+        this("Video", categoriesTreeManager, referenceDAO);
     }
 
-    private VideoCreator(String dialogueTitle, CategoriesTreeManager categoriesTreeManager) {
-        super(dialogueTitle, categoriesTreeManager);
+    private VideoCreator(String dialogueTitle, CategoriesTreeManager categoriesTreeManager, BibliographicReferenceDAO referenceDAO) {
+        super(dialogueTitle, categoriesTreeManager, referenceDAO);
     }
 
     @Override
@@ -38,8 +39,9 @@ public class VideoCreator extends OnlineResourceCreator {
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        // TODO: Auto-generated method stub
+    protected void onConfirmClick() {
+        // TODO Auto-generated method stub
+
     }
 
 }

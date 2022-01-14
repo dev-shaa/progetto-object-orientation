@@ -4,15 +4,9 @@ import DAO.*;
 import GUI.*;
 import GUI.Categories.CategoriesTreeManager;
 import GUI.Homepage.Search.Search;
-import GUI.ReferenceEditor.BookCreator;
-import GUI.ReferenceEditor.ImageCreator;
-import GUI.ReferenceEditor.SourceCodeCreator;
-import GUI.ReferenceEditor.ThesisCreator;
-import GUI.ReferenceEditor.VideoCreator;
-import GUI.ReferenceEditor.WebsiteCreator;
+import GUI.ReferenceEditor.*;
 import Entities.*;
 import Entities.References.*;
-import Entities.References.PhysicalResources.Thesis;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -166,50 +160,49 @@ public class ReferencePanel extends JPanel {
         JMenuItem articleOption = new JMenuItem("Articolo");
         articleOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // TODO: apri pagina creazione articolo
-
+                new ArticleCreator(categoriesTreeManager, bibliographicReferenceDAO);
             }
         });
 
         JMenuItem bookOption = new JMenuItem("Libro");
         bookOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // TODO: apri pagina creazione libro
+                new BookCreator(categoriesTreeManager, bibliographicReferenceDAO);
             }
         });
 
         JMenuItem thesisOption = new JMenuItem("Tesi");
         thesisOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                new ThesisCreator(categoriesTreeManager);
+                new ThesisCreator(categoriesTreeManager, bibliographicReferenceDAO);
             }
         });
 
         JMenuItem websiteOption = new JMenuItem("Sito web");
         websiteOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                new WebsiteCreator(categoriesTreeManager);
+                new WebsiteCreator(categoriesTreeManager, bibliographicReferenceDAO);
             }
         });
 
         JMenuItem sourceCodeOption = new JMenuItem("Codice sorgente");
         sourceCodeOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                new SourceCodeCreator(categoriesTreeManager);
+                new SourceCodeCreator(categoriesTreeManager, bibliographicReferenceDAO);
             }
         });
 
         JMenuItem imageOption = new JMenuItem("Immagine");
         imageOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                new ImageCreator(categoriesTreeManager);
+                new ImageCreator(categoriesTreeManager, bibliographicReferenceDAO);
             }
         });
 
         JMenuItem videoOption = new JMenuItem("Video");
         videoOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                new VideoCreator(categoriesTreeManager);
+                new VideoCreator(categoriesTreeManager, bibliographicReferenceDAO);
             }
         });
 
@@ -238,6 +231,12 @@ public class ReferencePanel extends JPanel {
         try {
             // FIXME:
             // controller.openReferenceCreatorPage(listPanel.getSelectedReference());
+            BibliographicReference selectedReference = listPanel.getSelectedReference();
+
+            // if (selectedReference instanceof Article) {
+            // new ArticleCreator(categoriesTreeManager, bibliographicReferenceDAO, (Article) selectedReference);
+            // }
+
         } catch (IndexOutOfBoundsException e) {
             JOptionPane.showMessageDialog(null, "Impossibile modificare il riferimento");
         }
