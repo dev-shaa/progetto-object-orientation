@@ -15,7 +15,7 @@ public abstract class BibliographicReference {
     private String DOI;
     private String description;
     private ReferenceLanguage language;
-    private ArrayList<Tag> tags;
+    private Tag[] tags;
     private ArrayList<BibliographicReference> relatedReferences;
 
     /**
@@ -32,7 +32,7 @@ public abstract class BibliographicReference {
         setLanguage(null);
 
         setAuthors(new ArrayList<Author>(1));
-        setTags(new ArrayList<Tag>(5));
+        setTags(null);
         setRelatedReferences(new ArrayList<BibliographicReference>(5));
     }
 
@@ -189,7 +189,7 @@ public abstract class BibliographicReference {
      * @param tags
      *            parole chiave del riferimento
      */
-    public void setTags(ArrayList<Tag> tags) {
+    public void setTags(Tag[] tags) {
         this.tags = tags;
     }
 
@@ -200,7 +200,7 @@ public abstract class BibliographicReference {
      *         parole chiave del riferimento
      */
     public Tag[] getTags() {
-        return tags.toArray(new Tag[tags.size()]);
+        return tags;
     }
 
     /**
