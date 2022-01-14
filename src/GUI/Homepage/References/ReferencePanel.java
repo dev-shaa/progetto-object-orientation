@@ -3,9 +3,16 @@ package GUI.Homepage.References;
 import DAO.*;
 import GUI.*;
 import GUI.Categories.CategoriesTreeManager;
+import GUI.Homepage.Search.Search;
+import GUI.ReferenceEditor.BookCreator;
+import GUI.ReferenceEditor.ImageCreator;
+import GUI.ReferenceEditor.SourceCodeCreator;
 import GUI.ReferenceEditor.ThesisCreator;
+import GUI.ReferenceEditor.VideoCreator;
+import GUI.ReferenceEditor.WebsiteCreator;
 import Entities.*;
 import Entities.References.*;
+import Entities.References.PhysicalResources.Thesis;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -174,20 +181,45 @@ public class ReferencePanel extends JPanel {
         JMenuItem thesisOption = new JMenuItem("Tesi");
         thesisOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // new ThesisCreator("Nuova tesi", categoriesTreeManager);
+                new ThesisCreator(categoriesTreeManager);
+            }
+        });
+
+        JMenuItem websiteOption = new JMenuItem("Sito web");
+        websiteOption.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                new WebsiteCreator(categoriesTreeManager);
+            }
+        });
+
+        JMenuItem sourceCodeOption = new JMenuItem("Codice sorgente");
+        sourceCodeOption.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                new SourceCodeCreator(categoriesTreeManager);
+            }
+        });
+
+        JMenuItem imageOption = new JMenuItem("Immagine");
+        imageOption.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                new ImageCreator(categoriesTreeManager);
             }
         });
 
         JMenuItem videoOption = new JMenuItem("Video");
         videoOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // TODO: apri pagina creazione video
+                new VideoCreator(categoriesTreeManager);
             }
         });
 
         newReferenceTypeSelection.add(articleOption);
         newReferenceTypeSelection.add(bookOption);
         newReferenceTypeSelection.add(thesisOption);
+        newReferenceTypeSelection.addSeparator();
+        newReferenceTypeSelection.add(websiteOption);
+        newReferenceTypeSelection.add(sourceCodeOption);
+        newReferenceTypeSelection.add(imageOption);
         newReferenceTypeSelection.add(videoOption);
     }
 
@@ -216,8 +248,7 @@ public class ReferencePanel extends JPanel {
      */
     private void removeSelectedReference() {
         try {
-            int result = JOptionPane.showConfirmDialog(null, "Vuoi eliminare questo riferimento?",
-                    "Elimina riferimento", JOptionPane.YES_NO_OPTION);
+            int result = JOptionPane.showConfirmDialog(null, "Vuoi eliminare questo riferimento?", "Elimina riferimento", JOptionPane.YES_NO_OPTION);
 
             if (result == JOptionPane.YES_OPTION) {
                 bibliographicReferenceDAO.removeReference(listPanel.getSelectedReference());
@@ -239,8 +270,7 @@ public class ReferencePanel extends JPanel {
     }
 
     /**
-     * Carica tutti i riferimenti presenti in una categoria dal database e li mostra
-     * a schermo.
+     * Carica tutti i riferimenti presenti in una categoria dal database e li mostra a schermo.
      * 
      * @param category
      *            categoria di cui mostrare i riferimenti
@@ -248,6 +278,23 @@ public class ReferencePanel extends JPanel {
     public void showReferences(Category category) {
         try {
             BibliographicReference[] references = bibliographicReferenceDAO.getReferences(category);
+            showReferences(references);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+    }
+
+    /**
+     * Carica tutti i riferimenti a partire da una ricerca e li mostra a schermo.
+     * 
+     * @param search
+     *            ricerca
+     */
+    public void showReferences(Search search) {
+        try {
+            // TODO: referenceDAO.search() o cose simili
+
+            BibliographicReference[] references = null; // DEBUG:
             showReferences(references);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());

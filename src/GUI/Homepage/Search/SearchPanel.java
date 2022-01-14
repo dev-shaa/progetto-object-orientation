@@ -10,7 +10,7 @@ import com.toedter.calendar.JDateChooser;
 import Entities.Tag;
 import GUI.Categories.*;
 import GUI.Homepage.References.*;
-import GUI.Utilities.JTextSearchField;
+import GUI.Utilities.JTermsField;
 
 /**
  * Pannello per la ricerca dei riferimenti per parole chiave, autori, categorie
@@ -18,17 +18,18 @@ import GUI.Utilities.JTextSearchField;
  */
 public class SearchPanel extends JPanel {
 
-    private JTextSearchField tags;
-    private JTextSearchField authors;
+    private JTermsField tags;
+    private JTermsField authors;
     private CategoriesSelectionPopupMenu categories;
     private JDateChooser dateFrom;
     private JDateChooser dateTo;
     private JButton searchButton;
 
-    private final Dimension maximumSize = new Dimension(Integer.MAX_VALUE, 24);
     private final String searchFieldSeparator = ",";
+    private final Dimension maximumSize = new Dimension(Integer.MAX_VALUE, 24);
     private final float alignment = Container.LEFT_ALIGNMENT;
 
+    private ReferencePanel referencePanel;
     private CategoriesTreeManager categoriesTreeModel;
 
     /**
@@ -38,6 +39,7 @@ public class SearchPanel extends JPanel {
      * @param categoriesTreeModel
      */
     public SearchPanel(ReferencePanel referencePanel, CategoriesTreeManager categoriesTreeModel) {
+        setReferencePanel(referencePanel);
         this.categoriesTreeModel = categoriesTreeModel;
 
         setLayout(new BorderLayout(5, 5));
@@ -45,6 +47,24 @@ public class SearchPanel extends JPanel {
 
         add(getPanelLabel(), BorderLayout.NORTH);
         add(getSearchFieldPanel(), BorderLayout.CENTER);
+    }
+
+    /**
+     * TODO: commenta
+     * 
+     * @return
+     */
+    public ReferencePanel getReferencePanel() {
+        return referencePanel;
+    }
+
+    /**
+     * TODO: commenta
+     * 
+     * @param referencePanel
+     */
+    public void setReferencePanel(ReferencePanel referencePanel) {
+        this.referencePanel = referencePanel;
     }
 
     private JLabel getPanelLabel() {
@@ -56,8 +76,8 @@ public class SearchPanel extends JPanel {
         searchPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
         searchPanel.setLayout(new BoxLayout(searchPanel, BoxLayout.PAGE_AXIS));
 
-        tags = new JTextSearchField(searchFieldSeparator);
-        authors = new JTextSearchField(searchFieldSeparator);
+        tags = new JTermsField(searchFieldSeparator);
+        authors = new JTermsField(searchFieldSeparator);
         categories = new CategoriesSelectionPopupMenu(categoriesTreeModel);
         dateFrom = new JDateChooser();
         dateTo = new JDateChooser();
@@ -89,8 +109,8 @@ public class SearchPanel extends JPanel {
         JLabel labelField = new JLabel(label);
         labelField.setMaximumSize(maximumSize);
         labelField.setAlignmentX(alignment);
-        panel.add(labelField);
 
+        addComponent(labelField, panel);
         addComponent(component, panel);
     }
 
@@ -111,7 +131,7 @@ public class SearchPanel extends JPanel {
         });
     }
 
-    // TODO:
+    // TODO: commenta
     private Tag[] stringToTags(String[] strings) {
         if (strings == null || strings.length == 0)
             return null;
@@ -125,15 +145,12 @@ public class SearchPanel extends JPanel {
     }
 
     private void search() {
-        // TODO: cerca
-
-        Tag[] tags = stringToTags(this.tags.getSearchTerms());
-
-        // Search search = new Search(datePicker.getStartDate(),
-        // datePicker.getEndDate(),
-        // stringToTags(tagSearchField.getSearchTerms()),
-        // categoriesSearchField.getCategories());
-
+        try {
+            Search search = new Search(dateFrom.getDate(), dateTo.getDate(), stringToTags(this.tags.getSearchTerms()), categories.getSelectedCategories());
+            referencePanel.showReferences(search);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
     }
 
 }

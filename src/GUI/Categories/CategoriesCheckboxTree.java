@@ -74,7 +74,8 @@ public class CategoriesCheckboxTree extends JTree {
     public Category[] getSelectedCategories() {
         TreePath[] selectedPaths = getSelectionPaths();
 
-        if (selectedPaths == null)
+        // FIXME: quando viene selezionata e deselezionata una categoria, non essendo visibile il nodo root, esso rimane sempre tra i selezionati
+        if (selectedPaths == null || selectedPaths.length < 2)
             return null;
 
         Category[] selectedCategories = new Category[selectedPaths.length];
