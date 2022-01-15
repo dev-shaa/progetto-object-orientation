@@ -160,49 +160,49 @@ public class ReferencePanel extends JPanel {
         JMenuItem articleOption = new JMenuItem("Articolo");
         articleOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                new ArticleCreator(categoriesTreeManager, bibliographicReferenceDAO);
+                new ArticleEditor(categoriesTreeManager, bibliographicReferenceDAO);
             }
         });
 
         JMenuItem bookOption = new JMenuItem("Libro");
         bookOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                new BookCreator(categoriesTreeManager, bibliographicReferenceDAO);
+                new BookEditor(categoriesTreeManager, bibliographicReferenceDAO);
             }
         });
 
         JMenuItem thesisOption = new JMenuItem("Tesi");
         thesisOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                new ThesisCreator(categoriesTreeManager, bibliographicReferenceDAO);
+                new ThesisEditor(categoriesTreeManager, bibliographicReferenceDAO);
             }
         });
 
         JMenuItem websiteOption = new JMenuItem("Sito web");
         websiteOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                new WebsiteCreator(categoriesTreeManager, bibliographicReferenceDAO);
+                new WebsiteEditor(categoriesTreeManager, bibliographicReferenceDAO);
             }
         });
 
         JMenuItem sourceCodeOption = new JMenuItem("Codice sorgente");
         sourceCodeOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                new SourceCodeCreator(categoriesTreeManager, bibliographicReferenceDAO);
+                new SourceCodeEditor(categoriesTreeManager, bibliographicReferenceDAO);
             }
         });
 
         JMenuItem imageOption = new JMenuItem("Immagine");
         imageOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                new ImageCreator(categoriesTreeManager, bibliographicReferenceDAO);
+                new ImageEditor(categoriesTreeManager, bibliographicReferenceDAO);
             }
         });
 
         JMenuItem videoOption = new JMenuItem("Video");
         videoOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                new VideoCreator(categoriesTreeManager, bibliographicReferenceDAO);
+                new VideoEditor(categoriesTreeManager, bibliographicReferenceDAO);
             }
         });
 

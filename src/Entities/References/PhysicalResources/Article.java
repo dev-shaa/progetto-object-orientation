@@ -15,9 +15,9 @@ public class Article extends Publication {
      * indicato.
      * 
      * @param title
-     *              titolo dell'articolo
+     *            titolo dell'articolo
      * @throws IllegalArgumentException
-     *                                  se il titolo dell'articolo non è valido
+     *             se il titolo dell'articolo non è valido
      */
     public Article(String title) throws IllegalArgumentException {
         super(title);
@@ -27,7 +27,7 @@ public class Article extends Publication {
      * Imposta il codice identificativo ISSN dell'articolo.
      * 
      * @param ISSN
-     *             codice identificativo ISSN
+     *            codice identificativo ISSN
      */
     public void setISSN(String ISSN) {
         this.ISSN = ISSN;
