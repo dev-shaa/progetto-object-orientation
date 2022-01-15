@@ -40,7 +40,6 @@ public class Controller {
 
     public void openHomePage(User user) {
         try {
-            homepage = new Homepage(this, user, new CategoryDAOPostgreSQL(user), new BibliographicReferenceDAO());
             homepage.setVisible(true);
             loginFrame.setVisible(false);
         } catch (Exception e) {
@@ -60,3 +59,4 @@ public class Controller {
     }
 
 }
+
