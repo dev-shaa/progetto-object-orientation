@@ -42,7 +42,8 @@ public class CategoryDAOPostgreSQL extends CategoryDAO {
         Statement statement = null;
 
         try {
-            connection = DatabaseController.getInstance().getConnection();
+            // connection = DatabaseController.getInstance().getConnection();
+            connection = DatabaseController.getConnection(); // TODO:
             connection.setAutoCommit(false);
 
             statement = connection.createStatement();
@@ -93,7 +94,7 @@ public class CategoryDAOPostgreSQL extends CategoryDAO {
         Statement statement = null;
 
         try {
-            connection = DatabaseController.getInstance().getConnection();
+            connection = DatabaseController.getConnection();
             statement = connection.createStatement();
 
             String query = "update category set name = " + category.getName() + " where id = " + category.getId();
@@ -121,7 +122,7 @@ public class CategoryDAOPostgreSQL extends CategoryDAO {
         Statement statement = null;
 
         try {
-            connection = DatabaseController.getInstance().getConnection();
+            connection = DatabaseController.getConnection();
             statement = connection.createStatement();
 
             String query = "delete from category where id = " + category.getId();
@@ -205,4 +206,3 @@ public class CategoryDAOPostgreSQL extends CategoryDAO {
     }
 
 }
-
