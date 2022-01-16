@@ -92,7 +92,7 @@ public class Author {
      *             se la stringa di input non rispetta il pattern del codice ORCID
      */
     public void setORCID(String ORCID) throws IllegalArgumentException {
-        if (!isORCIDValid(ORCID))
+        if (ORCID != null && !isORCIDValid(ORCID))
             throw new IllegalArgumentException("Codice ORCID non valido");
 
         this.ORCID = ORCID;
