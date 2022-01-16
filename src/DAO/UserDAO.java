@@ -15,6 +15,10 @@ public class UserDAO {
 			String st = "INSERT INTO public.\"UtenteApp\" (\"Nome\", \"Password\") VALUES('" + user.getName() + "','sdfgh');";
 
 			con = DatabaseController.getConnection();
+			if (con == null) {
+				System.out.println("Non c'è connesione al db");
+				return;
+			}
 			stmt = con.createStatement(); // @R1ccardo FIXME: in caso non ci sia connessione, con diventa null e c'Ã¨ un null pointer exception
 			stmt.executeUpdate(st);
 			// rs = stmt.executeQuery(st);
@@ -22,7 +26,7 @@ public class UserDAO {
 			// stmt.setString(1, user.getName());
 			// stmt.executeUpdate();
 			System.out.println("Utente aggiunto con successo");
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			try {

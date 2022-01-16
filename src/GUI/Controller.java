@@ -15,7 +15,7 @@ public class Controller {
 
     public Controller() {
         setupLookAndFeel();
-
+                
         loginFrame = new LoginFrame(this);
 
         openLoginPage();

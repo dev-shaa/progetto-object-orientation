@@ -27,7 +27,6 @@ public class LoginFrame extends JFrame {
 	private JPanel contentPane;
 	private JTextField userName_TF;
 	private JPasswordField passwordField;
-
 	private Controller theController;
 
 	/**
@@ -35,7 +34,9 @@ public class LoginFrame extends JFrame {
 	 */
 
 	public LoginFrame(Controller c) {
-		theController = c;
+//		theController = c;
+		
+		Login login = new Login();
 
 		setTitle("Login");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -85,7 +86,7 @@ public class LoginFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				String username = userName_TF.getText();
 				String pwd = new String(passwordField.getPassword());
-				// c.CheckUser(username, pwd);
+				login.CheckUser(username, pwd);
 			}
 		});
 	}
