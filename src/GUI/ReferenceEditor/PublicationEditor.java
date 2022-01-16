@@ -3,6 +3,8 @@ package GUI.ReferenceEditor;
 import DAO.BibliographicReferenceDAO;
 import GUI.Categories.CategoriesTreeManager;
 import Entities.References.PhysicalResources.Publication;
+import Exceptions.RequiredFieldMissingException;
+
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
@@ -113,6 +115,25 @@ public abstract class PublicationEditor extends ReferenceEditor {
      */
     protected String getPublisherValue() {
         return convertEmptyStringToNull(publisher.getText().trim());
+    }
+
+    /**
+     * Riempie i campi della pubblicazione passata con i valori inseriti dall'utente.
+     * 
+     * @param publication
+     *            pubblicazione da riempire
+     * @throws IllegalArgumentException
+     *             se {@code publication == null}
+     * @throws RequiredFieldMissingException
+     *             se i campi obbligatori non sono stati riempiti
+     * @see #fillReferenceValues(Entities.References.BibliographicReference)
+     */
+    protected void fillPublicationValues(Publication publication) throws IllegalArgumentException, RequiredFieldMissingException {
+        super.fillReferenceValues(publication);
+
+        publication.setPageCount(getPageCountValue());
+        publication.setURL(getURLValue());
+        publication.setPublisher(getPublisherValue());
     }
 
 }

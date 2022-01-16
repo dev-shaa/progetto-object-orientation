@@ -3,14 +3,18 @@ package GUI.ReferenceEditor;
 import DAO.BibliographicReferenceDAO;
 import GUI.Categories.CategoriesTreeManager;
 import Entities.References.OnlineResources.SourceCode;
+import Exceptions.RequiredFieldMissingException;
+import Entities.References.OnlineResources.OnlineResource;
 import Entities.References.OnlineResources.ProgrammingLanguage;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 
 /**
  * Pannello di dialogo per la creazione o modifica di un riferimento a del codice sorgente.
  */
 public class SourceCodeEditor extends OnlineResourceEditor {
 
+    private SourceCode sourceCode;
     private JComboBox<ProgrammingLanguage> programmingLanguage;
 
     /**
@@ -45,10 +49,10 @@ public class SourceCodeEditor extends OnlineResourceEditor {
      */
     public SourceCodeEditor(CategoriesTreeManager categoriesTree, BibliographicReferenceDAO referenceDAO, SourceCode sourceCode) throws IllegalArgumentException {
         super("Codice sorgente", categoriesTree, referenceDAO, sourceCode);
+        this.sourceCode = sourceCode;
 
-        if (sourceCode != null) {
+        if (sourceCode != null)
             setProgrammingLanguageValue(sourceCode.getProgrammingLanguage());
-        }
     }
 
     @Override
@@ -61,7 +65,16 @@ public class SourceCodeEditor extends OnlineResourceEditor {
 
     @Override
     protected void saveReference() {
-        // TODO: Auto-generated method stub
+        SourceCode sourceCodeToFill = sourceCode == null ? new SourceCode("placeholder", null, "placeholder") : sourceCode;
+
+        try {
+            fillSourceCodeValues(sourceCodeToFill);
+            // TODO: salva nel database
+        } catch (IllegalArgumentException e) {
+            // TODO: handle exception
+        } catch (RequiredFieldMissingException e) {
+            JOptionPane.showMessageDialog(this, "Uno o più campi obbligatori non sono stati inseriti.", "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /**
@@ -82,6 +95,23 @@ public class SourceCodeEditor extends OnlineResourceEditor {
      */
     protected ProgrammingLanguage getProgrammingLanguageValue() {
         return (ProgrammingLanguage) programmingLanguage.getSelectedItem();
+    }
+
+    /**
+     * Riempie i campi del codice sorgente passato con i valori inseriti dall'utente.
+     * 
+     * @param sourceCode
+     *            codice sorgente da riempire
+     * @throws IllegalArgumentException
+     *             se {@code sourceCode == null}
+     * @throws RequiredFieldMissingException
+     *             se i campi obbligatori non sono stati riempiti
+     * @see #fillOnlineResourceValues(OnlineResource)
+     */
+    protected void fillSourceCodeValues(SourceCode sourceCode) throws IllegalArgumentException, RequiredFieldMissingException {
+        super.fillOnlineResourceValues(sourceCode);
+
+        sourceCode.setProgrammingLanguage(getProgrammingLanguageValue());
     }
 
 }

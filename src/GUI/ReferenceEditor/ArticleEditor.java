@@ -3,6 +3,9 @@ package GUI.ReferenceEditor;
 import DAO.BibliographicReferenceDAO;
 import GUI.Categories.CategoriesTreeManager;
 import Entities.References.PhysicalResources.Article;
+import Exceptions.RequiredFieldMissingException;
+
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 /**
@@ -10,6 +13,7 @@ import javax.swing.JTextField;
  */
 public class ArticleEditor extends PublicationEditor {
 
+    private Article article;
     private JTextField ISSN;
 
     /**
@@ -44,10 +48,10 @@ public class ArticleEditor extends PublicationEditor {
      */
     public ArticleEditor(CategoriesTreeManager categoriesTree, BibliographicReferenceDAO referenceDAO, Article article) throws IllegalArgumentException {
         super("Articolo", categoriesTree, referenceDAO, article);
+        this.article = article;
 
-        if (article != null) {
+        if (article != null)
             setISSNValue(article.getISSN());
-        }
     }
 
     @Override
@@ -61,7 +65,16 @@ public class ArticleEditor extends PublicationEditor {
 
     @Override
     protected void saveReference() {
-        // TODO: salva articolo
+        Article articleToFill = article == null ? new Article("placeholder", null) : article;
+
+        try {
+            fillArticleValues(articleToFill);
+            // TODO: salva nel database
+        } catch (IllegalArgumentException e) {
+            // TODO: handle exception
+        } catch (RequiredFieldMissingException e) {
+            JOptionPane.showMessageDialog(this, "Uno o più campi obbligatori non sono stati inseriti.", "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /**
@@ -84,6 +97,23 @@ public class ArticleEditor extends PublicationEditor {
      */
     protected String getISSNValue() {
         return convertEmptyStringToNull(ISSN.getText().trim());
+    }
+
+    /**
+     * Riempie i campi dell'articolo passato con i valori inseriti dall'utente.
+     * 
+     * @param article
+     *            articolo da riempire
+     * @throws IllegalArgumentException
+     *             se {@code article == null}
+     * @throws RequiredFieldMissingException
+     *             se i campi obbligatori non sono stati riempiti
+     * @see #fillPublicationValues(Entities.References.PhysicalResources.Publication)
+     */
+    protected void fillArticleValues(Article article) throws IllegalArgumentException, RequiredFieldMissingException {
+        super.fillPublicationValues(article);
+
+        article.setISSN(getISSNValue());
     }
 
 }

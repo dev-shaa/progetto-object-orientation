@@ -3,6 +3,9 @@ package GUI.ReferenceEditor;
 import DAO.BibliographicReferenceDAO;
 import GUI.Categories.CategoriesTreeManager;
 import Entities.References.OnlineResources.Video;
+import Exceptions.RequiredFieldMissingException;
+
+import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
@@ -11,6 +14,7 @@ import javax.swing.SpinnerNumberModel;
  */
 public class VideoEditor extends OnlineResourceEditor {
 
+    private Video video;
     private JSpinner width;
     private JSpinner height;
     private JSpinner frameRate;
@@ -48,6 +52,7 @@ public class VideoEditor extends OnlineResourceEditor {
      */
     public VideoEditor(CategoriesTreeManager categoriesTree, BibliographicReferenceDAO referenceDAO, Video video) throws IllegalArgumentException {
         super("Video", categoriesTree, referenceDAO, video);
+        this.video = video;
 
         if (video != null) {
             setWidthValue(video.getWidth());
@@ -71,8 +76,16 @@ public class VideoEditor extends OnlineResourceEditor {
 
     @Override
     protected void saveReference() {
-        // TODO Auto-generated method stub
+        Video videoToFill = video == null ? new Video("placeholder", null, "placeholder") : video;
 
+        try {
+            fillVideoValues(videoToFill);
+            // TODO: salva nel database
+        } catch (IllegalArgumentException e) {
+            // TODO: handle exception
+        } catch (RequiredFieldMissingException e) {
+            JOptionPane.showMessageDialog(this, "Uno o più campi obbligatori non sono stati inseriti.", "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /**
@@ -133,6 +146,26 @@ public class VideoEditor extends OnlineResourceEditor {
      */
     protected int getFrameRateValue() {
         return (int) frameRate.getValue();
+    }
+
+    /**
+     * Riempie i campi del video passato con i valori inseriti dall'utente.
+     * 
+     * @param video
+     *            video da riempire
+     * @throws IllegalArgumentException
+     *             se {@code video == null}
+     * @throws RequiredFieldMissingException
+     *             se i campi obbligatori non sono stati riempiti
+     * @see #fillOnlineResourceValues(Entities.References.OnlineResources.OnlineResource)
+     */
+    protected void fillVideoValues(Video video) throws IllegalArgumentException, RequiredFieldMissingException {
+        super.fillOnlineResourceValues(video);
+
+        video.setWidth(getWidthValue());
+        video.setHeight(getHeightValue());
+        video.setFrameRate(getFrameRateValue());
+        // TODO: duration
     }
 
 }

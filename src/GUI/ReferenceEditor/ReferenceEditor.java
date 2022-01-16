@@ -1,8 +1,12 @@
 package GUI.ReferenceEditor;
 
+// NOTE: questa è una classe lunghissima, però sono principalmente commenti e getter/setter
+
 import GUI.Categories.*;
 import GUI.Homepage.Search.CategoriesSelectionPopupMenu;
+import GUI.Utilities.JPopupItemSelection;
 import GUI.Utilities.JTermsField;
+import Entities.Author;
 import Entities.Category;
 import Entities.Tag;
 import Entities.References.*;
@@ -10,8 +14,8 @@ import Exceptions.RequiredFieldMissingException;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 import java.util.Date;
-import java.awt.BorderLayout;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import com.toedter.calendar.JDateChooser;
@@ -22,8 +26,6 @@ import DAO.BibliographicReferenceDAO;
  */
 public abstract class ReferenceEditor extends JDialog {
 
-    // TODO: authors
-
     private JTextField title;
     private JTermsField tags;
     private JTextField DOI;
@@ -31,8 +33,9 @@ public abstract class ReferenceEditor extends JDialog {
     private JDateChooser pubblicationDate;
     private JComboBox<ReferenceLanguage> language;
     private CategoriesSelectionPopupMenu categories;
-    private JPanel fieldPanel;
+    private JPopupItemSelection<Author> authors;
 
+    private JPanel fieldPanel;
     private BibliographicReferenceDAO referenceDAO;
 
     private final String searchFieldSeparator = ",";
@@ -60,7 +63,7 @@ public abstract class ReferenceEditor extends JDialog {
 
         setTitle(dialogueTitle);
         setSize(500, 500);
-        setMinimumSize(new Dimension(300, 300));
+        setMinimumSize(new Dimension(500, 500));
 
         setReferenceDAO(referenceDAO);
 
@@ -72,18 +75,18 @@ public abstract class ReferenceEditor extends JDialog {
         setup(categoriesTree);
 
         // la descrizione è un elemento più grande, quindi vogliamo che sia alla fine
-        setupDescription();
+        setupLastElements();
 
         // mostra automaticamente quando viene creato
         setVisible(true);
 
         if (reference != null) {
-            setReferenceTitle(reference.getTitle());
-            setDOI(reference.getDOI());
-            setDescription(reference.getDescription());
-            setLanguage(reference.getLanguage());
-            setPubblicationDate(reference.getPubblicationDate());
-            setTags(reference.getTags());
+            setTitleValue(reference.getTitle());
+            setDOIValue(reference.getDOI());
+            setDescriptionValue(reference.getDescription());
+            setLanguageValue(reference.getLanguage());
+            setPubblicationDateValue(reference.getPubblicationDate());
+            setTagValues(reference.getTags());
         }
     }
 
@@ -119,15 +122,11 @@ public abstract class ReferenceEditor extends JDialog {
      *            categorie a cui può appartenere un riferimento
      */
     protected void setup(CategoriesTreeManager categoriesTreeManager) {
-        JPanel contentPane = new JPanel(new BorderLayout());
-        setContentPane(contentPane);
-
         fieldPanel = new JPanel();
         fieldPanel.setLayout(new BoxLayout(fieldPanel, BoxLayout.PAGE_AXIS));
         fieldPanel.setBorder(new EmptyBorder(50, 30, 50, 30));
 
-        JScrollPane scrollPane = new JScrollPane(fieldPanel);
-        contentPane.add(scrollPane);
+        setContentPane(new JScrollPane(fieldPanel));
 
         title = new JTextField();
         tags = new JTermsField(searchFieldSeparator);
@@ -135,43 +134,64 @@ public abstract class ReferenceEditor extends JDialog {
         pubblicationDate = new JDateChooser();
         language = new JComboBox<>(ReferenceLanguage.values());
         categories = new CategoriesSelectionPopupMenu(categoriesTreeManager);
-        description = new JTextArea();
+        description = new JTextArea(10, 1);
 
-        addFieldComponent(title, "Titolo", "Titolo del riferimento");
+        // TODO: carica dal database gli autori
+        authors = new JPopupItemSelection<Author>("Premi per selezionare gli autori");
+        authors.addElement(new Author("Mario", "Rossi", null));
+        authors.addElement(new Author("Luigi", "Bianchi", null));
+        authors.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+        JButton addAuthor = new JButton("+");
+        addAuthor.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new AuthorEditor();
+            }
+        });
+
+        JPanel authorsPanel = new JPanel(new FlowLayout());
+        authorsPanel.add(authors);
+        authorsPanel.add(addAuthor);
+
+        addFieldComponent(title, "Titolo*", "Titolo del riferimento");
         addFieldComponent(tags, "Parole chiave", "Parole chiave associate al riferimento, separate da una virgola");
         addFieldComponent(DOI, "DOI", "Codice identificativo DOI del riferimento");
         addFieldComponent(pubblicationDate, "Data di pubblicazione", "Data di pubblicazione del riferimento");
         addFieldComponent(language, "Lingua");
         addFieldComponent(categories, "Categorie");
+        addFieldComponent(authorsPanel, "Autori");
 
-        JButton confirmButton = new JButton("Salva");
-        confirmButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                saveReference();
-            }
-
-        });
-        contentPane.add(confirmButton, BorderLayout.SOUTH);
+        pack();
     }
 
     /**
-     * Imposta il campo della descrizione.
+     * Imposta gli elementi alla fine, come la descrizione e il pulsante per salvare.
      */
-    private void setupDescription() {
-        // FIXME: con troppi caratteri comincia a comportarsi in maniera strana
-
+    private void setupLastElements() {
         JLabel descriptionLabel = new JLabel("Descrizione");
         descriptionLabel.setMaximumSize(maximumSize);
         descriptionLabel.setAlignmentX(alignment);
 
         description.setLineWrap(true);
-        description.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
         description.setAlignmentX(alignment);
+
+        Component spacing = Box.createVerticalGlue();
+        spacing.setMinimumSize(new Dimension(0, 100));
+
+        JButton confirmButton = new JButton("Salva riferimento");
+        confirmButton.setAlignmentX(alignment);
+        confirmButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                saveReference();
+                dispose();
+            }
+        });
 
         fieldPanel.add(descriptionLabel);
         fieldPanel.add(description);
+        fieldPanel.add(spacing);
+        fieldPanel.add(confirmButton);
     }
 
     /**
@@ -232,7 +252,7 @@ public abstract class ReferenceEditor extends JDialog {
      * @param text
      *            titolo iniziale del riferimento
      */
-    protected void setReferenceTitle(String text) {
+    protected void setTitleValue(String text) {
         title.setText(text);
     }
 
@@ -244,7 +264,7 @@ public abstract class ReferenceEditor extends JDialog {
      * @throws RequiredFieldMissingException
      *             se non è stato inserito un titolo
      */
-    protected String getReferenceTitle() throws RequiredFieldMissingException {
+    protected String getTitleValue() throws RequiredFieldMissingException {
         String referenceTitle = convertEmptyStringToNull(title.getText().trim());
 
         if (title == null)
@@ -259,7 +279,7 @@ public abstract class ReferenceEditor extends JDialog {
      * @param date
      *            data di pubblicazione iniziale del riferimento
      */
-    protected void setPubblicationDate(Date date) {
+    protected void setPubblicationDateValue(Date date) {
         pubblicationDate.setDate(date);
     }
 
@@ -269,7 +289,7 @@ public abstract class ReferenceEditor extends JDialog {
      * @return
      *         data di pubblicazione del riferimento, {@code null} se non è stato inserito niente
      */
-    protected Date getPubblicationDate() {
+    protected Date getPubblicationDateValue() {
         return pubblicationDate.getDate();
     }
 
@@ -279,7 +299,7 @@ public abstract class ReferenceEditor extends JDialog {
      * @param doi
      *            DOI iniziale del riferimento
      */
-    protected void setDOI(String doi) {
+    protected void setDOIValue(String doi) {
         DOI.setText(doi);
     }
 
@@ -289,7 +309,7 @@ public abstract class ReferenceEditor extends JDialog {
      * @return
      *         DOI del riferimento, {@code null} se non è stato inserito niente
      */
-    protected String getDOI() {
+    protected String getDOIValue() {
         return convertEmptyStringToNull(DOI.getText().trim());
     }
 
@@ -299,7 +319,7 @@ public abstract class ReferenceEditor extends JDialog {
      * @param description
      *            descrizione iniziale del riferimento
      */
-    protected void setDescription(String description) {
+    protected void setDescriptionValue(String description) {
         this.description.setText(description);
     }
 
@@ -309,7 +329,7 @@ public abstract class ReferenceEditor extends JDialog {
      * @return
      *         descrizione del riferimento, {@code null} se non è stato inserito niente
      */
-    protected String getDescription() {
+    protected String getDescriptionValue() {
         return convertEmptyStringToNull(description.getText().trim());
     }
 
@@ -319,7 +339,7 @@ public abstract class ReferenceEditor extends JDialog {
      * @param tags
      *            parole chiave del riferimento
      */
-    protected void setTags(Tag[] tags) {
+    protected void setTagValues(Tag[] tags) {
         // TODO:
     }
 
@@ -329,7 +349,7 @@ public abstract class ReferenceEditor extends JDialog {
      * @return
      *         parole chiave del riferimento, {@code null} se non è stato inserito niente
      */
-    protected Tag[] getTags() {
+    protected Tag[] getTagValues() {
         String[] tagsString = tags.getTerms();
 
         if (tagsString == null)
@@ -350,7 +370,7 @@ public abstract class ReferenceEditor extends JDialog {
      * @param language
      *            lingua del riferimento
      */
-    protected void setLanguage(ReferenceLanguage language) {
+    protected void setLanguageValue(ReferenceLanguage language) {
         this.language.setSelectedItem(language);
     }
 
@@ -360,8 +380,33 @@ public abstract class ReferenceEditor extends JDialog {
      * @return
      *         lingua del riferimento
      */
-    protected ReferenceLanguage getLanguage() {
+    protected ReferenceLanguage getLanguageValue() {
         return (ReferenceLanguage) language.getSelectedItem();
+    }
+
+    /**
+     * Imposta gli autori iniziali del riferimento.
+     * 
+     * @param authors
+     *            autori del riferimento
+     */
+    protected void setAuthorValues(Author[] authors) {
+        // TODO:
+    }
+
+    /**
+     * Restituisce gli autori selezionati dall'utente.
+     * 
+     * @return
+     *         autori del riferimento, {@code null} se non è stato inserito niente
+     */
+    protected Author[] getAuthorValues() {
+        ArrayList<Author> selectedAuthors = authors.getSelectedElements();
+
+        if (selectedAuthors == null || selectedAuthors.size() == 0)
+            return null;
+
+        return selectedAuthors.toArray(new Author[selectedAuthors.size()]);
     }
 
     /**
@@ -370,7 +415,7 @@ public abstract class ReferenceEditor extends JDialog {
      * @param categories
      *            categorie del riferimento
      */
-    protected void setCategories(Category[] categories) {
+    protected void setCategoryValues(Category[] categories) {
         // TODO:
     }
 
@@ -380,7 +425,7 @@ public abstract class ReferenceEditor extends JDialog {
      * @return
      *         categorie del riferimento, {@code null} se non è stato inserito niente
      */
-    protected Category[] getCategories() {
+    protected Category[] getCategoryValues() {
         return categories.getSelectedCategories();
     }
 
@@ -397,6 +442,34 @@ public abstract class ReferenceEditor extends JDialog {
             return null;
 
         return string;
+    }
+
+    /**
+     * Riempie i campi del riferimento passato con i valori inseriti dall'utente.
+     * 
+     * @param reference
+     *            riferimento da riempire
+     * @throws IllegalArgumentException
+     *             se {@code reference == null}
+     * @throws RequiredFieldMissingException
+     *             se i campi obbligatori non sono stati riempiti
+     * @see #getTitleValue()
+     */
+    protected void fillReferenceValues(BibliographicReference reference) throws IllegalArgumentException, RequiredFieldMissingException {
+
+        // FIXME: requiredfieldmissingexception non chiamato
+
+        if (reference == null)
+            throw new IllegalArgumentException("reference non può essere null");
+
+        reference.setTitle(getTitleValue());
+        reference.setDOI(getDOIValue());
+        reference.setDescription(getDescriptionValue());
+        reference.setLanguage(getLanguageValue());
+        reference.setPubblicationDate(getPubblicationDateValue());
+        reference.setTags(getTagValues());
+        reference.setAuthors(getAuthorValues());
+        // reference.setRelatedReferences(relatedReferences); FIXME:
     }
 
 }

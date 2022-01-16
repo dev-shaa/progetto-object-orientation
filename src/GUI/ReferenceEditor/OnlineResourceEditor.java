@@ -1,7 +1,7 @@
 package GUI.ReferenceEditor;
 
-import GUI.Categories.CategoriesTreeManager;
 import DAO.BibliographicReferenceDAO;
+import GUI.Categories.CategoriesTreeManager;
 import Entities.References.OnlineResources.OnlineResource;
 import Exceptions.RequiredFieldMissingException;
 import javax.swing.*;
@@ -43,7 +43,7 @@ public abstract class OnlineResourceEditor extends ReferenceEditor {
 
         URL = new JTextField();
 
-        addFieldComponent(URL, "URL");
+        addFieldComponent(URL, "URL*", "URL della risorsa");
     }
 
     /**
@@ -71,6 +71,23 @@ public abstract class OnlineResourceEditor extends ReferenceEditor {
             throw new RequiredFieldMissingException("L'URL di una risorsa online non può essere nullo.");
 
         return newURL;
+    }
+
+    /**
+     * Riempie i campi della risorsa online passata con i valori inseriti dall'utente.
+     * 
+     * @param onlineResource
+     *            risorsa online da riempire
+     * @throws IllegalArgumentException
+     *             se {@code onlineResource == null}
+     * @throws RequiredFieldMissingException
+     *             se i campi obbligatori non sono stati riempiti
+     * @see #fillReferenceValues(Entities.References.BibliographicReference)
+     */
+    protected void fillOnlineResourceValues(OnlineResource onlineResource) throws IllegalArgumentException, RequiredFieldMissingException {
+        super.fillReferenceValues(onlineResource);
+
+        onlineResource.setURL(getURLValue());
     }
 
 }
