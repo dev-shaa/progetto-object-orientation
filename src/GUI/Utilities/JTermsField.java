@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import javax.swing.JTextField;
 
 /**
- * Un {@code JTextField} adattato come campo di ricerca, che restituisce i termini inseriti delimitati da un separatore.
+ * Un JTextField adattato come campo di ricerca, che restituisce i termini inseriti delimitati da un separatore.
  */
 public class JTermsField extends JTextField {
     private String separator;

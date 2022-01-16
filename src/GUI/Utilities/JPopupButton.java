@@ -5,18 +5,20 @@ import java.awt.event.*;
 import javax.swing.*;
 
 /**
- * Un {@code JButton} che, quando premuto, apre un menu popup.
+ * Un JButton che, quando premuto, apre un menu popup.
  */
 public class JPopupButton extends JButton implements ActionListener {
 
-    private JPopupMenu categoriesSelectionPopup;
+    private JPopupMenu popupMenu;
 
     /**
      * Crea un pulsante senza testo o icone.
      */
     public JPopupButton() {
         super();
-        setup();
+
+        popupMenu = new JPopupMenu();
+        addActionListener(this);
     }
 
     /**
@@ -26,18 +28,13 @@ public class JPopupButton extends JButton implements ActionListener {
      *            testo del pulsante
      */
     public JPopupButton(String text) {
-        super(text);
-        setup();
-    }
-
-    private void setup() {
-        categoriesSelectionPopup = new JPopupMenu();
-        addActionListener(this);
+        this();
+        setText(text);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        categoriesSelectionPopup.show(this, 0, getHeight());
+        popupMenu.show(this, 0, getHeight());
     }
 
     /**
@@ -48,7 +45,27 @@ public class JPopupButton extends JButton implements ActionListener {
      * @throws NullPointerException
      *             se {@code component == null}
      */
-    public void addComponentToPopupMenu(Component component) throws NullPointerException {
-        categoriesSelectionPopup.add(component);
+    public void addToPopupMenu(Component component) throws NullPointerException {
+        popupMenu.add(component);
     }
+
+    /**
+     * Rimuove un elemento dal menu popup.
+     * 
+     * @param component
+     *            componente da rimuovere
+     * @throws IllegalArgumentException
+     *             se {@code component == null}
+     */
+    public void removeFromPopupMenu(Component component) throws IllegalArgumentException {
+        popupMenu.remove(component);
+    }
+
+    /**
+     * Rimuove tutti gli elementi dal menu popup.
+     */
+    public void removeAllFromPopupMenu() {
+        popupMenu.removeAll();
+    }
+
 }
