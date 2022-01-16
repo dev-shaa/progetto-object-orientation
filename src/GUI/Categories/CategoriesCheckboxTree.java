@@ -9,15 +9,10 @@ import javax.swing.tree.DefaultTreeSelectionModel;
 import java.util.Enumeration;
 
 /**
- * TODO: commenta
+ * Albero in cui è possibile selezionare più categorie.
  */
 public class CategoriesCheckboxTree extends JTree {
 
-    /**
-     * TODO: commenta
-     * 
-     * @param categoriesTreeModel
-     */
     public CategoriesCheckboxTree(CategoriesTreeManager categoriesTreeModel) {
         super(categoriesTreeModel.getTreeModel());
 
@@ -67,9 +62,7 @@ public class CategoriesCheckboxTree extends JTree {
     /**
      * Restituisce le categorie selezionate dall'utente.
      * 
-     * @return un array di {@code Categories} con tutte le categorie selezionate,
-     *         {@code null} se non è stato selezionato niente
-     * @see Category
+     * @return un array di {@code Categories} con tutte le categorie selezionate, {@code null} se non è stato selezionato niente
      */
     public Category[] getSelectedCategories() {
         TreePath[] selectedPaths = getSelectionPaths();
@@ -87,7 +80,7 @@ public class CategoriesCheckboxTree extends JTree {
     }
 
     /**
-     * TODO: commenta
+     * Espande tutti i nodi dell'albero.
      */
     public void expandAllRows() {
         for (int i = 0; i < getRowCount(); i++)

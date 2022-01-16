@@ -2,7 +2,6 @@ package GUI.Categories;
 
 import java.awt.Component;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import javax.swing.JTree;
 import javax.swing.JPanel;
 import javax.swing.JCheckBox;
@@ -27,8 +26,6 @@ public class CategoriesCheckboxTreeRenderer extends JPanel implements TreeCellRe
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
 
         // FIXME: quando selezionato appare comunque lo sfondo colorato che è bruttino da vedere
-
-        setForeground(Color.WHITE);
 
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
         Object obj = node.getUserObject();
