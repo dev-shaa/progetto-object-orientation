@@ -31,7 +31,7 @@ public class CategoriesSelectionPopupMenu extends JPopupButton {
         categoriesSelectionTree = new CategoriesCheckboxTree(categoriesTreeManager);
         categoriesSelectionTree.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
-        addComponentToPopupMenu(categoriesSelectionTree);
+        addToPopupMenu(categoriesSelectionTree);
     }
 
     /**

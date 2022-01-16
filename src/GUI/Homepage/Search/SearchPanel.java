@@ -39,7 +39,7 @@ public class SearchPanel extends JPanel {
      * @param categoriesTreeModel
      */
     public SearchPanel(ReferencePanel referencePanel, CategoriesTreeManager categoriesTreeModel) {
-        setReferencePanel(referencePanel);
+        this.referencePanel = referencePanel;
         this.categoriesTreeModel = categoriesTreeModel;
 
         setLayout(new BorderLayout(5, 5));
@@ -47,24 +47,6 @@ public class SearchPanel extends JPanel {
 
         add(getPanelLabel(), BorderLayout.NORTH);
         add(getSearchFieldPanel(), BorderLayout.CENTER);
-    }
-
-    /**
-     * TODO: commenta
-     * 
-     * @return
-     */
-    public ReferencePanel getReferencePanel() {
-        return referencePanel;
-    }
-
-    /**
-     * TODO: commenta
-     * 
-     * @param referencePanel
-     */
-    public void setReferencePanel(ReferencePanel referencePanel) {
-        this.referencePanel = referencePanel;
     }
 
     private JLabel getPanelLabel() {
@@ -82,11 +64,11 @@ public class SearchPanel extends JPanel {
         dateFrom = new JDateChooser();
         dateTo = new JDateChooser();
 
-        addComponent("Parole chiave", tags, searchPanel, "Inserisci le parole chiave da ricercare nel riferimento, delimitate da '" + searchFieldSeparator + "'");
-        addComponent("Autori", authors, searchPanel, "Inserisci gli autori da ricercare, delimitati da '" + searchFieldSeparator + "'");
-        addComponent("Categorie", categories, searchPanel, "Seleziona le categorie in cui cercare il riferimento");
-        addComponent("Da", dateFrom, searchPanel);
-        addComponent("A", dateTo, searchPanel);
+        addFieldComponent("Parole chiave", tags, searchPanel, "Inserisci le parole chiave da ricercare nel riferimento, delimitate da '" + searchFieldSeparator + "'");
+        addFieldComponent("Autori", authors, searchPanel, "Inserisci gli autori da ricercare, delimitati da '" + searchFieldSeparator + "'");
+        addFieldComponent("Categorie", categories, searchPanel, "Seleziona le categorie in cui cercare il riferimento");
+        addFieldComponent("Da", dateFrom, searchPanel);
+        addFieldComponent("A", dateTo, searchPanel);
 
         Component spacing = Box.createVerticalGlue();
         spacing.setMaximumSize(new Dimension(100, 32));
@@ -98,25 +80,25 @@ public class SearchPanel extends JPanel {
         return searchPanel;
     }
 
-    private void addComponent(JComponent component, JPanel panel) {
+    private void addFieldComponent(JComponent component, JPanel panel) {
         component.setMaximumSize(maximumSize);
         component.setAlignmentX(alignment);
 
         panel.add(component);
     }
 
-    private void addComponent(String label, JComponent component, JPanel panel) {
+    private void addFieldComponent(String label, JComponent component, JPanel panel) {
         JLabel labelField = new JLabel(label);
         labelField.setMaximumSize(maximumSize);
         labelField.setAlignmentX(alignment);
 
-        addComponent(labelField, panel);
-        addComponent(component, panel);
+        addFieldComponent(labelField, panel);
+        addFieldComponent(component, panel);
     }
 
-    private void addComponent(String label, JComponent component, JPanel panel, String tooltip) {
+    private void addFieldComponent(String label, JComponent component, JPanel panel, String tooltip) {
         component.setToolTipText(tooltip);
-        addComponent(label, component, panel);
+        addFieldComponent(label, component, panel);
     }
 
     private void setupSearchButton() {
@@ -131,7 +113,6 @@ public class SearchPanel extends JPanel {
         });
     }
 
-    // TODO: commenta
     private Tag[] stringToTags(String[] strings) {
         if (strings == null || strings.length == 0)
             return null;
@@ -146,8 +127,9 @@ public class SearchPanel extends JPanel {
 
     private void search() {
         try {
-            Search search = new Search(dateFrom.getDate(), dateTo.getDate(), stringToTags(this.tags.getTerms()), categories.getSelectedCategories());
-            referencePanel.showReferences(search);
+            // FIXME: autori
+            // Search search = new Search(dateFrom.getDate(), dateTo.getDate(), stringToTags(this.tags.getTerms()), categories.getSelectedCategories());
+            // referencePanel.showReferences(search);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }

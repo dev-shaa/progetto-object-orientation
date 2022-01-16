@@ -2,6 +2,7 @@ package GUI.Homepage.Search;
 
 import java.util.Date;
 
+import Entities.Author;
 import Entities.Category;
 import Entities.Tag;
 
@@ -13,7 +14,7 @@ public class Search {
     private Date to;
     private Tag[] tags;
     private Category[] categories;
-    // TODO: aggiungi autori
+    private Author[] authors;
 
     /**
      * Crea una nuova ricerca dai termini indicati.
@@ -30,7 +31,7 @@ public class Search {
      * @throws IllegalArgumentException
      *             se tutti gli elementi sono {@code null} (in caso di array anche se hanno lunghezza 0)
      */
-    public Search(Date from, Date to, Tag[] tags, Category[] categories) throws IllegalArgumentException {
+    public Search(Date from, Date to, Tag[] tags, Category[] categories, Author[] authors) throws IllegalArgumentException {
         if (areAllTermsNull(from, to, tags, categories))
             throw new IllegalArgumentException("Almeno un elemento di ricerca deve essere specificato");
 
@@ -38,6 +39,26 @@ public class Search {
         setTo(to);
         setTags(tags);
         setCategories(categories);
+    }
+
+    /**
+     * Restituisce gli autori specificati in questa ricerca.
+     * 
+     * @return
+     *         autori di ricerca (può essere {@code null})
+     */
+    public Author[] getAuthors() {
+        return authors;
+    }
+
+    /**
+     * Imposta gli autori di questa ricerca.
+     * 
+     * @param categories
+     *            autori di ricerca
+     */
+    public void setAuthors(Author[] authors) {
+        this.authors = authors;
     }
 
     /**
