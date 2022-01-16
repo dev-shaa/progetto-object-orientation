@@ -24,17 +24,21 @@ import javax.swing.*;
 public class Homepage extends JFrame {
 
     /**
-     * Crea {@code Homepage} con i dati relativi all'utente.
+     * Crea la pagina principale con i dati relativi all'utente.
      * 
+     * @param controller
      * @param user
-     *            l'utente che ha eseguito l'accesso
+     *            utente che ha eseguito l'accesso
+     * @throws IllegalArgumentException
+     *             se controller o user sono nulli
+     * @throws CategoryDatabaseException
      */
-    public Homepage(Controller controller, User user, CategoryDAO categoryDAO, BibliographicReferenceDAO bibliographicReferenceDAO) throws IllegalArgumentException, CategoryDatabaseException {
-
-        // TODO: dao check
-
+    public Homepage(Controller controller, User user) throws IllegalArgumentException, CategoryDatabaseException {
         if (controller == null || user == null)
             throw new IllegalArgumentException();
+
+        CategoryDAO categoryDAO = new CategoryDAOPostgreSQL(user);
+        BibliographicReferenceDAO bibliographicReferenceDAO = new BibliographicReferenceDAO();
 
         setTitle("Pagina principale");
         setMinimumSize(new Dimension(400, 400));
@@ -61,8 +65,7 @@ public class Homepage extends JFrame {
     }
 
     /**
-     * TODO: commenta
-     * Imposta le operazioni di chiusura.
+     * Imposta le operazioni di chiusura: chiede all'utente conferma prima di uscire.
      */
     private void setCloseOperation() {
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

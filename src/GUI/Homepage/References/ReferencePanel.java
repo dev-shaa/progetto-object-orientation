@@ -112,9 +112,6 @@ public class ReferencePanel extends JPanel {
         this.bibliographicReferenceDAO = bibliographicReferenceDAO;
     }
 
-    /**
-     * Imposta i pulsanti per creare, modificare o rimuovere un riferimento.
-     */
     private void setupButtonsPanel() {
         buttonsPanel = new JPanel();
         buttonsPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
@@ -150,10 +147,6 @@ public class ReferencePanel extends JPanel {
         buttonsPanel.add(deleteReferenceButton);
     }
 
-    /**
-     * Configura il menu a tendina che appare quando viene premuto il tasto di
-     * creazione del riferimento.
-     */
     private void setupNewCategorySelectionPopupMenu() {
         newReferenceTypeSelection = new JPopupMenu();
 
@@ -216,17 +209,10 @@ public class ReferencePanel extends JPanel {
         newReferenceTypeSelection.add(videoOption);
     }
 
-    /**
-     * Mostra un menu popup che permette di scegliere il tipo di riferimento da
-     * creare.
-     */
     private void showReferenceCreationOptions() {
         newReferenceTypeSelection.show(createReferenceButton, 0, createReferenceButton.getHeight());
     }
 
-    /**
-     * Apre la pagina di modifica del riferimento selezionato.
-     */
     private void changeSelectedReference() {
         try {
             // FIXME:
@@ -238,13 +224,11 @@ public class ReferencePanel extends JPanel {
             // }
 
         } catch (IndexOutOfBoundsException e) {
+            // NOTE: non dovrebbe capitare di arrivare qui
             JOptionPane.showMessageDialog(null, "Impossibile modificare il riferimento");
         }
     }
 
-    /**
-     * Rimuove il riferimento selezionato, chiedendo prima conferma all'utente.
-     */
     private void removeSelectedReference() {
         try {
             int result = JOptionPane.showConfirmDialog(null, "Vuoi eliminare questo riferimento?", "Elimina riferimento", JOptionPane.YES_NO_OPTION);

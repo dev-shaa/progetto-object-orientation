@@ -4,8 +4,6 @@ package GUI;
 import javax.swing.*;
 import com.formdev.flatlaf.*;
 
-import DAO.BibliographicReferenceDAO;
-import DAO.CategoryDAOPostgreSQL;
 import Entities.*;
 import Entities.References.*;
 import GUI.Homepage.*;
@@ -27,6 +25,7 @@ public class Controller {
         try {
             UIManager.setLookAndFeel(new FlatLightLaf());
         } catch (UnsupportedLookAndFeelException e) {
+            // vab, ci faremo bastare il look di default ¯\_(ツ)_/¯
             e.printStackTrace();
         }
     }
@@ -40,6 +39,7 @@ public class Controller {
 
     public void openHomePage(User user) {
         try {
+            homepage = new Homepage(this, user);
             homepage.setVisible(true);
             loginFrame.setVisible(false);
         } catch (Exception e) {
@@ -59,4 +59,3 @@ public class Controller {
     }
 
 }
-
