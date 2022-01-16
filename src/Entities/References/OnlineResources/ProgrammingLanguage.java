@@ -1,7 +1,5 @@
 package Entities.References.OnlineResources;
 
-// TODO: https://howtodoinjava.com/java/enum/java-enum-string-example/
-
 public enum ProgrammingLanguage {
     C("C/C++"), CSHARP("C#"), JAVA("Java"), PYTHON("Python"), LUA("LUA"), OTHER("Altro");
 

@@ -10,7 +10,7 @@ import java.util.Date;
  */
 public abstract class BibliographicReference {
     private String title;
-    private ArrayList<Author> authors;
+    private Author[] authors;
     private Date pubblicationDate;
     private String DOI;
     private String description;
@@ -27,13 +27,12 @@ public abstract class BibliographicReference {
      *             se il titolo non è una stringa valida
      * @see #setTitle(String)
      */
-    public BibliographicReference(String title) throws IllegalArgumentException {
+    public BibliographicReference(String title, Author[] authors) throws IllegalArgumentException {
         setTitle(title);
         setLanguage(null);
-
-        setAuthors(new ArrayList<Author>(1));
         setTags(null);
         setRelatedReferences(new ArrayList<BibliographicReference>(5));
+        setAuthors(authors);
     }
 
     /**
@@ -70,26 +69,8 @@ public abstract class BibliographicReference {
      * @throws IllegalArgumentException
      *             se {@code authors == null}
      */
-    public void setAuthors(ArrayList<Author> authors) throws IllegalArgumentException {
-        if (authors == null)
-            throw new IllegalArgumentException("authors non può essere null");
-
+    public void setAuthors(Author[] authors) {
         this.authors = authors;
-    }
-
-    /**
-     * Aggiunge un autore a questo riferimento.
-     * 
-     * @param author
-     *            autore da aggiungere
-     * @throws IllegalArgumentException
-     *             se {@code author == null}
-     */
-    public void addAuthor(Author author) throws IllegalArgumentException {
-        if (author == null)
-            throw new IllegalArgumentException("authors non può essere null");
-
-        authors.add(author);
     }
 
     /**
@@ -98,7 +79,7 @@ public abstract class BibliographicReference {
      * @return un array di {@code Author} contenente tutti gli autori
      */
     public Author[] getAuthors() {
-        return authors.toArray(new Author[authors.size()]);
+        return authors;
     }
 
     /**

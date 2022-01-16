@@ -1,14 +1,26 @@
 package Entities.References.OnlineResources;
 
+import Entities.Author;
+
 public class SourceCode extends OnlineResource {
 
     private ProgrammingLanguage programmingLanguage = null;
 
-    public SourceCode(String title, String URL) throws IllegalArgumentException {
-        super(title, URL);
+    /**
+     * TODO: commenta
+     * 
+     * @param title
+     * @param authors
+     *            autori del codice
+     * @param URL
+     * @throws IllegalArgumentException
+     */
+    public SourceCode(String title, Author[] authors, String URL) throws IllegalArgumentException {
+        super(title, authors, URL);
     }
 
     /**
+     * TODO: commenta
      * 
      * @param programmingLanguage
      */

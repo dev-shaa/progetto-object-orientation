@@ -1,5 +1,7 @@
 package Entities.References.OnlineResources;
 
+import Entities.Author;
+
 public class Image extends OnlineResource {
 
     private Integer width;
@@ -10,13 +12,15 @@ public class Image extends OnlineResource {
      * 
      * @param title
      *            titolo dell'immagine
+     * @param authors
+     *            autori dell'immagine
      * @param URL
      *            url dell'immagine
      * @throws IllegalArgumentException
      *             se il titolo o l'url non sono validi
      */
-    public Image(String title, String URL) throws IllegalArgumentException {
-        super(title, URL);
+    public Image(String title, Author[] authors, String URL) throws IllegalArgumentException {
+        super(title, authors, URL);
     }
 
     /**

@@ -1,5 +1,6 @@
 package Entities.References.PhysicalResources;
 
+import Entities.Author;
 import Entities.References.*;
 import java.util.ArrayList;
 
@@ -13,14 +14,14 @@ public abstract class Publication extends BibliographicReference {
     private String publisher;
 
     /**
+     * TODO: commenta
      * 
      * @param title
-     *            titolo della pubblicazione
+     * @param authors
      * @throws IllegalArgumentException
-     *             se il titolo non è valido
      */
-    public Publication(String title) throws IllegalArgumentException {
-        super(title);
+    public Publication(String title, Author[] authors) throws IllegalArgumentException {
+        super(title, authors);
     }
 
     /**

@@ -1,10 +1,11 @@
 package Entities.References.OnlineResources;
 
+import Entities.Author;
 import Entities.References.*;
 import java.util.ArrayList;
 
 /**
- * 
+ * TODO: commenta
  */
 public class Video extends OnlineResource {
 
@@ -18,13 +19,15 @@ public class Video extends OnlineResource {
      * 
      * @param title
      *            titolo del video
+     * @param authors
+     *            autori del video
      * @param URL
      *            url del video
      * @throws IllegalArgumentException
      *             se il titolo o l'url non sono validi
      */
-    public Video(String title, String URL) throws IllegalArgumentException {
-        super(title, URL);
+    public Video(String title, Author[] authors, String URL) throws IllegalArgumentException {
+        super(title, authors, URL);
     }
 
     /**

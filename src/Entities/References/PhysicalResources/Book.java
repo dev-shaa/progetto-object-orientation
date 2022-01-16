@@ -1,11 +1,12 @@
 package Entities.References.PhysicalResources;
 
+import Entities.Author;
 import Entities.References.*;
 import java.util.ArrayList;
 // import java.util.regex.Pattern;
 
 /**
- * 
+ * TODO: commenta
  */
 public class Book extends Publication {
 
@@ -18,11 +19,13 @@ public class Book extends Publication {
      * 
      * @param title
      *            titolo del riferimento
+     * @param authors
+     *            autori del libro
      * @throws IllegalArgumentException
      *             se il titolo non è valido
      */
-    public Book(String title) throws IllegalArgumentException {
-        super(title);
+    public Book(String title, Author[] authors) throws IllegalArgumentException {
+        super(title, authors);
     }
 
     /**

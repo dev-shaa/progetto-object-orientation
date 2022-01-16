@@ -1,5 +1,6 @@
 package Entities.References.PhysicalResources;
 
+import Entities.Author;
 import Entities.References.*;
 import java.util.ArrayList;
 
@@ -16,11 +17,13 @@ public class Article extends Publication {
      * 
      * @param title
      *            titolo dell'articolo
+     * @param authors
+     *            autori dell'articolo
      * @throws IllegalArgumentException
      *             se il titolo dell'articolo non è valido
      */
-    public Article(String title) throws IllegalArgumentException {
-        super(title);
+    public Article(String title, Author[] authors) throws IllegalArgumentException {
+        super(title, authors);
     }
 
     /**
