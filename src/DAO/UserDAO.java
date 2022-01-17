@@ -12,7 +12,7 @@ public class UserDAO {
 	public void SaveUser(User user) {
 
 		try {
-			String st = "INSERT INTO public.\"UtenteApp\" (\"Nome\", \"Password\") VALUES('" + user.getName() + "','sdfgh');";
+			String st = "INSERT INTO public.\"UtenteApp\" (\"Nome\", \"Password\") VALUES('" + user.getName() + "','Password');";
 
 			con = DatabaseController.getConnection();
 			if (con == null) {
@@ -21,11 +21,11 @@ public class UserDAO {
 			}
 			stmt = con.createStatement(); // @R1ccardo FIXME: in caso non ci sia connessione, con diventa null e c'è un null pointer exception
 			stmt.executeUpdate(st);
-			// rs = stmt.executeQuery(st);
-
-			// stmt.setString(1, user.getName());
-			// stmt.executeUpdate();
+		
 			System.out.println("Utente aggiunto con successo");
+			
+			user.incrementId(0);
+				
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

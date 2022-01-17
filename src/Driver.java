@@ -8,7 +8,7 @@ import GUI.Controller;
  */
 public class Driver {
     public static void main(String[] args) {
-//    	User user = new User("palla");
+//    	User user = new User("Nome", "Password");
 //    	UserDAO userDAO = new UserDAO();
 //    	userDAO.SaveUser(user);
     	
