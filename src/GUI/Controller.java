@@ -3,9 +3,7 @@ package GUI;
 
 import javax.swing.*;
 import com.formdev.flatlaf.*;
-
 import Entities.*;
-import Entities.References.*;
 import GUI.Homepage.*;
 
 public class Controller {
@@ -15,7 +13,7 @@ public class Controller {
 
     public Controller() {
         setupLookAndFeel();
-                
+
         loginFrame = new LoginFrame(this);
 
         openLoginPage();
@@ -46,16 +44,4 @@ public class Controller {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }
-
-    public void openReferenceCreatorPage() {
-        loginFrame.setVisible(false);
-        homepage.setVisible(false);
-
-        // TODO:
-    }
-
-    public void openReferenceCreatorPage(BibliographicReference riferimento) {
-        // TODO:
-    }
-
 }
