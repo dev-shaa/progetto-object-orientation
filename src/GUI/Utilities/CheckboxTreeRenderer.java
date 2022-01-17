@@ -1,4 +1,4 @@
-package GUI.Categories;
+package GUI.Utilities;
 
 import java.awt.Component;
 import java.awt.BorderLayout;
@@ -8,11 +8,11 @@ import javax.swing.JCheckBox;
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.DefaultMutableTreeNode;
 
-public class CategoriesCheckboxTreeRenderer extends JPanel implements TreeCellRenderer {
+public class CheckboxTreeRenderer extends JPanel implements TreeCellRenderer {
 
     private JCheckBox checkBox;
 
-    public CategoriesCheckboxTreeRenderer() {
+    public CheckboxTreeRenderer() {
         super();
 
         checkBox = new JCheckBox();

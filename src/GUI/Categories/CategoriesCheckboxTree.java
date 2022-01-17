@@ -1,6 +1,8 @@
 package GUI.Categories;
 
 import Entities.Category;
+import GUI.Utilities.CheckboxTreeRenderer;
+
 import javax.swing.JTree;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeNode;
@@ -19,7 +21,7 @@ public class CategoriesCheckboxTree extends JTree {
         setToggleClickCount(0);
         setRootVisible(false);
         setEditable(false);
-        setCellRenderer(new CategoriesCheckboxTreeRenderer());
+        setCellRenderer(new CheckboxTreeRenderer());
 
         setSelectionModel(new DefaultTreeSelectionModel() {
             @Override
