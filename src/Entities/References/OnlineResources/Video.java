@@ -5,7 +5,7 @@ import Entities.References.*;
 import java.util.ArrayList;
 
 /**
- * TODO: commenta
+ * Classe che rappresenta un riferimento bibliografico a un video.
  */
 public class Video extends OnlineResource {
 
@@ -15,16 +15,18 @@ public class Video extends OnlineResource {
     private Float duration;
 
     /**
-     * Crea un nuovo riferimento a un video con il titolo e l'url indicati
+     * Crea un nuovo riferimento a video con il titolo, gli autori e l'url indicati.
      * 
      * @param title
-     *            titolo del video
+     *            titolo del riferimento
      * @param authors
-     *            autori del video
+     *            autori del riferimento
      * @param URL
-     *            url del video
+     *            url del riferimento
      * @throws IllegalArgumentException
      *             se il titolo o l'url non sono validi
+     * @see #setTitle(String)
+     * @see #setURL(String)
      */
     public Video(String title, Author[] authors, String URL) throws IllegalArgumentException {
         super(title, authors, URL);
@@ -71,16 +73,20 @@ public class Video extends OnlineResource {
     }
 
     /**
+     * Imposta la frequenza del video.
      * 
      * @param frameRate
+     *            frequenza del video
      */
     public void setFrameRate(Integer frameRate) {
         this.frameRate = frameRate;
     }
 
     /**
+     * Restituisce la frequenza del video.
      * 
      * @return
+     *         frequenza del video
      */
     public Integer getFrameRate() {
         return this.frameRate;

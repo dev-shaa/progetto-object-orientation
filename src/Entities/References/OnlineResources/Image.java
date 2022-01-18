@@ -2,22 +2,27 @@ package Entities.References.OnlineResources;
 
 import Entities.Author;
 
+/**
+ * Classe che rappresenta un riferimento bibliografico a un'immagine.
+ */
 public class Image extends OnlineResource {
 
     private Integer width;
     private Integer height;
 
     /**
-     * Crea un nuovo riferimento a un'immagine con il titolo e l'url indicati.
+     * Crea un nuovo riferimento a immagine con il titolo, gli autori e l'url indicati.
      * 
      * @param title
-     *            titolo dell'immagine
+     *            titolo del riferimento
      * @param authors
-     *            autori dell'immagine
+     *            autori del riferimento
      * @param URL
-     *            url dell'immagine
+     *            url del riferimento
      * @throws IllegalArgumentException
      *             se il titolo o l'url non sono validi
+     * @see #setTitle(String)
+     * @see #setURL(String)
      */
     public Image(String title, Author[] authors, String URL) throws IllegalArgumentException {
         super(title, authors, URL);

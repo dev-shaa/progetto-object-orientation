@@ -5,23 +5,25 @@ import Entities.References.*;
 import java.util.ArrayList;
 
 /**
- * 
+ * Classe che rappresenta un riferimento bibliografico a una risorsa online.
  */
 public abstract class OnlineResource extends BibliographicReference {
 
     private String URL;
 
     /**
-     * Crea una risorsa online con il titolo e l'URL indicati.
+     * Crea un nuovo riferimento a una risorsa online con il titolo, gli autori e l'url indicati.
      * 
      * @param title
-     *            titolo della risorsa online
+     *            titolo del riferimento
      * @param authors
-     *            autori della risorsa online
+     *            autori del riferimento
      * @param URL
-     *            URL della risorsa online
+     *            url del riferimento
      * @throws IllegalArgumentException
      *             se il titolo o l'url non sono validi
+     * @see #setTitle(String)
+     * @see #setURL(String)
      */
     public OnlineResource(String title, Author[] authors, String URL) throws IllegalArgumentException {
         super(title, authors);
@@ -34,7 +36,7 @@ public abstract class OnlineResource extends BibliographicReference {
      * @param URL
      *            URL del riferimento
      * @throws IllegalArgumentException
-     *             se l'url non è valido
+     *             se l'url è nullo o vuoto
      */
     public void setURL(String URL) throws IllegalArgumentException {
         if (!isURLValid(URL))

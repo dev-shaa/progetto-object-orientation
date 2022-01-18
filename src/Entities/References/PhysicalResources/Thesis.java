@@ -5,7 +5,7 @@ import Entities.References.*;
 import java.util.ArrayList;
 
 /**
- * Riferimento bibliografico di una tesi universitaria.
+ * Classe che rappresenta un riferimento bibliografico a una tesi.
  */
 public class Thesis extends Publication {
 
@@ -13,14 +13,15 @@ public class Thesis extends Publication {
     private String faculty;
 
     /**
-     * Crea un riferimento a una tesi universitaria dal titolo indicato.
+     * Crea un nuovo riferimento a una tesi con il titolo e gli autori indicati.
      * 
      * @param title
-     *            titolo della tesi
+     *            titolo del riferimento
      * @param authors
-     *            autori della tesi
+     *            autori del riferimento
      * @throws IllegalArgumentException
-     *             se il titolo della tesi non è valido
+     *             se il titolo non è valido
+     * @see #setTitle(String)
      */
     public Thesis(String title, Author[] authors) throws IllegalArgumentException {
         super(title, authors);

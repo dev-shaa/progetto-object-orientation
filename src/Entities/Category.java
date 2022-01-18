@@ -1,9 +1,7 @@
 package Entities;
 
 /**
- * La classe {@code Category} rappresenta un modo di raggruppare riferimenti
- * bibliografici
- * che condividono delle caratteristiche comuni.
+ * La classe {@code Category} rappresenta un modo di raggruppare riferimenti bibliografici che condividono delle caratteristiche comuni.
  */
 public class Category {
 

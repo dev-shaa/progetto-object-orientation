@@ -5,7 +5,7 @@ import Entities.References.*;
 import java.util.ArrayList;
 
 /**
- * TODO: commenta
+ * Classe che rappresenta un riferimento bibliografico a una pubblicazione.
  */
 public abstract class Publication extends BibliographicReference {
 
@@ -14,11 +14,15 @@ public abstract class Publication extends BibliographicReference {
     private String publisher;
 
     /**
-     * TODO: commenta
+     * Crea un nuovo riferimento a una pubblicazione con il titolo e gli autori indicati.
      * 
      * @param title
+     *            titolo del riferimento
      * @param authors
+     *            autori del riferimento
      * @throws IllegalArgumentException
+     *             se il titolo non è valido
+     * @see #setTitle(String)
      */
     public Publication(String title, Author[] authors) throws IllegalArgumentException {
         super(title, authors);

@@ -19,13 +19,16 @@ public abstract class BibliographicReference {
     private ArrayList<BibliographicReference> relatedReferences;
 
     /**
-     * Crea un riferimento bibliografico con il titolo specificato.
+     * Crea un nuovo riferimento con il titolo e gli autori indicati.
      * 
      * @param title
      *            titolo del riferimento
+     * @param authors
+     *            autori del riferimento
      * @throws IllegalArgumentException
-     *             se il titolo non è una stringa valida
+     *             se il titolo o gli autori non sono validi
      * @see #setTitle(String)
+     * @see #setAuthors(Author[])
      */
     public BibliographicReference(String title, Author[] authors) throws IllegalArgumentException {
         setTitle(title);
@@ -66,17 +69,15 @@ public abstract class BibliographicReference {
      * 
      * @param authors
      *            autori del riferimento
-     * @throws IllegalArgumentException
-     *             se {@code authors == null}
      */
-    public void setAuthors(Author[] authors) {
+    public void setAuthors(Author[] authors) throws IllegalArgumentException {
         this.authors = authors;
     }
 
     /**
      * Restituisce gli autori di questo riferimento.
      * 
-     * @return un array di {@code Author} contenente tutti gli autori
+     * @return un array di {@code Author} contenente tutti gli autori (può essere {@code null})
      */
     public Author[] getAuthors() {
         return authors;
@@ -86,8 +87,7 @@ public abstract class BibliographicReference {
      * Imposta la data di pubblicazione del riferimento.
      * 
      * @param pubblicationDate
-     *            data di pubblicazione del riferimento ({@code null}
-     *            se non è indicato)
+     *            data di pubblicazione del riferimento ({@code null} se non è indicato)
      */
     public void setPubblicationDate(Date pubblicationDate) {
         this.pubblicationDate = pubblicationDate;
@@ -217,8 +217,10 @@ public abstract class BibliographicReference {
     }
 
     /**
+     * Restituisce un arraylist contenente tutte le informazioni di questo riferimento.
      * 
      * @return
+     *         arraylist con le informazioni del riferimento
      */
     public ArrayList<BibliographicReferenceField> getReferenceFields() {
         ArrayList<BibliographicReferenceField> fields = new ArrayList<>();

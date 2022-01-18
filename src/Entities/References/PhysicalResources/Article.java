@@ -5,22 +5,22 @@ import Entities.References.*;
 import java.util.ArrayList;
 
 /**
- * 
+ * Classe che rappresenta un riferimento bibliografico a un articolo.
  */
 public class Article extends Publication {
 
     private String ISSN;
 
     /**
-     * Crea un riferimento a un articolo di una pubblicazione con un titolo
-     * indicato.
+     * Crea un nuovo riferimento a un articolo con il titolo e gli autori indicati.
      * 
      * @param title
-     *            titolo dell'articolo
+     *            titolo del riferimento
      * @param authors
-     *            autori dell'articolo
+     *            autori del riferimento
      * @throws IllegalArgumentException
-     *             se il titolo dell'articolo non è valido
+     *             se il titolo non è valido
+     * @see #setTitle(String)
      */
     public Article(String title, Author[] authors) throws IllegalArgumentException {
         super(title, authors);
