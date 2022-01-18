@@ -1,9 +1,8 @@
 package Entities.References.PhysicalResources;
 
-import Entities.Author;
-import Entities.References.*;
 import java.util.ArrayList;
-// import java.util.regex.Pattern;
+import Entities.Author;
+import Entities.References.BibliographicReferenceField;
 
 /**
  * Classe che rappresenta un riferimento bibliografico a un libro.
@@ -11,8 +10,6 @@ import java.util.ArrayList;
 public class Book extends Publication {
 
     private String ISBN;
-
-    // private final Pattern isbnPattern = Pattern.compile("^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9xX]$", Pattern.CASE_INSENSITIVE); // TODO: regex
 
     /**
      * Crea un nuovo riferimento a un libro con il titolo e gli autori indicati.
@@ -57,9 +54,5 @@ public class Book extends Publication {
 
         return fields;
     }
-
-    // private boolean isISBNValid(String string) {
-    // return isbnPattern.matcher(string).find();
-    // }
 
 }

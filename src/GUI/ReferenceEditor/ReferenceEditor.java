@@ -36,10 +36,12 @@ public abstract class ReferenceEditor extends JDialog {
     private JPopupItemSelection<Author> authors;
 
     private JPanel fieldPanel;
+    private AuthorEditor authorEditor;
     private BibliographicReferenceDAO referenceDAO;
 
     private final String searchFieldSeparator = ",";
     private final Dimension maximumSize = new Dimension(Integer.MAX_VALUE, 24);
+    private final Dimension spacingSize = new Dimension(0, 10);
     private final float alignment = Container.LEFT_ALIGNMENT;
 
     /**
@@ -118,10 +120,10 @@ public abstract class ReferenceEditor extends JDialog {
     /**
      * Prepara i campi necessari per la creazione di un riferimento.
      * 
-     * @param categoriesTreeManager
+     * @param categoriesTree
      *            categorie a cui può appartenere un riferimento
      */
-    protected void setup(CategoriesTreeManager categoriesTreeManager) {
+    protected void setup(CategoriesTreeManager categoriesTree) {
         fieldPanel = new JPanel();
         fieldPanel.setLayout(new BoxLayout(fieldPanel, BoxLayout.PAGE_AXIS));
         fieldPanel.setBorder(new EmptyBorder(50, 30, 50, 30));
@@ -133,25 +135,26 @@ public abstract class ReferenceEditor extends JDialog {
         DOI = new JTextField();
         pubblicationDate = new JDateChooser();
         language = new JComboBox<>(ReferenceLanguage.values());
-        categories = new CategoriesSelectionPopupMenu(categoriesTreeManager);
+        categories = new CategoriesSelectionPopupMenu(categoriesTree);
         description = new JTextArea(10, 1);
+        authorEditor = new AuthorEditor();
 
         // TODO: carica dal database gli autori
         authors = new JPopupItemSelection<Author>("Premi per selezionare gli autori");
         authors.addElement(new Author("Mario", "Rossi", null));
         authors.addElement(new Author("Luigi", "Bianchi", null));
-        authors.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+
         JButton addAuthor = new JButton("+");
         addAuthor.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new AuthorEditor();
+                authorEditor.setVisible(true);
             }
         });
 
-        JPanel authorsPanel = new JPanel(new FlowLayout());
-        authorsPanel.add(authors);
-        authorsPanel.add(addAuthor);
+        JPanel authorsPanel = new JPanel(new BorderLayout(10, 0));
+        authorsPanel.add(authors, BorderLayout.CENTER);
+        authorsPanel.add(addAuthor, BorderLayout.EAST);
 
         addFieldComponent(title, "Titolo*", "Titolo del riferimento");
         addFieldComponent(tags, "Parole chiave", "Parole chiave associate al riferimento, separate da una virgola");
@@ -160,8 +163,6 @@ public abstract class ReferenceEditor extends JDialog {
         addFieldComponent(language, "Lingua");
         addFieldComponent(categories, "Categorie");
         addFieldComponent(authorsPanel, "Autori");
-
-        pack();
     }
 
     /**
@@ -175,9 +176,6 @@ public abstract class ReferenceEditor extends JDialog {
         description.setLineWrap(true);
         description.setAlignmentX(alignment);
 
-        Component spacing = Box.createVerticalGlue();
-        spacing.setMinimumSize(new Dimension(0, 100));
-
         JButton confirmButton = new JButton("Salva riferimento");
         confirmButton.setAlignmentX(alignment);
         confirmButton.addActionListener(new ActionListener() {
@@ -190,7 +188,7 @@ public abstract class ReferenceEditor extends JDialog {
 
         fieldPanel.add(descriptionLabel);
         fieldPanel.add(description);
-        fieldPanel.add(spacing);
+        fieldPanel.add(Box.createRigidArea(new Dimension(0, 20)));
         fieldPanel.add(confirmButton);
     }
 
@@ -202,9 +200,16 @@ public abstract class ReferenceEditor extends JDialog {
      *            componente da aggiungere
      */
     protected void addFieldComponent(JComponent component) {
+        addFieldComponent(component, true);
+    }
+
+    protected void addFieldComponent(JComponent component, boolean addSpacing) {
         component.setMaximumSize(maximumSize);
         component.setAlignmentX(alignment);
         fieldPanel.add(component);
+
+        if (addSpacing)
+            fieldPanel.add(Box.createRigidArea(spacingSize));
     }
 
     /**
@@ -221,7 +226,7 @@ public abstract class ReferenceEditor extends JDialog {
         labelField.setMaximumSize(maximumSize);
         labelField.setAlignmentX(alignment);
 
-        addFieldComponent(labelField);
+        addFieldComponent(labelField, false);
         addFieldComponent(component);
     }
 
@@ -340,7 +345,13 @@ public abstract class ReferenceEditor extends JDialog {
      *            parole chiave del riferimento
      */
     protected void setTagValues(Tag[] tags) {
-        // TODO:
+        String text = "";
+
+        for (Tag tag : tags) {
+            text += tag.getName() + ", ";
+        }
+
+        this.tags.setText(text);
     }
 
     /**
