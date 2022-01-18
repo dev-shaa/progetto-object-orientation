@@ -9,7 +9,6 @@ public class Login {
 		
 		String message = "Nome Utente o Password sbagliati";
 
-		
 		if(!uid.isEmpty() && !pwd.isEmpty())
 			System.out.println(uid + " "+pwd); //per vedere su console 
 

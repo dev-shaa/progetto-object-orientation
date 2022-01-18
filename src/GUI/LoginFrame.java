@@ -64,7 +64,7 @@ public class LoginFrame extends JFrame {
 				String pwd = new String(passwordField.getPassword());
 				
 				// FIXME: DEBUG:
-				c.openHomePage(new User(username));
+				c.openHomePage(new User(username, pwd));
 			}
 		});
 
