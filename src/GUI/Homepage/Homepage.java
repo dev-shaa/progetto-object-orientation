@@ -21,7 +21,12 @@ import javax.swing.*;
  * @see CategoriesPanel
  * @see ReferencePanel
  */
-public class Homepage extends JFrame {
+public class Homepage extends JFrame implements CategorySelectionListener {
+
+    CategoriesTreeManager categoriesTreeManager;
+    ReferencePanel referencePanel;
+    CategoriesPanel categoriesPanel;
+    SearchPanel referenceSearchPanel;
 
     /**
      * Crea la pagina principale con i dati relativi all'utente.
@@ -49,10 +54,10 @@ public class Homepage extends JFrame {
         contentPane.setLayout(new BorderLayout(5, 5));
         setContentPane(contentPane);
 
-        CategoriesTreeManager categoriesTreeManager = new CategoriesTreeManager(categoryDAO);
-        ReferencePanel referencePanel = new ReferencePanel(categoriesTreeManager, bibliographicReferenceDAO);
-        CategoriesPanel categoriesPanel = new CategoriesPanel(categoriesTreeManager, referencePanel);
-        SearchPanel referenceSearchPanel = new SearchPanel(referencePanel, categoriesTreeManager);
+        categoriesTreeManager = new CategoriesTreeManager(categoryDAO);
+        referencePanel = new ReferencePanel(categoriesTreeManager, bibliographicReferenceDAO);
+        categoriesPanel = new CategoriesPanel(categoriesTreeManager);
+        referenceSearchPanel = new SearchPanel(referencePanel, categoriesTreeManager);
 
         JSplitPane subSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, categoriesPanel, referencePanel);
         subSplitPane.setResizeWeight(0.15);
@@ -78,6 +83,11 @@ public class Homepage extends JFrame {
                     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             }
         });
+    }
+
+    @Override
+    public void onCategorySelected(Category selectedCategory) {
+        referencePanel.showReferences(selectedCategory);
     }
 
 }
