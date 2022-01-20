@@ -1,7 +1,5 @@
 package GUI.Categories;
 
-// FIXME: sposta da qui
-
 import DAO.CategoryDAO;
 import Entities.Category;
 import Exceptions.CategoryDatabaseException;

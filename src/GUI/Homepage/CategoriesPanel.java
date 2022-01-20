@@ -4,7 +4,6 @@ import Entities.*;
 import GUI.Categories.CategoriesTreeManager;
 import GUI.Categories.CategoryMutableTreeNode;
 import GUI.Categories.CategorySelectionListener;
-import GUI.Homepage.References.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -24,7 +23,7 @@ import javax.swing.tree.TreeSelectionModel;
  */
 public class CategoriesPanel extends JPanel implements TreeSelectionListener {
 
-    private CategoriesTreeManager categoriesTreeModel;
+    private CategoriesTreeManager categoriesTree;
 
     private JTree displayTree;
     private CategoryMutableTreeNode selectedNode;
@@ -38,46 +37,20 @@ public class CategoriesPanel extends JPanel implements TreeSelectionListener {
     /**
      * Crea {@code CategoryPanel} con tutte le categorie associate dell'utente.
      * 
-     * @param categoriesTreeModel
+     * @param categoriesTree
      *            l'albero delle categorie dell'utente
      * @throws IllegalArgumentException
      *             se categoriesTree non è valido
      * @see #setCategoriesTree(CategoriesTreeManager)
      */
-    public CategoriesPanel(CategoriesTreeManager categoriesTreeModel) throws IllegalArgumentException {
+    public CategoriesPanel(CategoriesTreeManager categoriesTree) throws IllegalArgumentException {
         selectionListeners = new ArrayList<>(3);
 
-        setCategoriesTree(categoriesTreeModel);
+        setCategoriesTree(categoriesTree);
 
         setLayout(new BorderLayout(5, 5));
         setBorder(new EmptyBorder(5, 5, 5, 5));
 
-        add(getToolbar(), BorderLayout.NORTH);
-        add(getCategoriesTreePanel(), BorderLayout.CENTER);
-    }
-
-    /**
-     * Imposta l'albero delle categorie dell'utente.
-     * 
-     * @param categoriesTreeModel
-     *            albero delle categorie
-     * @throws IllegalArgumentException
-     *             se {@code categoriesTree == null}
-     */
-    public void setCategoriesTree(CategoriesTreeManager categoriesTreeModel) throws IllegalArgumentException {
-        if (categoriesTreeModel == null)
-            throw new IllegalArgumentException("categoriesTree non può essere null");
-
-        this.categoriesTreeModel = categoriesTreeModel;
-    }
-
-    /**
-     * Crea un pannello con i tasti di creazione, modifica e rimozione delle categorie.
-     * 
-     * @return
-     *         pannello con pulsanti di creazione, modifica e rimozione
-     */
-    private JToolBar getToolbar() {
         JToolBar toolbar = new JToolBar();
         toolbar.setFloatable(false);
 
@@ -112,17 +85,7 @@ public class CategoriesPanel extends JPanel implements TreeSelectionListener {
         toolbar.add(changeCategoryButton);
         toolbar.add(removeCategoryButton);
 
-        return toolbar;
-    }
-
-    /**
-     * Crea un pannello in cui vengono mostrate le categorie dell'utente sotto forma di albero.
-     * 
-     * @return
-     *         pannello con le categorie dell'utente
-     */
-    private JScrollPane getCategoriesTreePanel() {
-        displayTree = new JTree(categoriesTreeModel.getTreeModel());
+        displayTree = new JTree(categoriesTree.getTreeModel());
 
         displayTree.setEditable(false);
         displayTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
@@ -133,7 +96,25 @@ public class CategoriesPanel extends JPanel implements TreeSelectionListener {
 
         displayTree.setSelectionRow(0);
 
-        return new JScrollPane(displayTree);
+        JScrollPane treeScrollPane = new JScrollPane(displayTree);
+
+        add(toolbar, BorderLayout.NORTH);
+        add(treeScrollPane, BorderLayout.CENTER);
+    }
+
+    /**
+     * Imposta l'albero delle categorie dell'utente.
+     * 
+     * @param categoriesTree
+     *            albero delle categorie
+     * @throws IllegalArgumentException
+     *             se {@code categoriesTree == null}
+     */
+    public void setCategoriesTree(CategoriesTreeManager categoriesTree) throws IllegalArgumentException {
+        if (categoriesTree == null)
+            throw new IllegalArgumentException("categoriesTree non può essere null");
+
+        this.categoriesTree = categoriesTree;
     }
 
     /**
@@ -149,7 +130,7 @@ public class CategoriesPanel extends JPanel implements TreeSelectionListener {
             String newCategoryName = getCategoryNameFromUser("Nuova categoria");
 
             if (newCategoryName != null) {
-                categoriesTreeModel.addNode(new Category(newCategoryName), selectedNode);
+                categoriesTree.addNode(new Category(newCategoryName), selectedNode);
 
                 // così è più comodo per l'utente
                 displayTree.expandPath(new TreePath(selectedNode.getPath()));
@@ -169,7 +150,7 @@ public class CategoriesPanel extends JPanel implements TreeSelectionListener {
             String name = getCategoryNameFromUser(selectedNode.getUserObject().getName());
 
             if (name != null) {
-                categoriesTreeModel.changeNode(selectedNode, name);
+                categoriesTree.changeNode(selectedNode, name);
             }
         } catch (Exception exception) {
             JOptionPane.showMessageDialog(null, exception.getMessage());
@@ -185,7 +166,7 @@ public class CategoriesPanel extends JPanel implements TreeSelectionListener {
             int confirmDialogBoxOption = JOptionPane.showConfirmDialog(null, "Sicuro di volere eliminare questa categoria?", "Elimina categoria", JOptionPane.YES_NO_OPTION);
 
             if (confirmDialogBoxOption == JOptionPane.YES_OPTION) {
-                categoriesTreeModel.removeNode(selectedNode);
+                categoriesTree.removeNode(selectedNode);
             }
         } catch (Exception exception) {
             JOptionPane.showMessageDialog(null, exception.getMessage());
@@ -204,11 +185,23 @@ public class CategoriesPanel extends JPanel implements TreeSelectionListener {
         return (String) JOptionPane.showInputDialog(null, "Inserisci il nome della categoria", "Nuova categoria", JOptionPane.PLAIN_MESSAGE, null, null, defaultName);
     }
 
+    /**
+     * Aggiunge un ascoltatore all'evento di selezione di un nodo.
+     * 
+     * @param listener
+     *            ascoltatore da aggiungere
+     */
     public void addSelectionListener(CategorySelectionListener listener) {
         if (listener != null)
             selectionListeners.add(listener);
     }
 
+    /**
+     * Rimuove un ascoltatore all'evento di selezione di un nodo.
+     * 
+     * @param listener
+     *            ascoltatore da rimuovere
+     */
     public void removeSelectionListener(CategorySelectionListener listener) {
         if (listener != null)
             selectionListeners.remove(listener);

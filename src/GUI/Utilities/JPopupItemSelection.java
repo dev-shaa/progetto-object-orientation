@@ -10,20 +10,44 @@ public class JPopupItemSelection<T> extends JPopupButton {
     private ArrayList<T> elements;
     private ArrayList<JCheckBoxMenuItemExtended> checkboxes;
 
+    /**
+     * Crea un JPopupItemSelection senza testo o elementi.
+     */
     public JPopupItemSelection() {
         super();
+        setElements(null);
     }
 
+    /**
+     * Crea un JPopupItemSelection con testo ma senza elementi.
+     * 
+     * @param text
+     *            testo del pulsante
+     */
     public JPopupItemSelection(String text) {
         super(text);
         setElements(null);
     }
 
+    /**
+     * Crea un JPopupItemSelection con degli elementi ma senza testo.
+     * 
+     * @param elements
+     *            elementi da aggiungere al menu di selezione
+     */
     public JPopupItemSelection(T[] elements) {
         super();
         setElements(elements);
     }
 
+    /**
+     * Crea un JPopupItemSelection con testo ed elementi da selezionare.
+     * 
+     * @param text
+     *            testo del pulsante
+     * @param elements
+     *            elementi da aggiungere al menu di selezione
+     */
     public JPopupItemSelection(String text, T[] elements) {
         super(text);
         setElements(elements);
@@ -47,11 +71,11 @@ public class JPopupItemSelection<T> extends JPopupButton {
         this.elements = new ArrayList<T>(elements.length);
         this.checkboxes = new ArrayList<JCheckBoxMenuItemExtended>(elements.length);
 
-        for (int i = 0; i < elements.length; i++) {
-            this.elements.set(i, elements[i]);
+        for (T item : elements) {
+            this.elements.add(item);
 
-            JCheckBoxMenuItemExtended checkbox = new JCheckBoxMenuItemExtended(String.valueOf(elements[i]));
-            this.checkboxes.set(i, checkbox);
+            JCheckBoxMenuItemExtended checkbox = new JCheckBoxMenuItemExtended(String.valueOf(item));
+            this.checkboxes.add(checkbox);
             addToPopupMenu(checkbox);
         }
     }
@@ -90,6 +114,19 @@ public class JPopupItemSelection<T> extends JPopupButton {
         }
 
         return selectedItems;
+    }
+
+    /**
+     * Seleziona un elemento, se presente.
+     * 
+     * @param element
+     *            elemento da selezionare
+     */
+    public void selectElement(T element) {
+        int index = elements.indexOf(element);
+        if (index != -1) {
+            checkboxes.get(index).setSelected(true);
+        }
     }
 
 }
