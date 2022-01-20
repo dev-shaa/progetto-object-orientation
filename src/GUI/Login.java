@@ -13,7 +13,7 @@ public class Login {
 		boolean result = false;
 		User user = new User(username, pwd);
 
-		if (!username.isEmpty() || !pwd.isEmpty()) {
+		if (!username.isEmpty() && !pwd.isEmpty()) {
 			System.out.println(username + " " + pwd);
 			UserDAO userDao = new UserDAO();
 			boolean esito = userDao.ExistUser(user);
