@@ -8,6 +8,8 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeSelectionModel;
+
+import java.util.ArrayList;
 import java.util.Enumeration;
 
 /**
@@ -64,21 +66,30 @@ public class CategoriesCheckboxTree extends JTree {
     /**
      * Restituisce le categorie selezionate dall'utente.
      * 
-     * @return un array di {@code Categories} con tutte le categorie selezionate, {@code null} se non è stato selezionato niente
+     * @return un array di {@code Categories} con tutte le categorie selezionate
      */
-    public Category[] getSelectedCategories() {
+    public Category[] getSelectedCategories(boolean selectOnlyLeaf) {
         TreePath[] selectedPaths = getSelectionPaths();
 
-        // FIXME: quando viene selezionata e deselezionata una categoria, non essendo visibile il nodo root, esso rimane sempre tra i selezionati
-        if (selectedPaths == null || selectedPaths.length < 2)
-            return null;
+        if (selectedPaths == null)
+            return new Category[0];
 
-        Category[] selectedCategories = new Category[selectedPaths.length];
+        ArrayList<Category> selectedCategories = new ArrayList<>();
 
-        for (int i = 0; i < selectedPaths.length; i++)
-            selectedCategories[i] = (Category) ((DefaultMutableTreeNode) selectedPaths[i].getLastPathComponent()).getUserObject();
+        for (TreePath path : selectedPaths) {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
 
-        return selectedCategories;
+            if (node != null) {
+                Category category = (Category) node.getUserObject();
+
+                if (category != null) {
+                    selectedCategories.add(category);
+                    selectedCategories.remove(category.getParent());
+                }
+            }
+        }
+
+        return selectedCategories.toArray(new Category[selectedCategories.size()]);
     }
 
     /**

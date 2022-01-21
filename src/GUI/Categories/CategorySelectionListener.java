@@ -1,7 +1,18 @@
 package GUI.Categories;
 
+import java.util.EventListener;
 import Entities.Category;
 
-public interface CategorySelectionListener {
+/**
+ * L'interfaccia per i listener che vogliono essere avvertiti quando viene selezionata una categoria.
+ */
+public interface CategorySelectionListener extends EventListener {
+
+    /**
+     * Invocato quando viene selezionata una categoria.
+     * 
+     * @param selectedCategory
+     *            categoria selezionata
+     */
     public void onCategorySelected(Category selectedCategory);
 }

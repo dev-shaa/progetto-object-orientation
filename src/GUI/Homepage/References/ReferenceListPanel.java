@@ -97,7 +97,7 @@ public class ReferenceListPanel extends JScrollPane implements ListSelectionList
     /**
      * Rimuove tutte le righe dalla tabella.
      */
-    private void removeAllReferences() {
+    public void removeAllReferences() {
         if (displayedReferences != null)
             displayedReferences.clear();
 
@@ -134,10 +134,10 @@ public class ReferenceListPanel extends JScrollPane implements ListSelectionList
     }
 
     /**
-     * Aggiunge un listener che viene avvertito ogni volta che il riferimento selezionato cambia.
+     * Aggiunge un ascoltatore all'evento di selezione di un riferimento.
      * 
      * @param listener
-     *            listener della selezione
+     *            ascoltatore da aggiungere
      */
     public void addReferenceSelectionListener(ReferenceSelectionListener listener) {
         if (listener == null)
@@ -146,6 +146,12 @@ public class ReferenceListPanel extends JScrollPane implements ListSelectionList
         selectionListeners.add(listener);
     }
 
+    /**
+     * Rimuove un ascoltatore dall'evento di selezione di un riferimento.
+     * 
+     * @param listener
+     *            ascoltatore da rimuovere
+     */
     public void removeReferenceSelectionListener(ReferenceSelectionListener listener) {
         if (listener == null)
             return;

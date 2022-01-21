@@ -23,10 +23,11 @@ import javax.swing.*;
  */
 public class Homepage extends JFrame implements CategorySelectionListener {
 
-    CategoriesTreeManager categoriesTreeManager;
-    ReferencePanel referencePanel;
-    CategoriesPanel categoriesPanel;
-    SearchPanel referenceSearchPanel;
+    private User user;
+    private CategoriesTreeManager categoriesTree;
+    private ReferencePanel referencePanel;
+    private CategoriesPanel categoriesPanel;
+    private SearchPanel referenceSearchPanel;
 
     /**
      * Crea la pagina principale con i dati relativi all'utente.
@@ -39,8 +40,10 @@ public class Homepage extends JFrame implements CategorySelectionListener {
      * @throws CategoryDatabaseException
      */
     public Homepage(Controller controller, User user) throws IllegalArgumentException, CategoryDatabaseException {
-        if (controller == null || user == null)
+        if (controller == null)
             throw new IllegalArgumentException();
+
+        setUser(user);
 
         CategoryDAO categoryDAO = new CategoryDAOPostgreSQL(user);
         BibliographicReferenceDAO bibliographicReferenceDAO = new BibliographicReferenceDAO();
@@ -54,19 +57,30 @@ public class Homepage extends JFrame implements CategorySelectionListener {
         contentPane.setLayout(new BorderLayout(5, 5));
         setContentPane(contentPane);
 
-        categoriesTreeManager = new CategoriesTreeManager(categoryDAO);
-        referencePanel = new ReferencePanel(categoriesTreeManager, bibliographicReferenceDAO);
-        categoriesPanel = new CategoriesPanel(categoriesTreeManager);
-        referenceSearchPanel = new SearchPanel(referencePanel, categoriesTreeManager);
+        categoriesTree = new CategoriesTreeManager(categoryDAO);
+        referencePanel = new ReferencePanel(categoriesTree, bibliographicReferenceDAO);
+        categoriesPanel = new CategoriesPanel(categoriesTree);
+        referenceSearchPanel = new SearchPanel(referencePanel, categoriesTree);
 
         JSplitPane subSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, categoriesPanel, referencePanel);
         subSplitPane.setResizeWeight(0.15);
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, subSplitPane, referenceSearchPanel);
-        splitPane.setResizeWeight(0.8);
+        splitPane.setResizeWeight(1);
 
         contentPane.add(new UserInfoPanel(controller, user), BorderLayout.NORTH);
         contentPane.add(splitPane, BorderLayout.CENTER);
+    }
+
+    public void setUser(User user) {
+        if (user == null)
+            throw new IllegalArgumentException("user non può essere null");
+
+        this.user = user;
+    }
+
+    public User getUser() {
+        return user;
     }
 
     /**
