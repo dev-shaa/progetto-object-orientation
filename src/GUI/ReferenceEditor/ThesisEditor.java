@@ -11,7 +11,7 @@ import javax.swing.JTextField;
 /**
  * Pannello di dialogo per la creazione o modifica di un riferimento a una tesi.
  */
-public class ThesisEditor extends PublicationEditor {
+public class ThesisEditor extends PublicationEditor<Thesis> {
 
     private Thesis thesis;
     private JTextField university;
@@ -30,31 +30,7 @@ public class ThesisEditor extends PublicationEditor {
      * @see #setReferenceDAO(BibliographicReferenceDAO)
      */
     public ThesisEditor(CategoriesTreeManager categoriesTree, BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
-        this(categoriesTree, referenceDAO, null);
-    }
-
-    /**
-     * Crea un nuovo pannello di dialogo per la modifica di un riferimento a una tesi, inserendo i valori già presenti all'interno dei campi.
-     * 
-     * @param categoriesTree
-     *            albero delle categorie in cui è possibile inserire il riferimento
-     * @param referenceDAO
-     *            classe DAO per salvare i riferimenti nel database
-     * @param thesis
-     *            tesi da modificare (se nullo, non verrà inserito alcun valore e si considera come se si stesse creando un nuovo riferimento)
-     * @throws IllegalArgumentException
-     *             se referenceDAO non è un valore valido
-     * 
-     * @see #setReferenceDAO(BibliographicReferenceDAO)
-     */
-    public ThesisEditor(CategoriesTreeManager categoriesTree, BibliographicReferenceDAO referenceDAO, Thesis thesis) throws IllegalArgumentException {
-        super("Tesi", categoriesTree, referenceDAO, thesis);
-        this.thesis = thesis;
-
-        if (thesis != null) {
-            setUniversityValue(thesis.getUniversity());
-            setFacultyValue(thesis.getFaculty());
-        }
+        super("Tesi", categoriesTree, referenceDAO);
     }
 
     @Override
@@ -66,6 +42,19 @@ public class ThesisEditor extends PublicationEditor {
 
         addFieldComponent(university, "Università");
         addFieldComponent(faculty, "Facoltà");
+    }
+
+    @Override
+    protected void resetFields(Thesis reference) {
+        super.resetFields(reference);
+
+        if (reference == null) {
+            setUniversityValue(null);
+            setFacultyValue(null);
+        } else {
+            setUniversityValue(reference.getUniversity());
+            setFacultyValue(reference.getFaculty());
+        }
     }
 
     @Override

@@ -9,12 +9,12 @@ import javax.swing.*;
 /**
  * Pannello di dialogo per la creazione o modifica di un riferimento a una risorsa online.
  */
-public abstract class OnlineResourceEditor extends ReferenceEditor {
+public abstract class OnlineResourceEditor<T extends OnlineResource> extends ReferenceEditor<T> {
 
     private JTextField URL;
 
     /**
-     * Crea un nuovo pannello di dialogo per la modifica di un riferimento a una risorsa online, inserendo i valori già presenti all'interno dei campi.
+     * Crea un nuovo pannello di dialogo per la modifica di un riferimento a una risorsa online.
      * 
      * @param dialogueTitle
      *            titolo della schermata di dialogo
@@ -22,19 +22,13 @@ public abstract class OnlineResourceEditor extends ReferenceEditor {
      *            albero delle categorie in cui è possibile inserire il riferimento
      * @param referenceDAO
      *            classe DAO per salvare i riferimenti nel database
-     * @param onlineResource
-     *            risorsa online da modificare (se nullo, non verrà inserito alcun valore e si considera come se si stesse creando un nuovo riferimento)
      * @throws IllegalArgumentException
      *             se referenceDAO non è un valore valido
      * 
      * @see #setReferenceDAO(BibliographicReferenceDAO)
      */
-    public OnlineResourceEditor(String dialogueTitle, CategoriesTreeManager categoriesTree, BibliographicReferenceDAO referenceDAO, OnlineResource onlineResource) throws IllegalArgumentException {
-        super(dialogueTitle, categoriesTree, referenceDAO, onlineResource);
-
-        if (onlineResource != null) {
-            setURLValue(onlineResource.getURL());
-        }
+    public OnlineResourceEditor(String dialogueTitle, CategoriesTreeManager categoriesTree, BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
+        super(dialogueTitle, categoriesTree, referenceDAO);
     }
 
     @Override
@@ -44,6 +38,13 @@ public abstract class OnlineResourceEditor extends ReferenceEditor {
         URL = new JTextField();
 
         addFieldComponent(URL, "URL*", "URL della risorsa");
+    }
+
+    @Override
+    protected void resetFields(T reference) {
+        super.resetFields(reference);
+
+        setURLValue(reference == null ? null : reference.getURL());
     }
 
     /**

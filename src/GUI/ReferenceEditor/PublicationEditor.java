@@ -12,7 +12,7 @@ import javax.swing.SpinnerNumberModel;
 /**
  * Pannello di dialogo per la creazione o modifica di un riferimento a una pubblicazione.
  */
-public abstract class PublicationEditor extends ReferenceEditor {
+public abstract class PublicationEditor<T extends Publication> extends ReferenceEditor<T> {
 
     private JSpinner pageCount;
     private JTextField URL;
@@ -34,14 +34,8 @@ public abstract class PublicationEditor extends ReferenceEditor {
      * 
      * @see #setReferenceDAO(BibliographicReferenceDAO)
      */
-    public PublicationEditor(String dialogueTitle, CategoriesTreeManager categoriesTree, BibliographicReferenceDAO referenceDAO, Publication publication) throws IllegalArgumentException {
-        super(dialogueTitle, categoriesTree, referenceDAO, publication);
-
-        if (publication != null) {
-            setPageCountValue(publication.getPageCount());
-            setURLValue(publication.getURL());
-            setPublisherValue(publication.getPublisher());
-        }
+    public PublicationEditor(String dialogueTitle, CategoriesTreeManager categoriesTree, BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
+        super(dialogueTitle, categoriesTree, referenceDAO);
     }
 
     @Override
@@ -55,6 +49,21 @@ public abstract class PublicationEditor extends ReferenceEditor {
         addFieldComponent(pageCount, "Pagine");
         addFieldComponent(URL, "URL");
         addFieldComponent(publisher, "Editore");
+    }
+
+    @Override
+    protected void resetFields(T reference) {
+        super.resetFields(reference);
+
+        if (reference == null) {
+            setPageCountValue(1);
+            setURLValue(null);
+            setPublisherValue(null);
+        } else {
+            setPageCountValue(reference.getPageCount());
+            setURLValue(reference.getURL());
+            setPublisherValue(reference.getPublisher());
+        }
     }
 
     /**

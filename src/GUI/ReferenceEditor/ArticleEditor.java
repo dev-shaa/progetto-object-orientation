@@ -11,7 +11,7 @@ import javax.swing.JTextField;
 /**
  * Pannello di dialogo per la creazione o modifica di un riferimento a un articolo.
  */
-public class ArticleEditor extends PublicationEditor {
+public class ArticleEditor extends PublicationEditor<Article> {
 
     private Article article;
     private JTextField ISSN;
@@ -29,29 +29,7 @@ public class ArticleEditor extends PublicationEditor {
      * @see #setReferenceDAO(BibliographicReferenceDAO)
      */
     public ArticleEditor(CategoriesTreeManager categoriesTree, BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
-        this(categoriesTree, referenceDAO, null);
-    }
-
-    /**
-     * Crea un nuovo pannello di dialogo per la modifica di un riferimento a un articolo, inserendo i valori già presenti all'interno dei campi.
-     * 
-     * @param categoriesTree
-     *            albero delle categorie in cui è possibile inserire il riferimento
-     * @param referenceDAO
-     *            classe DAO per salvare i riferimenti nel database
-     * @param article
-     *            articolo da modificare (se nullo, non verrà inserito alcun valore e si considera come se si stesse creando un nuovo riferimento)
-     * @throws IllegalArgumentException
-     *             se referenceDAO non è un valore valido
-     * 
-     * @see #setReferenceDAO(BibliographicReferenceDAO)
-     */
-    public ArticleEditor(CategoriesTreeManager categoriesTree, BibliographicReferenceDAO referenceDAO, Article article) throws IllegalArgumentException {
-        super("Articolo", categoriesTree, referenceDAO, article);
-        this.article = article;
-
-        if (article != null)
-            setISSNValue(article.getISSN());
+        super("Articolo", categoriesTree, referenceDAO);
     }
 
     @Override
@@ -61,6 +39,17 @@ public class ArticleEditor extends PublicationEditor {
         ISSN = new JTextField();
 
         addFieldComponent(ISSN, "ISSN");
+    }
+
+    @Override
+    protected void resetFields(Article reference) {
+        super.resetFields(reference);
+
+        if (reference == null) {
+            setISSNValue(null);
+        } else {
+            setISSNValue(reference.getISSN());
+        }
     }
 
     @Override
@@ -114,6 +103,11 @@ public class ArticleEditor extends PublicationEditor {
         super.fillPublicationValues(article);
 
         article.setISSN(getISSNValue());
+    }
+
+    @Override
+    public void setVisible(boolean b) {
+        setVisible(b, null);
     }
 
 }

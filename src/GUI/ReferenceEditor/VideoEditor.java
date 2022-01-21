@@ -12,7 +12,7 @@ import javax.swing.SpinnerNumberModel;
 /**
  * Pannello di dialogo per la creazione o modifica di un riferimento a un video.
  */
-public class VideoEditor extends OnlineResourceEditor {
+public class VideoEditor extends OnlineResourceEditor<Video> {
 
     private Video video;
     private JSpinner width;
@@ -33,28 +33,18 @@ public class VideoEditor extends OnlineResourceEditor {
      * @see #setReferenceDAO(BibliographicReferenceDAO)
      */
     public VideoEditor(CategoriesTreeManager categoriesTree, BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
-        this(categoriesTree, referenceDAO, null);
+        super("Video", categoriesTree, referenceDAO);
     }
 
-    /**
-     * Crea un nuovo pannello di dialogo per la modifica di un riferimento a un video, inserendo i valori già presenti all'interno dei campi.
-     * 
-     * @param categoriesTree
-     *            albero delle categorie in cui è possibile inserire il riferimento
-     * @param referenceDAO
-     *            classe DAO per salvare i riferimenti nel database
-     * @param video
-     *            video da modificare (se nullo, non verrà inserito alcun valore e si considera come se si stesse creando un nuovo riferimento)
-     * @throws IllegalArgumentException
-     *             se referenceDAO non è un valore valido
-     * 
-     * @see #setReferenceDAO(BibliographicReferenceDAO)
-     */
-    public VideoEditor(CategoriesTreeManager categoriesTree, BibliographicReferenceDAO referenceDAO, Video video) throws IllegalArgumentException {
-        super("Video", categoriesTree, referenceDAO, video);
-        this.video = video;
+    @Override
+    protected void resetFields(Video reference) {
+        super.resetFields(reference);
 
-        if (video != null) {
+        if (video == null) {
+            setWidthValue(1);
+            setHeightValue(1);
+            setFrameRateValue(1);
+        } else {
             setWidthValue(video.getWidth());
             setHeightValue(video.getHeight());
             setFrameRateValue(video.getFrameRate());

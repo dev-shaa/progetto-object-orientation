@@ -16,8 +16,7 @@ public class ReferenceInfoPanel extends JScrollPane {
 
     /**
      * Crea un pannello contenente una tabella composta da due colonne,
-     * la prima contenente il nome dell'informazione e la seconda l'informazione
-     * stessa.
+     * la prima contenente il nome dell'informazione e la seconda l'informazione stessa.
      */
     public ReferenceInfoPanel() {
         detailsModel = new DefaultTableModel(0, 2) {
@@ -40,7 +39,7 @@ public class ReferenceInfoPanel extends JScrollPane {
      * Se {@code reference == null}, verrà mostrata una schermata vuota.
      * 
      * @param reference
-     *                  riferimento da mostrare
+     *            riferimento da mostrare
      */
     public void showReference(BibliographicReference reference) {
         if (reference == null) {

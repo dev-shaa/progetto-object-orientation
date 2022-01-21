@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import Entities.Author;
+// import Entities.Author;
 
 public class AuthorEditor extends JDialog {
 
@@ -23,7 +23,6 @@ public class AuthorEditor extends JDialog {
     private static JTextField lastName;
     private static JTextField ORCID;
 
-    private final String searchFieldSeparator = ",";
     private final Dimension maximumSize = new Dimension(Integer.MAX_VALUE, 24);
     private final float alignment = Container.CENTER_ALIGNMENT;
 
@@ -79,7 +78,7 @@ public class AuthorEditor extends JDialog {
 
     private void saveAuthor() {
         try {
-            Author newAuthor = new Author(firstName.getText().trim(), lastName.getText().trim(), ORCID.getText().trim());
+            // Author newAuthor = new Author(firstName.getText().trim(), lastName.getText().trim(), null);
 
             // TODO: salva nel database
 

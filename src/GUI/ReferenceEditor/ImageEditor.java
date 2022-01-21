@@ -12,7 +12,7 @@ import javax.swing.SpinnerNumberModel;
 /**
  * Pannello di dialogo per la creazione o modifica di un riferimento a un'immagine.
  */
-public class ImageEditor extends OnlineResourceEditor {
+public class ImageEditor extends OnlineResourceEditor<Image> {
 
     private Image image;
     private JSpinner width;
@@ -31,31 +31,7 @@ public class ImageEditor extends OnlineResourceEditor {
      * @see #setReferenceDAO(BibliographicReferenceDAO)
      */
     public ImageEditor(CategoriesTreeManager categoriesTree, BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
-        this(categoriesTree, referenceDAO, null);
-    }
-
-    /**
-     * Crea un nuovo pannello di dialogo per la modifica di un riferimento a un'immagine, inserendo i valori già presenti all'interno dei campi.
-     * 
-     * @param categoriesTree
-     *            albero delle categorie in cui è possibile inserire il riferimento
-     * @param referenceDAO
-     *            classe DAO per salvare i riferimenti nel database
-     * @param image
-     *            immagine da modificare (se nullo, non verrà inserito alcun valore e si considera come se si stesse creando un nuovo riferimento)
-     * @throws IllegalArgumentException
-     *             se referenceDAO non è un valore valido
-     * 
-     * @see #setReferenceDAO(BibliographicReferenceDAO)
-     */
-    public ImageEditor(CategoriesTreeManager categoriesTree, BibliographicReferenceDAO referenceDAO, Image image) throws IllegalArgumentException {
-        super("Immagine", categoriesTree, referenceDAO, image);
-        this.image = image;
-
-        if (image != null) {
-            setWidthValue(image.getWidth());
-            setHeightValue(image.getHeight());
-        }
+        super("Immagine", categoriesTree, referenceDAO);
     }
 
     @Override
@@ -67,6 +43,19 @@ public class ImageEditor extends OnlineResourceEditor {
 
         addFieldComponent(width, "Larghezza");
         addFieldComponent(height, "Altezza");
+    }
+
+    @Override
+    protected void resetFields(Image reference) {
+        super.resetFields(reference);
+
+        if (reference == null) {
+            setWidthValue(1);
+            setHeightValue(1);
+        } else {
+            setWidthValue(reference.getWidth());
+            setHeightValue(reference.getHeight());
+        }
     }
 
     @Override

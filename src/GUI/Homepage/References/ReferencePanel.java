@@ -5,15 +5,21 @@ import GUI.*;
 import GUI.Categories.CategoriesTreeManager;
 import GUI.Homepage.Search.Search;
 import GUI.ReferenceEditor.*;
+import GUI.Utilities.JPopupButton;
 import Entities.*;
 import Entities.References.*;
+import Entities.References.OnlineResources.Image;
+import Entities.References.OnlineResources.SourceCode;
+import Entities.References.OnlineResources.Video;
+import Entities.References.OnlineResources.Website;
+import Entities.References.PhysicalResources.Article;
+import Entities.References.PhysicalResources.Book;
+import Entities.References.PhysicalResources.Thesis;
 
 import javax.swing.*;
-import javax.swing.event.*;
 import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.FlowLayout;
 
 /**
  * Classe che si occupa di mostrare i riferimenti cercati o presenti in una
@@ -22,107 +28,49 @@ import java.awt.FlowLayout;
  * @see ReferenceListPanel
  * @see ReferenceInfoPanel
  */
-public class ReferencePanel extends JPanel {
+public class ReferencePanel extends JPanel implements ReferenceSelectionListener {
 
-    private CategoriesTreeManager categoriesTreeManager;
-    private BibliographicReferenceDAO bibliographicReferenceDAO;
+    private CategoriesTreeManager categoriesTree;
+    private BibliographicReferenceDAO referenceDAO;
 
     private ReferenceListPanel listPanel;
     private ReferenceInfoPanel infoPanel;
 
-    private JPanel buttonsPanel;
-    private JButton createReferenceButton;
     private JButton editReferenceButton;
     private JButton deleteReferenceButton;
-    private JPopupMenu newReferenceTypeSelection;
+
+    private ArticleEditor articleEditor;
+    private BookEditor bookEditor;
+    private ImageEditor imageEditor;
+    private SourceCodeEditor sourceCodeEditor;
+    private ThesisEditor thesisEditor;
+    private VideoEditor videoEditor;
+    private WebsiteEditor websiteEditor;
 
     /**
-     * Crea {@code ReferencePanel} con i dati relativi all'utente.
+     * Crea un pannello di riferimenti.
      * 
-     * @param controller
-     * @param bibliographicReferenceDAO
+     * @param categoriesTree
+     * @param referenceDAO
      *            classe DAO per interfacciarsi al database dei riferimenti
      * @throws IllegalArgumentException
-     *             se controller o bibiliographicReferenceDAO non sono validi
+     *             se categoriesTreeManager o bibiliographicReferenceDAO non sono validi
      * @see #setCategoriesTreeManager(Controller)
-     * @see #setBibiliographicReferenceDAO(BibliographicReferenceDAO)
+     * @see #setBibliographicReferenceDAO(BibliographicReferenceDAO)
      */
-    public ReferencePanel(CategoriesTreeManager categoriesTreeManager, BibliographicReferenceDAO bibliographicReferenceDAO) throws IllegalArgumentException {
-        setCategoriesTreeManager(categoriesTreeManager);
-        setBibiliographicReferenceDAO(bibliographicReferenceDAO);
-
-        this.infoPanel = new ReferenceInfoPanel();
-
-        this.listPanel = new ReferenceListPanel();
-        this.listPanel.addListSelectionListener(new ListSelectionListener() {
-            public void valueChanged(ListSelectionEvent event) {
-                if (!event.getValueIsAdjusting()) {
-                    BibliographicReference selectedReference = listPanel.getSelectedReference();
-
-                    infoPanel.showReference(selectedReference);
-
-                    boolean shouldButtonsBeEnabled = selectedReference == null;
-                    editReferenceButton.setEnabled(shouldButtonsBeEnabled);
-                    deleteReferenceButton.setEnabled(shouldButtonsBeEnabled);
-                }
-            }
-        });
+    public ReferencePanel(CategoriesTreeManager categoriesTree, BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
+        setCategoriesTree(categoriesTree);
+        setBibliographicReferenceDAO(referenceDAO);
 
         setLayout(new BorderLayout(5, 5));
         setBorder(new EmptyBorder(5, 5, 5, 5));
 
-        JSplitPane referenceSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, listPanel, infoPanel);
-        referenceSplitPane.setDividerSize(10);
-        referenceSplitPane.setResizeWeight(0.6f);
+        JToolBar toolbar = new JToolBar();
+        toolbar.setFloatable(false);
 
-        setupButtonsPanel();
-        setupNewCategorySelectionPopupMenu();
-
-        add(buttonsPanel, BorderLayout.NORTH);
-        add(referenceSplitPane, BorderLayout.CENTER);
-    }
-
-    /**
-     * TODO: commenta
-     * 
-     * @param categoriesTreeManager
-     * @throws IllegalArgumentException
-     */
-    public void setCategoriesTreeManager(CategoriesTreeManager categoriesTreeManager) throws IllegalArgumentException {
-        if (categoriesTreeManager == null)
-            throw new IllegalArgumentException("categoriesTreeManager non può essere null");
-
-        this.categoriesTreeManager = categoriesTreeManager;
-    }
-
-    /**
-     * Imposta la classe DAO per interfacciarsi col database e recuperare i
-     * riferimenti.
-     * 
-     * @param bibliographicReferenceDAO
-     *            classe DAO per i riferimenti
-     * @throws IllegalArgumentException
-     *             se {@code bibliographicReferenceDAO == null}
-     */
-    public void setBibiliographicReferenceDAO(BibliographicReferenceDAO bibliographicReferenceDAO)
-            throws IllegalArgumentException {
-        if (bibliographicReferenceDAO == null)
-            throw new IllegalArgumentException("bibliographicReferenceDAO non può essere null");
-
-        this.bibliographicReferenceDAO = bibliographicReferenceDAO;
-    }
-
-    private void setupButtonsPanel() {
-        buttonsPanel = new JPanel();
-        buttonsPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
-
-        createReferenceButton = new JButton(new ImageIcon("images/file_add.png"));
-        createReferenceButton.setToolTipText("Nuovo riferimento");
-        createReferenceButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                showReferenceCreationOptions();
-            }
-        });
+        JPopupButton createReferenceButton = new JPopupButton(new ImageIcon("images/file_add.png"));
+        createReferenceButton.setToolTipText("Crea riferimento");
+        setupReferenceEditorPopup(createReferenceButton, categoriesTree);
 
         editReferenceButton = new JButton(new ImageIcon("images/file_edit.png"));
         editReferenceButton.setToolTipText("Modifica riferimento");
@@ -142,82 +90,167 @@ public class ReferencePanel extends JPanel {
             }
         });
 
-        buttonsPanel.add(createReferenceButton);
-        buttonsPanel.add(editReferenceButton);
-        buttonsPanel.add(deleteReferenceButton);
+        toolbar.add(createReferenceButton);
+        toolbar.add(editReferenceButton);
+        toolbar.add(deleteReferenceButton);
+
+        infoPanel = new ReferenceInfoPanel();
+
+        listPanel = new ReferenceListPanel();
+        listPanel.addReferenceSelectionListener(this);
+
+        JSplitPane referenceSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, listPanel, infoPanel);
+        referenceSplitPane.setDividerSize(10);
+        referenceSplitPane.setResizeWeight(0.6f);
+
+        add(toolbar, BorderLayout.NORTH);
+        add(referenceSplitPane, BorderLayout.CENTER);
     }
 
-    private void setupNewCategorySelectionPopupMenu() {
-        newReferenceTypeSelection = new JPopupMenu();
+    private void setupReferenceEditorPopup(JPopupButton button, CategoriesTreeManager categoriesTree) {
 
         JMenuItem articleOption = new JMenuItem("Articolo");
         articleOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                new ArticleEditor(categoriesTreeManager, bibliographicReferenceDAO);
+                openArticleEditor(null);
             }
         });
 
         JMenuItem bookOption = new JMenuItem("Libro");
         bookOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                new BookEditor(categoriesTreeManager, bibliographicReferenceDAO);
+                openBookEditor(null);
             }
         });
 
         JMenuItem thesisOption = new JMenuItem("Tesi");
         thesisOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                new ThesisEditor(categoriesTreeManager, bibliographicReferenceDAO);
+                openThesisEditor(null);
             }
         });
 
         JMenuItem websiteOption = new JMenuItem("Sito web");
         websiteOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                new WebsiteEditor(categoriesTreeManager, bibliographicReferenceDAO);
+                openWebsiteEditor(null);
             }
         });
 
         JMenuItem sourceCodeOption = new JMenuItem("Codice sorgente");
         sourceCodeOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                new SourceCodeEditor(categoriesTreeManager, bibliographicReferenceDAO);
+                openSourceCodeEditor(null);
             }
         });
 
         JMenuItem imageOption = new JMenuItem("Immagine");
         imageOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                new ImageEditor(categoriesTreeManager, bibliographicReferenceDAO);
+                openImageEditor(null);
             }
         });
 
         JMenuItem videoOption = new JMenuItem("Video");
         videoOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                new VideoEditor(categoriesTreeManager, bibliographicReferenceDAO);
+                openVideoEditor(null);
             }
         });
 
-        newReferenceTypeSelection.add(articleOption);
-        newReferenceTypeSelection.add(bookOption);
-        newReferenceTypeSelection.add(thesisOption);
-        newReferenceTypeSelection.addSeparator();
-        newReferenceTypeSelection.add(websiteOption);
-        newReferenceTypeSelection.add(sourceCodeOption);
-        newReferenceTypeSelection.add(imageOption);
-        newReferenceTypeSelection.add(videoOption);
+        button.addToPopupMenu(articleOption);
+        button.addToPopupMenu(bookOption);
+        button.addToPopupMenu(thesisOption);
+        button.addPopupSeparator();
+        button.addToPopupMenu(websiteOption);
+        button.addToPopupMenu(sourceCodeOption);
+        button.addToPopupMenu(imageOption);
+        button.addToPopupMenu(videoOption);
     }
 
-    private void showReferenceCreationOptions() {
-        newReferenceTypeSelection.show(createReferenceButton, 0, createReferenceButton.getHeight());
+    private void openArticleEditor(Article article) {
+        if (articleEditor == null)
+            articleEditor = new ArticleEditor(categoriesTree, referenceDAO);
+
+        articleEditor.setVisible(true, article);
+    }
+
+    private void openBookEditor(Book book) {
+        if (bookEditor == null)
+            bookEditor = new BookEditor(categoriesTree, referenceDAO);
+
+        bookEditor.setVisible(true, book);
+    }
+
+    private void openImageEditor(Image image) {
+        if (imageEditor == null)
+            imageEditor = new ImageEditor(categoriesTree, referenceDAO);
+
+        imageEditor.setVisible(true, image);
+    }
+
+    private void openSourceCodeEditor(SourceCode sourceCode) {
+        if (sourceCodeEditor == null)
+            sourceCodeEditor = new SourceCodeEditor(categoriesTree, referenceDAO);
+
+        sourceCodeEditor.setVisible(true, sourceCode);
+    }
+
+    private void openThesisEditor(Thesis thesis) {
+        if (thesisEditor == null)
+            thesisEditor = new ThesisEditor(categoriesTree, referenceDAO);
+
+        thesisEditor.setVisible(true, thesis);
+    }
+
+    private void openVideoEditor(Video video) {
+        if (videoEditor == null)
+            videoEditor = new VideoEditor(categoriesTree, referenceDAO);
+
+        videoEditor.setVisible(true, video);
+    }
+
+    private void openWebsiteEditor(Website website) {
+        if (websiteEditor == null)
+            websiteEditor = new WebsiteEditor(categoriesTree, referenceDAO);
+
+        websiteEditor.setVisible(true, website);
+    }
+
+    /**
+     * Imposta la classe DAO per interfacciarsi col database e recuperare i
+     * riferimenti.
+     * 
+     * @param bibliographicReferenceDAO
+     *            classe DAO per i riferimenti
+     * @throws IllegalArgumentException
+     *             se {@code bibliographicReferenceDAO == null}
+     */
+    public void setBibliographicReferenceDAO(BibliographicReferenceDAO bibliographicReferenceDAO) throws IllegalArgumentException {
+        if (bibliographicReferenceDAO == null)
+            throw new IllegalArgumentException("bibliographicReferenceDAO non può essere null");
+
+        this.referenceDAO = bibliographicReferenceDAO;
+    }
+
+    /**
+     * TODO: commenta
+     * 
+     * @param categoriesTree
+     * @throws IllegalArgumentException
+     */
+    public void setCategoriesTree(CategoriesTreeManager categoriesTree) throws IllegalArgumentException {
+        if (categoriesTree == null)
+            throw new IllegalArgumentException("categories tree non può essere null");
+
+        this.categoriesTree = categoriesTree;
     }
 
     private void changeSelectedReference() {
         try {
             // FIXME:
             // controller.openReferenceCreatorPage(listPanel.getSelectedReference());
-            BibliographicReference selectedReference = listPanel.getSelectedReference();
+            // BibliographicReference selectedReference = listPanel.getSelectedReference();
 
             // if (selectedReference instanceof Article) {
             // new ArticleCreator(categoriesTreeManager, bibliographicReferenceDAO, (Article) selectedReference);
@@ -234,7 +267,7 @@ public class ReferencePanel extends JPanel {
             int result = JOptionPane.showConfirmDialog(null, "Vuoi eliminare questo riferimento?", "Elimina riferimento", JOptionPane.YES_NO_OPTION);
 
             if (result == JOptionPane.YES_OPTION) {
-                bibliographicReferenceDAO.removeReference(listPanel.getSelectedReference());
+                referenceDAO.removeReference(listPanel.getSelectedReference());
                 listPanel.removeSelectedReference();
             }
         } catch (Exception e) {
@@ -260,7 +293,7 @@ public class ReferencePanel extends JPanel {
      */
     public void showReferences(Category category) {
         try {
-            BibliographicReference[] references = bibliographicReferenceDAO.getReferences(category);
+            BibliographicReference[] references = referenceDAO.getReferences(category);
             showReferences(references);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
@@ -282,6 +315,15 @@ public class ReferencePanel extends JPanel {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
+    }
+
+    @Override
+    public void onReferenceSelection(BibliographicReference reference) {
+        infoPanel.showReference(reference);
+
+        boolean shouldButtonsBeEnabled = reference == null;
+        editReferenceButton.setEnabled(shouldButtonsBeEnabled);
+        deleteReferenceButton.setEnabled(shouldButtonsBeEnabled);
     }
 
 }

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
@@ -19,12 +20,13 @@ import javax.swing.table.DefaultTableModel;
  * 
  * @see ReferencePanel
  */
-public class ReferenceListPanel extends JScrollPane {
+public class ReferenceListPanel extends JScrollPane implements ListSelectionListener {
 
     private JTable referencesTable;
     private DefaultTableModel referencesTableModel;
 
     private ArrayList<BibliographicReference> displayedReferences;
+    private ArrayList<ReferenceSelectionListener> selectionListeners;
 
     private final String titleLabel = "Titolo";
     private final String authorsLabel = "Autori";
@@ -44,33 +46,23 @@ public class ReferenceListPanel extends JScrollPane {
         };
 
         displayedReferences = new ArrayList<>();
+        selectionListeners = new ArrayList<>(3);
 
         referencesTable = new JTable(referencesTableModel);
         referencesTable.setFillsViewportHeight(true);
         referencesTable.setAutoCreateRowSorter(true);
         referencesTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        referencesTable.getSelectionModel().addListSelectionListener(this);
 
         setViewportView(referencesTable);
-    }
-
-    /**
-     * Crea un {@code ReferenceListPanel} con i riferimenti di input.
-     * 
-     * @param references
-     *                   riferimenti da mostrare
-     * @see #setReferences(BibliographicReference[])
-     */
-    public ReferenceListPanel(BibliographicReference[] references) {
-        this();
-        setReferences(references);
     }
 
     /**
      * Imposta i riferimenti da mostrare nell'elenco.
      * 
      * @param references
-     *                   i riferimenti da mostrare (se {@code references == null}
-     *                   non viene mostrato nulla)
+     *            i riferimenti da mostrare (se {@code references == null}
+     *            non viene mostrato nulla)
      */
     public void setReferences(BibliographicReference[] references) {
         removeAllReferences();
@@ -87,12 +79,11 @@ public class ReferenceListPanel extends JScrollPane {
      * Aggiunge un riferimento all'elenco attuale.
      * 
      * @param reference
-     *                  riferimento da aggiungere
+     *            riferimento da aggiungere
      */
     public void addReference(BibliographicReference reference) {
         displayedReferences.add(reference);
-        referencesTableModel.addRow(
-                new Object[] { reference.getTitle(), reference.getAuthorsAsString(), reference.getPubblicationDate() });
+        referencesTableModel.addRow(new Object[] { reference.getTitle(), reference.getAuthorsAsString(), reference.getPubblicationDate() });
     }
 
     /**
@@ -133,24 +124,42 @@ public class ReferenceListPanel extends JScrollPane {
      * @return
      *         l'indice del riferimento selezionato
      * @throws IndexOutOfBoundsException
-     *                                   se l'ordinamento è attivo e l'indice del
-     *                                   riferimento selezionato si trova al di
-     *                                   fuori degli estremi della tabella
-     *                                   (non dovrebbe mai succedere)
+     *             se l'ordinamento è attivo e l'indice del
+     *             riferimento selezionato si trova al di
+     *             fuori degli estremi della tabella
+     *             (non dovrebbe mai succedere)
      */
     private int getSelectedReferenceIndex() throws IndexOutOfBoundsException {
         return referencesTable.convertRowIndexToModel(referencesTable.getSelectedRow());
     }
 
     /**
-     * Aggiunge un listener che viene avvertito ogni volta che la selezione della
-     * tabella cambia.
+     * Aggiunge un listener che viene avvertito ogni volta che il riferimento selezionato cambia.
      * 
      * @param listener
-     *                 listener della selezione
+     *            listener della selezione
      */
-    public void addListSelectionListener(ListSelectionListener listener) {
-        referencesTable.getSelectionModel().addListSelectionListener(listener);
+    public void addReferenceSelectionListener(ReferenceSelectionListener listener) {
+        if (listener == null)
+            return;
+
+        selectionListeners.add(listener);
+    }
+
+    public void removeReferenceSelectionListener(ReferenceSelectionListener listener) {
+        if (listener == null)
+            return;
+
+        selectionListeners.remove(listener);
+    }
+
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        if (!e.getValueIsAdjusting()) {
+            for (ReferenceSelectionListener listener : selectionListeners) {
+                listener.onReferenceSelection(getSelectedReference());
+            }
+        }
     }
 
 }

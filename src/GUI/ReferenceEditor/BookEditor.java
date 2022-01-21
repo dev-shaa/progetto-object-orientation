@@ -11,7 +11,7 @@ import javax.swing.JTextField;
 /**
  * Pannello di dialogo per la creazione o modifica di un riferimento a un libro.
  */
-public class BookEditor extends PublicationEditor {
+public class BookEditor extends PublicationEditor<Book> {
 
     private Book book;
     private JTextField ISBN;
@@ -29,29 +29,7 @@ public class BookEditor extends PublicationEditor {
      * @see #setReferenceDAO(BibliographicReferenceDAO)
      */
     public BookEditor(CategoriesTreeManager categoriesTree, BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
-        this(categoriesTree, referenceDAO, null);
-    }
-
-    /**
-     * Crea un nuovo pannello di dialogo per la modifica di un riferimento a un libro, inserendo i valori già presenti all'interno dei campi.
-     * 
-     * @param categoriesTree
-     *            albero delle categorie in cui è possibile inserire il riferimento
-     * @param referenceDAO
-     *            classe DAO per salvare i riferimenti nel database
-     * @param book
-     *            libro da modificare (se nullo, non verrà inserito alcun valore e si considera come se si stesse creando un nuovo riferimento)
-     * @throws IllegalArgumentException
-     *             se referenceDAO non è un valore valido
-     * 
-     * @see #setReferenceDAO(BibliographicReferenceDAO)
-     */
-    public BookEditor(CategoriesTreeManager categoriesTree, BibliographicReferenceDAO referenceDAO, Book book) throws IllegalArgumentException {
-        super("Libro", categoriesTree, referenceDAO, book);
-        this.book = book;
-
-        if (book != null)
-            setISBNValue(book.getISBN());
+        super("Libro", categoriesTree, referenceDAO);
     }
 
     @Override
@@ -60,6 +38,17 @@ public class BookEditor extends PublicationEditor {
 
         ISBN = new JTextField();
         addFieldComponent(ISBN, "ISBN");
+    }
+
+    @Override
+    protected void resetFields(Book publication) {
+        super.resetFields(publication);
+
+        if (publication == null) {
+            setISBNValue(null);
+        } else {
+            setISBNValue(publication.getISBN());
+        }
     }
 
     @Override

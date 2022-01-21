@@ -1,5 +1,7 @@
 package GUI.ReferenceEditor;
 
+import GUI.AssociatedReferenceChooser;
+
 // NOTE: questa è una classe lunghissima, però sono principalmente commenti e getter/setter
 
 import GUI.Categories.*;
@@ -24,7 +26,7 @@ import DAO.BibliographicReferenceDAO;
 /**
  * Pannello per la creazione o modifica di un riferimento bibliografico.
  */
-public abstract class ReferenceEditor extends JDialog {
+public abstract class ReferenceEditor<T extends BibliographicReference> extends JDialog {
 
     private JTextField title;
     private JTermsField tags;
@@ -34,10 +36,12 @@ public abstract class ReferenceEditor extends JDialog {
     private JComboBox<ReferenceLanguage> language;
     private CategoriesSelectionPopupMenu categories;
     private JPopupItemSelection<Author> authors;
+    private AssociatedReferenceChooser quotations;
 
     private JPanel fieldPanel;
     private AuthorEditor authorEditor;
     private BibliographicReferenceDAO referenceDAO;
+    private CategoriesTreeManager tree;
 
     private final String searchFieldSeparator = ",";
     private final Dimension maximumSize = new Dimension(Integer.MAX_VALUE, 24);
@@ -60,14 +64,16 @@ public abstract class ReferenceEditor extends JDialog {
      * 
      * @see #setReferenceDAO(BibliographicReferenceDAO)
      */
-    public ReferenceEditor(String dialogueTitle, CategoriesTreeManager categoriesTree, BibliographicReferenceDAO referenceDAO, BibliographicReference reference) throws IllegalArgumentException {
+    public ReferenceEditor(String dialogueTitle, CategoriesTreeManager categoriesTree, BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
         super();
 
         setTitle(dialogueTitle);
         setSize(500, 500);
-        setMinimumSize(new Dimension(500, 500));
+        setResizable(false);
 
         setReferenceDAO(referenceDAO);
+
+        this.tree = categoriesTree;
 
         // vogliamo che sia un'interfaccia modale
         setModal(true);
@@ -79,17 +85,7 @@ public abstract class ReferenceEditor extends JDialog {
         // la descrizione è un elemento più grande, quindi vogliamo che sia alla fine
         setupLastElements();
 
-        // mostra automaticamente quando viene creato
-        setVisible(true);
-
-        if (reference != null) {
-            setTitleValue(reference.getTitle());
-            setDOIValue(reference.getDOI());
-            setDescriptionValue(reference.getDescription());
-            setLanguageValue(reference.getLanguage());
-            setPubblicationDateValue(reference.getPubblicationDate());
-            setTagValues(reference.getTags());
-        }
+        resetFields(null);
     }
 
     /**
@@ -138,11 +134,10 @@ public abstract class ReferenceEditor extends JDialog {
         categories = new CategoriesSelectionPopupMenu(categoriesTree);
         description = new JTextArea(10, 1);
         authorEditor = new AuthorEditor();
+        quotations = new AssociatedReferenceChooser(categoriesTree);
 
         // TODO: carica dal database gli autori
         authors = new JPopupItemSelection<Author>("Premi per selezionare gli autori");
-        authors.addElement(new Author("Mario", "Rossi", null));
-        authors.addElement(new Author("Luigi", "Bianchi", null));
 
         JButton addAuthor = new JButton("+");
         addAuthor.addActionListener(new ActionListener() {
@@ -193,6 +188,55 @@ public abstract class ReferenceEditor extends JDialog {
     }
 
     /**
+     * Riempie i campi di input con i valori presenti nel riferimento passato.
+     * Se il riferimento è {@code null}, vengono svuotati.
+     * 
+     * @param reference
+     *            riferimento da cui prendere i valori (se {@code null}, i campi verrano resettati)
+     */
+    protected void resetFields(T reference) {
+        if (reference == null) {
+            setTitleValue(null);
+            setPubblicationDateValue(null);
+            setDOIValue(null);
+            setDescriptionValue(null);
+            setTagValues(null);
+            setLanguageValue(ReferenceLanguage.ENGLISH);
+        } else {
+            setTitleValue(reference.getTitle());
+            setPubblicationDateValue(reference.getPubblicationDate());
+            setDOIValue(reference.getDOI());
+            setDescriptionValue(reference.getDescription());
+            setTagValues(reference.getTags());
+            setLanguageValue(reference.getLanguage());
+            // setCategoryValues(reference);
+        }
+    }
+
+    @Override
+    public void setVisible(boolean b) {
+        setVisible(b, null);
+    }
+
+    /**
+     * Mostra o nasconde questo pannello a seconda del valore di {@code b}.
+     * Se {@code b == true}, i campi di input verranno riempiti con i valori presenti in {@code reference}.
+     * 
+     * @param b
+     *            se {@code true} il pannello verrà mostrato e verrano riempiti i campi con i valori di {@code reference},
+     *            se {@code false} il pannello verrà nascosto
+     * @param reference
+     *            riferimento da mostrare (eventualmente)
+     */
+    public void setVisible(boolean b, T reference) {
+        if (b) {
+            resetFields(reference);
+        }
+
+        super.setVisible(b);
+    }
+
+    /**
      * Aggiunge un componente nel pannello dove sono presenti i campi di input.
      * Le dimensioni e l'allineamento sono impostate automaticamente.
      * 
@@ -203,6 +247,12 @@ public abstract class ReferenceEditor extends JDialog {
         addFieldComponent(component, true);
     }
 
+    /**
+     * TODO: commenta
+     * 
+     * @param component
+     * @param addSpacing
+     */
     protected void addFieldComponent(JComponent component, boolean addSpacing) {
         component.setMaximumSize(maximumSize);
         component.setAlignmentX(alignment);
@@ -345,6 +395,11 @@ public abstract class ReferenceEditor extends JDialog {
      *            parole chiave del riferimento
      */
     protected void setTagValues(Tag[] tags) {
+        if (tags == null) {
+            this.tags.setText(null);
+            return;
+        }
+
         String text = "";
 
         for (Tag tag : tags) {
@@ -402,7 +457,9 @@ public abstract class ReferenceEditor extends JDialog {
      *            autori del riferimento
      */
     protected void setAuthorValues(Author[] authors) {
-        // TODO:
+        for (Author author : authors) {
+            this.authors.selectElement(author);
+        }
     }
 
     /**
