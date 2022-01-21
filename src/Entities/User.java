@@ -5,8 +5,7 @@ package Entities;
 public class User {
     private String name;
     private String password;
-    private int id;
-
+	
 	public User(String name, String password) {
         setName(name);
         setPassword(password);
@@ -26,12 +25,6 @@ public class User {
 
 	public void setPassword(String password) {
 		this.password = password;
-	}
-	
-	public void incrementId( int id) {
-		id = id + 1;
-		System.out.println("Id utente: " + id);
-	}
-	
+	}	
 }
 

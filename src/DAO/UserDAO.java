@@ -1,8 +1,11 @@
 package DAO;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import Entities.User;
-import java.sql.*;
-import DAO.DatabaseController;
 
 public class UserDAO {
 	private Connection con = null;
@@ -12,20 +15,20 @@ public class UserDAO {
 	public void SaveUser(User user) {
 
 		try {
-			String st = "INSERT INTO public.\"UtenteApp\" (\"Nome\", \"Password\") VALUES('" + user.getName() + "','Password');";
-
+			System.out.println("Sto provando a salvare l'utente " + user.getName() + " " + user.getPassword());
+			String query = "INSERT INTO public.\"UtenteApp\" (\"Nome\", \"Password\") VALUES('" + user.getName() + "','"
+					+ user.getPassword() + "')";
+			
 			con = DatabaseController.getConnection();
 			if (con == null) {
 				System.out.println("Non c'è connesione al db");
 				return;
 			}
-			stmt = con.createStatement(); // @R1ccardo FIXME: in caso non ci sia connessione, con diventa null e c'Ã¨ un null pointer exception
-			stmt.executeUpdate(st);
-		
+			stmt = con.createStatement(); // @R1ccardo FIXME: in caso non ci sia connessione, con diventa null e c'Ã¨ un
+											// null pointer exception
+			stmt.executeUpdate(query);
 			System.out.println("Utente aggiunto con successo");
-			
-			user.incrementId(0);
-				
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -40,60 +43,98 @@ public class UserDAO {
 		}
 	}
 
-	// public void UpdateUser(User user) {
-	//
-	// try {
-	// String st = "UPDATE user SET Name=? WHERE Id=?"; implementare id utente
-	// connection = getConnection();
-	// stmt = connection.prepareStatement(st);
-	// stmt.setString(1, user.getName());
-	// stmt.executeUpdate();
-	// System.out.println("Utente aggiornato con successo");
-	// } catch (SQLException e) {
-	// e.printStackTrace();
-	// } finally {
-	// try {
-	// if (stmt != null)
-	// stmt.close();
-	// if (conn != null)
-	// conn.close();
-	// }
-	//
-	// catch (SQLException e) {
-	// e.printStackTrace();
-	// } catch (Exception e) {
-	// e.printStackTrace();
-	//
-	// }
-	// }
-	// }
-	//
-	//
-	// public void DeleteUser(int id) { //implementare id utente
-	//
-	// try {
-	// String st = "DELETE FROM User WHERE id";
-	// con = DatabaseController.getConnection();
-	// stmt = con.prepareStatement(st);
-	// rs = stmt.executeQuery(st);
-	//
-	// stmt.setString(1, user.getName());
-	// stmt.executeUpdate();
-	// System.out.println("Utente eliminato con successo");
-	// } catch (SQLException e) {
-	// e.printStackTrace();
-	// } finally {
-	// try {
-	// if (stmt != null)
-	// stmt.close();
-	// if (con != null)
-	// con.close();
-	// } catch (SQLException e) {
-	// e.printStackTrace();
-	// } catch (Exception e) {
-	// e.printStackTrace();
-	// }
-	// }
-	// }
+	public boolean ExistUser(User user) {
+
+		String query = "select count(*) from \"UtenteApp\" ua \r\n" + "where  \"Nome\" = '" + user.getName() + "'";
+		int risultato = 1;
+
+		try {
+			con = DatabaseController.getConnection();
+			if (con == null) {
+				System.out.println("Non c'è connesione al db");
+				return true;
+			}
+			stmt = con.createStatement();
+			rs = stmt.executeQuery(query);
+
+			while (rs.next()) {
+				risultato = rs.getInt("count");
+				System.out.printf("Ci sono: " + risultato);
+
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		if (risultato == 0) {
+
+			return false;
+
+		}
+
+		else {
+			return true;
+		}
+	}
+
+	
+	public User GetUserLogin (User user) {
+		
+		if (!ExistUser(user)) {
+			return null;
+		}
+		
+		String query = "select * from \"UtenteApp\" ua where \"Nome\" = '"+ user.getName()+"'";
+		try {
+			con = DatabaseController.getConnection();
+			if (con == null) {
+				System.out.println("Non c'è connesione al db");
+				return null;
+			}
+			stmt = con.createStatement();
+			rs = stmt.executeQuery(query);
+			rs.next();
+		    String username = rs.getString("Nome");	
+		    String password = rs.getString("Password");
+		    
+		    User userDB = new User(username, password);
+		    return userDB;
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		
+		
+	}
+	
+	public void DeleteUser(User user) {
+
+		try {
+
+			String query = "DELETE FROM public.\"UtenteApp\" WHERE \"Nome\"='"+ user.getName()+"' AND \"Password\"='"+user.getPassword()+"';";
+
+			con = DatabaseController.getConnection();
+			stmt = con.prepareStatement(query);
+			rs = stmt.executeQuery(query);
+
+			System.out.println("Utente eliminato con successo");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (stmt != null)
+					stmt.close();
+				if (con != null)
+					con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
 }

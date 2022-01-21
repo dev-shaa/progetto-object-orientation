@@ -27,7 +27,7 @@ public class LoginFrame extends JFrame {
 	private JPanel contentPane;
 	private JTextField userName_TF;
 	private JPasswordField passwordField;
-	private Controller theController;
+//	private Controller theController;
 
 	/**
 	 * Create the frame.
@@ -64,7 +64,9 @@ public class LoginFrame extends JFrame {
 				String pwd = new String(passwordField.getPassword());
 				
 				// FIXME: DEBUG:
+				if (login.CheckLogin(new User(username, pwd))) {
 				c.openHomePage(new User(username, pwd));
+				}
 			}
 		});
 
@@ -86,7 +88,10 @@ public class LoginFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				String username = userName_TF.getText();
 				String pwd = new String(passwordField.getPassword());
-				login.CheckUser(username, pwd);
+				
+				if (login.Register(username, pwd)) {
+				c.openHomePage(new User(username, pwd));
+				}
 			}
 		});
 	}
