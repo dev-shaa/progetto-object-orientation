@@ -92,6 +92,9 @@ public class JPopupButton extends JButton implements ActionListener {
         if (popupMenu.getComponentCount() == 0) {
             addToPopupMenu(emptyPopupLabel);
         }
+
+        popupMenu.pack();
+        popupMenu.revalidate();
     }
 
     /**

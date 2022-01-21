@@ -68,7 +68,7 @@ public class CategoriesCheckboxTree extends JTree {
      * 
      * @return un array di {@code Categories} con tutte le categorie selezionate
      */
-    public Category[] getSelectedCategories(boolean selectOnlyLeaf) {
+    public Category[] getSelectedCategories() {
         TreePath[] selectedPaths = getSelectionPaths();
 
         if (selectedPaths == null)

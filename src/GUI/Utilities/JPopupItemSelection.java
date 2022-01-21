@@ -106,7 +106,7 @@ public class JPopupItemSelection<T> extends JPopupButton {
      *         elementi selezionati
      */
     public ArrayList<T> getSelectedElements() {
-        ArrayList<T> selectedItems = new ArrayList<T>(0);
+        ArrayList<T> selectedItems = new ArrayList<T>();
 
         for (int i = 0; i < checkboxes.size(); i++) {
             if (checkboxes.get(i).isSelected())

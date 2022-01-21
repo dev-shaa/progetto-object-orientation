@@ -6,8 +6,10 @@ import javax.swing.JTree;
 import javax.swing.JPanel;
 import javax.swing.JCheckBox;
 import javax.swing.tree.TreeCellRenderer;
-import javax.swing.tree.DefaultMutableTreeNode;
 
+/**
+ * Renderer di un albero con elementi da spuntare.
+ */
 public class CheckboxTreeRenderer extends JPanel implements TreeCellRenderer {
 
     private JCheckBox checkBox;
@@ -26,13 +28,10 @@ public class CheckboxTreeRenderer extends JPanel implements TreeCellRenderer {
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
 
         // FIXME: quando selezionato appare comunque lo sfondo colorato che è bruttino da vedere
-
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
-        Object obj = node.getUserObject();
-
         checkBox.setSelected(selected);
-        checkBox.setText(String.valueOf(obj));
+        checkBox.setText(String.valueOf(value));
         checkBox.setOpaque(false);
+
         return this;
     }
 

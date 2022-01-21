@@ -26,7 +26,7 @@ public class CategoriesSelectionPopupMenu extends JPopupButton {
         if (categoriesTreeManager == null)
             throw new IllegalArgumentException();
 
-        setText("Categorie");
+        setText("Premi per selezionare le categorie");
 
         categoriesSelectionTree = new CategoriesCheckboxTree(categoriesTreeManager);
         categoriesSelectionTree.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));

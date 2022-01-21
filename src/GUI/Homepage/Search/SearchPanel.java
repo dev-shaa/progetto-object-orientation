@@ -7,9 +7,12 @@ import javax.swing.border.*;
 
 import com.toedter.calendar.JDateChooser;
 
+import Entities.Author;
+import Entities.Category;
 import Entities.Tag;
 import GUI.Categories.*;
 import GUI.Homepage.References.*;
+import GUI.Utilities.JPopupItemSelection;
 import GUI.Utilities.JTermsField;
 
 /**
@@ -19,7 +22,8 @@ import GUI.Utilities.JTermsField;
 public class SearchPanel extends JPanel {
 
     private JTermsField tags;
-    private JTermsField authors;
+    // private JTermsField authors;
+    private JPopupItemSelection<Author> authors;
     private CategoriesSelectionPopupMenu categories;
     private JDateChooser dateFrom;
     private JDateChooser dateTo;
@@ -45,21 +49,12 @@ public class SearchPanel extends JPanel {
         setLayout(new BorderLayout(5, 5));
         setBorder(new EmptyBorder(5, 5, 5, 5));
 
-        add(getPanelLabel(), BorderLayout.NORTH);
-        add(getSearchFieldPanel(), BorderLayout.CENTER);
-    }
-
-    private JLabel getPanelLabel() {
-        return new JLabel("<html><b>Ricerca riferimenti</b></html>");
-    }
-
-    private JPanel getSearchFieldPanel() {
         JPanel searchPanel = new JPanel();
         searchPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
         searchPanel.setLayout(new BoxLayout(searchPanel, BoxLayout.PAGE_AXIS));
 
         tags = new JTermsField(searchFieldSeparator);
-        authors = new JTermsField(searchFieldSeparator);
+        authors = new JPopupItemSelection<>("Premi per selezionare gli autori");
         categories = new CategoriesSelectionPopupMenu(categoriesTreeModel);
         dateFrom = new JDateChooser();
         dateTo = new JDateChooser();
@@ -74,10 +69,19 @@ public class SearchPanel extends JPanel {
         spacing.setMaximumSize(new Dimension(100, 32));
         searchPanel.add(spacing);
 
-        setupSearchButton();
+        searchButton = new JButton("Cerca");
+        searchButton.setIcon(new ImageIcon("images/search.png"));
+        searchButton.setAlignmentX(JButton.LEFT_ALIGNMENT);
+        searchButton.setMaximumSize(new Dimension(100, 32));
+        searchButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                search();
+            }
+        });
         searchPanel.add(searchButton);
 
-        return searchPanel;
+        add(new JLabel("<html><b>Ricerca riferimenti</b></html>"), BorderLayout.NORTH);
+        add(searchPanel, BorderLayout.CENTER);
     }
 
     private void addFieldComponent(JComponent component, JPanel panel) {
@@ -101,18 +105,6 @@ public class SearchPanel extends JPanel {
         addFieldComponent(label, component, panel);
     }
 
-    private void setupSearchButton() {
-        searchButton = new JButton("Cerca");
-        searchButton.setIcon(new ImageIcon("images/search.png"));
-        searchButton.setAlignmentX(JButton.LEFT_ALIGNMENT);
-        searchButton.setMaximumSize(new Dimension(100, 32));
-        searchButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                search();
-            }
-        });
-    }
-
     private Tag[] stringToTags(String[] strings) {
         if (strings == null || strings.length == 0)
             return null;
@@ -128,6 +120,13 @@ public class SearchPanel extends JPanel {
     private void search() {
         try {
             // FIXME: autori
+            // categories.getSelectedCategories();
+
+            for (Category item : categories.getSelectedCategories()) {
+                System.out.println(String.valueOf(item));
+            }
+
+            System.out.println("----");
             // Search search = new Search(dateFrom.getDate(), dateTo.getDate(), stringToTags(this.tags.getTerms()), categories.getSelectedCategories());
             // referencePanel.showReferences(search);
         } catch (Exception e) {
