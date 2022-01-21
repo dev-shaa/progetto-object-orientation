@@ -1,11 +1,10 @@
 package GUI.ReferenceEditor;
 
-import GUI.AssociatedReferenceChooser;
-
 // NOTE: questa è una classe lunghissima, però sono principalmente commenti e getter/setter
 
 import GUI.Categories.*;
 import GUI.Homepage.Search.CategoriesSelectionPopupMenu;
+import GUI.Utilities.JPopupButton;
 import GUI.Utilities.JPopupItemSelection;
 import GUI.Utilities.JTermsField;
 import Entities.Author;
@@ -26,7 +25,7 @@ import DAO.BibliographicReferenceDAO;
 /**
  * Pannello per la creazione o modifica di un riferimento bibliografico.
  */
-public abstract class ReferenceEditor<T extends BibliographicReference> extends JDialog {
+public abstract class ReferenceEditor<T extends BibliographicReference> extends JDialog implements RelatedReferencesSelectionListener {
 
     private JTextField title;
     private JTermsField tags;
@@ -36,12 +35,14 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     private JComboBox<ReferenceLanguage> language;
     private CategoriesSelectionPopupMenu categories;
     private JPopupItemSelection<Author> authors;
-    private AssociatedReferenceChooser quotations;
+
+    private JPopupButton quotationButton;
+    private RelatedReferencesChooserDialog quotations;
+    private ArrayList<BibliographicReference> relatedReferences;
 
     private JPanel fieldPanel;
     private AuthorEditor authorEditor;
     private BibliographicReferenceDAO referenceDAO;
-    private CategoriesTreeManager tree;
 
     private final String searchFieldSeparator = ",";
     private final Dimension maximumSize = new Dimension(Integer.MAX_VALUE, 24);
@@ -72,8 +73,6 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         setResizable(false);
 
         setReferenceDAO(referenceDAO);
-
-        this.tree = categoriesTree;
 
         // vogliamo che sia un'interfaccia modale
         setModal(true);
@@ -134,7 +133,6 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         categories = new CategoriesSelectionPopupMenu(categoriesTree);
         description = new JTextArea(10, 1);
         authorEditor = new AuthorEditor();
-        quotations = new AssociatedReferenceChooser(categoriesTree);
 
         // TODO: carica dal database gli autori
         authors = new JPopupItemSelection<Author>("Premi per selezionare gli autori");
@@ -151,6 +149,22 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         authorsPanel.add(authors, BorderLayout.CENTER);
         authorsPanel.add(addAuthor, BorderLayout.EAST);
 
+        quotations = new RelatedReferencesChooserDialog(categoriesTree);
+        quotations.addQuotationSelectionListener(this);
+
+        quotationButton = new JPopupButton("Rimandi selezionati");
+        JButton addQuotation = new JButton("+");
+        addQuotation.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                quotations.setVisible(true);
+            }
+        });
+
+        JPanel quotationPanel = new JPanel(new BorderLayout(10, 0));
+        quotationPanel.add(quotationButton, BorderLayout.CENTER);
+        quotationPanel.add(addQuotation, BorderLayout.EAST);
+
         addFieldComponent(title, "Titolo*", "Titolo del riferimento");
         addFieldComponent(tags, "Parole chiave", "Parole chiave associate al riferimento, separate da una virgola");
         addFieldComponent(DOI, "DOI", "Codice identificativo DOI del riferimento");
@@ -158,6 +172,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         addFieldComponent(language, "Lingua");
         addFieldComponent(categories, "Categorie");
         addFieldComponent(authorsPanel, "Autori");
+        addFieldComponent(quotationPanel, "Rimandi");
     }
 
     /**
@@ -241,6 +256,43 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      */
     protected abstract void saveReference();
 
+    @Override
+    public void onRelatedReferenceSelection(BibliographicReference reference) {
+        if (reference == null)
+            return;
+
+        if (relatedReferences == null)
+            relatedReferences = new ArrayList<>(5);
+
+        if (relatedReferences.contains(reference)) {
+            JOptionPane.showMessageDialog(this, "Riferimento già aggiunto", "Riferimento aggiunto", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        JPanel panel = new JPanel(new BorderLayout(10, 0));
+        panel.setBorder(new EmptyBorder(0, 20, 0, 5));
+        panel.setBackground(new Color(0, 0, 0, 0));
+
+        JButton removeButton = new JButton(new ImageIcon("images/delete_icon.png"));
+        removeButton.setBorderPainted(false);
+        removeButton.setFocusPainted(false);
+        removeButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                relatedReferences.remove(reference);
+                quotationButton.removeFromPopupMenu(panel);
+            }
+
+        });
+
+        panel.add(new JLabel(reference.toString()), BorderLayout.CENTER);
+        panel.add(removeButton, BorderLayout.EAST);
+
+        relatedReferences.add(reference);
+        quotationButton.addToPopupMenu(panel);
+    }
+
     /**
      * Aggiunge un componente nel pannello dove sono presenti i campi di input.
      * Le dimensioni e l'allineamento sono impostate automaticamente.
@@ -300,6 +352,8 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         component.setToolTipText(tooltip);
         addFieldComponent(component, label);
     }
+
+    // #region getter/setter
 
     /**
      * Imposta il valore iniziale del titolo.
@@ -538,5 +592,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         reference.setAuthors(getAuthorValues());
         // reference.setRelatedReferences(relatedReferences); FIXME:
     }
+
+    // #endregion
 
 }

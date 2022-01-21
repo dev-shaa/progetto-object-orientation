@@ -5,8 +5,12 @@ import GUI.Categories.CategoriesTreeManager;
 import Entities.References.OnlineResources.Video;
 import Exceptions.RequiredFieldMissingException;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
+import javax.swing.SpinnerDateModel;
 import javax.swing.SpinnerNumberModel;
 
 /**
@@ -18,7 +22,7 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
     private JSpinner width;
     private JSpinner height;
     private JSpinner frameRate;
-    // TODO: durata
+    private JSpinner duration;
 
     /**
      * Crea un nuovo pannello di dialogo per la creazione di un riferimento a un video.
@@ -44,10 +48,12 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
             setWidthValue(1);
             setHeightValue(1);
             setFrameRateValue(1);
+            setDurationValue(1);
         } else {
             setWidthValue(video.getWidth());
             setHeightValue(video.getHeight());
             setFrameRateValue(video.getFrameRate());
+            setDurationValue(video.getDuration());
         }
     }
 
@@ -58,10 +64,12 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
         width = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
         height = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
         frameRate = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
+        duration = new JSpinner(new SpinnerDateModel(new Date(), null, null, Calendar.MINUTE)); // FIXME:
 
         addFieldComponent(width, "Larghezza");
         addFieldComponent(height, "Altezza");
         addFieldComponent(frameRate, "Frequenza");
+        addFieldComponent(duration, "Durata");
     }
 
     @Override
@@ -85,7 +93,7 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
         video.setWidth(getWidthValue());
         video.setHeight(getHeightValue());
         video.setFrameRate(getFrameRateValue());
-        // TODO: duration
+        video.setDuration(getDurationValue());
     }
 
     /**
@@ -146,6 +154,28 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
      */
     protected int getFrameRateValue() {
         return (int) frameRate.getValue();
+    }
+
+    /**
+     * Imposta il valore iniziale della durata.
+     * 
+     * @param frameRate
+     *            durata iniziale del video
+     */
+    protected void setDurationValue(float duration) {
+        // TODO:
+        // this.duration.setValue(duration);
+    }
+
+    /**
+     * Restituisce la durata inserita dall'utente.
+     * 
+     * @return
+     *         durata del video
+     */
+    protected float getDurationValue() {
+        // TODO:
+        return 0;
     }
 
 }
