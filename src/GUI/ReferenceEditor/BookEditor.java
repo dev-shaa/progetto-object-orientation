@@ -56,13 +56,20 @@ public class BookEditor extends PublicationEditor<Book> {
         Book bookToFill = book == null ? new Book("placeholder", null) : book;
 
         try {
-            fillBookValues(bookToFill);
+            fillReferenceValues(bookToFill);
             // TODO: salva nel database
         } catch (IllegalArgumentException e) {
             // TODO: handle exception
         } catch (RequiredFieldMissingException e) {
             JOptionPane.showMessageDialog(this, "Uno o più campi obbligatori non sono stati inseriti.", "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    @Override
+    protected void fillReferenceValues(Book reference) throws IllegalArgumentException, RequiredFieldMissingException {
+        super.fillReferenceValues(book);
+
+        book.setISBN(getISBNValue());
     }
 
     /**
@@ -83,23 +90,6 @@ public class BookEditor extends PublicationEditor<Book> {
      */
     protected String getISBNValue() {
         return convertEmptyStringToNull(ISBN.getText().trim());
-    }
-
-    /**
-     * Riempie i campi del libro passato con i valori inseriti dall'utente.
-     * 
-     * @param book
-     *            libro da riempire
-     * @throws IllegalArgumentException
-     *             se {@code book == null}
-     * @throws RequiredFieldMissingException
-     *             se i campi obbligatori non sono stati riempiti
-     * @see #fillPublicationValues(Entities.References.PhysicalResources.Publication)
-     */
-    protected void fillBookValues(Book book) throws IllegalArgumentException, RequiredFieldMissingException {
-        super.fillPublicationValues(book);
-
-        book.setISBN(getISBNValue());
     }
 
 }

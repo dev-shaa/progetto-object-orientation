@@ -57,13 +57,25 @@ public class ArticleEditor extends PublicationEditor<Article> {
         Article articleToFill = article == null ? new Article("placeholder", null) : article;
 
         try {
-            fillArticleValues(articleToFill);
+            fillReferenceValues(articleToFill);
             // TODO: salva nel database
         } catch (IllegalArgumentException e) {
             // TODO: handle exception
         } catch (RequiredFieldMissingException e) {
             JOptionPane.showMessageDialog(this, "Uno o più campi obbligatori non sono stati inseriti.", "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    @Override
+    protected void fillReferenceValues(Article reference) throws IllegalArgumentException, RequiredFieldMissingException {
+        super.fillReferenceValues(article);
+
+        article.setISSN(getISSNValue());
+    }
+
+    @Override
+    public void setVisible(boolean b) {
+        setVisible(b, null);
     }
 
     /**
@@ -86,28 +98,6 @@ public class ArticleEditor extends PublicationEditor<Article> {
      */
     protected String getISSNValue() {
         return convertEmptyStringToNull(ISSN.getText().trim());
-    }
-
-    /**
-     * Riempie i campi dell'articolo passato con i valori inseriti dall'utente.
-     * 
-     * @param article
-     *            articolo da riempire
-     * @throws IllegalArgumentException
-     *             se {@code article == null}
-     * @throws RequiredFieldMissingException
-     *             se i campi obbligatori non sono stati riempiti
-     * @see #fillPublicationValues(Entities.References.PhysicalResources.Publication)
-     */
-    protected void fillArticleValues(Article article) throws IllegalArgumentException, RequiredFieldMissingException {
-        super.fillPublicationValues(article);
-
-        article.setISSN(getISSNValue());
-    }
-
-    @Override
-    public void setVisible(boolean b) {
-        setVisible(b, null);
     }
 
 }

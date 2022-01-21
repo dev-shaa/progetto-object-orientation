@@ -237,6 +237,11 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     }
 
     /**
+     * Funzione chiamata quando viene premuto il tasto di conferma.
+     */
+    protected abstract void saveReference();
+
+    /**
      * Aggiunge un componente nel pannello dove sono presenti i campi di input.
      * Le dimensioni e l'allineamento sono impostate automaticamente.
      * 
@@ -295,11 +300,6 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         component.setToolTipText(tooltip);
         addFieldComponent(component, label);
     }
-
-    /**
-     * Funzione chiamata quando viene premuto il tasto di conferma.
-     */
-    protected abstract void saveReference();
 
     /**
      * Imposta il valore iniziale del titolo.
@@ -521,9 +521,8 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      *             se {@code reference == null}
      * @throws RequiredFieldMissingException
      *             se i campi obbligatori non sono stati riempiti
-     * @see #getTitleValue()
      */
-    protected void fillReferenceValues(BibliographicReference reference) throws IllegalArgumentException, RequiredFieldMissingException {
+    protected void fillReferenceValues(T reference) throws IllegalArgumentException, RequiredFieldMissingException {
 
         // FIXME: requiredfieldmissingexception non chiamato
 

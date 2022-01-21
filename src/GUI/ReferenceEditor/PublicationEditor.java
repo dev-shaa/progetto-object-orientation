@@ -66,6 +66,15 @@ public abstract class PublicationEditor<T extends Publication> extends Reference
         }
     }
 
+    @Override
+    protected void fillReferenceValues(T reference) throws IllegalArgumentException, RequiredFieldMissingException {
+        super.fillReferenceValues(reference);
+
+        reference.setPageCount(getPageCountValue());
+        reference.setURL(getURLValue());
+        reference.setPublisher(getPublisherValue());
+    }
+
     /**
      * Imposta il valore iniziale delle pagine.
      * 
@@ -124,25 +133,6 @@ public abstract class PublicationEditor<T extends Publication> extends Reference
      */
     protected String getPublisherValue() {
         return convertEmptyStringToNull(publisher.getText().trim());
-    }
-
-    /**
-     * Riempie i campi della pubblicazione passata con i valori inseriti dall'utente.
-     * 
-     * @param publication
-     *            pubblicazione da riempire
-     * @throws IllegalArgumentException
-     *             se {@code publication == null}
-     * @throws RequiredFieldMissingException
-     *             se i campi obbligatori non sono stati riempiti
-     * @see #fillReferenceValues(Entities.References.BibliographicReference)
-     */
-    protected void fillPublicationValues(Publication publication) throws IllegalArgumentException, RequiredFieldMissingException {
-        super.fillReferenceValues(publication);
-
-        publication.setPageCount(getPageCountValue());
-        publication.setURL(getURLValue());
-        publication.setPublisher(getPublisherValue());
     }
 
 }

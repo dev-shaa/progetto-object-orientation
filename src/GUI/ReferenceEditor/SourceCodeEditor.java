@@ -53,13 +53,20 @@ public class SourceCodeEditor extends OnlineResourceEditor<SourceCode> {
         SourceCode sourceCodeToFill = sourceCode == null ? new SourceCode("placeholder", null, "placeholder") : sourceCode;
 
         try {
-            fillSourceCodeValues(sourceCodeToFill);
+            fillReferenceValues(sourceCodeToFill);
             // TODO: salva nel database
         } catch (IllegalArgumentException e) {
             // TODO: handle exception
         } catch (RequiredFieldMissingException e) {
             JOptionPane.showMessageDialog(this, "Uno o più campi obbligatori non sono stati inseriti.", "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    @Override
+    protected void fillReferenceValues(SourceCode reference) throws IllegalArgumentException, RequiredFieldMissingException {
+        super.fillReferenceValues(reference);
+
+        sourceCode.setProgrammingLanguage(getProgrammingLanguageValue());
     }
 
     /**
@@ -80,23 +87,6 @@ public class SourceCodeEditor extends OnlineResourceEditor<SourceCode> {
      */
     protected ProgrammingLanguage getProgrammingLanguageValue() {
         return (ProgrammingLanguage) programmingLanguage.getSelectedItem();
-    }
-
-    /**
-     * Riempie i campi del codice sorgente passato con i valori inseriti dall'utente.
-     * 
-     * @param sourceCode
-     *            codice sorgente da riempire
-     * @throws IllegalArgumentException
-     *             se {@code sourceCode == null}
-     * @throws RequiredFieldMissingException
-     *             se i campi obbligatori non sono stati riempiti
-     * @see #fillOnlineResourceValues(OnlineResource)
-     */
-    protected void fillSourceCodeValues(SourceCode sourceCode) throws IllegalArgumentException, RequiredFieldMissingException {
-        super.fillOnlineResourceValues(sourceCode);
-
-        sourceCode.setProgrammingLanguage(getProgrammingLanguageValue());
     }
 
 }

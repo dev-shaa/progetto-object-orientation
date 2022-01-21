@@ -69,13 +69,23 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
         Video videoToFill = video == null ? new Video("placeholder", null, "placeholder") : video;
 
         try {
-            fillVideoValues(videoToFill);
+            fillReferenceValues(videoToFill);
             // TODO: salva nel database
         } catch (IllegalArgumentException e) {
             // TODO: handle exception
         } catch (RequiredFieldMissingException e) {
             JOptionPane.showMessageDialog(this, "Uno o più campi obbligatori non sono stati inseriti.", "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    @Override
+    protected void fillReferenceValues(Video reference) throws IllegalArgumentException, RequiredFieldMissingException {
+        super.fillReferenceValues(reference);
+
+        video.setWidth(getWidthValue());
+        video.setHeight(getHeightValue());
+        video.setFrameRate(getFrameRateValue());
+        // TODO: duration
     }
 
     /**
@@ -136,26 +146,6 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
      */
     protected int getFrameRateValue() {
         return (int) frameRate.getValue();
-    }
-
-    /**
-     * Riempie i campi del video passato con i valori inseriti dall'utente.
-     * 
-     * @param video
-     *            video da riempire
-     * @throws IllegalArgumentException
-     *             se {@code video == null}
-     * @throws RequiredFieldMissingException
-     *             se i campi obbligatori non sono stati riempiti
-     * @see #fillOnlineResourceValues(Entities.References.OnlineResources.OnlineResource)
-     */
-    protected void fillVideoValues(Video video) throws IllegalArgumentException, RequiredFieldMissingException {
-        super.fillOnlineResourceValues(video);
-
-        video.setWidth(getWidthValue());
-        video.setHeight(getHeightValue());
-        video.setFrameRate(getFrameRateValue());
-        // TODO: duration
     }
 
 }

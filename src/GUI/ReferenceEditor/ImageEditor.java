@@ -63,13 +63,21 @@ public class ImageEditor extends OnlineResourceEditor<Image> {
         Image imageToFill = image == null ? new Image("placeholder", null, "placeholder") : image;
 
         try {
-            fillImageValues(imageToFill);
+            fillReferenceValues(imageToFill);
             // TODO: salva nel database
         } catch (IllegalArgumentException e) {
             // TODO: handle exception
         } catch (RequiredFieldMissingException e) {
             JOptionPane.showMessageDialog(this, "Uno o più campi obbligatori non sono stati inseriti.", "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    @Override
+    protected void fillReferenceValues(Image reference) throws IllegalArgumentException, RequiredFieldMissingException {
+        super.fillReferenceValues(image);
+
+        image.setWidth(getWidthValue());
+        image.setHeight(getHeightValue());
     }
 
     /**
@@ -114,24 +122,6 @@ public class ImageEditor extends OnlineResourceEditor<Image> {
      */
     protected int getHeightValue() {
         return (int) height.getValue();
-    }
-
-    /**
-     * Riempie i campi dell'immagine passata con i valori inseriti dall'utente.
-     * 
-     * @param image
-     *            immagine da riempire
-     * @throws IllegalArgumentException
-     *             se {@code image == null}
-     * @throws RequiredFieldMissingException
-     *             se i campi obbligatori non sono stati riempiti
-     * @see #fillOnlineResourceValues(Entities.References.OnlineResources.OnlineResource)
-     */
-    protected void fillImageValues(Image image) throws IllegalArgumentException, RequiredFieldMissingException {
-        super.fillOnlineResourceValues(image);
-
-        image.setWidth(getWidthValue());
-        image.setHeight(getHeightValue());
     }
 
 }

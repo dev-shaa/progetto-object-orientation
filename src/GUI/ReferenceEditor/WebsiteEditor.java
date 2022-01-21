@@ -4,7 +4,6 @@ import javax.swing.JOptionPane;
 
 import DAO.BibliographicReferenceDAO;
 import GUI.Categories.CategoriesTreeManager;
-import Entities.References.OnlineResources.OnlineResource;
 import Entities.References.OnlineResources.Website;
 import Exceptions.RequiredFieldMissingException;
 
@@ -48,7 +47,7 @@ public class WebsiteEditor extends OnlineResourceEditor<Website> {
         System.out.println("aaa");
 
         try {
-            fillWebsiteValues(websiteToFill);
+            fillReferenceValues(websiteToFill);
             // TODO: salva nel database
         } catch (IllegalArgumentException e) {
             // TODO: handle
@@ -57,19 +56,9 @@ public class WebsiteEditor extends OnlineResourceEditor<Website> {
         }
     }
 
-    /**
-     * Riempie i campi del sito web passato con i valori inseriti dall'utente.
-     * 
-     * @param website
-     *            sito web da riempire
-     * @throws IllegalArgumentException
-     *             se {@code website == null}
-     * @throws RequiredFieldMissingException
-     *             se i campi obbligatori non sono stati riempiti
-     * @see #fillOnlineResourceValues(OnlineResource)
-     */
-    protected void fillWebsiteValues(Website website) throws IllegalArgumentException, RequiredFieldMissingException {
-        super.fillOnlineResourceValues(website);
+    @Override
+    protected void fillReferenceValues(Website reference) throws IllegalArgumentException, RequiredFieldMissingException {
+        super.fillReferenceValues(reference);
 
         // qui non dobbiamo fare niente in realtà, però mettiamola per correttezza
     }
