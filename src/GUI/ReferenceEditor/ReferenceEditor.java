@@ -37,7 +37,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     private JPopupItemSelection<Author> authors;
 
     private JPopupButton quotationButton;
-    private RelatedReferencesChooserDialog quotations;
+    private ReferenceChooserDialog quotations;
     private ArrayList<BibliographicReference> relatedReferences;
 
     private JPanel fieldPanel;
@@ -149,7 +149,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         authorsPanel.add(authors, BorderLayout.CENTER);
         authorsPanel.add(addAuthor, BorderLayout.EAST);
 
-        quotations = new RelatedReferencesChooserDialog(categoriesTree);
+        quotations = new ReferenceChooserDialog(categoriesTree);
         quotations.addQuotationSelectionListener(this);
 
         quotationButton = new JPopupButton("Rimandi selezionati");

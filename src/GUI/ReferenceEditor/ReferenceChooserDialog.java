@@ -25,7 +25,7 @@ import java.awt.event.ActionListener;
 /**
  * Finestra di dialogo per scegliere un rimando da aggiungere a un riferimento.
  */
-public class RelatedReferencesChooserDialog extends JDialog implements CategorySelectionListener, ReferenceSelectionListener {
+public class ReferenceChooserDialog extends JDialog implements CategorySelectionListener, ReferenceSelectionListener {
 
     private CategoryTreePanel categories;
     private ReferenceListPanel references;
@@ -39,8 +39,8 @@ public class RelatedReferencesChooserDialog extends JDialog implements CategoryS
      * @param categoriesTree
      *            albero delle categorie da scegliere
      */
-    public RelatedReferencesChooserDialog(CategoriesTreeManager categoriesTree) {
-        setTitle("Aggiungi rimando");
+    public ReferenceChooserDialog(CategoriesTreeManager categoriesTree) {
+        setTitle("Aggiungi riferimento");
         setModal(true);
         setSize(500, 500);
         setResizable(false);
