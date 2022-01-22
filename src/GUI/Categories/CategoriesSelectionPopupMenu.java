@@ -1,7 +1,6 @@
-package GUI.Homepage.Search;
+package GUI.Categories;
 
 import Entities.*;
-import GUI.Categories.*;
 import GUI.Utilities.JPopupButton;
 
 import java.awt.*;

@@ -5,6 +5,7 @@ import java.util.Date;
 import Entities.Author;
 import Entities.Category;
 import Entities.Tag;
+import Exceptions.EmptySearchException;
 
 /**
  * Classe contenente i parametri di una ricerca.
@@ -28,17 +29,18 @@ public class Search {
      *            parole chiave della ricerca
      * @param categories
      *            categorie della ricerca
-     * @throws IllegalArgumentException
+     * @throws EmptySearchException
      *             se tutti gli elementi sono {@code null} (in caso di array anche se hanno lunghezza 0)
      */
-    public Search(Date from, Date to, Tag[] tags, Category[] categories, Author[] authors) throws IllegalArgumentException {
-        if (areAllTermsNull(from, to, tags, categories))
-            throw new IllegalArgumentException("Almeno un elemento di ricerca deve essere specificato");
+    public Search(Date from, Date to, Tag[] tags, Category[] categories, Author[] authors) throws EmptySearchException {
+        if (areAllTermsNull(from, to, tags, categories, authors))
+            throw new EmptySearchException("Almeno un elemento di ricerca deve essere specificato");
 
         setFrom(from);
         setTo(to);
         setTags(tags);
         setCategories(categories);
+        setAuthors(authors);
     }
 
     /**
@@ -155,8 +157,8 @@ public class Search {
      * @return
      *         {@code true} se tutti sono nulli (o hanno lunghezza 0), {@code false altrimenti}
      */
-    private boolean areAllTermsNull(Date from, Date to, Tag[] tags, Category[] categories) {
-        return from == null && to == null && (tags == null || tags.length == 0) && (categories == null || categories.length == 0);
+    private boolean areAllTermsNull(Date from, Date to, Tag[] tags, Category[] categories, Author[] authors) {
+        return from == null && to == null && (tags == null || tags.length == 0) && (categories == null || categories.length == 0) && (authors == null || authors.length == 0);
     }
 
 }

@@ -23,7 +23,7 @@ import javax.swing.*;
  * @see CategoriesPanel
  * @see ReferencePanel
  */
-public class Homepage extends JFrame implements CategorySelectionListener, LogoutListener {
+public class Homepage extends JFrame implements CategorySelectionListener, LogoutListener, ReferenceSearchListener {
 
     private User user;
     private Controller controller;
@@ -65,7 +65,8 @@ public class Homepage extends JFrame implements CategorySelectionListener, Logou
         categoriesTree = new CategoriesTreeManager(categoryDAO);
         referencePanel = new ReferencePanel(categoriesTree, bibliographicReferenceDAO);
         categoriesPanel = new CategoriesPanel(categoriesTree);
-        referenceSearchPanel = new SearchPanel(referencePanel, categoriesTree);
+        referenceSearchPanel = new SearchPanel(categoriesTree);
+        referenceSearchPanel.addReferenceSearchListener(this);
 
         JSplitPane subSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, categoriesPanel, referencePanel);
         subSplitPane.setResizeWeight(0.15);
@@ -115,6 +116,11 @@ public class Homepage extends JFrame implements CategorySelectionListener, Logou
     @Override
     public void onLogout() {
         controller.openLoginPage();
+    }
+
+    @Override
+    public void onReferenceSearch(Search search) {
+        referencePanel.showReferences(search);
     }
 
 }

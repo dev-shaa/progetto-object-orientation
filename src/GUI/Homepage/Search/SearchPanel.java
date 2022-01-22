@@ -2,16 +2,18 @@ package GUI.Homepage.Search;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.*;
 import javax.swing.border.*;
 
 import com.toedter.calendar.JDateChooser;
 
 import Entities.Author;
-import Entities.Category;
 import Entities.Tag;
+import Exceptions.EmptySearchException;
 import GUI.Categories.*;
-import GUI.Homepage.References.*;
 import GUI.Utilities.JPopupItemSelection;
 import GUI.Utilities.JTermsField;
 
@@ -22,19 +24,18 @@ import GUI.Utilities.JTermsField;
 public class SearchPanel extends JPanel {
 
     private JTermsField tags;
-    // private JTermsField authors;
     private JPopupItemSelection<Author> authors;
     private CategoriesSelectionPopupMenu categories;
     private JDateChooser dateFrom;
     private JDateChooser dateTo;
     private JButton searchButton;
 
+    private CategoriesTreeManager categoriesTreeModel;
+    private ArrayList<ReferenceSearchListener> searchListeners;
+
     private final String searchFieldSeparator = ",";
     private final Dimension maximumSize = new Dimension(Integer.MAX_VALUE, 24);
     private final float alignment = Container.LEFT_ALIGNMENT;
-
-    private ReferencePanel referencePanel;
-    private CategoriesTreeManager categoriesTreeModel;
 
     /**
      * Crea {@code ReferenceSearchPanel}.
@@ -42,8 +43,7 @@ public class SearchPanel extends JPanel {
      * @param referencePanel
      * @param categoriesTreeModel
      */
-    public SearchPanel(ReferencePanel referencePanel, CategoriesTreeManager categoriesTreeModel) {
-        this.referencePanel = referencePanel;
+    public SearchPanel(CategoriesTreeManager categoriesTreeModel) {
         this.categoriesTreeModel = categoriesTreeModel;
 
         setLayout(new BorderLayout(5, 5));
@@ -119,19 +119,49 @@ public class SearchPanel extends JPanel {
 
     private void search() {
         try {
-            // FIXME: autori
-            // categories.getSelectedCategories();
+            List<Author> selectedAuthors = authors.getSelectedElements();
 
-            for (Category item : categories.getSelectedCategories()) {
-                System.out.println(String.valueOf(item));
+            Search search = new Search(dateFrom.getDate(),
+                    dateTo.getDate(),
+                    stringToTags(this.tags.getTerms()),
+                    categories.getSelectedCategories(),
+                    selectedAuthors.toArray(new Author[selectedAuthors.size()]));
+
+            for (ReferenceSearchListener listener : searchListeners) {
+                listener.onReferenceSearch(search);
             }
-
-            System.out.println("----");
-            // Search search = new Search(dateFrom.getDate(), dateTo.getDate(), stringToTags(this.tags.getTerms()), categories.getSelectedCategories());
-            // referencePanel.showReferences(search);
-        } catch (Exception e) {
+        } catch (EmptySearchException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
+    }
+
+    /**
+     * Aggiunge un listener all'evento di ricerca.
+     * 
+     * @param listener
+     *            listener da aggiungere
+     */
+    public void addReferenceSearchListener(ReferenceSearchListener listener) {
+        if (listener == null)
+            return;
+
+        if (searchListeners == null)
+            searchListeners = new ArrayList<>(1);
+
+        searchListeners.add(listener);
+    }
+
+    /**
+     * Rimuove un listener dall'evento di ricerca.
+     * 
+     * @param listener
+     *            listener da rimuovere
+     */
+    public void removeReferenceSearchListener(ReferenceSearchListener listener) {
+        if (listener == null || searchListeners == null)
+            return;
+
+        searchListeners.remove(listener);
     }
 
 }
