@@ -46,7 +46,6 @@ public class ReferenceListPanel extends JScrollPane implements ListSelectionList
         };
 
         displayedReferences = new ArrayList<>();
-        selectionListeners = new ArrayList<>(3);
 
         referencesTable = new JTable(referencesTableModel);
         referencesTable.setFillsViewportHeight(true);
@@ -134,26 +133,29 @@ public class ReferenceListPanel extends JScrollPane implements ListSelectionList
     }
 
     /**
-     * Aggiunge un ascoltatore all'evento di selezione di un riferimento.
+     * Aggiunge un listener all'evento di selezione di un riferimento.
      * 
      * @param listener
-     *            ascoltatore da aggiungere
+     *            listener da aggiungere
      */
     public void addReferenceSelectionListener(ReferenceSelectionListener listener) {
         if (listener == null)
             return;
 
+        if (selectionListeners == null)
+            selectionListeners = new ArrayList<>(5);
+
         selectionListeners.add(listener);
     }
 
     /**
-     * Rimuove un ascoltatore dall'evento di selezione di un riferimento.
+     * Rimuove un listener dall'evento di selezione di un riferimento.
      * 
      * @param listener
-     *            ascoltatore da rimuovere
+     *            listener da rimuovere
      */
     public void removeReferenceSelectionListener(ReferenceSelectionListener listener) {
-        if (listener == null)
+        if (listener == null || selectionListeners == null)
             return;
 
         selectionListeners.remove(listener);

@@ -7,7 +7,7 @@ import javax.swing.*;
 /**
  * Un JButton che, quando premuto, apre un menu popup.
  */
-public class JPopupButton extends JButton implements ActionListener {
+public class JPopupButton extends JButton {
 
     private JPopupMenu popupMenu;
     private final JMenuItem emptyPopupLabel;
@@ -57,12 +57,14 @@ public class JPopupButton extends JButton implements ActionListener {
 
         addToPopupMenu(emptyPopupLabel);
 
-        addActionListener(this);
-    }
+        addActionListener(new ActionListener() {
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        popupMenu.show(this, 0, getHeight());
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onPopupOpen();
+            }
+
+        });
     }
 
     /**
@@ -111,6 +113,13 @@ public class JPopupButton extends JButton implements ActionListener {
      */
     public void addPopupSeparator() {
         popupMenu.addSeparator();
+    }
+
+    /**
+     * Invocato quando viene premuto sul tasto per mostrare il menu popup.
+     */
+    protected void onPopupOpen() {
+        popupMenu.show(this, 0, getHeight());
     }
 
 }

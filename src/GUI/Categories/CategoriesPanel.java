@@ -167,12 +167,13 @@ public class CategoriesPanel extends JPanel {
      *            listener da aggiungere
      */
     public void addCategorySelectionListener(CategorySelectionListener listener) {
-        if (listener != null) {
-            if (selectionListeners == null)
-                selectionListeners = new ArrayList<>(3);
+        if (listener == null)
+            return;
 
-            selectionListeners.add(listener);
-        }
+        if (selectionListeners == null)
+            selectionListeners = new ArrayList<>(3);
+
+        selectionListeners.add(listener);
     }
 
     /**
@@ -182,8 +183,10 @@ public class CategoriesPanel extends JPanel {
      *            listener da rimuovere
      */
     public void removeCategorySelectionListener(CategorySelectionListener listener) {
-        if (listener != null)
-            selectionListeners.remove(listener);
+        if (listener == null || selectionListeners == null)
+            return;
+
+        selectionListeners.remove(listener);
     }
 
 }

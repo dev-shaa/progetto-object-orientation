@@ -18,7 +18,6 @@ public class CategoryTreePanel extends JScrollPane implements TreeSelectionListe
         super();
 
         tree = new JTree();
-        selectionListeners = new ArrayList<>();
 
         setCategoriesTree(categoriesTree);
 
@@ -56,8 +55,13 @@ public class CategoryTreePanel extends JScrollPane implements TreeSelectionListe
      *            listener da aggiungere
      */
     public void addSelectionListener(CategorySelectionListener listener) {
-        if (listener != null)
-            selectionListeners.add(listener);
+        if (listener == null)
+            return;
+
+        if (selectionListeners == null)
+            selectionListeners = new ArrayList<>(5);
+
+        selectionListeners.add(listener);
     }
 
     /**
@@ -67,8 +71,10 @@ public class CategoryTreePanel extends JScrollPane implements TreeSelectionListe
      *            listener da rimuovere
      */
     public void removeSelectionListener(CategorySelectionListener listener) {
-        if (listener != null)
-            selectionListeners.remove(listener);
+        if (listener == null || selectionListeners == null)
+            return;
+
+        selectionListeners.remove(listener);
     }
 
     /**
