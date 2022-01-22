@@ -65,8 +65,6 @@ public class ImageEditor extends OnlineResourceEditor<Image> {
         try {
             fillReferenceValues(imageToFill);
             // TODO: salva nel database
-        } catch (IllegalArgumentException e) {
-            // TODO: handle exception
         } catch (RequiredFieldMissingException e) {
             JOptionPane.showMessageDialog(this, "Uno o più campi obbligatori non sono stati inseriti.", "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
         }

@@ -49,8 +49,6 @@ public class WebsiteEditor extends OnlineResourceEditor<Website> {
         try {
             fillReferenceValues(websiteToFill);
             // TODO: salva nel database
-        } catch (IllegalArgumentException e) {
-            // TODO: handle
         } catch (RequiredFieldMissingException e) {
             JOptionPane.showMessageDialog(this, "Uno o più campi obbligatori non sono stati inseriti.", "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
         }

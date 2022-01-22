@@ -58,8 +58,6 @@ public class BookEditor extends PublicationEditor<Book> {
         try {
             fillReferenceValues(bookToFill);
             // TODO: salva nel database
-        } catch (IllegalArgumentException e) {
-            // TODO: handle exception
         } catch (RequiredFieldMissingException e) {
             JOptionPane.showMessageDialog(this, "Uno o più campi obbligatori non sono stati inseriti.", "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
         }
