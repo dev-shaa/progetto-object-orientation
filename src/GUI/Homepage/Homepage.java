@@ -7,6 +7,8 @@ import Entities.*;
 import Exceptions.*;
 import GUI.Homepage.References.*;
 import GUI.Homepage.Search.*;
+import GUI.Homepage.UserInfo.LogoutListener;
+import GUI.Homepage.UserInfo.UserInfoPanel;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -21,9 +23,11 @@ import javax.swing.*;
  * @see CategoriesPanel
  * @see ReferencePanel
  */
-public class Homepage extends JFrame implements CategorySelectionListener {
+public class Homepage extends JFrame implements CategorySelectionListener, LogoutListener {
 
     private User user;
+    private Controller controller;
+
     private CategoriesTreeManager categoriesTree;
     private ReferencePanel referencePanel;
     private CategoriesPanel categoriesPanel;
@@ -43,6 +47,7 @@ public class Homepage extends JFrame implements CategorySelectionListener {
         if (controller == null)
             throw new IllegalArgumentException();
 
+        this.controller = controller;
         setUser(user);
 
         CategoryDAO categoryDAO = new CategoryDAOPostgreSQL(user);
@@ -68,7 +73,10 @@ public class Homepage extends JFrame implements CategorySelectionListener {
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, subSplitPane, referenceSearchPanel);
         splitPane.setResizeWeight(1);
 
-        contentPane.add(new UserInfoPanel(controller, user), BorderLayout.NORTH);
+        UserInfoPanel userInfoPanel = new UserInfoPanel(user);
+        userInfoPanel.addLogoutListener(this);
+
+        contentPane.add(userInfoPanel, BorderLayout.NORTH);
         contentPane.add(splitPane, BorderLayout.CENTER);
     }
 
@@ -102,6 +110,11 @@ public class Homepage extends JFrame implements CategorySelectionListener {
     @Override
     public void onCategorySelected(Category selectedCategory) {
         referencePanel.showReferences(selectedCategory);
+    }
+
+    @Override
+    public void onLogout() {
+        controller.openLoginPage();
     }
 
 }

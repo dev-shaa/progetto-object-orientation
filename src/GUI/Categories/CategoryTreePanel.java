@@ -50,10 +50,10 @@ public class CategoryTreePanel extends JScrollPane implements TreeSelectionListe
     }
 
     /**
-     * Aggiunge un ascoltatore all'evento di selezione di un nodo.
+     * Aggiunge un listener all'evento di selezione di un nodo.
      * 
      * @param listener
-     *            ascoltatore da aggiungere
+     *            listener da aggiungere
      */
     public void addSelectionListener(CategorySelectionListener listener) {
         if (listener != null)
@@ -61,10 +61,10 @@ public class CategoryTreePanel extends JScrollPane implements TreeSelectionListe
     }
 
     /**
-     * Rimuove un ascoltatore all'evento di selezione di un nodo.
+     * Rimuove un listener dall'evento di selezione di un nodo.
      * 
      * @param listener
-     *            ascoltatore da rimuovere
+     *            listener da rimuovere
      */
     public void removeSelectionListener(CategorySelectionListener listener) {
         if (listener != null)
