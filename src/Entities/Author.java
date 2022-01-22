@@ -110,7 +110,13 @@ public class Author {
 
     @Override
     public String toString() {
-        return firstName + " " + lastName;
+        String string = firstName + " " + lastName;
+
+        if (getORCID() != null) {
+            string += " [ORCID: " + getORCID() + "]";
+        }
+
+        return string;
     }
 
     private boolean isORCIDValid(String ORCID) {
