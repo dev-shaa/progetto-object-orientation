@@ -60,7 +60,7 @@ public class ThesisEditor extends PublicationEditor<Thesis> {
 
     @Override
     protected void saveReference() {
-        Thesis thesisToFill = thesis == null ? new Thesis("placeholder", null) : thesis;
+        Thesis thesisToFill = thesis == null ? new Thesis("placeholder") : thesis;
 
         try {
             fillReferenceValues(thesisToFill);

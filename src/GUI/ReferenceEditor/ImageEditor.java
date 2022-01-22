@@ -61,7 +61,7 @@ public class ImageEditor extends OnlineResourceEditor<Image> {
 
     @Override
     protected void saveReference() {
-        Image imageToFill = image == null ? new Image("placeholder", null, "placeholder") : image;
+        Image imageToFill = image == null ? new Image("placeholder", "placeholder") : image;
 
         try {
             fillReferenceValues(imageToFill);

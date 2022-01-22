@@ -1,6 +1,5 @@
 package Entities.References.OnlineResources;
 
-import Entities.Author;
 import Entities.References.*;
 import java.util.ArrayList;
 
@@ -12,12 +11,10 @@ public abstract class OnlineResource extends BibliographicReference {
     private String URL;
 
     /**
-     * Crea un nuovo riferimento a una risorsa online con il titolo, gli autori e l'url indicati.
+     * Crea un nuovo riferimento a una risorsa online con il titolo e l'url indicati.
      * 
      * @param title
      *            titolo del riferimento
-     * @param authors
-     *            autori del riferimento
      * @param URL
      *            url del riferimento
      * @throws IllegalArgumentException
@@ -25,8 +22,8 @@ public abstract class OnlineResource extends BibliographicReference {
      * @see #setTitle(String)
      * @see #setURL(String)
      */
-    public OnlineResource(String title, Author[] authors, String URL) throws IllegalArgumentException {
-        super(title, authors);
+    public OnlineResource(String title, String URL) throws IllegalArgumentException {
+        super(title);
         setURL(URL);
     }
 

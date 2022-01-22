@@ -9,6 +9,8 @@ import java.util.Date;
  * Classe che rappresenta un riferimento bibiliografico.
  */
 public abstract class BibliographicReference {
+
+    private int id;
     private String title;
     private Author[] authors;
     private Date pubblicationDate;
@@ -19,23 +21,43 @@ public abstract class BibliographicReference {
     private BibliographicReference[] relatedReferences;
 
     /**
-     * Crea un nuovo riferimento con il titolo e gli autori indicati.
+     * Crea un nuovo riferimento con il titolo indicato.
      * 
      * @param title
      *            titolo del riferimento
-     * @param authors
-     *            autori del riferimento
      * @throws IllegalArgumentException
-     *             se il titolo o gli autori non sono validi
+     *             se il titolo non è valido
      * @see #setTitle(String)
-     * @see #setAuthors(Author[])
      */
-    public BibliographicReference(String title, Author[] authors) throws IllegalArgumentException {
+    public BibliographicReference(String title) throws IllegalArgumentException {
         setTitle(title);
         setLanguage(null);
         setTags(null);
         setRelatedReferences(null);
         setAuthors(authors);
+    }
+
+    /**
+     * Imposta l'id del riferimento.
+     * <p>
+     * ATTENZIONE: dovrebbe essere usato solo quando viene salvato nel database.
+     * </p>
+     * 
+     * @param id
+     *            id del riferimento
+     */
+    public void setID(int id) {
+        this.id = id;
+    }
+
+    /**
+     * Restituisce l'id del riferimento.
+     * 
+     * @return
+     *         id del riferimento
+     */
+    public int getID() {
+        return id;
     }
 
     /**
@@ -273,6 +295,19 @@ public abstract class BibliographicReference {
     @Override
     public String toString() {
         return getTitle();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        // due riferimenti sono uguali se hanno lo stesso id
+
+        if (obj == this)
+            return true;
+
+        if (!(obj instanceof BibliographicReference))
+            return false;
+
+        return ((BibliographicReference) obj).getID() == getID();
     }
 
 }

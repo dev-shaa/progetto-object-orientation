@@ -43,7 +43,7 @@ public class WebsiteEditor extends OnlineResourceEditor<Website> {
 
     @Override
     protected void saveReference() {
-        Website websiteToFill = website == null ? new Website("placeholder", null, "placeholder") : website;
+        Website websiteToFill = website == null ? new Website("placeholder", "placeholder") : website;
 
         System.out.println("aaa");
 

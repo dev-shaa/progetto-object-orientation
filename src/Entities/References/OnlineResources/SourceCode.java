@@ -1,7 +1,5 @@
 package Entities.References.OnlineResources;
 
-import Entities.Author;
-
 /**
  * Classe che rappresenta un riferimento bibliografico a codice sorgente.
  */
@@ -10,12 +8,10 @@ public class SourceCode extends OnlineResource {
     private ProgrammingLanguage programmingLanguage = null;
 
     /**
-     * Crea un nuovo riferimento a codice sorgente con il titolo, gli autori e l'url indicati.
+     * Crea un nuovo riferimento a codice sorgente con il titolo e l'url indicati.
      * 
      * @param title
      *            titolo del riferimento
-     * @param authors
-     *            autori del riferimento
      * @param URL
      *            url del riferimento
      * @throws IllegalArgumentException
@@ -23,8 +19,8 @@ public class SourceCode extends OnlineResource {
      * @see #setTitle(String)
      * @see #setURL(String)
      */
-    public SourceCode(String title, Author[] authors, String URL) throws IllegalArgumentException {
-        super(title, authors, URL);
+    public SourceCode(String title, String URL) throws IllegalArgumentException {
+        super(title, URL);
     }
 
     /**

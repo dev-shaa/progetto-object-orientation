@@ -51,7 +51,7 @@ public class SourceCodeEditor extends OnlineResourceEditor<SourceCode> {
 
     @Override
     protected void saveReference() {
-        SourceCode sourceCodeToFill = sourceCode == null ? new SourceCode("placeholder", null, "placeholder") : sourceCode;
+        SourceCode sourceCodeToFill = sourceCode == null ? new SourceCode("placeholder", "placeholder") : sourceCode;
 
         try {
             fillReferenceValues(sourceCodeToFill);

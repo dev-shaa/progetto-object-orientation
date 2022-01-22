@@ -141,4 +141,17 @@ public class Category {
     public String toString() {
         return getName();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        // due categorie sono uguali se hanno lo stesso id
+
+        if (obj == this)
+            return true;
+
+        if (!(obj instanceof Category))
+            return false;
+
+        return ((Category) obj).getId() == getId();
+    }
 }

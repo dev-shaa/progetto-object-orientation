@@ -55,7 +55,7 @@ public class ArticleEditor extends PublicationEditor<Article> {
 
     @Override
     protected void saveReference() {
-        Article articleToFill = article == null ? new Article("placeholder", null) : article;
+        Article articleToFill = article == null ? new Article("placeholder") : article;
 
         try {
             fillReferenceValues(articleToFill);
@@ -87,8 +87,6 @@ public class ArticleEditor extends PublicationEditor<Article> {
      *            ISSN iniziale dell'articolo
      */
     protected void setISSNValue(String ISSN) {
-        // TODO: issn regex
-
         this.ISSN.setText(ISSN);
     }
 

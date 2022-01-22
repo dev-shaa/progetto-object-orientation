@@ -511,7 +511,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      *            categorie del riferimento
      */
     protected void setCategoryValues(Category[] categories) {
-        // TODO:
+        // TODO: seleziona le categorie nell'albero
     }
 
     /**

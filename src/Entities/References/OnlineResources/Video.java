@@ -1,6 +1,5 @@
 package Entities.References.OnlineResources;
 
-import Entities.Author;
 import Entities.References.*;
 import java.util.ArrayList;
 
@@ -15,12 +14,10 @@ public class Video extends OnlineResource {
     private Float duration;
 
     /**
-     * Crea un nuovo riferimento a video con il titolo, gli autori e l'url indicati.
+     * Crea un nuovo riferimento a video con il titolo e l'url indicati.
      * 
      * @param title
      *            titolo del riferimento
-     * @param authors
-     *            autori del riferimento
      * @param URL
      *            url del riferimento
      * @throws IllegalArgumentException
@@ -28,8 +25,8 @@ public class Video extends OnlineResource {
      * @see #setTitle(String)
      * @see #setURL(String)
      */
-    public Video(String title, Author[] authors, String URL) throws IllegalArgumentException {
-        super(title, authors, URL);
+    public Video(String title, String URL) throws IllegalArgumentException {
+        super(title, URL);
     }
 
     /**

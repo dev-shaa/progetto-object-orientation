@@ -15,6 +15,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import DAO.AuthorDAO;
+import Entities.Author;
+
 // import Entities.Author;
 
 public class AuthorEditor extends JDialog {
@@ -23,16 +26,19 @@ public class AuthorEditor extends JDialog {
     private static JTextField lastName;
     private static JTextField ORCID;
 
+    private AuthorDAO authorDAO;
+
     private final Dimension maximumSize = new Dimension(Integer.MAX_VALUE, 24);
     private final float alignment = Container.CENTER_ALIGNMENT;
 
     public AuthorEditor() {
         super();
 
+        authorDAO = new AuthorDAO();
+
         JPanel contentPane = new JPanel();
         contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.PAGE_AXIS));
         contentPane.setBorder(new EmptyBorder(30, 30, 30, 30));
-
         setContentPane(contentPane);
 
         setTitle("Nuovo autore");
@@ -78,9 +84,7 @@ public class AuthorEditor extends JDialog {
 
     private void saveAuthor() {
         try {
-            // Author newAuthor = new Author(firstName.getText().trim(), lastName.getText().trim(), null);
-
-            // TODO: salva nel database
+            authorDAO.SaveAuthor(new Author(firstName.getText().trim(), lastName.getText().trim(), ORCID.getText().trim()));
 
             setVisible(false);
         } catch (Exception ex) {

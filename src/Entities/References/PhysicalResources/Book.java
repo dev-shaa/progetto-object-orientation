@@ -12,18 +12,16 @@ public class Book extends Publication {
     private String ISBN;
 
     /**
-     * Crea un nuovo riferimento a un libro con il titolo e gli autori indicati.
+     * Crea un nuovo riferimento a un libro con il titolo indicato.
      * 
      * @param title
      *            titolo del riferimento
-     * @param authors
-     *            autori del riferimento
      * @throws IllegalArgumentException
      *             se il titolo non è valido
      * @see #setTitle(String)
      */
     public Book(String title, Author[] authors) throws IllegalArgumentException {
-        super(title, authors);
+        super(title);
     }
 
     /**

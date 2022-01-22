@@ -75,7 +75,7 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
 
     @Override
     protected void saveReference() {
-        Video videoToFill = video == null ? new Video("placeholder", null, "placeholder") : video;
+        Video videoToFill = video == null ? new Video("placeholder", "placeholder") : video;
 
         try {
             fillReferenceValues(videoToFill);

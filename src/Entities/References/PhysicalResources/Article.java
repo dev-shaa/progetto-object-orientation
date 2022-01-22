@@ -1,6 +1,5 @@
 package Entities.References.PhysicalResources;
 
-import Entities.Author;
 import Entities.References.*;
 import java.util.ArrayList;
 
@@ -12,18 +11,16 @@ public class Article extends Publication {
     private String ISSN;
 
     /**
-     * Crea un nuovo riferimento a un articolo con il titolo e gli autori indicati.
+     * Crea un nuovo riferimento a un articolo con il titolo indicato.
      * 
      * @param title
      *            titolo del riferimento
-     * @param authors
-     *            autori del riferimento
      * @throws IllegalArgumentException
      *             se il titolo non è valido
      * @see #setTitle(String)
      */
-    public Article(String title, Author[] authors) throws IllegalArgumentException {
-        super(title, authors);
+    public Article(String title) throws IllegalArgumentException {
+        super(title);
     }
 
     /**
