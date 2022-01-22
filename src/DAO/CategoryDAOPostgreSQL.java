@@ -2,6 +2,7 @@ package DAO;
 
 import Entities.*;
 import Exceptions.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.sql.Connection;
@@ -14,7 +15,9 @@ import java.sql.Statement;
  * 
  * @see CategoryDAO
  */
-public class CategoryDAOPostgreSQL extends CategoryDAO {
+public class CategoryDAOPostgreSQL implements CategoryDAO {
+
+    private User user;
 
     private final String idKey = "id";
     private final String nameKey = "name";
@@ -30,7 +33,31 @@ public class CategoryDAOPostgreSQL extends CategoryDAO {
      *             se l'utente di input è {@code null}
      */
     public CategoryDAOPostgreSQL(User user) throws IllegalArgumentException {
-        super(user);
+        setUser(user);
+    }
+
+    /**
+     * Imposta l'utente di cui recuperare le categorie.
+     *
+     * @param user
+     *            utente di cui recuperare le categorie.
+     * @throws IllegalArgumentException
+     *             se l'utente di input è {@code null}
+     */
+    public void setUser(User user) throws IllegalArgumentException {
+        if (user == null)
+            throw new IllegalArgumentException("L'utente non può essere nullo.");
+
+        this.user = user;
+    }
+
+    /**
+     * Restituisce l'utente che accede al database.
+     *
+     * @return utente che accede al database
+     */
+    public User getUser() {
+        return this.user;
     }
 
     @Override
