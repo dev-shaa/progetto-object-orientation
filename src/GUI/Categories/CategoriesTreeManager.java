@@ -30,8 +30,6 @@ public class CategoriesTreeManager {
      */
     public CategoriesTreeManager(CategoryDAO categoryDAO) throws IllegalArgumentException, CategoryDatabaseException {
         setCategoryDAO(categoryDAO);
-
-        categoriesTreeModel = new DefaultTreeModel(getTreeFromArray(categoryDAO.getUserCategories()));
     }
 
     /**
@@ -43,11 +41,12 @@ public class CategoriesTreeManager {
      *             se {@code categoryDAO == null}
      * @see CategoryDAO
      */
-    public void setCategoryDAO(CategoryDAO categoryDAO) throws IllegalArgumentException {
+    public void setCategoryDAO(CategoryDAO categoryDAO) throws IllegalArgumentException, CategoryDatabaseException {
         if (categoryDAO == null)
             throw new IllegalArgumentException("categoryDAO non può essere null");
 
         this.categoryDAO = categoryDAO;
+        categoriesTreeModel = new DefaultTreeModel(getTreeFromArray(categoryDAO.getUserCategories()));
     }
 
     /**

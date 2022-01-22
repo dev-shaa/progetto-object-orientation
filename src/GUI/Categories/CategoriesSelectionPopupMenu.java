@@ -2,44 +2,49 @@ package GUI.Categories;
 
 import Entities.*;
 import GUI.Utilities.JPopupButton;
-
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Dimension;
 
 /**
  * Un pannello che consente di selezionare più categorie.
  */
 public class CategoriesSelectionPopupMenu extends JPopupButton {
 
-    private CategoriesCheckboxTree categoriesSelectionTree;
+    private CategoriesCheckboxTree categoriesCheckboxTree;
 
     /**
      * Crea {@code CategoriesSelectionPopupMenu} con l'albero delle categorie dato.
      * 
-     * @param categoriesTreeManager
+     * @param categoriesTree
      *            l'albero delle categorie
      * @throws IllegalArgumentException
      *             se {@code categoriesTreeManager == null}
      */
-    public CategoriesSelectionPopupMenu(CategoriesTreeManager categoriesTreeManager) throws IllegalArgumentException {
-        if (categoriesTreeManager == null)
-            throw new IllegalArgumentException();
-
+    public CategoriesSelectionPopupMenu(CategoriesTreeManager categoriesTree) throws IllegalArgumentException {
         setText("Premi per selezionare le categorie");
 
-        categoriesSelectionTree = new CategoriesCheckboxTree(categoriesTreeManager);
-        categoriesSelectionTree.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+        setCategoriesTree(categoriesTree);
 
-        addToPopupMenu(categoriesSelectionTree);
+        addToPopupMenu(categoriesCheckboxTree);
     }
 
     /**
-     * Invocato quando viene premuto il pulsante per aprire il popup.
+     * Imposta l'albero delle categorie.
+     * 
+     * @param categoriesTree
+     *            l'albero delle categorie
+     * @throws IllegalArgumentException
+     *             se {@code categoriesTreeManager == null}
      */
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        categoriesSelectionTree.expandAllRows();
-        super.actionPerformed(e);
+    public void setCategoriesTree(CategoriesTreeManager categoriesTree) throws IllegalArgumentException {
+        if (categoriesTree == null)
+            throw new IllegalArgumentException();
+
+        if (categoriesCheckboxTree == null) {
+            categoriesCheckboxTree = new CategoriesCheckboxTree(categoriesTree);
+            categoriesCheckboxTree.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+        } else {
+            categoriesCheckboxTree.setCategoriesTree(categoriesTree);
+        }
     }
 
     /**
@@ -49,7 +54,13 @@ public class CategoriesSelectionPopupMenu extends JPopupButton {
      *         categorie selezionate, {@code null} se non è selezionato niente
      */
     public Category[] getSelectedCategories() {
-        return categoriesSelectionTree.getSelectedCategories();
+        return categoriesCheckboxTree.getSelectedCategories();
+    }
+
+    @Override
+    protected void onPopupOpen() {
+        categoriesCheckboxTree.expandAllRows();
+        super.onPopupOpen();
     }
 
 }

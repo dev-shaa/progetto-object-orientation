@@ -4,7 +4,6 @@ import Entities.*;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.border.*;
 
@@ -15,7 +14,7 @@ import javax.swing.border.*;
  * @see CategoriesTreeManager
  * @see CategoryTreePanel
  */
-public class CategoriesPanel extends JPanel {
+public class CategoriesPanel extends JPanel implements CategorySelectionListener {
 
     private CategoriesTreeManager categoriesTree;
     private CategoryTreePanel treePanel;
@@ -23,8 +22,6 @@ public class CategoriesPanel extends JPanel {
     private JButton addCategoryButton;
     private JButton changeCategoryButton;
     private JButton removeCategoryButton;
-
-    private ArrayList<CategorySelectionListener> selectionListeners;
 
     /**
      * Crea un pannello con tutte le categorie associate dell'utente.
@@ -36,6 +33,8 @@ public class CategoriesPanel extends JPanel {
      * @see #setCategoriesTree(CategoriesTreeManager)
      */
     public CategoriesPanel(CategoriesTreeManager categoriesTree) throws IllegalArgumentException {
+        super();
+
         setCategoriesTree(categoriesTree);
 
         setLayout(new BorderLayout(5, 5));
@@ -54,6 +53,7 @@ public class CategoriesPanel extends JPanel {
 
         changeCategoryButton = new JButton(new ImageIcon("images/folder_edit.png"));
         changeCategoryButton.setToolTipText("Modifica categoria");
+        changeCategoryButton.setEnabled(false);
         changeCategoryButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 changeCategory();
@@ -62,6 +62,7 @@ public class CategoriesPanel extends JPanel {
 
         removeCategoryButton = new JButton(new ImageIcon("images/folder_delete.png"));
         removeCategoryButton.setToolTipText("Elimina categoria");
+        removeCategoryButton.setEnabled(false);
         removeCategoryButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 removeCategory();
@@ -71,8 +72,6 @@ public class CategoriesPanel extends JPanel {
         toolbar.add(addCategoryButton);
         toolbar.add(changeCategoryButton);
         toolbar.add(removeCategoryButton);
-
-        treePanel = new CategoryTreePanel(categoriesTree);
 
         add(toolbar, BorderLayout.NORTH);
         add(treePanel, BorderLayout.CENTER);
@@ -90,7 +89,24 @@ public class CategoriesPanel extends JPanel {
         if (categoriesTree == null)
             throw new IllegalArgumentException("categoriesTree non può essere null");
 
+        if (treePanel == null) {
+            treePanel = new CategoryTreePanel(categoriesTree);
+            treePanel.addSelectionListener(this);
+        } else {
+            treePanel.setCategoriesTree(categoriesTree);
+        }
+
         this.categoriesTree = categoriesTree;
+    }
+
+    /**
+     * Restituisce il pannello dell'albero delle categorie.
+     * 
+     * @return
+     *         pannello dell'albero
+     */
+    public CategoryTreePanel getTreePanel() {
+        return treePanel;
     }
 
     /**
@@ -160,33 +176,10 @@ public class CategoriesPanel extends JPanel {
         return (String) JOptionPane.showInputDialog(null, "Inserisci il nome della categoria", "Nuova categoria", JOptionPane.PLAIN_MESSAGE, null, null, defaultName);
     }
 
-    /**
-     * Aggiunge un listener all'evento di selezione di un nodo.
-     * 
-     * @param listener
-     *            listener da aggiungere
-     */
-    public void addCategorySelectionListener(CategorySelectionListener listener) {
-        if (listener == null)
-            return;
-
-        if (selectionListeners == null)
-            selectionListeners = new ArrayList<>(3);
-
-        selectionListeners.add(listener);
-    }
-
-    /**
-     * Rimuove un listener dall'evento di selezione di un nodo.
-     * 
-     * @param listener
-     *            listener da rimuovere
-     */
-    public void removeCategorySelectionListener(CategorySelectionListener listener) {
-        if (listener == null || selectionListeners == null)
-            return;
-
-        selectionListeners.remove(listener);
+    @Override
+    public void onCategorySelected(Category selectedCategory) {
+        changeCategoryButton.setEnabled(selectedCategory != null);
+        removeCategoryButton.setEnabled(selectedCategory != null);
     }
 
 }

@@ -17,8 +17,16 @@ import java.util.Enumeration;
  */
 public class CategoriesCheckboxTree extends JTree {
 
-    public CategoriesCheckboxTree(CategoriesTreeManager categoriesTreeModel) {
-        super(categoriesTreeModel.getTreeModel());
+    /**
+     * TODO: commenta
+     * 
+     * @param categoriesTree
+     * @throws IllegalArgumentException
+     */
+    public CategoriesCheckboxTree(CategoriesTreeManager categoriesTree) throws IllegalArgumentException {
+        super();
+
+        setCategoriesTree(categoriesTree);
 
         setToggleClickCount(0);
         setRootVisible(false);
@@ -61,6 +69,21 @@ public class CategoriesCheckboxTree extends JTree {
                 // super.setSelectionPaths(pPaths);
             }
         });
+    }
+
+    /**
+     * Imposta l'albero delle categorie che si possono selezionare.
+     * 
+     * @param categoriesTree
+     *            albero delle categorie
+     * @throws IllegalArgumentException
+     *             se {@code categoriesTree == null}
+     */
+    public void setCategoriesTree(CategoriesTreeManager categoriesTree) throws IllegalArgumentException {
+        if (categoriesTree == null)
+            throw new IllegalArgumentException("categoriesTree non può essere null");
+
+        setModel(categoriesTree.getTreeModel());
     }
 
     /**

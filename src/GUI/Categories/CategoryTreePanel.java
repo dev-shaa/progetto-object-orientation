@@ -45,7 +45,7 @@ public class CategoryTreePanel extends JScrollPane implements TreeSelectionListe
         if (categoriesTree == null)
             throw new IllegalArgumentException("categoriesTree non può essere null");
 
-        this.tree.setModel(categoriesTree.getTreeModel());
+        tree.setModel(categoriesTree.getTreeModel());
     }
 
     /**
@@ -89,10 +89,11 @@ public class CategoryTreePanel extends JScrollPane implements TreeSelectionListe
 
     @Override
     public void valueChanged(TreeSelectionEvent e) {
-        if (getSelectedNode() != null) {
-            for (CategorySelectionListener categorySelectionListener : selectionListeners) {
-                categorySelectionListener.onCategorySelected(getSelectedNode().getUserObject());
-            }
+        if (getSelectedNode() == null || selectionListeners == null)
+            return;
+
+        for (CategorySelectionListener categorySelectionListener : selectionListeners) {
+            categorySelectionListener.onCategorySelected(getSelectedNode().getUserObject());
         }
     }
 
