@@ -30,7 +30,6 @@ public class SearchPanel extends JPanel {
     private JDateChooser dateTo;
     private JButton searchButton;
 
-    private CategoriesTreeManager categoriesTreeModel;
     private ArrayList<ReferenceSearchListener> searchListeners;
 
     private final String searchFieldSeparator = ",";
@@ -41,10 +40,10 @@ public class SearchPanel extends JPanel {
      * Crea {@code ReferenceSearchPanel}.
      * 
      * @param referencePanel
-     * @param categoriesTreeModel
+     * @param categoriesTree
      */
-    public SearchPanel(CategoriesTreeManager categoriesTreeModel) {
-        this.categoriesTreeModel = categoriesTreeModel;
+    public SearchPanel(CategoriesTreeManager categoriesTree) throws IllegalArgumentException {
+        setCategoriesTree(categoriesTree);
 
         setLayout(new BorderLayout(5, 5));
         setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -55,7 +54,6 @@ public class SearchPanel extends JPanel {
 
         tags = new JTermsField(searchFieldSeparator);
         authors = new JPopupItemSelection<>("Premi per selezionare gli autori");
-        categories = new CategoriesSelectionPopupMenu(categoriesTreeModel);
         dateFrom = new JDateChooser();
         dateTo = new JDateChooser();
 
@@ -132,6 +130,17 @@ public class SearchPanel extends JPanel {
             }
         } catch (EmptySearchException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+    }
+
+    public void setCategoriesTree(CategoriesTreeManager categoriesTree) throws IllegalArgumentException {
+        if (categoriesTree == null)
+            throw new IllegalArgumentException("categorieTree non può essere null");
+
+        if (categories == null) {
+            categories = new CategoriesSelectionPopupMenu(categoriesTree);
+        } else {
+            categories.setCategoriesTree(categoriesTree);
         }
     }
 

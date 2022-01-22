@@ -221,16 +221,16 @@ public class ReferencePanel extends JPanel implements ReferenceSelectionListener
      * Imposta la classe DAO per interfacciarsi col database e recuperare i
      * riferimenti.
      * 
-     * @param bibliographicReferenceDAO
+     * @param referenceDAO
      *            classe DAO per i riferimenti
      * @throws IllegalArgumentException
      *             se {@code bibliographicReferenceDAO == null}
      */
-    public void setBibliographicReferenceDAO(BibliographicReferenceDAO bibliographicReferenceDAO) throws IllegalArgumentException {
-        if (bibliographicReferenceDAO == null)
+    public void setBibliographicReferenceDAO(BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
+        if (referenceDAO == null)
             throw new IllegalArgumentException("bibliographicReferenceDAO non può essere null");
 
-        this.referenceDAO = bibliographicReferenceDAO;
+        this.referenceDAO = referenceDAO;
     }
 
     /**
@@ -247,18 +247,25 @@ public class ReferencePanel extends JPanel implements ReferenceSelectionListener
     }
 
     private void changeSelectedReference() {
-        try {
-            // FIXME:
-            // controller.openReferenceCreatorPage(listPanel.getSelectedReference());
-            // BibliographicReference selectedReference = listPanel.getSelectedReference();
+        BibliographicReference selectedReference = listPanel.getSelectedReference();
 
-            // if (selectedReference instanceof Article) {
-            // new ArticleCreator(categoriesTreeManager, bibliographicReferenceDAO, (Article) selectedReference);
-            // }
+        if (selectedReference == null)
+            return;
 
-        } catch (IndexOutOfBoundsException e) {
-            // NOTE: non dovrebbe capitare di arrivare qui
-            JOptionPane.showMessageDialog(null, "Impossibile modificare il riferimento");
+        if (selectedReference instanceof Article) {
+            openArticleEditor((Article) selectedReference);
+        } else if (selectedReference instanceof Book) {
+            openBookEditor((Book) selectedReference);
+        } else if (selectedReference instanceof Image) {
+            openImageEditor((Image) selectedReference);
+        } else if (selectedReference instanceof SourceCode) {
+            openSourceCodeEditor((SourceCode) selectedReference);
+        } else if (selectedReference instanceof Thesis) {
+            openThesisEditor((Thesis) selectedReference);
+        } else if (selectedReference instanceof Video) {
+            openVideoEditor((Video) selectedReference);
+        } else if (selectedReference instanceof Website) {
+            openWebsiteEditor((Website) selectedReference);
         }
     }
 
@@ -308,7 +315,7 @@ public class ReferencePanel extends JPanel implements ReferenceSelectionListener
      */
     public void showReferences(Search search) {
         try {
-            // TODO: referenceDAO.search() o cose simili
+            // TODO: cerca nel database
 
             BibliographicReference[] references = null; // DEBUG:
             showReferences(references);

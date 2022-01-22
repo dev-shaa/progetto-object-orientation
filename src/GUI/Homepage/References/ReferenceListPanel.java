@@ -163,10 +163,11 @@ public class ReferenceListPanel extends JScrollPane implements ListSelectionList
 
     @Override
     public void valueChanged(ListSelectionEvent e) {
-        if (!e.getValueIsAdjusting()) {
-            for (ReferenceSelectionListener listener : selectionListeners) {
-                listener.onReferenceSelection(getSelectedReference());
-            }
+        if (e.getValueIsAdjusting() || selectionListeners == null)
+            return;
+
+        for (ReferenceSelectionListener listener : selectionListeners) {
+            listener.onReferenceSelection(getSelectedReference());
         }
     }
 

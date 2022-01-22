@@ -63,8 +63,10 @@ public class Homepage extends JFrame implements CategorySelectionListener, Logou
         setContentPane(contentPane);
 
         categoriesTree = new CategoriesTreeManager(categoryDAO);
-        referencePanel = new ReferencePanel(categoriesTree, bibliographicReferenceDAO);
         categoriesPanel = new CategoriesPanel(categoriesTree);
+        categoriesPanel.getTreePanel().addSelectionListener(this);
+
+        referencePanel = new ReferencePanel(categoriesTree, bibliographicReferenceDAO);
         referenceSearchPanel = new SearchPanel(categoriesTree);
         referenceSearchPanel.addReferenceSearchListener(this);
 

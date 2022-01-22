@@ -13,15 +13,18 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 
 /**
- * Albero in cui è possibile selezionare più categorie.
+ * Albero in cui è possibile selezionare più categorie tramite checkbox.
  */
 public class CategoriesCheckboxTree extends JTree {
 
     /**
-     * TODO: commenta
+     * Crea un nuovo albero delle categorie con checkbox con le categorie indicate.
      * 
      * @param categoriesTree
+     *            albero delle categorie da selezionare
      * @throws IllegalArgumentException
+     *             se {@code categoriesTree} non è valido
+     * @see #setCategoriesTree(CategoriesTreeManager)
      */
     public CategoriesCheckboxTree(CategoriesTreeManager categoriesTree) throws IllegalArgumentException {
         super();
