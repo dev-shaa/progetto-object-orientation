@@ -216,6 +216,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
             setDescriptionValue(null);
             setTagValues(null);
             setLanguageValue(ReferenceLanguage.ENGLISH);
+            setRelatedReferences(null);
         } else {
             setTitleValue(reference.getTitle());
             setPubblicationDateValue(reference.getPubblicationDate());
@@ -223,6 +224,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
             setDescriptionValue(reference.getDescription());
             setTagValues(reference.getTags());
             setLanguageValue(reference.getLanguage());
+            setRelatedReferences(reference.getRelatedReferences());
             // setCategoryValues(reference);
         }
     }
@@ -257,39 +259,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
 
     @Override
     public void onReferenceChooserSelection(BibliographicReference reference) {
-        if (reference == null)
-            return;
-
-        if (relatedReferences == null)
-            relatedReferences = new ArrayList<>(5);
-
-        if (relatedReferences.contains(reference)) {
-            JOptionPane.showMessageDialog(this, "Riferimento già aggiunto", "Riferimento aggiunto", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        JPanel panel = new JPanel(new BorderLayout(10, 0));
-        panel.setBorder(new EmptyBorder(0, 20, 0, 5));
-        panel.setBackground(new Color(0, 0, 0, 0));
-
-        JButton removeButton = new JButton(new ImageIcon("images/delete_icon.png"));
-        removeButton.setBorderPainted(false);
-        removeButton.setFocusPainted(false);
-        removeButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                relatedReferences.remove(reference);
-                quotationButton.removeFromPopupMenu(panel);
-            }
-
-        });
-
-        panel.add(new JLabel(reference.toString()), BorderLayout.CENTER);
-        panel.add(removeButton, BorderLayout.EAST);
-
-        relatedReferences.add(reference);
-        quotationButton.addToPopupMenu(panel);
+        addRelatedReference(reference);
     }
 
     /**
@@ -304,10 +274,14 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     }
 
     /**
-     * TODO: commenta
+     * Aggiunge un componente nel pannello dove sono presenti i campi di input.
+     * Le dimensioni e l'allineamento sono impostate automaticamente.
+     * È possibile aggiungere spazio dopo il componente.
      * 
      * @param component
+     *            componente da aggiungere
      * @param addSpacing
+     *            {@code true} se deve aggiungere un po' di spazio dopo l'elemento
      */
     protected void addFieldComponent(JComponent component, boolean addSpacing) {
         component.setMaximumSize(maximumSize);
@@ -551,6 +525,77 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     }
 
     /**
+     * Imposta i rimandi iniziali associati al riferimento.
+     * 
+     * @param reference
+     *            rimandi associati al riferimento
+     */
+    protected void setRelatedReferences(BibliographicReference[] references) {
+        if (references == null)
+            return;
+
+        relatedReferences = null;
+        quotationButton.removeAllFromPopupMenu();
+
+        for (BibliographicReference reference : references) {
+            addRelatedReference(reference);
+        }
+    }
+
+    /**
+     * Aggiunge un rimando associato a questo riferimento. In caso {@code reference} sia nullo o già presente, non viene inserito.
+     * 
+     * @param reference
+     *            rimando da associare
+     */
+    protected void addRelatedReference(BibliographicReference reference) {
+        if (reference == null)
+            return;
+
+        if (relatedReferences == null)
+            relatedReferences = new ArrayList<>(5);
+
+        if (relatedReferences.contains(reference))
+            return;
+
+        JPanel panel = new JPanel(new BorderLayout(10, 0));
+        panel.setBorder(new EmptyBorder(0, 20, 0, 5));
+        panel.setBackground(new Color(0, 0, 0, 0));
+
+        JButton removeButton = new JButton(new ImageIcon("images/delete_icon.png"));
+        removeButton.setBorderPainted(false);
+        removeButton.setFocusPainted(false);
+        removeButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                relatedReferences.remove(reference);
+                quotationButton.removeFromPopupMenu(panel);
+            }
+
+        });
+
+        panel.add(new JLabel(reference.toString()), BorderLayout.CENTER);
+        panel.add(removeButton, BorderLayout.EAST);
+
+        relatedReferences.add(reference);
+        quotationButton.addToPopupMenu(panel);
+    }
+
+    /**
+     * Restituisce i rimandi associati a questo riferimento selezionati dall'utente.
+     * 
+     * @return
+     *         rimandi del riferimento, {@code null} se non è stato inserito niente
+     */
+    protected BibliographicReference[] getRelatedReferenceValues() {
+        if (relatedReferences == null || relatedReferences.isEmpty())
+            return null;
+
+        return relatedReferences.toArray(new BibliographicReference[relatedReferences.size()]);
+    }
+
+    /**
      * Converte una stringa vuota in {@code null}.
      * 
      * @param string
@@ -583,13 +628,13 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
             throw new IllegalArgumentException("reference non può essere null");
 
         reference.setTitle(getTitleValue());
+        reference.setAuthors(getAuthorValues());
         reference.setDOI(getDOIValue());
         reference.setDescription(getDescriptionValue());
         reference.setLanguage(getLanguageValue());
         reference.setPubblicationDate(getPubblicationDateValue());
         reference.setTags(getTagValues());
-        reference.setAuthors(getAuthorValues());
-        // reference.setRelatedReferences(relatedReferences); FIXME:
+        reference.setRelatedReferences(getRelatedReferenceValues());
     }
 
     // #endregion

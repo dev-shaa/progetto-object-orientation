@@ -60,6 +60,9 @@ public class ReferenceChooserDialog extends JDialog implements CategorySelection
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (selectionListeners == null)
+                    return;
+
                 for (ReferenceChooserSelectionListener quotationSelectionListener : selectionListeners) {
                     setVisible(false);
                     quotationSelectionListener.onReferenceChooserSelection(references.getSelectedReference());
@@ -102,12 +105,13 @@ public class ReferenceChooserDialog extends JDialog implements CategorySelection
      *            listener da aggiungere
      */
     public void addQuotationSelectionListener(ReferenceChooserSelectionListener listener) {
-        if (listener != null) {
-            if (selectionListeners == null)
-                selectionListeners = new ArrayList<>(3);
+        if (listener == null)
+            return;
 
-            selectionListeners.add(listener);
-        }
+        if (selectionListeners == null)
+            selectionListeners = new ArrayList<>(3);
+
+        selectionListeners.add(listener);
     }
 
     /**
@@ -121,6 +125,14 @@ public class ReferenceChooserDialog extends JDialog implements CategorySelection
             selectionListeners.remove(listener);
     }
 
+    /**
+     * Imposta la classe DAO per interfacciarsi al database.
+     * 
+     * @param referenceDAO
+     *            classe DAO dei riferimenti
+     * @throws IllegalArgumentException
+     *             se {@code referenceDAO == null}
+     */
     public void setReferenceDAO(BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
         if (referenceDAO == null)
             throw new IllegalArgumentException("referenceDAO non può essere null");

@@ -16,7 +16,7 @@ public abstract class BibliographicReference {
     private String description;
     private ReferenceLanguage language;
     private Tag[] tags;
-    private ArrayList<BibliographicReference> relatedReferences;
+    private BibliographicReference[] relatedReferences;
 
     /**
      * Crea un nuovo riferimento con il titolo e gli autori indicati.
@@ -34,7 +34,7 @@ public abstract class BibliographicReference {
         setTitle(title);
         setLanguage(null);
         setTags(null);
-        setRelatedReferences(new ArrayList<BibliographicReference>(5));
+        setRelatedReferences(null);
         setAuthors(authors);
     }
 
@@ -70,7 +70,7 @@ public abstract class BibliographicReference {
      * @param authors
      *            autori del riferimento
      */
-    public void setAuthors(Author[] authors) throws IllegalArgumentException {
+    public void setAuthors(Author[] authors) {
         this.authors = authors;
     }
 
@@ -190,7 +190,7 @@ public abstract class BibliographicReference {
      * @param relatedReferences
      *            rimandi di questo riferimento
      */
-    public void setRelatedReferences(ArrayList<BibliographicReference> relatedReferences) {
+    public void setRelatedReferences(BibliographicReference[] relatedReferences) {
         this.relatedReferences = relatedReferences;
     }
 
@@ -200,7 +200,7 @@ public abstract class BibliographicReference {
      * @return
      *         rimandi di questo riferimento
      */
-    public ArrayList<BibliographicReference> getRelatedReferences() {
+    public BibliographicReference[] getRelatedReferences() {
         return relatedReferences;
     }
 

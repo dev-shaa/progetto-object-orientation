@@ -27,7 +27,6 @@ public class CheckboxTreeRenderer extends JPanel implements TreeCellRenderer {
     @Override
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
 
-        // FIXME: quando selezionato appare comunque lo sfondo colorato che è bruttino da vedere
         checkBox.setSelected(selected);
         checkBox.setText(String.valueOf(value));
         checkBox.setOpaque(false);
