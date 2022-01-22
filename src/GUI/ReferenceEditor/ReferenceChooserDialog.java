@@ -8,10 +8,9 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.border.EmptyBorder;
 
+import DAO.BibliographicReferenceDAO;
 import Entities.Category;
 import Entities.References.BibliographicReference;
-import Entities.References.OnlineResources.SourceCode;
-import Entities.References.PhysicalResources.Article;
 import GUI.Categories.CategoriesTreeManager;
 import GUI.Categories.CategorySelectionListener;
 import GUI.Categories.CategoryTreePanel;
@@ -31,7 +30,9 @@ public class ReferenceChooserDialog extends JDialog implements CategorySelection
     private ReferenceListPanel references;
     private JButton confirmButton;
 
-    private ArrayList<RelatedReferencesSelectionListener> selectionListeners;
+    private ArrayList<ReferenceChooserSelectionListener> selectionListeners;
+
+    private BibliographicReferenceDAO referenceDAO;
 
     /**
      * Crea una nuova finestra di dialogo con le categorie da cui è possibile scegliere i rimandi.
@@ -39,11 +40,13 @@ public class ReferenceChooserDialog extends JDialog implements CategorySelection
      * @param categoriesTree
      *            albero delle categorie da scegliere
      */
-    public ReferenceChooserDialog(CategoriesTreeManager categoriesTree) {
+    public ReferenceChooserDialog(CategoriesTreeManager categoriesTree, BibliographicReferenceDAO referenceDAO) {
         setTitle("Aggiungi riferimento");
         setModal(true);
         setSize(500, 500);
         setResizable(false);
+
+        setReferenceDAO(referenceDAO);
 
         JPanel contentPane = new JPanel(new BorderLayout(10, 10));
         setContentPane(contentPane);
@@ -57,9 +60,9 @@ public class ReferenceChooserDialog extends JDialog implements CategorySelection
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                for (RelatedReferencesSelectionListener quotationSelectionListener : selectionListeners) {
+                for (ReferenceChooserSelectionListener quotationSelectionListener : selectionListeners) {
                     setVisible(false);
-                    quotationSelectionListener.onRelatedReferenceSelection(references.getSelectedReference());
+                    quotationSelectionListener.onReferenceChooserSelection(references.getSelectedReference());
                 }
             }
 
@@ -83,10 +86,8 @@ public class ReferenceChooserDialog extends JDialog implements CategorySelection
 
     @Override
     public void onCategorySelected(Category selectedCategory) {
-        // TODO: mostra riferimenti
-        references.removeAllReferences();
-        references.addReference(new Article("articolo lunghissimo di prova 1", null));
-        references.addReference(new SourceCode("source", null, "url"));
+        // TODO: carica riferimenti dal database
+        references.setReferences(referenceDAO.getReferences(selectedCategory));
     }
 
     @Override
@@ -100,7 +101,7 @@ public class ReferenceChooserDialog extends JDialog implements CategorySelection
      * @param listener
      *            listener da aggiungere
      */
-    public void addQuotationSelectionListener(RelatedReferencesSelectionListener listener) {
+    public void addQuotationSelectionListener(ReferenceChooserSelectionListener listener) {
         if (listener != null) {
             if (selectionListeners == null)
                 selectionListeners = new ArrayList<>(3);
@@ -115,9 +116,16 @@ public class ReferenceChooserDialog extends JDialog implements CategorySelection
      * @param listener
      *            listener da rimuovere
      */
-    public void removeQuotationSelectionListener(RelatedReferencesSelectionListener listener) {
+    public void removeQuotationSelectionListener(ReferenceChooserSelectionListener listener) {
         if (listener != null && selectionListeners != null)
             selectionListeners.remove(listener);
+    }
+
+    public void setReferenceDAO(BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
+        if (referenceDAO == null)
+            throw new IllegalArgumentException("referenceDAO non può essere null");
+
+        this.referenceDAO = referenceDAO;
     }
 
 }

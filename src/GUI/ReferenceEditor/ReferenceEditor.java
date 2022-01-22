@@ -3,7 +3,6 @@ package GUI.ReferenceEditor;
 // NOTE: questa è una classe lunghissima, però sono principalmente commenti e getter/setter
 
 import GUI.Categories.*;
-import GUI.Homepage.Search.CategoriesSelectionPopupMenu;
 import GUI.Utilities.JPopupButton;
 import GUI.Utilities.JPopupItemSelection;
 import GUI.Utilities.JTermsField;
@@ -25,7 +24,7 @@ import DAO.BibliographicReferenceDAO;
 /**
  * Pannello per la creazione o modifica di un riferimento bibliografico.
  */
-public abstract class ReferenceEditor<T extends BibliographicReference> extends JDialog implements RelatedReferencesSelectionListener {
+public abstract class ReferenceEditor<T extends BibliographicReference> extends JDialog implements ReferenceChooserSelectionListener {
 
     private JTextField title;
     private JTermsField tags;
@@ -149,7 +148,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         authorsPanel.add(authors, BorderLayout.CENTER);
         authorsPanel.add(addAuthor, BorderLayout.EAST);
 
-        quotations = new ReferenceChooserDialog(categoriesTree);
+        quotations = new ReferenceChooserDialog(categoriesTree, referenceDAO);
         quotations.addQuotationSelectionListener(this);
 
         quotationButton = new JPopupButton("Rimandi selezionati");
@@ -257,7 +256,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     protected abstract void saveReference();
 
     @Override
-    public void onRelatedReferenceSelection(BibliographicReference reference) {
+    public void onReferenceChooserSelection(BibliographicReference reference) {
         if (reference == null)
             return;
 

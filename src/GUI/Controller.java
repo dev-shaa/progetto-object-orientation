@@ -1,5 +1,4 @@
 package GUI;
-// PLACEHOLDER
 
 import javax.swing.*;
 import com.formdev.flatlaf.*;
@@ -41,6 +40,7 @@ public class Controller {
             homepage.setVisible(true);
             loginFrame.setVisible(false);
         } catch (Exception e) {
+            e.printStackTrace();
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }
