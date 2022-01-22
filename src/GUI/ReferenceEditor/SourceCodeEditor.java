@@ -4,6 +4,7 @@ import DAO.BibliographicReferenceDAO;
 import GUI.Categories.CategoriesTreeManager;
 import Entities.References.OnlineResources.SourceCode;
 import Entities.References.OnlineResources.ProgrammingLanguage;
+import Exceptions.ReferenceDatabaseException;
 import Exceptions.RequiredFieldMissingException;
 
 import javax.swing.JComboBox;
@@ -54,9 +55,11 @@ public class SourceCodeEditor extends OnlineResourceEditor<SourceCode> {
 
         try {
             fillReferenceValues(sourceCodeToFill);
-            // TODO: salva nel database
+            getReferenceDAO().saveSourceCode(sourceCodeToFill);
         } catch (RequiredFieldMissingException e) {
             JOptionPane.showMessageDialog(this, "Uno o più campi obbligatori non sono stati inseriti.", "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
+        } catch (ReferenceDatabaseException e) {
+            JOptionPane.showMessageDialog(this, "Si è verificato un errore durante il salvataggio", "Errore database", JOptionPane.ERROR_MESSAGE);
         }
     }
 

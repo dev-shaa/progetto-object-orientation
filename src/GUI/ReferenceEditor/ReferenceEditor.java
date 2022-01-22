@@ -622,7 +622,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      */
     protected void fillReferenceValues(T reference) throws IllegalArgumentException, RequiredFieldMissingException {
 
-        // FIXME: requiredfieldmissingexception non chiamato
+        // FIXME: reference è sempre null per qualche motivo
 
         if (reference == null)
             throw new IllegalArgumentException("reference non può essere null");

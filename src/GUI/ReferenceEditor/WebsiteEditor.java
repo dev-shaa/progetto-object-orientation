@@ -5,6 +5,7 @@ import javax.swing.JOptionPane;
 import DAO.BibliographicReferenceDAO;
 import GUI.Categories.CategoriesTreeManager;
 import Entities.References.OnlineResources.Website;
+import Exceptions.ReferenceDatabaseException;
 import Exceptions.RequiredFieldMissingException;
 
 /**
@@ -48,9 +49,11 @@ public class WebsiteEditor extends OnlineResourceEditor<Website> {
 
         try {
             fillReferenceValues(websiteToFill);
-            // TODO: salva nel database
+            getReferenceDAO().saveWebsite(websiteToFill);
         } catch (RequiredFieldMissingException e) {
             JOptionPane.showMessageDialog(this, "Uno o più campi obbligatori non sono stati inseriti.", "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
+        } catch (ReferenceDatabaseException e) {
+            JOptionPane.showMessageDialog(this, "Si è verificato un errore durante il salvataggio", "Errore database", JOptionPane.ERROR_MESSAGE);
         }
     }
 

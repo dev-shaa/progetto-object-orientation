@@ -9,28 +9,29 @@ import Entities.References.OnlineResources.Website;
 import Entities.References.PhysicalResources.Article;
 import Entities.References.PhysicalResources.Book;
 import Entities.References.PhysicalResources.Thesis;
+import Exceptions.ReferenceDatabaseException;
 import GUI.Homepage.Search.Search;
 
 public interface BibliographicReferenceDAO {
 
-    public BibliographicReference[] getReferences(Category category);
+    public BibliographicReference[] getReferences(Category category) throws ReferenceDatabaseException;
 
-    public BibliographicReference[] getReferences(Search search);
+    public BibliographicReference[] getReferences(Search search) throws ReferenceDatabaseException;
 
-    public void removeReference(BibliographicReference reference);
+    public void removeReference(BibliographicReference reference) throws ReferenceDatabaseException;
 
-    public void saveArticle(Article article);
+    public void saveArticle(Article article) throws ReferenceDatabaseException;
 
-    public void saveBook(Book book);
+    public void saveBook(Book book) throws ReferenceDatabaseException;
 
-    public void saveThesis(Thesis thesis);
+    public void saveThesis(Thesis thesis) throws ReferenceDatabaseException;
 
-    public void saveImage(Image image);
+    public void saveImage(Image image) throws ReferenceDatabaseException;
 
-    public void saveSourceCode(SourceCode sourceCode);
+    public void saveSourceCode(SourceCode sourceCode) throws ReferenceDatabaseException;
 
-    public void saveVideo(Video video);
+    public void saveVideo(Video video) throws ReferenceDatabaseException;
 
-    public void saveWebsite(Website website);
+    public void saveWebsite(Website website) throws ReferenceDatabaseException;
 
 }

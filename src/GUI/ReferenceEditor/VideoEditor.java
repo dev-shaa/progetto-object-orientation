@@ -3,6 +3,7 @@ package GUI.ReferenceEditor;
 import DAO.BibliographicReferenceDAO;
 import GUI.Categories.CategoriesTreeManager;
 import Entities.References.OnlineResources.Video;
+import Exceptions.ReferenceDatabaseException;
 import Exceptions.RequiredFieldMissingException;
 
 import java.util.Calendar;
@@ -78,9 +79,11 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
 
         try {
             fillReferenceValues(videoToFill);
-            // TODO: salva nel database
+            getReferenceDAO().saveVideo(videoToFill);
         } catch (RequiredFieldMissingException e) {
             JOptionPane.showMessageDialog(this, "Uno o più campi obbligatori non sono stati inseriti.", "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
+        } catch (ReferenceDatabaseException e) {
+            JOptionPane.showMessageDialog(this, "Si è verificato un errore durante il salvataggio", "Errore database", JOptionPane.ERROR_MESSAGE);
         }
     }
 

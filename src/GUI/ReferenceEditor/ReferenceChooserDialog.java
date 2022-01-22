@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.border.EmptyBorder;
@@ -11,6 +12,7 @@ import javax.swing.border.EmptyBorder;
 import DAO.BibliographicReferenceDAO;
 import Entities.Category;
 import Entities.References.BibliographicReference;
+import Exceptions.ReferenceDatabaseException;
 import GUI.Categories.CategoriesTreeManager;
 import GUI.Categories.CategorySelectionListener;
 import GUI.Categories.CategoryTreePanel;
@@ -89,8 +91,11 @@ public class ReferenceChooserDialog extends JDialog implements CategorySelection
 
     @Override
     public void onCategorySelected(Category selectedCategory) {
-        // TODO: carica riferimenti dal database
-        references.setReferences(referenceDAO.getReferences(selectedCategory));
+        try {
+            references.setReferences(referenceDAO.getReferences(selectedCategory));
+        } catch (ReferenceDatabaseException e) {
+            JOptionPane.showMessageDialog(this, "Si è verificato un errore durante il salvataggio", "Errore database", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     @Override

@@ -3,6 +3,7 @@ package GUI.ReferenceEditor;
 import GUI.Categories.CategoriesTreeManager;
 import DAO.BibliographicReferenceDAO;
 import Entities.References.PhysicalResources.Book;
+import Exceptions.ReferenceDatabaseException;
 import Exceptions.RequiredFieldMissingException;
 
 import javax.swing.JOptionPane;
@@ -57,9 +58,12 @@ public class BookEditor extends PublicationEditor<Book> {
 
         try {
             fillReferenceValues(bookToFill);
-            // TODO: salva nel database
+
+            getReferenceDAO().saveBook(bookToFill);
         } catch (RequiredFieldMissingException e) {
             JOptionPane.showMessageDialog(this, "Uno o più campi obbligatori non sono stati inseriti.", "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
+        } catch (ReferenceDatabaseException e) {
+            JOptionPane.showMessageDialog(this, "Si è verificato un errore durante il salvataggio", "Errore database", JOptionPane.ERROR_MESSAGE);
         }
     }
 

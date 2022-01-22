@@ -3,6 +3,7 @@ package GUI.ReferenceEditor;
 import DAO.BibliographicReferenceDAO;
 import GUI.Categories.CategoriesTreeManager;
 import Entities.References.OnlineResources.Image;
+import Exceptions.ReferenceDatabaseException;
 import Exceptions.RequiredFieldMissingException;
 
 import javax.swing.JOptionPane;
@@ -64,9 +65,12 @@ public class ImageEditor extends OnlineResourceEditor<Image> {
 
         try {
             fillReferenceValues(imageToFill);
-            // TODO: salva nel database
+
+            getReferenceDAO().saveImage(imageToFill);
         } catch (RequiredFieldMissingException e) {
             JOptionPane.showMessageDialog(this, "Uno o più campi obbligatori non sono stati inseriti.", "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
+        } catch (ReferenceDatabaseException e) {
+            JOptionPane.showMessageDialog(this, "Si è verificato un errore durante il salvataggio", "Errore database", JOptionPane.ERROR_MESSAGE);
         }
     }
 
