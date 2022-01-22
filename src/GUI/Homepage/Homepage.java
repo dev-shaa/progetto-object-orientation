@@ -34,6 +34,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Logou
     private SearchPanel referenceSearchPanel;
 
     /**
+     * TODO: commenta
      * Crea la pagina principale con i dati relativi all'utente.
      * 
      * @param controller
@@ -50,8 +51,8 @@ public class Homepage extends JFrame implements CategorySelectionListener, Logou
         this.controller = controller;
         setUser(user);
 
-        CategoryDAO categoryDAO = new CategoryDAOPostgreSQL(user);
-        BibliographicReferenceDAO bibliographicReferenceDAO = new BibliographicReferenceDAO();
+        CategoryDAOPostgreSQL categoryDAO = new CategoryDAOPostgreSQL(user);
+        BibliographicReferenceDAOPostgreSQL referenceDAO = new BibliographicReferenceDAOPostgreSQL(user);
 
         setTitle("Pagina principale");
         setMinimumSize(new Dimension(400, 400));
@@ -66,7 +67,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Logou
         categoriesPanel = new CategoriesPanel(categoriesTree);
         categoriesPanel.getTreePanel().addSelectionListener(this);
 
-        referencePanel = new ReferencePanel(categoriesTree, bibliographicReferenceDAO);
+        referencePanel = new ReferencePanel(categoriesTree, referenceDAO);
         referenceSearchPanel = new SearchPanel(categoriesTree);
         referenceSearchPanel.addReferenceSearchListener(this);
 

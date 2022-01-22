@@ -315,10 +315,7 @@ public class ReferencePanel extends JPanel implements ReferenceSelectionListener
      */
     public void showReferences(Search search) {
         try {
-            // TODO: cerca nel database
-
-            BibliographicReference[] references = null; // DEBUG:
-            showReferences(references);
+            showReferences(referenceDAO.getReferences(search));
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
