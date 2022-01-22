@@ -6,12 +6,8 @@ import Entities.References.OnlineResources.Video;
 import Exceptions.ReferenceDatabaseException;
 import Exceptions.RequiredFieldMissingException;
 
-import java.util.Calendar;
-import java.util.Date;
-
 import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
-import javax.swing.SpinnerDateModel;
 import javax.swing.SpinnerNumberModel;
 
 /**
@@ -65,7 +61,7 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
         width = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
         height = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
         frameRate = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
-        duration = new JSpinner(new SpinnerDateModel(new Date(), null, null, Calendar.MINUTE)); // FIXME:
+        duration = new JSpinner(new SpinnerNumberModel(1.0, 1.0, null, 1));
 
         addFieldComponent(width, "Larghezza");
         addFieldComponent(height, "Altezza");
@@ -164,8 +160,7 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
      *            durata iniziale del video
      */
     protected void setDurationValue(float duration) {
-        // TODO:
-        // this.duration.setValue(duration);
+        this.duration.setValue(duration);
     }
 
     /**
@@ -175,8 +170,7 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
      *         durata del video
      */
     protected float getDurationValue() {
-        // TODO:
-        return 0;
+        return (float) duration.getValue();
     }
 
 }

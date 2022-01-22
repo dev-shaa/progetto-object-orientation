@@ -35,8 +35,8 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     private CategoriesSelectionPopupMenu categories;
     private JPopupItemSelection<Author> authors;
 
-    private JPopupButton quotationButton;
-    private ReferenceChooserDialog quotations;
+    private JPopupButton relatedReferencesPopupButton;
+    private ReferenceChooserDialog relatedReferencesDialog;
     private ArrayList<BibliographicReference> relatedReferences;
 
     private JPanel fieldPanel;
@@ -148,21 +148,21 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         authorsPanel.add(authors, BorderLayout.CENTER);
         authorsPanel.add(addAuthor, BorderLayout.EAST);
 
-        quotations = new ReferenceChooserDialog(categoriesTree, referenceDAO);
-        quotations.addQuotationSelectionListener(this);
+        relatedReferencesDialog = new ReferenceChooserDialog(categoriesTree, referenceDAO);
+        relatedReferencesDialog.addQuotationSelectionListener(this);
 
-        quotationButton = new JPopupButton("Rimandi selezionati");
-        JButton addQuotation = new JButton("+");
-        addQuotation.addActionListener(new ActionListener() {
+        relatedReferencesPopupButton = new JPopupButton("Rimandi selezionati");
+        JButton addRelatedReference = new JButton("+");
+        addRelatedReference.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                quotations.setVisible(true);
+                relatedReferencesDialog.setVisible(true);
             }
         });
 
-        JPanel quotationPanel = new JPanel(new BorderLayout(10, 0));
-        quotationPanel.add(quotationButton, BorderLayout.CENTER);
-        quotationPanel.add(addQuotation, BorderLayout.EAST);
+        JPanel relatedReferencesPanel = new JPanel(new BorderLayout(10, 0));
+        relatedReferencesPanel.add(relatedReferencesPopupButton, BorderLayout.CENTER);
+        relatedReferencesPanel.add(addRelatedReference, BorderLayout.EAST);
 
         addFieldComponent(title, "Titolo*", "Titolo del riferimento");
         addFieldComponent(tags, "Parole chiave", "Parole chiave associate al riferimento, separate da una virgola");
@@ -171,7 +171,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         addFieldComponent(language, "Lingua");
         addFieldComponent(categories, "Categorie");
         addFieldComponent(authorsPanel, "Autori");
-        addFieldComponent(quotationPanel, "Rimandi");
+        addFieldComponent(relatedReferencesPanel, "Rimandi");
     }
 
     /**
@@ -511,7 +511,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      *            categorie del riferimento
      */
     protected void setCategoryValues(Category[] categories) {
-        // TODO: seleziona le categorie nell'albero
+        // TODO: seleziona categorie
     }
 
     /**
@@ -535,7 +535,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
             return;
 
         relatedReferences = null;
-        quotationButton.removeAllFromPopupMenu();
+        relatedReferencesPopupButton.removeAllFromPopupMenu();
 
         for (BibliographicReference reference : references) {
             addRelatedReference(reference);
@@ -570,7 +570,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
             @Override
             public void actionPerformed(ActionEvent e) {
                 relatedReferences.remove(reference);
-                quotationButton.removeFromPopupMenu(panel);
+                relatedReferencesPopupButton.removeFromPopupMenu(panel);
             }
 
         });
@@ -579,7 +579,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         panel.add(removeButton, BorderLayout.EAST);
 
         relatedReferences.add(reference);
-        quotationButton.addToPopupMenu(panel);
+        relatedReferencesPopupButton.addToPopupMenu(panel);
     }
 
     /**
