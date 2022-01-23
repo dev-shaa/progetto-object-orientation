@@ -30,7 +30,7 @@ import java.util.List;
  * @see ReferenceListPanel
  * @see ReferenceInfoPanel
  */
-public class ReferencePanel extends JPanel implements ReferenceSelectionListener {
+public class ReferencePanel extends JPanel implements ReferenceListSelectionListener {
 
     private CategoriesTreeManager categoriesTree;
     private BibliographicReferenceDAO referenceDAO;

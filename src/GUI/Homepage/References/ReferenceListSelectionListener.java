@@ -7,7 +7,7 @@ import Entities.References.BibliographicReference;
 /**
  * L'interfaccia per i listener che vogliono essere avvertiti quando viene selezionato un riferimento.
  */
-public interface ReferenceSelectionListener extends EventListener {
+public interface ReferenceListSelectionListener extends EventListener {
 
     /**
      * Invocato quando viene eseguito il logout.

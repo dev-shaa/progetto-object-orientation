@@ -15,7 +15,7 @@ import GUI.Homepage.Categories.CategoriesTreeManager;
 import GUI.Homepage.Categories.CategorySelectionListener;
 import GUI.Homepage.Categories.CategoryTreePanel;
 import GUI.Homepage.References.ReferenceListPanel;
-import GUI.Homepage.References.ReferenceSelectionListener;
+import GUI.Homepage.References.ReferenceListSelectionListener;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -24,7 +24,7 @@ import java.awt.event.ActionListener;
 /**
  * Finestra di dialogo per scegliere un riferimento.
  */
-public class ReferenceChooserDialog extends JDialog implements CategorySelectionListener, ReferenceSelectionListener {
+public class ReferenceChooserDialog extends JDialog implements CategorySelectionListener, ReferenceListSelectionListener {
 
     private CategoryTreePanel categoriesPanel;
     private ReferenceListPanel referencesPanel;
