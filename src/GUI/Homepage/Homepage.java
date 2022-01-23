@@ -3,7 +3,6 @@ package GUI.Homepage;
 import GUI.*;
 import DAO.*;
 import Entities.*;
-import Entities.References.BibliographicReference;
 import Exceptions.*;
 import GUI.Homepage.Categories.*;
 import GUI.Homepage.References.*;
@@ -13,8 +12,6 @@ import GUI.Homepage.UserInfo.UserInfoPanel;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.awt.BorderLayout;
 import javax.swing.*;
 
@@ -36,8 +33,6 @@ public class Homepage extends JFrame implements CategorySelectionListener, Logou
     private CategoriesPanel categoriesPanel;
     private SearchPanel referenceSearchPanel;
 
-    private ArrayList<BibliographicReference> references;
-
     /**
      * TODO: commenta
      * Crea la pagina principale con i dati relativi all'utente.
@@ -50,18 +45,8 @@ public class Homepage extends JFrame implements CategorySelectionListener, Logou
      * @throws CategoryDatabaseException
      */
     public Homepage(Controller controller, User user) throws IllegalArgumentException, CategoryDatabaseException, ReferenceDatabaseException {
-        if (controller == null)
-            throw new IllegalArgumentException();
-
-        this.controller = controller;
+        setController(controller);
         setUser(user);
-
-        CategoryDAOPostgreSQL categoryDAO = new CategoryDAOPostgreSQL(user);
-        BibliographicReferenceDAOPostgreSQL referenceDAO = new BibliographicReferenceDAOPostgreSQL(user);
-
-        // for (BibliographicReference reference : referenceDAO.getReferences()) {
-        // references.add(reference);
-        // }
 
         setTitle("Pagina principale");
         setMinimumSize(new Dimension(400, 400));
@@ -80,11 +65,11 @@ public class Homepage extends JFrame implements CategorySelectionListener, Logou
         contentPane.setLayout(new BorderLayout(5, 5));
         setContentPane(contentPane);
 
-        categoriesTree = new CategoriesTreeManager(categoryDAO);
+        categoriesTree = new CategoriesTreeManager(new CategoryDAOPostgreSQL(user));
         categoriesPanel = new CategoriesPanel(categoriesTree);
         categoriesPanel.getTreePanel().addSelectionListener(this);
 
-        referencePanel = new ReferencePanel(categoriesTree, referenceDAO);
+        referencePanel = new ReferencePanel(categoriesTree, new BibliographicReferenceDAOPostgreSQL(user));
         referenceSearchPanel = new SearchPanel(categoriesTree);
         referenceSearchPanel.addReferenceSearchListener(this);
 
@@ -101,6 +86,13 @@ public class Homepage extends JFrame implements CategorySelectionListener, Logou
         contentPane.add(splitPane, BorderLayout.CENTER);
     }
 
+    public void setController(Controller controller) throws IllegalArgumentException {
+        if (controller == null)
+            throw new IllegalArgumentException("controller non può essere null");
+
+        this.controller = controller;
+    }
+
     public void setUser(User user) {
         if (user == null)
             throw new IllegalArgumentException("user non può essere null");
@@ -109,13 +101,13 @@ public class Homepage extends JFrame implements CategorySelectionListener, Logou
     }
 
     @Override
-    public void onCategorySelected(Category selectedCategory) {
-        referencePanel.showReferences(selectedCategory);
+    public void onLogout() {
+        controller.openLoginPage();
     }
 
     @Override
-    public void onLogout() {
-        controller.openLoginPage();
+    public void onCategorySelected(Category selectedCategory) {
+        referencePanel.showReferences(selectedCategory);
     }
 
     @Override

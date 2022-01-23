@@ -1,4 +1,4 @@
-package GUI.Homepage.References.ReferenceEditor;
+package GUI.Homepage.References.Editor;
 
 import DAO.BibliographicReferenceDAO;
 import Entities.References.PhysicalResources.Thesis;

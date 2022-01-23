@@ -1,4 +1,4 @@
-package GUI.Homepage.References.ReferenceEditor;
+package GUI.Homepage.References.Editor;
 
 import DAO.BibliographicReferenceDAO;
 import Entities.References.PhysicalResources.Publication;
@@ -12,7 +12,7 @@ import javax.swing.SpinnerNumberModel;
 /**
  * Pannello di dialogo per la creazione o modifica di un riferimento a una pubblicazione.
  */
-public abstract class PublicationEditor<T extends Publication> extends ReferenceEditor<T> {
+public abstract class PublicationEditor<T extends Publication> extends ReferenceEditorDialog<T> {
 
     private JSpinner pageCount;
     private JTextField URL;

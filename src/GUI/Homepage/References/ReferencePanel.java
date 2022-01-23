@@ -3,7 +3,7 @@ package GUI.Homepage.References;
 import DAO.*;
 import GUI.*;
 import GUI.Homepage.Categories.CategoriesTreeManager;
-import GUI.Homepage.References.ReferenceEditor.*;
+import GUI.Homepage.References.Editor.*;
 import GUI.Homepage.Search.Search;
 import GUI.Utilities.JPopupButton;
 import Entities.*;
@@ -72,47 +72,10 @@ public class ReferencePanel extends JPanel implements ReferenceSelectionListener
         JToolBar toolbar = new JToolBar();
         toolbar.setFloatable(false);
 
+        // #region create button
+
         JPopupButton createReferenceButton = new JPopupButton(new ImageIcon("images/file_add.png"));
         createReferenceButton.setToolTipText("Crea riferimento");
-        setupReferenceEditorPopup(createReferenceButton, categoriesTree);
-
-        editReferenceButton = new JButton(new ImageIcon("images/file_edit.png"));
-        editReferenceButton.setToolTipText("Modifica riferimento");
-        editReferenceButton.setEnabled(false);
-        editReferenceButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                changeSelectedReference();
-            }
-        });
-
-        deleteReferenceButton = new JButton(new ImageIcon("images/file_remove.png"));
-        deleteReferenceButton.setToolTipText("Elimina riferimento");
-        deleteReferenceButton.setEnabled(false);
-        deleteReferenceButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                removeSelectedReference();
-            }
-        });
-
-        toolbar.add(createReferenceButton);
-        toolbar.add(editReferenceButton);
-        toolbar.add(deleteReferenceButton);
-
-        infoPanel = new ReferenceInfoPanel();
-
-        listPanel = new ReferenceListPanel();
-        listPanel.addReferenceSelectionListener(this);
-
-        JSplitPane referenceSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, listPanel, infoPanel);
-        referenceSplitPane.setDividerSize(10);
-        referenceSplitPane.setResizeWeight(0.6f);
-
-        add(toolbar, BorderLayout.NORTH);
-        add(referenceSplitPane, BorderLayout.CENTER);
-    }
-
-    private void setupReferenceEditorPopup(JPopupButton button, CategoriesTreeManager categoriesTree) {
-
         JMenuItem articleOption = new JMenuItem("Articolo");
         articleOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -162,14 +125,50 @@ public class ReferencePanel extends JPanel implements ReferenceSelectionListener
             }
         });
 
-        button.addToPopupMenu(articleOption);
-        button.addToPopupMenu(bookOption);
-        button.addToPopupMenu(thesisOption);
-        button.addPopupSeparator();
-        button.addToPopupMenu(websiteOption);
-        button.addToPopupMenu(sourceCodeOption);
-        button.addToPopupMenu(imageOption);
-        button.addToPopupMenu(videoOption);
+        createReferenceButton.addToPopupMenu(articleOption);
+        createReferenceButton.addToPopupMenu(bookOption);
+        createReferenceButton.addToPopupMenu(thesisOption);
+        createReferenceButton.addPopupSeparator();
+        createReferenceButton.addToPopupMenu(websiteOption);
+        createReferenceButton.addToPopupMenu(sourceCodeOption);
+        createReferenceButton.addToPopupMenu(imageOption);
+        createReferenceButton.addToPopupMenu(videoOption);
+
+        // #endregion
+
+        editReferenceButton = new JButton(new ImageIcon("images/file_edit.png"));
+        editReferenceButton.setToolTipText("Modifica riferimento");
+        editReferenceButton.setEnabled(false);
+        editReferenceButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                changeSelectedReference();
+            }
+        });
+
+        deleteReferenceButton = new JButton(new ImageIcon("images/file_remove.png"));
+        deleteReferenceButton.setToolTipText("Elimina riferimento");
+        deleteReferenceButton.setEnabled(false);
+        deleteReferenceButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                removeSelectedReference();
+            }
+        });
+
+        toolbar.add(createReferenceButton);
+        toolbar.add(editReferenceButton);
+        toolbar.add(deleteReferenceButton);
+
+        infoPanel = new ReferenceInfoPanel();
+
+        listPanel = new ReferenceListPanel();
+        listPanel.addReferenceSelectionListener(this);
+
+        JSplitPane referenceSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, listPanel, infoPanel);
+        referenceSplitPane.setDividerSize(10);
+        referenceSplitPane.setResizeWeight(0.6f);
+
+        add(toolbar, BorderLayout.NORTH);
+        add(referenceSplitPane, BorderLayout.CENTER);
     }
 
     private void openArticleEditor(Article article) {
@@ -286,6 +285,11 @@ public class ReferencePanel extends JPanel implements ReferenceSelectionListener
         this.categoriesTree = categoriesTree;
     }
 
+    /**
+     * TODO: commenta
+     * 
+     * @return
+     */
     public ArrayList<BibliographicReference> getReferences() {
         return references;
     }
@@ -301,19 +305,12 @@ public class ReferencePanel extends JPanel implements ReferenceSelectionListener
     }
 
     /**
-     * Carica tutti i riferimenti presenti in una categoria dal database e li mostra a schermo.
+     * Mostra tutti i riferimenti presenti in una categoria.
      * 
      * @param category
      *            categoria di cui mostrare i riferimenti
      */
     public void showReferences(Category category) {
-        // try {
-        // BibliographicReference[] references = referenceDAO.getReferences(category);
-        // showReferences(references);
-        // } catch (Exception e) {
-        // JOptionPane.showMessageDialog(null, e.getMessage());
-        // }
-
         if (references == null)
             return;
 

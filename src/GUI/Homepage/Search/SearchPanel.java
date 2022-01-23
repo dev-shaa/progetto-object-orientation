@@ -13,7 +13,7 @@ import com.toedter.calendar.JDateChooser;
 import Entities.Author;
 import Entities.Tag;
 import Exceptions.EmptySearchException;
-import GUI.Categories.*;
+import GUI.Homepage.Categories.*;
 import GUI.Utilities.JPopupItemSelection;
 import GUI.Utilities.JTermsField;
 

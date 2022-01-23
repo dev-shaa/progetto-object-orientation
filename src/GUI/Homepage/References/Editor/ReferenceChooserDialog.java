@@ -1,18 +1,16 @@
-package GUI.Homepage.References.ReferenceEditor;
+package GUI.Homepage.References.Editor;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.border.EmptyBorder;
 
-import DAO.BibliographicReferenceDAO;
 import Entities.Category;
 import Entities.References.BibliographicReference;
-import Exceptions.ReferenceDatabaseException;
 import GUI.Homepage.Categories.CategoriesTreeManager;
 import GUI.Homepage.Categories.CategorySelectionListener;
 import GUI.Homepage.Categories.CategoryTreePanel;
@@ -24,17 +22,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * Finestra di dialogo per scegliere un rimando da aggiungere a un riferimento.
+ * Finestra di dialogo per scegliere un riferimento.
  */
 public class ReferenceChooserDialog extends JDialog implements CategorySelectionListener, ReferenceSelectionListener {
 
-    private CategoryTreePanel categories;
-    private ReferenceListPanel references;
+    private CategoryTreePanel categoriesPanel;
+    private ReferenceListPanel referencesPanel;
     private JButton confirmButton;
 
+    private List<BibliographicReference> references;
     private ArrayList<ReferenceChooserSelectionListener> selectionListeners;
-
-    private BibliographicReferenceDAO referenceDAO;
 
     /**
      * Crea una nuova finestra di dialogo con le categorie da cui è possibile scegliere i rimandi.
@@ -42,13 +39,13 @@ public class ReferenceChooserDialog extends JDialog implements CategorySelection
      * @param categoriesTree
      *            albero delle categorie da scegliere
      */
-    public ReferenceChooserDialog(CategoriesTreeManager categoriesTree, BibliographicReferenceDAO referenceDAO) {
+    public ReferenceChooserDialog(CategoriesTreeManager categoriesTree, List<BibliographicReference> references) {
         setTitle("Aggiungi riferimento");
         setModal(true);
         setSize(500, 500);
         setResizable(false);
 
-        setReferenceDAO(referenceDAO);
+        this.references = references;
 
         JPanel contentPane = new JPanel(new BorderLayout(10, 10));
         setContentPane(contentPane);
@@ -67,7 +64,7 @@ public class ReferenceChooserDialog extends JDialog implements CategorySelection
 
                 for (ReferenceChooserSelectionListener quotationSelectionListener : selectionListeners) {
                     setVisible(false);
-                    quotationSelectionListener.onReferenceChooserSelection(references.getSelectedReference());
+                    quotationSelectionListener.onReferenceChooserSelection(referencesPanel.getSelectedReference());
                 }
             }
 
@@ -75,13 +72,13 @@ public class ReferenceChooserDialog extends JDialog implements CategorySelection
 
         buttonPanel.add(confirmButton);
 
-        categories = new CategoryTreePanel(categoriesTree);
-        categories.addSelectionListener(this);
+        categoriesPanel = new CategoryTreePanel(categoriesTree);
+        categoriesPanel.addSelectionListener(this);
 
-        references = new ReferenceListPanel();
-        references.addReferenceSelectionListener(this);
+        referencesPanel = new ReferenceListPanel();
+        referencesPanel.addReferenceSelectionListener(this);
 
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, categories, references);
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, categoriesPanel, referencesPanel);
         splitPane.setResizeWeight(0.3);
         splitPane.setBorder(new EmptyBorder(10, 10, 0, 10));
 
@@ -91,11 +88,11 @@ public class ReferenceChooserDialog extends JDialog implements CategorySelection
 
     @Override
     public void onCategorySelected(Category selectedCategory) {
-        try {
-            references.setReferences(referenceDAO.getReferences(selectedCategory));
-        } catch (ReferenceDatabaseException e) {
-            JOptionPane.showMessageDialog(this, "Si è verificato un errore durante il salvataggio", "Errore database", JOptionPane.ERROR_MESSAGE);
-        }
+        if (references == null)
+            return;
+
+        List<BibliographicReference> referencesInCategory = references.stream().filter(e -> e.getCategories().contains(selectedCategory)).toList();
+        referencesPanel.setReferences(referencesInCategory.toArray(new BibliographicReference[referencesInCategory.size()]));
     }
 
     @Override
@@ -128,21 +125,6 @@ public class ReferenceChooserDialog extends JDialog implements CategorySelection
     public void removeQuotationSelectionListener(ReferenceChooserSelectionListener listener) {
         if (listener != null && selectionListeners != null)
             selectionListeners.remove(listener);
-    }
-
-    /**
-     * Imposta la classe DAO per interfacciarsi al database.
-     * 
-     * @param referenceDAO
-     *            classe DAO dei riferimenti
-     * @throws IllegalArgumentException
-     *             se {@code referenceDAO == null}
-     */
-    public void setReferenceDAO(BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
-        if (referenceDAO == null)
-            throw new IllegalArgumentException("referenceDAO non può essere null");
-
-        this.referenceDAO = referenceDAO;
     }
 
 }

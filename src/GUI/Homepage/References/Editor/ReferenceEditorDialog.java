@@ -1,4 +1,4 @@
-package GUI.Homepage.References.ReferenceEditor;
+package GUI.Homepage.References.Editor;
 
 import GUI.Homepage.Categories.*;
 import GUI.Utilities.JPopupButton;
@@ -22,7 +22,7 @@ import DAO.BibliographicReferenceDAO;
 /**
  * Pannello per la creazione o modifica di un riferimento bibliografico.
  */
-public abstract class ReferenceEditor<T extends BibliographicReference> extends JDialog implements ReferenceChooserSelectionListener {
+public abstract class ReferenceEditorDialog<T extends BibliographicReference> extends JDialog implements ReferenceChooserSelectionListener {
 
     private JTextField title;
     private JTermsField tags;
@@ -62,7 +62,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      * 
      * @see #setReferenceDAO(BibliographicReferenceDAO)
      */
-    public ReferenceEditor(String dialogueTitle, CategoriesTreeManager categoriesTree, BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
+    public ReferenceEditorDialog(String dialogueTitle, CategoriesTreeManager categoriesTree, BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
         super();
 
         setTitle(dialogueTitle);
@@ -78,8 +78,27 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         // e aggiungere altri elementi prima delle descrizione
         setup(categoriesTree);
 
-        // la descrizione è un elemento più grande, quindi vogliamo che sia alla fine
-        setupLastElements();
+        JLabel descriptionLabel = new JLabel("Descrizione");
+        descriptionLabel.setMaximumSize(maximumSize);
+        descriptionLabel.setAlignmentX(alignment);
+
+        description.setLineWrap(true);
+        description.setAlignmentX(alignment);
+
+        JButton confirmButton = new JButton("Salva riferimento");
+        confirmButton.setAlignmentX(alignment);
+        confirmButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                saveReference();
+                dispose();
+            }
+        });
+
+        fieldPanel.add(descriptionLabel);
+        fieldPanel.add(description);
+        fieldPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        fieldPanel.add(confirmButton);
 
         resetFields(null);
     }
@@ -170,33 +189,6 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         addFieldComponent(categories, "Categorie");
         addFieldComponent(authorsPanel, "Autori");
         addFieldComponent(relatedReferencesPanel, "Rimandi");
-    }
-
-    /**
-     * Imposta gli elementi alla fine, come la descrizione e il pulsante per salvare.
-     */
-    private void setupLastElements() {
-        JLabel descriptionLabel = new JLabel("Descrizione");
-        descriptionLabel.setMaximumSize(maximumSize);
-        descriptionLabel.setAlignmentX(alignment);
-
-        description.setLineWrap(true);
-        description.setAlignmentX(alignment);
-
-        JButton confirmButton = new JButton("Salva riferimento");
-        confirmButton.setAlignmentX(alignment);
-        confirmButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                saveReference();
-                dispose();
-            }
-        });
-
-        fieldPanel.add(descriptionLabel);
-        fieldPanel.add(description);
-        fieldPanel.add(Box.createRigidArea(new Dimension(0, 20)));
-        fieldPanel.add(confirmButton);
     }
 
     /**

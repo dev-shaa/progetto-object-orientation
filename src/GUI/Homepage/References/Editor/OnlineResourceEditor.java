@@ -1,4 +1,4 @@
-package GUI.Homepage.References.ReferenceEditor;
+package GUI.Homepage.References.Editor;
 
 import DAO.BibliographicReferenceDAO;
 import Entities.References.OnlineResources.OnlineResource;
@@ -10,7 +10,7 @@ import javax.swing.*;
 /**
  * Pannello di dialogo per la creazione o modifica di un riferimento a una risorsa online.
  */
-public abstract class OnlineResourceEditor<T extends OnlineResource> extends ReferenceEditor<T> {
+public abstract class OnlineResourceEditor<T extends OnlineResource> extends ReferenceEditorDialog<T> {
 
     private JTextField URL;
 
