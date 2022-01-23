@@ -6,7 +6,7 @@ import DAO.BibliographicReferenceDAO;
 import Entities.References.OnlineResources.Website;
 import Exceptions.ReferenceDatabaseException;
 import Exceptions.RequiredFieldMissingException;
-import GUI.Homepage.Categories.CategoriesTreeManager;
+import GUI.Homepage.Categories.CategoryTreeModel;
 
 /**
  * Pannello di dialogo per la creazione o modifica di un riferimento a un sito web.
@@ -27,13 +27,13 @@ public class WebsiteEditor extends OnlineResourceEditor<Website> {
      * 
      * @see #setReferenceDAO(BibliographicReferenceDAO)
      */
-    public WebsiteEditor(CategoriesTreeManager categoriesTree, BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
+    public WebsiteEditor(CategoryTreeModel categoriesTree, BibliographicReferenceDAO referenceDAO) {
         super("Sito web", categoriesTree, referenceDAO);
     }
 
     @Override
-    protected void setup(CategoriesTreeManager categoriesTree) {
-        super.setup(categoriesTree);
+    protected void setup() {
+        super.setup();
     }
 
     @Override
@@ -58,7 +58,7 @@ public class WebsiteEditor extends OnlineResourceEditor<Website> {
     }
 
     @Override
-    protected void fillReferenceValues(Website reference) throws IllegalArgumentException, RequiredFieldMissingException {
+    protected void fillReferenceValues(Website reference) throws RequiredFieldMissingException {
         super.fillReferenceValues(reference);
 
         // qui non dobbiamo fare niente in realtà, però mettiamola per correttezza

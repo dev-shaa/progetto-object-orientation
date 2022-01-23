@@ -28,9 +28,9 @@ public class CustomTreeModel<T extends Object> extends DefaultTreeModel {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void insertNodeInto(MutableTreeNode newChild, MutableTreeNode parent, int index) throws IllegalArgumentException {
+    public void setRoot(TreeNode root) throws IllegalArgumentException {
         try {
-            super.insertNodeInto((CustomTreeNode<T>) newChild, (CustomTreeNode<T>) parent, index);
+            super.setRoot((CustomTreeNode<T>) root);
         } catch (Exception e) {
             throw new IllegalArgumentException();
         }
@@ -38,12 +38,16 @@ public class CustomTreeModel<T extends Object> extends DefaultTreeModel {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void setRoot(TreeNode root) throws IllegalArgumentException {
+    public void insertNodeInto(MutableTreeNode newChild, MutableTreeNode parent, int index) throws IllegalArgumentException {
         try {
-            super.setRoot((CustomTreeNode<T>) root);
-        } catch (Exception e) {
-            throw new IllegalArgumentException();
+            super.insertNodeInto((CustomTreeNode<T>) newChild, (CustomTreeNode<T>) parent, index);
+        } catch (ClassCastException e) {
+            throw new IllegalArgumentException("foo");
         }
+    }
+
+    public void addNode(CustomTreeNode<T> newChild, CustomTreeNode<T> parent) {
+        insertNodeInto(newChild, parent, parent.getChildCount());
     }
 
 }

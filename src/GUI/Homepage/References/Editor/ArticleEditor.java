@@ -4,7 +4,7 @@ import DAO.BibliographicReferenceDAO;
 import Entities.References.PhysicalResources.Article;
 import Exceptions.ReferenceDatabaseException;
 import Exceptions.RequiredFieldMissingException;
-import GUI.Homepage.Categories.CategoriesTreeManager;
+import GUI.Homepage.Categories.CategoryTreeModel;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -29,13 +29,13 @@ public class ArticleEditor extends PublicationEditor<Article> {
      * 
      * @see #setReferenceDAO(BibliographicReferenceDAO)
      */
-    public ArticleEditor(CategoriesTreeManager categoriesTree, BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
+    public ArticleEditor(CategoryTreeModel categoriesTree, BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
         super("Articolo", categoriesTree, referenceDAO);
     }
 
     @Override
-    protected void setup(CategoriesTreeManager categoriesTree) {
-        super.setup(categoriesTree);
+    protected void setup() {
+        super.setup();
 
         ISSN = new JTextField();
 

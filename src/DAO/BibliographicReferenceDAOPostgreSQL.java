@@ -1,5 +1,11 @@
 package DAO;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import Entities.Category;
 import Entities.User;
 import Entities.References.BibliographicReference;
@@ -32,10 +38,88 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         return user;
     }
 
+    public BibliographicReference[] getReferences() {
+        return null;
+
+        // Connection connection = null;
+        // PreparedStatement tagsStatement = null;
+        // ResultSet tagsResultSet = null;
+        // String tagsQuery = "select * from tags natural join reference_tag where id = ?";
+        // ArrayList<BibliographicReference> references = new ArrayList<>();
+
+        // try {
+        // connection = DatabaseController.getConnection();
+        // tagsStatement = connection.prepareStatement(tagsQuery);
+
+        // tagsStatement.setString(1, "article");
+        // tagsStatement.setString(2, user.getName());
+
+        // tagsResultSet = tagsStatement.executeQuery();
+
+        // while (tagsResultSet.next()) {
+        // // Article article = new Article(resultSet.getString("title"), authors)
+        // }
+
+        // return references.toArray(new BibliographicReference[references.size()]);
+        // } catch (Exception e) {
+        // throw new ReferenceDatabaseException("Impossibile recuperare i riferimenti dell'utente.");
+        // } finally {
+        // try {
+        // if (tagsResultSet != null)
+        // tagsResultSet.close();
+
+        // if (tagsStatement != null)
+        // tagsStatement.close();
+
+        // if (connection != null)
+        // connection.close();
+        // } catch (Exception e) {
+        // // non fare niente
+        // }
+        // }
+    }
+
     @Override
     public BibliographicReference[] getReferences(Category category) throws ReferenceDatabaseException {
-        // TODO Auto-generated method stub
+
         return null;
+
+        // Connection connection = null;
+        // PreparedStatement statement = null;
+        // ResultSet resultSet = null;
+        // String query = "select * from reference natural join ? where parent_user = ?";
+        // ArrayList<BibliographicReference> references = new ArrayList<>();
+
+        // try {
+        // connection = DatabaseController.getConnection();
+        // statement = connection.prepareStatement(query);
+
+        // statement.setString(1, "article");
+        // statement.setString(2, user.getName());
+
+        // resultSet = statement.executeQuery();
+
+        // while (resultSet.next()) {
+        // // Article article = new Article(resultSet.getString("title"), authors)
+        // }
+
+        // return references.toArray(new BibliographicReference[references.size()]);
+        // } catch (Exception e) {
+        // throw new ReferenceDatabaseException("Impossibile recuperare i riferimenti dell'utente.");
+        // } finally {
+        // try {
+        // if (resultSet != null)
+        // resultSet.close();
+
+        // if (statement != null)
+        // statement.close();
+
+        // if (connection != null)
+        // connection.close();
+        // } catch (Exception e) {
+        // // non fare niente
+        // }
+        // }
     }
 
     @Override
@@ -46,14 +130,93 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
 
     @Override
     public void removeReference(BibliographicReference reference) throws ReferenceDatabaseException {
-        // TODO Auto-generated method stub
+        Connection connection = null;
+        Statement statement = null;
+        String query = "delete from bibliographicReference where id = ";
 
+        try {
+            connection = DatabaseController.getConnection();
+            statement = connection.createStatement();
+            statement.executeUpdate(query);
+        } catch (Exception e) {
+            throw new ReferenceDatabaseException("Impossibile recuperare i riferimenti dell'utente.");
+        } finally {
+            try {
+                if (statement != null)
+                    statement.close();
+
+                if (connection != null)
+                    connection.close();
+            } catch (Exception e) {
+                // non fare niente
+            }
+        }
     }
 
     @Override
-    public void saveArticle(Article article) throws ReferenceDatabaseException {
-        // TODO Auto-generated method stub
+    public void saveArticle(Article article) throws ReferenceDatabaseException, IllegalArgumentException {
+        if (article == null)
+            throw new IllegalArgumentException("article non può essere null");
 
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet set = null;
+
+        try {
+            connection = DatabaseController.getConnection();
+            connection.setAutoCommit(false);
+
+            statement = connection.createStatement();
+
+            String query = "insert into category(title, pubblicationDate, DOI, description, language) values("
+                    + article.getTitle() + ", "
+                    + article.getPubblicationDate() + ","
+                    + article.getDOI() + ","
+                    + article.getDescription() + ","
+                    + article.getLanguage()
+                    + ")";
+
+            statement.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
+
+            set = statement.getGeneratedKeys();
+
+            if (set.first()) {
+                article.setID(set.getInt(1));
+            }
+
+            query = "insert into article(id, pageCount, url, publisher, issn) values("
+                    + article.getID() + ", "
+                    + article.getPageCount() + ","
+                    + article.getURL() + ","
+                    + article.getPublisher() + ","
+                    + article.getISSN()
+                    + ")";
+
+            statement.executeUpdate(query);
+
+            connection.commit();
+        } catch (Exception e) {
+            try {
+                connection.rollback();
+            } catch (Exception r) {
+                // non fare niente
+            }
+
+            throw new ReferenceDatabaseException("Impossibile aggiungere nuova categoria.");
+        } finally {
+            try {
+                if (set != null)
+                    set.close();
+
+                if (statement != null)
+                    statement.close();
+
+                if (connection != null)
+                    connection.close();
+            } catch (Exception e) {
+                // non fare niente
+            }
+        }
     }
 
     @Override

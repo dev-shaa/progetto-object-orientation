@@ -1,22 +1,20 @@
 package GUI.Homepage.Categories;
 
 import Entities.*;
-
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
 
 /**
- * Pannello con le categorie dell'utente sotto forma di albero, con ogni nodo che rappresenta una categoria.
- * Sono presenti dei pulsanti per aggiungere, modificare o rimuovere una categoria.
+ * Pannello con le categorie dell'utente sotto forma di albero, con pulsanti per aggiungere, modificare o rimuovere una categoria.
  * 
  * @see CategoriesTreeManager
  * @see CategoryTreePanel
  */
 public class CategoriesPanel extends JPanel implements CategorySelectionListener {
 
-    private CategoriesTreeManager categoriesTree;
+    private CategoryTreeModel categoriesTree;
     private CategoryTreePanel treePanel;
 
     private JButton addCategoryButton;
@@ -29,10 +27,10 @@ public class CategoriesPanel extends JPanel implements CategorySelectionListener
      * @param categoriesTree
      *            l'albero delle categorie dell'utente
      * @throws IllegalArgumentException
-     *             se categoriesTree non è valido
+     *             se categoriesTree è nullo.
      * @see #setCategoriesTree(CategoriesTreeManager)
      */
-    public CategoriesPanel(CategoriesTreeManager categoriesTree) throws IllegalArgumentException {
+    public CategoriesPanel(CategoryTreeModel categoriesTree) {
         super();
 
         setCategoriesTree(categoriesTree);
@@ -85,10 +83,7 @@ public class CategoriesPanel extends JPanel implements CategorySelectionListener
      * @throws IllegalArgumentException
      *             se {@code categoriesTree == null}
      */
-    public void setCategoriesTree(CategoriesTreeManager categoriesTree) throws IllegalArgumentException {
-        if (categoriesTree == null)
-            throw new IllegalArgumentException("categoriesTree non può essere null");
-
+    public void setCategoriesTree(CategoryTreeModel categoriesTree) {
         if (treePanel == null) {
             treePanel = new CategoryTreePanel(categoriesTree);
             treePanel.addSelectionListener(this);
@@ -122,10 +117,9 @@ public class CategoriesPanel extends JPanel implements CategorySelectionListener
             String newCategoryName = getCategoryNameFromUser("Nuova categoria");
 
             if (newCategoryName != null) {
-                categoriesTree.addNode(new Category(newCategoryName), treePanel.getSelectedNode());
+                categoriesTree.addNode(new CategoryTreeNode(new Category(newCategoryName)), treePanel.getSelectedNode());
 
-                // così è più comodo per l'utente
-                // displayTree.expandPath(new TreePath(selectedNode.getPath()));
+                // TODO: aggiungi al database
             }
         } catch (Exception exception) {
             JOptionPane.showMessageDialog(null, exception.getMessage());
@@ -141,8 +135,9 @@ public class CategoriesPanel extends JPanel implements CategorySelectionListener
         try {
             String name = getCategoryNameFromUser(treePanel.getSelectedNode().getUserObject().getName());
 
-            if (name != null)
-                categoriesTree.changeNode(treePanel.getSelectedNode(), name);
+            if (name != null) {
+                // TODO: cambia nodo
+            }
         } catch (Exception exception) {
             JOptionPane.showMessageDialog(null, exception.getMessage());
         }
@@ -157,7 +152,9 @@ public class CategoriesPanel extends JPanel implements CategorySelectionListener
             int confirmDialogBoxOption = JOptionPane.showConfirmDialog(null, "Sicuro di volere eliminare questa categoria?", "Elimina categoria", JOptionPane.YES_NO_OPTION);
 
             if (confirmDialogBoxOption == JOptionPane.YES_OPTION) {
-                categoriesTree.removeNode(treePanel.getSelectedNode());
+                categoriesTree.removeNodeFromParent(treePanel.getSelectedNode());
+
+                // TODO: rimuovi dal database
             }
         } catch (Exception exception) {
             JOptionPane.showMessageDialog(null, exception.getMessage());

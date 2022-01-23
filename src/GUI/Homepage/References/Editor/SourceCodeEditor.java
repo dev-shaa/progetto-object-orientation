@@ -5,7 +5,7 @@ import Entities.References.OnlineResources.SourceCode;
 import Entities.References.OnlineResources.ProgrammingLanguage;
 import Exceptions.ReferenceDatabaseException;
 import Exceptions.RequiredFieldMissingException;
-import GUI.Homepage.Categories.CategoriesTreeManager;
+import GUI.Homepage.Categories.CategoryTreeModel;
 
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
@@ -30,13 +30,13 @@ public class SourceCodeEditor extends OnlineResourceEditor<SourceCode> {
      * 
      * @see #setReferenceDAO(BibliographicReferenceDAO)
      */
-    public SourceCodeEditor(CategoriesTreeManager categoriesTree, BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
+    public SourceCodeEditor(CategoryTreeModel categoriesTree, BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
         super("Codice sorgente", categoriesTree, referenceDAO);
     }
 
     @Override
-    protected void setup(CategoriesTreeManager categoriesTree) {
-        super.setup(categoriesTree);
+    protected void setup() {
+        super.setup();
 
         programmingLanguage = new JComboBox<>(ProgrammingLanguage.values());
         addFieldComponent(programmingLanguage, "Linguaggio");

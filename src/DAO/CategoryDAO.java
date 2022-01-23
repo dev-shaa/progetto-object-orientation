@@ -2,6 +2,7 @@ package DAO;
 
 import Entities.*;
 import Exceptions.*;
+import GUI.Homepage.Categories.CategoryTreeModel;
 
 /**
  * Classe astratta che si occupa di gestire la parte di database relativo alle
@@ -19,7 +20,7 @@ public interface CategoryDAO {
      * @throws CategoryDatabaseException
      *             se l'aggiunta della categoria al database non va a buon fine
      */
-    public void addCategory(Category category) throws IllegalArgumentException, CategoryDatabaseException;
+    public void addCategory(Category category) throws CategoryDatabaseException;
 
     /**
      * Modifica una categoria nel database.
@@ -31,7 +32,7 @@ public interface CategoryDAO {
      * @throws CategoryDatabaseException
      *             se la modifica della categoria nel database non va a buon fine
      */
-    public void changeCategory(Category category) throws IllegalArgumentException, CategoryDatabaseException;
+    public void changeCategory(Category category) throws CategoryDatabaseException;
 
     /**
      * Elimina una categoria nel database.
@@ -43,15 +44,15 @@ public interface CategoryDAO {
      * @throws CategoryDatabaseException
      *             se la rimozione della categoria dal database non va a buon fine
      */
-    public void removeCategory(Category category) throws IllegalArgumentException, CategoryDatabaseException;
+    public void removeCategory(Category category) throws CategoryDatabaseException;
 
     /**
      * Ottiene tutte le categorie appartenenti a un utente nel database.
      * 
-     * @return lista contenente tutte le categorie dell'utente.
+     * @return albero contenente tutte le categorie dell'utente.
      * @throws CategoryDatabaseException
      *             se il recupero delle categorie dal database non va a buon fine
      */
-    public Category[] getUserCategories() throws CategoryDatabaseException;
+    public CategoryTreeModel getUserCategories() throws CategoryDatabaseException;
 
 }

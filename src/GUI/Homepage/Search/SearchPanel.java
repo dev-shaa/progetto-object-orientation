@@ -18,8 +18,7 @@ import GUI.Utilities.JPopupItemSelection;
 import GUI.Utilities.JTermsField;
 
 /**
- * Pannello per la ricerca dei riferimenti per parole chiave, autori, categorie
- * e data.
+ * Pannello per la ricerca dei riferimenti per parole chiave, autori, categorie e data.
  */
 public class SearchPanel extends JPanel {
 
@@ -37,12 +36,12 @@ public class SearchPanel extends JPanel {
     private final float alignment = Container.LEFT_ALIGNMENT;
 
     /**
-     * Crea {@code ReferenceSearchPanel}.
+     * TODO: commenta
      * 
-     * @param referencePanel
      * @param categoriesTree
+     * @throws IllegalArgumentException
      */
-    public SearchPanel(CategoriesTreeManager categoriesTree) throws IllegalArgumentException {
+    public SearchPanel(CategoryTreeModel categoriesTree) throws IllegalArgumentException {
         setCategoriesTree(categoriesTree);
 
         setLayout(new BorderLayout(5, 5));
@@ -133,15 +132,17 @@ public class SearchPanel extends JPanel {
         }
     }
 
-    public void setCategoriesTree(CategoriesTreeManager categoriesTree) throws IllegalArgumentException {
-        if (categoriesTree == null)
-            throw new IllegalArgumentException("categorieTree non può essere null");
-
-        if (categories == null) {
+    /**
+     * TODO:
+     * 
+     * @param categoriesTree
+     * @throws IllegalArgumentException
+     */
+    public void setCategoriesTree(CategoryTreeModel categoriesTree) {
+        if (categories == null)
             categories = new CategoriesSelectionPopupMenu(categoriesTree);
-        } else {
+        else
             categories.setCategoriesTree(categoriesTree);
-        }
     }
 
     /**

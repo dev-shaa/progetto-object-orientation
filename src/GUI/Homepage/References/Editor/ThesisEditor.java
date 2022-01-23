@@ -4,7 +4,7 @@ import DAO.BibliographicReferenceDAO;
 import Entities.References.PhysicalResources.Thesis;
 import Exceptions.ReferenceDatabaseException;
 import Exceptions.RequiredFieldMissingException;
-import GUI.Homepage.Categories.CategoriesTreeManager;
+import GUI.Homepage.Categories.CategoryTreeModel;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -30,13 +30,13 @@ public class ThesisEditor extends PublicationEditor<Thesis> {
      * 
      * @see #setReferenceDAO(BibliographicReferenceDAO)
      */
-    public ThesisEditor(CategoriesTreeManager categoriesTree, BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
+    public ThesisEditor(CategoryTreeModel categoriesTree, BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
         super("Tesi", categoriesTree, referenceDAO);
     }
 
     @Override
-    protected void setup(CategoriesTreeManager categoriesTree) {
-        super.setup(categoriesTree);
+    protected void setup() {
+        super.setup();
 
         university = new JTextField();
         faculty = new JTextField();

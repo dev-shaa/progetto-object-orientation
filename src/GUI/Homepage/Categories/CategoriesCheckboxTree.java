@@ -8,6 +8,7 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeSelectionModel;
+import javax.swing.tree.MutableTreeNode;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -23,10 +24,10 @@ public class CategoriesCheckboxTree extends JTree {
      * @param categoriesTree
      *            albero delle categorie da selezionare
      * @throws IllegalArgumentException
-     *             se {@code categoriesTree} non è valido
+     *             se {@code categoriesTree} è nullo
      * @see #setCategoriesTree(CategoriesTreeManager)
      */
-    public CategoriesCheckboxTree(CategoriesTreeManager categoriesTree) throws IllegalArgumentException {
+    public CategoriesCheckboxTree(CategoryTreeModel categoriesTree) {
         super();
 
         setCategoriesTree(categoriesTree);
@@ -37,6 +38,7 @@ public class CategoriesCheckboxTree extends JTree {
         setCellRenderer(new CheckboxTreeRenderer());
 
         setSelectionModel(new DefaultTreeSelectionModel() {
+
             @Override
             public void setSelectionPath(TreePath path) {
                 if (isPathSelected(path)) {
@@ -58,20 +60,23 @@ public class CategoriesCheckboxTree extends JTree {
 
             @Override
             public void removeSelectionPath(TreePath path) {
-                Enumeration<TreeNode> children = ((DefaultMutableTreeNode) path.getLastPathComponent()).children();
+                // FIXME:
+                // Enumeration<TreeNode> children = ((MutableTreeNode) path.getLastPathComponent()).children();
 
-                while (children.hasMoreElements()) {
-                    removeSelectionPath(path.pathByAddingChild(children.nextElement()));
-                }
+                // while (children.hasMoreElements()) {
+                // removeSelectionPath(path.pathByAddingChild(children.nextElement()));
+                // }
 
-                super.removeSelectionPath(path);
+                // super.removeSelectionPath(path);
             }
 
             @Override
             public void setSelectionPaths(TreePath[] pPaths) {
                 // super.setSelectionPaths(pPaths);
             }
+
         });
+
     }
 
     /**
@@ -80,13 +85,13 @@ public class CategoriesCheckboxTree extends JTree {
      * @param categoriesTree
      *            albero delle categorie
      * @throws IllegalArgumentException
-     *             se {@code categoriesTree == null}
+     *             se {@code newModel} è nullo
      */
-    public void setCategoriesTree(CategoriesTreeManager categoriesTree) throws IllegalArgumentException {
+    public void setCategoriesTree(CategoryTreeModel categoriesTree) {
         if (categoriesTree == null)
-            throw new IllegalArgumentException("categoriesTree non può essere null");
+            throw new IllegalArgumentException("newModel is not of type CategoryTreeModel");
 
-        setModel(categoriesTree.getTreeModel());
+        setModel(categoriesTree);
     }
 
     /**
@@ -103,10 +108,10 @@ public class CategoriesCheckboxTree extends JTree {
         ArrayList<Category> selectedCategories = new ArrayList<>();
 
         for (TreePath path : selectedPaths) {
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
+            CategoryTreeNode node = (CategoryTreeNode) path.getLastPathComponent();
 
             if (node != null) {
-                Category category = (Category) node.getUserObject();
+                Category category = node.getUserObject();
 
                 if (category != null) {
                     selectedCategories.add(category);

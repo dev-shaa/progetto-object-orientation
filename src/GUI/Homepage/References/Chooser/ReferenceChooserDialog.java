@@ -11,8 +11,8 @@ import javax.swing.border.EmptyBorder;
 
 import Entities.Category;
 import Entities.References.BibliographicReference;
-import GUI.Homepage.Categories.CategoriesTreeManager;
 import GUI.Homepage.Categories.CategorySelectionListener;
+import GUI.Homepage.Categories.CategoryTreeModel;
 import GUI.Homepage.Categories.CategoryTreePanel;
 import GUI.Homepage.References.ReferenceListPanel;
 import GUI.Homepage.References.ReferenceListSelectionListener;
@@ -38,8 +38,9 @@ public class ReferenceChooserDialog extends JDialog implements CategorySelection
      * 
      * @param categoriesTree
      *            albero delle categorie da scegliere
+     * @throws IllegalArgumentException
      */
-    public ReferenceChooserDialog(CategoriesTreeManager categoriesTree, List<BibliographicReference> references) {
+    public ReferenceChooserDialog(CategoryTreeModel categoriesTree, List<BibliographicReference> references) {
         setTitle("Aggiungi riferimento");
         setModal(true);
         setSize(500, 500);

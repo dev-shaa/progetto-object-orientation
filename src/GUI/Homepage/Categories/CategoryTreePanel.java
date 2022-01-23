@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreeSelectionModel;
+
 import java.util.ArrayList;
 
 /**
@@ -14,7 +15,16 @@ public class CategoryTreePanel extends JScrollPane implements TreeSelectionListe
     private JTree tree;
     private ArrayList<CategorySelectionListener> selectionListeners;
 
-    public CategoryTreePanel(CategoriesTreeManager categoriesTree) throws IllegalArgumentException {
+    /**
+     * Crea un nuovo pannello con l'albero delle categorie indicato.
+     * L'albero è non modificabile ed è possibile selezionare un solo nodo per volta.
+     * 
+     * @param categoriesTree
+     *            albero delle categorie
+     * @throws IllegalArgumentException
+     *             se {@code categoriesTree} è nullo
+     */
+    public CategoryTreePanel(CategoryTreeModel categoriesTree) {
         super();
 
         tree = new JTree();
@@ -41,11 +51,11 @@ public class CategoryTreePanel extends JScrollPane implements TreeSelectionListe
      * @throws IllegalArgumentException
      *             se {@code categoriesTree == null}
      */
-    public void setCategoriesTree(CategoriesTreeManager categoriesTree) throws IllegalArgumentException {
+    public void setCategoriesTree(CategoryTreeModel categoriesTree) {
         if (categoriesTree == null)
             throw new IllegalArgumentException("categoriesTree non può essere null");
 
-        tree.setModel(categoriesTree.getTreeModel());
+        tree.setModel(categoriesTree);
     }
 
     /**
@@ -83,8 +93,8 @@ public class CategoryTreePanel extends JScrollPane implements TreeSelectionListe
      * @return
      *         nodo selezionato
      */
-    public CategoryMutableTreeNode getSelectedNode() {
-        return (CategoryMutableTreeNode) tree.getLastSelectedPathComponent();
+    public CategoryTreeNode getSelectedNode() {
+        return (CategoryTreeNode) tree.getLastSelectedPathComponent();
     }
 
     @Override

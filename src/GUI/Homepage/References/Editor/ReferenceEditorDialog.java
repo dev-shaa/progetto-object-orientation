@@ -1,16 +1,12 @@
 package GUI.Homepage.References.Editor;
 
-import GUI.Homepage.Categories.*;
-import GUI.Homepage.References.Chooser.ReferenceChooserDialog;
-import GUI.Homepage.References.Chooser.ReferenceChooserSelectionListener;
-import GUI.Utilities.JPopupButton;
-import GUI.Utilities.JPopupItemSelection;
-import GUI.Utilities.JTermsField;
-import Entities.Author;
-import Entities.Category;
-import Entities.Tag;
+import Entities.*;
 import Entities.References.*;
+import GUI.Utilities.*;
+import GUI.Homepage.Categories.*;
+import GUI.Homepage.References.Chooser.*;
 import Exceptions.RequiredFieldMissingException;
+import DAO.BibliographicReferenceDAO;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -19,7 +15,6 @@ import java.util.Date;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import com.toedter.calendar.JDateChooser;
-import DAO.BibliographicReferenceDAO;
 
 /**
  * Pannello per la creazione o modifica di un riferimento bibliografico.
@@ -43,6 +38,8 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
     private AuthorEditor authorEditor;
     private BibliographicReferenceDAO referenceDAO;
 
+    private CategoryTreeModel categoriesTree;
+
     private final String searchFieldSeparator = ",";
     private final Dimension maximumSize = new Dimension(Integer.MAX_VALUE, 24);
     private final Dimension spacingSize = new Dimension(0, 10);
@@ -57,14 +54,12 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
      *            albero delle categorie in cui è possibile inserire il riferimento
      * @param referenceDAO
      *            classe DAO per salvare i riferimenti nel database
-     * @param reference
-     *            riferimento da modificare (se nullo, non verrà inserito alcun valore e si considera come se si stesse creando un nuovo riferimento)
      * @throws IllegalArgumentException
      *             se referenceDAO non è un valore valido
      * 
      * @see #setReferenceDAO(BibliographicReferenceDAO)
      */
-    public ReferenceEditorDialog(String dialogueTitle, CategoriesTreeManager categoriesTree, BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
+    public ReferenceEditorDialog(String dialogueTitle, CategoryTreeModel categoriesTree, BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
         super();
 
         setTitle(dialogueTitle);
@@ -76,9 +71,11 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
         // vogliamo che sia un'interfaccia modale
         setModal(true);
 
+        this.categoriesTree = categoriesTree;
+
         // in questo modo le classi che ereditano ReferenceCreator possono fare l'overriding
         // e aggiungere altri elementi prima delle descrizione
-        setup(categoriesTree);
+        setup();
 
         JLabel descriptionLabel = new JLabel("Descrizione");
         descriptionLabel.setMaximumSize(maximumSize);
@@ -132,11 +129,8 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
 
     /**
      * Prepara i campi necessari per la creazione di un riferimento.
-     * 
-     * @param categoriesTree
-     *            categorie a cui può appartenere un riferimento
      */
-    protected void setup(CategoriesTreeManager categoriesTree) {
+    protected void setup() {
         fieldPanel = new JPanel();
         fieldPanel.setLayout(new BoxLayout(fieldPanel, BoxLayout.PAGE_AXIS));
         fieldPanel.setBorder(new EmptyBorder(50, 30, 50, 30));
@@ -167,15 +161,15 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
         authorsPanel.add(authors, BorderLayout.CENTER);
         authorsPanel.add(addAuthor, BorderLayout.EAST);
 
-        relatedReferencesDialog = new ReferenceChooserDialog(categoriesTree, referenceDAO);
-        relatedReferencesDialog.addReferenceChooserSelectionListener(this);
+        // relatedReferencesDialog = new ReferenceChooserDialog(categoriesTree, null);
+        // relatedReferencesDialog.addReferenceChooserSelectionListener(this);
 
         relatedReferencesPopupButton = new JPopupButton("Rimandi selezionati");
         JButton addRelatedReference = new JButton("+");
         addRelatedReference.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                relatedReferencesDialog.setVisible(true);
+                // relatedReferencesDialog.setVisible(true);
             }
         });
 

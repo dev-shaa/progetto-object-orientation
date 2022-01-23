@@ -1,8 +1,7 @@
 package GUI.Utilities;
 
-import java.util.Enumeration;
 import java.util.Vector;
-
+import java.util.Enumeration;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 
@@ -12,6 +11,8 @@ public class CustomTreeNode<T extends Object> implements MutableTreeNode {
     private CustomTreeNode<T> parent;
     private Vector<CustomTreeNode<T>> children;
     private boolean allowsChildren;
+
+    private String label;
 
     public CustomTreeNode(T userObject) {
         this(userObject, null);
@@ -76,18 +77,25 @@ public class CustomTreeNode<T extends Object> implements MutableTreeNode {
     @SuppressWarnings("unchecked")
     public void insert(MutableTreeNode child, int index) {
         try {
-            if (child == null)
-                throw new IllegalArgumentException("child can't be null");
-            else if (!getAllowsChildren())
-                throw new IllegalArgumentException("this node doesn't allow childen");
-            else if (isNodeAncestor(child))
-                throw new IllegalStateException("new child is an ancestor of this node");
+            if (!allowsChildren) {
+                throw new IllegalStateException("node does not allow children");
+            } else if (child == null) {
+                throw new IllegalArgumentException("new child is null");
+            } else if (isNodeAncestor(child)) {
+                throw new IllegalArgumentException("new child is an ancestor");
+            }
+
+            CustomTreeNode<T> oldParent = (CustomTreeNode<T>) child.getParent();
+
+            if (oldParent != null)
+                oldParent.remove(child);
+
+            child.setParent(this);
 
             if (children == null)
                 children = new Vector<>();
 
             children.insertElementAt((CustomTreeNode<T>) child, index);
-
         } catch (ClassCastException e) {
             throw new IllegalArgumentException("child non è un nodo del tipo giusto");
         }
@@ -138,16 +146,22 @@ public class CustomTreeNode<T extends Object> implements MutableTreeNode {
         if (anotherNode == null)
             return false;
 
-        if (anotherNode == this)
-            return true;
+        TreeNode ancestor = this;
 
-        TreeNode parent = getParent();
+        while (ancestor != null && !ancestor.equals(anotherNode))
+            ancestor = ancestor.getParent();
 
-        while (parent != null && parent.equals(anotherNode)) {
-            parent = getParent();
-        }
+        return ancestor != null;
+    }
 
-        return parent != null;
+    public void setLabel(String label) {
+        // TODO:
+        this.label = label;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(getUserObject());
     }
 
 }

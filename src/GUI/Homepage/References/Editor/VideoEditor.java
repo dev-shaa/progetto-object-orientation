@@ -4,7 +4,7 @@ import DAO.BibliographicReferenceDAO;
 import Entities.References.OnlineResources.Video;
 import Exceptions.ReferenceDatabaseException;
 import Exceptions.RequiredFieldMissingException;
-import GUI.Homepage.Categories.CategoriesTreeManager;
+import GUI.Homepage.Categories.CategoryTreeModel;
 
 import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
@@ -33,7 +33,7 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
      * 
      * @see #setReferenceDAO(BibliographicReferenceDAO)
      */
-    public VideoEditor(CategoriesTreeManager categoriesTree, BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
+    public VideoEditor(CategoryTreeModel categoriesTree, BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
         super("Video", categoriesTree, referenceDAO);
     }
 
@@ -55,8 +55,8 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
     }
 
     @Override
-    protected void setup(CategoriesTreeManager categoriesTree) {
-        super.setup(categoriesTree);
+    protected void setup() {
+        super.setup();
 
         width = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
         height = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));

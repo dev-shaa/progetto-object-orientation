@@ -14,6 +14,8 @@ import GUI.Homepage.Search.Search;
 
 public interface BibliographicReferenceDAO {
 
+    public BibliographicReference[] getReferences();
+
     public BibliographicReference[] getReferences(Category category) throws ReferenceDatabaseException;
 
     public BibliographicReference[] getReferences(Search search) throws ReferenceDatabaseException;

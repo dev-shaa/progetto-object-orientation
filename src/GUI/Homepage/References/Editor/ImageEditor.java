@@ -4,7 +4,7 @@ import DAO.BibliographicReferenceDAO;
 import Entities.References.OnlineResources.Image;
 import Exceptions.ReferenceDatabaseException;
 import Exceptions.RequiredFieldMissingException;
-import GUI.Homepage.Categories.CategoriesTreeManager;
+import GUI.Homepage.Categories.CategoryTreeModel;
 
 import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
@@ -31,13 +31,13 @@ public class ImageEditor extends OnlineResourceEditor<Image> {
      * 
      * @see #setReferenceDAO(BibliographicReferenceDAO)
      */
-    public ImageEditor(CategoriesTreeManager categoriesTree, BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
+    public ImageEditor(CategoryTreeModel categoriesTree, BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
         super("Immagine", categoriesTree, referenceDAO);
     }
 
     @Override
-    protected void setup(CategoriesTreeManager categoriesTree) {
-        super.setup(categoriesTree);
+    protected void setup() {
+        super.setup();
 
         width = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
         height = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));

@@ -3,7 +3,7 @@ package GUI.Homepage.References.Editor;
 import DAO.BibliographicReferenceDAO;
 import Entities.References.OnlineResources.OnlineResource;
 import Exceptions.RequiredFieldMissingException;
-import GUI.Homepage.Categories.CategoriesTreeManager;
+import GUI.Homepage.Categories.CategoryTreeModel;
 
 import javax.swing.*;
 
@@ -28,13 +28,13 @@ public abstract class OnlineResourceEditor<T extends OnlineResource> extends Ref
      * 
      * @see #setReferenceDAO(BibliographicReferenceDAO)
      */
-    public OnlineResourceEditor(String dialogueTitle, CategoriesTreeManager categoriesTree, BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
+    public OnlineResourceEditor(String dialogueTitle, CategoryTreeModel categoriesTree, BibliographicReferenceDAO referenceDAO) {
         super(dialogueTitle, categoriesTree, referenceDAO);
     }
 
     @Override
-    protected void setup(CategoriesTreeManager categoriesTree) {
-        super.setup(categoriesTree);
+    protected void setup() {
+        super.setup();
 
         URL = new JTextField();
 

@@ -3,7 +3,7 @@ package GUI.Homepage.References.Editor;
 import DAO.BibliographicReferenceDAO;
 import Entities.References.PhysicalResources.Publication;
 import Exceptions.RequiredFieldMissingException;
-import GUI.Homepage.Categories.CategoriesTreeManager;
+import GUI.Homepage.Categories.CategoryTreeModel;
 
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
@@ -34,13 +34,13 @@ public abstract class PublicationEditor<T extends Publication> extends Reference
      * 
      * @see #setReferenceDAO(BibliographicReferenceDAO)
      */
-    public PublicationEditor(String dialogueTitle, CategoriesTreeManager categoriesTree, BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
+    public PublicationEditor(String dialogueTitle, CategoryTreeModel categoriesTree, BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
         super(dialogueTitle, categoriesTree, referenceDAO);
     }
 
     @Override
-    protected void setup(CategoriesTreeManager categoriesTree) {
-        super.setup(categoriesTree);
+    protected void setup() {
+        super.setup();
 
         pageCount = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
         URL = new JTextField();

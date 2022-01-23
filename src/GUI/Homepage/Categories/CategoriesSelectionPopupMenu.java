@@ -19,7 +19,7 @@ public class CategoriesSelectionPopupMenu extends JPopupButton {
      * @throws IllegalArgumentException
      *             se {@code categoriesTreeManager == null}
      */
-    public CategoriesSelectionPopupMenu(CategoriesTreeManager categoriesTree) throws IllegalArgumentException {
+    public CategoriesSelectionPopupMenu(CategoryTreeModel categoriesTree) {
         setText("Premi per selezionare le categorie");
 
         setCategoriesTree(categoriesTree);
@@ -35,10 +35,7 @@ public class CategoriesSelectionPopupMenu extends JPopupButton {
      * @throws IllegalArgumentException
      *             se {@code categoriesTreeManager == null}
      */
-    public void setCategoriesTree(CategoriesTreeManager categoriesTree) throws IllegalArgumentException {
-        if (categoriesTree == null)
-            throw new IllegalArgumentException();
-
+    public void setCategoriesTree(CategoryTreeModel categoriesTree) {
         if (categoriesCheckboxTree == null) {
             categoriesCheckboxTree = new CategoriesCheckboxTree(categoriesTree);
             categoriesCheckboxTree.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));

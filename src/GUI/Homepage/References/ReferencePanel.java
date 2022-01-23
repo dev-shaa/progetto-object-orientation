@@ -2,7 +2,7 @@ package GUI.Homepage.References;
 
 import DAO.*;
 import GUI.*;
-import GUI.Homepage.Categories.CategoriesTreeManager;
+import GUI.Homepage.Categories.CategoryTreeModel;
 import GUI.Homepage.References.Chooser.ReferenceChooserDialog;
 import GUI.Homepage.References.Editor.*;
 import GUI.Homepage.Search.Search;
@@ -33,7 +33,7 @@ import java.util.List;
  */
 public class ReferencePanel extends JPanel implements ReferenceListSelectionListener {
 
-    private CategoriesTreeManager categoriesTree;
+    private CategoryTreeModel categoriesTree;
     private BibliographicReferenceDAO referenceDAO;
 
     private ReferenceListPanel listPanel;
@@ -64,7 +64,7 @@ public class ReferencePanel extends JPanel implements ReferenceListSelectionList
      * @see #setCategoriesTreeManager(Controller)
      * @see #setBibliographicReferenceDAO(BibliographicReferenceDAO)
      */
-    public ReferencePanel(CategoriesTreeManager categoriesTree, BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
+    public ReferencePanel(CategoryTreeModel categoriesTree, BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
         setCategoriesTree(categoriesTree);
         setBibliographicReferenceDAO(referenceDAO);
 
@@ -280,7 +280,7 @@ public class ReferencePanel extends JPanel implements ReferenceListSelectionList
      * @param categoriesTree
      * @throws IllegalArgumentException
      */
-    public void setCategoriesTree(CategoriesTreeManager categoriesTree) throws IllegalArgumentException {
+    public void setCategoriesTree(CategoryTreeModel categoriesTree) throws IllegalArgumentException {
         if (categoriesTree == null)
             throw new IllegalArgumentException("categories tree non può essere null");
 
