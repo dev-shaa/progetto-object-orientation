@@ -1,6 +1,8 @@
 package GUI.Homepage.References.Editor;
 
 import GUI.Homepage.Categories.*;
+import GUI.Homepage.References.Chooser.ReferenceChooserDialog;
+import GUI.Homepage.References.Chooser.ReferenceChooserSelectionListener;
 import GUI.Utilities.JPopupButton;
 import GUI.Utilities.JPopupItemSelection;
 import GUI.Utilities.JTermsField;
@@ -166,7 +168,7 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
         authorsPanel.add(addAuthor, BorderLayout.EAST);
 
         relatedReferencesDialog = new ReferenceChooserDialog(categoriesTree, referenceDAO);
-        relatedReferencesDialog.addQuotationSelectionListener(this);
+        relatedReferencesDialog.addReferenceChooserSelectionListener(this);
 
         relatedReferencesPopupButton = new JPopupButton("Rimandi selezionati");
         JButton addRelatedReference = new JButton("+");

@@ -3,6 +3,7 @@ package GUI.Homepage.References;
 import DAO.*;
 import GUI.*;
 import GUI.Homepage.Categories.CategoriesTreeManager;
+import GUI.Homepage.References.Chooser.ReferenceChooserDialog;
 import GUI.Homepage.References.Editor.*;
 import GUI.Homepage.Search.Search;
 import GUI.Utilities.JPopupButton;
@@ -37,6 +38,7 @@ public class ReferencePanel extends JPanel implements ReferenceListSelectionList
 
     private ReferenceListPanel listPanel;
     private ReferenceInfoPanel infoPanel;
+    private ReferenceChooserDialog referenceChooser;
 
     private JButton editReferenceButton;
     private JButton deleteReferenceButton;

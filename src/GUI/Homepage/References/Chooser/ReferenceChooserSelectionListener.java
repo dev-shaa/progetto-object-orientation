@@ -1,4 +1,4 @@
-package GUI.Homepage.References.Editor;
+package GUI.Homepage.References.Chooser;
 
 import java.util.EventListener;
 import Entities.References.BibliographicReference;

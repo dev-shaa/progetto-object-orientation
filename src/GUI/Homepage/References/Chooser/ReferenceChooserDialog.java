@@ -1,4 +1,4 @@
-package GUI.Homepage.References.Editor;
+package GUI.Homepage.References.Chooser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,12 +101,12 @@ public class ReferenceChooserDialog extends JDialog implements CategorySelection
     }
 
     /**
-     * Aggiunge un listener all'evento di selezione di un rimando.
+     * Aggiunge un listener all'evento di selezione di un riferimento.
      * 
      * @param listener
      *            listener da aggiungere
      */
-    public void addQuotationSelectionListener(ReferenceChooserSelectionListener listener) {
+    public void addReferenceChooserSelectionListener(ReferenceChooserSelectionListener listener) {
         if (listener == null)
             return;
 
@@ -117,12 +117,12 @@ public class ReferenceChooserDialog extends JDialog implements CategorySelection
     }
 
     /**
-     * Rimuove un listener dall'evento di selezione di un rimando.
+     * Rimuove un listener dall'evento di selezione di un riferimento.
      * 
      * @param listener
      *            listener da rimuovere
      */
-    public void removeQuotationSelectionListener(ReferenceChooserSelectionListener listener) {
+    public void removeReferenceChooserSelectionListener(ReferenceChooserSelectionListener listener) {
         if (listener != null && selectionListeners != null)
             selectionListeners.remove(listener);
     }
