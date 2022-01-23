@@ -1,10 +1,10 @@
-package GUI.ReferenceEditor;
+package GUI.Homepage.References.ReferenceEditor;
 
-import GUI.Categories.CategoriesTreeManager;
 import DAO.BibliographicReferenceDAO;
 import Entities.References.PhysicalResources.Book;
 import Exceptions.ReferenceDatabaseException;
 import Exceptions.RequiredFieldMissingException;
+import GUI.Homepage.Categories.CategoriesTreeManager;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;

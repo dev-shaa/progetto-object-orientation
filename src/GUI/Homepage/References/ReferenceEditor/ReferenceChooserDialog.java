@@ -1,4 +1,4 @@
-package GUI.ReferenceEditor;
+package GUI.Homepage.References.ReferenceEditor;
 
 import java.util.ArrayList;
 
@@ -13,9 +13,9 @@ import DAO.BibliographicReferenceDAO;
 import Entities.Category;
 import Entities.References.BibliographicReference;
 import Exceptions.ReferenceDatabaseException;
-import GUI.Categories.CategoriesTreeManager;
-import GUI.Categories.CategorySelectionListener;
-import GUI.Categories.CategoryTreePanel;
+import GUI.Homepage.Categories.CategoriesTreeManager;
+import GUI.Homepage.Categories.CategorySelectionListener;
+import GUI.Homepage.Categories.CategoryTreePanel;
 import GUI.Homepage.References.ReferenceListPanel;
 import GUI.Homepage.References.ReferenceSelectionListener;
 

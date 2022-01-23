@@ -1,9 +1,9 @@
-package GUI.ReferenceEditor;
+package GUI.Homepage.References.ReferenceEditor;
 
 import DAO.BibliographicReferenceDAO;
-import GUI.Categories.CategoriesTreeManager;
 import Entities.References.PhysicalResources.Publication;
 import Exceptions.RequiredFieldMissingException;
+import GUI.Homepage.Categories.CategoriesTreeManager;
 
 import javax.swing.JSpinner;
 import javax.swing.JTextField;

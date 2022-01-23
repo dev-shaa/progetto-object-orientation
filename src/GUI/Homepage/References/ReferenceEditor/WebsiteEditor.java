@@ -1,12 +1,12 @@
-package GUI.ReferenceEditor;
+package GUI.Homepage.References.ReferenceEditor;
 
 import javax.swing.JOptionPane;
 
 import DAO.BibliographicReferenceDAO;
-import GUI.Categories.CategoriesTreeManager;
 import Entities.References.OnlineResources.Website;
 import Exceptions.ReferenceDatabaseException;
 import Exceptions.RequiredFieldMissingException;
+import GUI.Homepage.Categories.CategoriesTreeManager;
 
 /**
  * Pannello di dialogo per la creazione o modifica di un riferimento a un sito web.

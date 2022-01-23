@@ -1,4 +1,4 @@
-package GUI.Categories;
+package GUI.Homepage.Categories;
 
 import Entities.Category;
 import GUI.Utilities.CheckboxTreeRenderer;

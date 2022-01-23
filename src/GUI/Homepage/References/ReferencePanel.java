@@ -2,9 +2,9 @@ package GUI.Homepage.References;
 
 import DAO.*;
 import GUI.*;
-import GUI.Categories.CategoriesTreeManager;
+import GUI.Homepage.Categories.CategoriesTreeManager;
+import GUI.Homepage.References.ReferenceEditor.*;
 import GUI.Homepage.Search.Search;
-import GUI.ReferenceEditor.*;
 import GUI.Utilities.JPopupButton;
 import Entities.*;
 import Entities.References.*;
@@ -20,6 +20,8 @@ import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Classe che si occupa di mostrare i riferimenti cercati o presenti in una
@@ -46,6 +48,8 @@ public class ReferencePanel extends JPanel implements ReferenceSelectionListener
     private ThesisEditor thesisEditor;
     private VideoEditor videoEditor;
     private WebsiteEditor websiteEditor;
+
+    private ArrayList<BibliographicReference> references;
 
     /**
      * Crea un pannello di riferimenti.
@@ -217,35 +221,6 @@ public class ReferencePanel extends JPanel implements ReferenceSelectionListener
         websiteEditor.setVisible(true, website);
     }
 
-    /**
-     * Imposta la classe DAO per interfacciarsi col database e recuperare i
-     * riferimenti.
-     * 
-     * @param referenceDAO
-     *            classe DAO per i riferimenti
-     * @throws IllegalArgumentException
-     *             se {@code bibliographicReferenceDAO == null}
-     */
-    public void setBibliographicReferenceDAO(BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
-        if (referenceDAO == null)
-            throw new IllegalArgumentException("bibliographicReferenceDAO non può essere null");
-
-        this.referenceDAO = referenceDAO;
-    }
-
-    /**
-     * TODO: commenta
-     * 
-     * @param categoriesTree
-     * @throws IllegalArgumentException
-     */
-    public void setCategoriesTree(CategoriesTreeManager categoriesTree) throws IllegalArgumentException {
-        if (categoriesTree == null)
-            throw new IllegalArgumentException("categories tree non può essere null");
-
-        this.categoriesTree = categoriesTree;
-    }
-
     private void changeSelectedReference() {
         BibliographicReference selectedReference = listPanel.getSelectedReference();
 
@@ -283,6 +258,39 @@ public class ReferencePanel extends JPanel implements ReferenceSelectionListener
     }
 
     /**
+     * Imposta la classe DAO per interfacciarsi col database e recuperare i
+     * riferimenti.
+     * 
+     * @param referenceDAO
+     *            classe DAO per i riferimenti
+     * @throws IllegalArgumentException
+     *             se {@code bibliographicReferenceDAO == null}
+     */
+    public void setBibliographicReferenceDAO(BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
+        if (referenceDAO == null)
+            throw new IllegalArgumentException("bibliographicReferenceDAO non può essere null");
+
+        this.referenceDAO = referenceDAO;
+    }
+
+    /**
+     * TODO: commenta
+     * 
+     * @param categoriesTree
+     * @throws IllegalArgumentException
+     */
+    public void setCategoriesTree(CategoriesTreeManager categoriesTree) throws IllegalArgumentException {
+        if (categoriesTree == null)
+            throw new IllegalArgumentException("categories tree non può essere null");
+
+        this.categoriesTree = categoriesTree;
+    }
+
+    public ArrayList<BibliographicReference> getReferences() {
+        return references;
+    }
+
+    /**
      * Mostra i riferimenti passati.
      * 
      * @param references
@@ -299,12 +307,18 @@ public class ReferencePanel extends JPanel implements ReferenceSelectionListener
      *            categoria di cui mostrare i riferimenti
      */
     public void showReferences(Category category) {
-        try {
-            BibliographicReference[] references = referenceDAO.getReferences(category);
-            showReferences(references);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
-        }
+        // try {
+        // BibliographicReference[] references = referenceDAO.getReferences(category);
+        // showReferences(references);
+        // } catch (Exception e) {
+        // JOptionPane.showMessageDialog(null, e.getMessage());
+        // }
+
+        if (references == null)
+            return;
+
+        List<BibliographicReference> referencesInCategory = references.stream().filter(e -> e.getCategories().contains(category)).toList();
+        showReferences(referencesInCategory.toArray(new BibliographicReference[referencesInCategory.size()]));
     }
 
     /**

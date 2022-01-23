@@ -1,4 +1,4 @@
-package GUI.Categories;
+package GUI.Homepage.Categories;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;

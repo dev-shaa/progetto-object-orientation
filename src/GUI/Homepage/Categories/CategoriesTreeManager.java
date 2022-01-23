@@ -1,4 +1,4 @@
-package GUI.Categories;
+package GUI.Homepage.Categories;
 
 import DAO.CategoryDAO;
 import Entities.Category;

@@ -1,8 +1,6 @@
-package GUI.ReferenceEditor;
+package GUI.Homepage.References.ReferenceEditor;
 
-// NOTE: questa è una classe lunghissima, però sono principalmente commenti e getter/setter
-
-import GUI.Categories.*;
+import GUI.Homepage.Categories.*;
 import GUI.Utilities.JPopupButton;
 import GUI.Utilities.JPopupItemSelection;
 import GUI.Utilities.JTermsField;

@@ -1,10 +1,11 @@
 package GUI.Homepage;
 
 import GUI.*;
-import GUI.Categories.*;
 import DAO.*;
 import Entities.*;
+import Entities.References.BibliographicReference;
 import Exceptions.*;
+import GUI.Homepage.Categories.*;
 import GUI.Homepage.References.*;
 import GUI.Homepage.Search.*;
 import GUI.Homepage.UserInfo.LogoutListener;
@@ -12,6 +13,8 @@ import GUI.Homepage.UserInfo.UserInfoPanel;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.awt.BorderLayout;
 import javax.swing.*;
 
@@ -33,6 +36,8 @@ public class Homepage extends JFrame implements CategorySelectionListener, Logou
     private CategoriesPanel categoriesPanel;
     private SearchPanel referenceSearchPanel;
 
+    private ArrayList<BibliographicReference> references;
+
     /**
      * TODO: commenta
      * Crea la pagina principale con i dati relativi all'utente.
@@ -44,7 +49,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Logou
      *             se controller o user sono nulli
      * @throws CategoryDatabaseException
      */
-    public Homepage(Controller controller, User user) throws IllegalArgumentException, CategoryDatabaseException {
+    public Homepage(Controller controller, User user) throws IllegalArgumentException, CategoryDatabaseException, ReferenceDatabaseException {
         if (controller == null)
             throw new IllegalArgumentException();
 
@@ -54,10 +59,22 @@ public class Homepage extends JFrame implements CategorySelectionListener, Logou
         CategoryDAOPostgreSQL categoryDAO = new CategoryDAOPostgreSQL(user);
         BibliographicReferenceDAOPostgreSQL referenceDAO = new BibliographicReferenceDAOPostgreSQL(user);
 
+        // for (BibliographicReference reference : referenceDAO.getReferences()) {
+        // references.add(reference);
+        // }
+
         setTitle("Pagina principale");
         setMinimumSize(new Dimension(400, 400));
         setBounds(100, 100, 800, 600);
-        setCloseOperation();
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                int confirmDialogBoxOption = JOptionPane.showConfirmDialog(null, "Sicuro di volere uscire?", "Esci", JOptionPane.YES_NO_OPTION);
+
+                if (confirmDialogBoxOption == JOptionPane.YES_OPTION)
+                    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            }
+        });
 
         JPanel contentPane = new JPanel();
         contentPane.setLayout(new BorderLayout(5, 5));
@@ -91,26 +108,6 @@ public class Homepage extends JFrame implements CategorySelectionListener, Logou
         this.user = user;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    /**
-     * Imposta le operazioni di chiusura: chiede all'utente conferma prima di uscire.
-     */
-    private void setCloseOperation() {
-        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        this.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                int confirmDialogBoxOption = JOptionPane.showConfirmDialog(null, "Sicuro di volere uscire?", "Esci",
-                        JOptionPane.YES_NO_OPTION);
-
-                if (confirmDialogBoxOption == JOptionPane.YES_OPTION)
-                    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            }
-        });
-    }
-
     @Override
     public void onCategorySelected(Category selectedCategory) {
         referencePanel.showReferences(selectedCategory);
@@ -123,7 +120,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Logou
 
     @Override
     public void onReferenceSearch(Search search) {
-        referencePanel.showReferences(search);
+        // referencePanel.showReferences(search);
     }
 
 }
