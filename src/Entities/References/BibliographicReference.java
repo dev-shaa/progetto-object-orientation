@@ -19,6 +19,8 @@ public abstract class BibliographicReference {
     private ReferenceLanguage language;
     private Tag[] tags;
     private BibliographicReference[] relatedReferences;
+    // private Category[] categories;
+    private ArrayList<Category> categories;
 
     /**
      * Crea un nuovo riferimento con il titolo indicato.
@@ -224,6 +226,14 @@ public abstract class BibliographicReference {
      */
     public BibliographicReference[] getRelatedReferences() {
         return relatedReferences;
+    }
+
+    public void setCategories(ArrayList<Category> categories) {
+        this.categories = categories;
+    }
+
+    public ArrayList<Category> getCategories() {
+        return this.categories;
     }
 
     /**

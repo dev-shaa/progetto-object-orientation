@@ -2,10 +2,8 @@ package DAO;
 
 import Entities.*;
 import Exceptions.*;
-import GUI.Homepage.Categories.CategoryNode;
+import GUI.Homepage.Categories.CategoryTreeNode;
 import GUI.Homepage.Categories.CategoryTreeModel;
-import GUI.Utilities.CustomTreeModel;
-import GUI.Utilities.CustomTreeNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -177,10 +175,12 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
 
         // TODO:
 
-        CategoryNode root = new CategoryNode(null);
-        CategoryNode nodeA = new CategoryNode(new Category("AAA"));
-        CategoryNode nodeB = new CategoryNode(new Category("BBB"));
-        CategoryNode nodeC = new CategoryNode(new Category("CCC"));
+        CategoryTreeNode root = new CategoryTreeNode(null);
+        root.setLabel("I miei riferimenti");
+
+        CategoryTreeNode nodeA = new CategoryTreeNode(new Category("AAA"));
+        CategoryTreeNode nodeB = new CategoryTreeNode(new Category("BBB"));
+        CategoryTreeNode nodeC = new CategoryTreeNode(new Category("CCC"));
 
         CategoryTreeModel tree = new CategoryTreeModel(root);
 

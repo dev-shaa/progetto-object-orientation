@@ -154,14 +154,19 @@ public class CustomTreeNode<T extends Object> implements MutableTreeNode {
         return ancestor != null;
     }
 
-    public void setLabel(String label) {
-        // TODO:
-        this.label = label;
-    }
-
     @Override
     public String toString() {
-        return String.valueOf(getUserObject());
+        return label == null ? String.valueOf(getUserObject()) : label;
+    }
+
+    /**
+     * Imposta l'etichetta da mostrare.
+     * 
+     * @param label
+     *            etichetta
+     */
+    public void setLabel(String label) {
+        this.label = label;
     }
 
 }

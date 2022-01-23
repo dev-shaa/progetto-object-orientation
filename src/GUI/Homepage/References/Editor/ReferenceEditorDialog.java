@@ -161,15 +161,15 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
         authorsPanel.add(authors, BorderLayout.CENTER);
         authorsPanel.add(addAuthor, BorderLayout.EAST);
 
-        // relatedReferencesDialog = new ReferenceChooserDialog(categoriesTree, null);
-        // relatedReferencesDialog.addReferenceChooserSelectionListener(this);
+        relatedReferencesDialog = new ReferenceChooserDialog(categoriesTree, null);
+        relatedReferencesDialog.addReferenceChooserSelectionListener(this);
 
         relatedReferencesPopupButton = new JPopupButton("Rimandi selezionati");
         JButton addRelatedReference = new JButton("+");
         addRelatedReference.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // relatedReferencesDialog.setVisible(true);
+                relatedReferencesDialog.setVisible(true);
             }
         });
 

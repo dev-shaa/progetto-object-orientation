@@ -5,10 +5,7 @@ import GUI.Utilities.CheckboxTreeRenderer;
 
 import javax.swing.JTree;
 import javax.swing.tree.TreePath;
-import javax.swing.tree.TreeNode;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeSelectionModel;
-import javax.swing.tree.MutableTreeNode;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
