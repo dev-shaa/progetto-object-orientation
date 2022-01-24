@@ -50,12 +50,7 @@ public class JPopupButton extends JButton {
     public JPopupButton(String text, Icon icon) {
         super(text, icon);
 
-        emptyPopupLabel = new JMenuItem("Nessun elemento");
-        emptyPopupLabel.setEnabled(false);
-
         popupMenu = new JPopupMenu();
-
-        addToPopupMenu(emptyPopupLabel);
 
         addActionListener(new ActionListener() {
 
@@ -65,6 +60,10 @@ public class JPopupButton extends JButton {
             }
 
         });
+
+        emptyPopupLabel = new JMenuItem("Nessun elemento");
+        emptyPopupLabel.setEnabled(false);
+        addToPopupMenu(emptyPopupLabel);
     }
 
     /**

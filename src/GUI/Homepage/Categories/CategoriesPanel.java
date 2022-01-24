@@ -3,6 +3,7 @@ package GUI.Homepage.Categories;
 import Entities.Category;
 import DAO.CategoryDAO;
 import Exceptions.CategoryDatabaseException;
+import GUI.Utilities.CustomTreeNode;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -11,20 +12,16 @@ import javax.swing.border.*;
 
 /**
  * Pannello con le categorie dell'utente sotto forma di albero, con pulsanti per aggiungere, modificare o rimuovere una categoria.
- * 
- * @see CategoriesTreeManager
- * @see CategoryTreePanel
  */
 public class CategoriesPanel extends JPanel implements CategorySelectionListener {
 
     private CategoryTreeModel categoriesTree;
     private CategoryTreePanel treePanel;
+    private CategoryDAO categoryDAO;
 
     private JButton addCategoryButton;
     private JButton changeCategoryButton;
     private JButton removeCategoryButton;
-
-    private CategoryDAO categoryDAO;
 
     /**
      * Crea un pannello recuperando tutte le categorie associate dell'utente.
@@ -78,6 +75,9 @@ public class CategoriesPanel extends JPanel implements CategorySelectionListener
         toolbar.add(changeCategoryButton);
         toolbar.add(removeCategoryButton);
 
+        treePanel = new CategoryTreePanel(getCategoriesTree());
+        treePanel.addSelectionListener(this);
+
         add(toolbar, BorderLayout.NORTH);
         add(treePanel, BorderLayout.CENTER);
     }
@@ -122,12 +122,10 @@ public class CategoriesPanel extends JPanel implements CategorySelectionListener
     }
 
     /**
-     * Mostra una finestra di dialogo in modo che l'utente possa scegliere un nome
-     * per la nuova categoria,
+     * Mostra una finestra di dialogo in modo che l'utente possa scegliere un nome per la nuova categoria,
      * che sarà inserita come figlia della categoria selezionata.
      * Successivamente tenta di salvare nel database.
-     * In caso di fallimento, mostra una finestra di dialogo che comunica l'errore
-     * all'utente.
+     * In caso di fallimento, mostra una finestra di dialogo che comunica l'errore all'utente.
      */
     private void addCategory() {
         try {
@@ -138,10 +136,10 @@ public class CategoriesPanel extends JPanel implements CategorySelectionListener
 
                 categoryDAO.addCategory(newCategory);
 
-                categoriesTree.addNode(new CategoryTreeNode(newCategory), treePanel.getSelectedNode());
+                categoriesTree.addNode(new CustomTreeNode<Category>(newCategory), treePanel.getSelectedNode());
             }
-        } catch (Exception exception) {
-            JOptionPane.showMessageDialog(null, exception.getMessage());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }
 
@@ -151,14 +149,17 @@ public class CategoriesPanel extends JPanel implements CategorySelectionListener
      * In caso di fallimento, mostra una finestra di dialogo che comunica l'errore all'utente.
      */
     private void changeCategory() {
-        try {
-            String name = getCategoryNameFromUser(treePanel.getSelectedNode().getUserObject().getName());
+        Category category = treePanel.getSelectedNode().getUserObject();
+        String oldName = category.getName();
 
-            if (name != null) {
-                // TODO: cambia nodo
-            }
-        } catch (Exception exception) {
-            JOptionPane.showMessageDialog(null, exception.getMessage());
+        try {
+            String newName = getCategoryNameFromUser(oldName);
+
+            if (newName != null)
+                categoryDAO.updateCategoryName(category);
+        } catch (Exception e) {
+            category.setName(oldName);
+            JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }
 
@@ -174,8 +175,8 @@ public class CategoriesPanel extends JPanel implements CategorySelectionListener
                 categoryDAO.removeCategory(treePanel.getSelectedNode().getUserObject());
                 categoriesTree.removeNodeFromParent(treePanel.getSelectedNode());
             }
-        } catch (Exception exception) {
-            JOptionPane.showMessageDialog(null, exception.getMessage());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }
 

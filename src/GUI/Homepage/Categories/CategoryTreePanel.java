@@ -5,12 +5,15 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreeSelectionModel;
 
+import Entities.Category;
+import GUI.Utilities.CustomTreeNode;
+
 import java.util.ArrayList;
 
 /**
  * Pannello che mostra l'albero delle categorie che l'utente può selezionare.
  */
-public class CategoryTreePanel extends JScrollPane implements TreeSelectionListener {
+public class CategoryTreePanel extends JScrollPane {
 
     private JTree tree;
     private ArrayList<CategorySelectionListener> selectionListeners;
@@ -33,7 +36,17 @@ public class CategoryTreePanel extends JScrollPane implements TreeSelectionListe
 
         tree.setEditable(false);
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-        tree.addTreeSelectionListener(this);
+        tree.addTreeSelectionListener(new TreeSelectionListener() {
+            @Override
+            public void valueChanged(TreeSelectionEvent e) {
+                if (getSelectedNode() == null || selectionListeners == null)
+                    return;
+
+                for (CategorySelectionListener categorySelectionListener : selectionListeners) {
+                    categorySelectionListener.onCategorySelected(getSelectedNode().getUserObject());
+                }
+            }
+        });
 
         for (int i = 0; i < tree.getRowCount(); i++)
             tree.expandRow(i);
@@ -93,18 +106,8 @@ public class CategoryTreePanel extends JScrollPane implements TreeSelectionListe
      * @return
      *         nodo selezionato
      */
-    public CategoryTreeNode getSelectedNode() {
-        return (CategoryTreeNode) tree.getLastSelectedPathComponent();
-    }
-
-    @Override
-    public void valueChanged(TreeSelectionEvent e) {
-        if (getSelectedNode() == null || selectionListeners == null)
-            return;
-
-        for (CategorySelectionListener categorySelectionListener : selectionListeners) {
-            categorySelectionListener.onCategorySelected(getSelectedNode().getUserObject());
-        }
+    public CustomTreeNode<Category> getSelectedNode() {
+        return (CustomTreeNode<Category>) tree.getLastSelectedPathComponent();
     }
 
 }

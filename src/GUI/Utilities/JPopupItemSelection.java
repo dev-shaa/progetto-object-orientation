@@ -1,21 +1,23 @@
 package GUI.Utilities;
 
-import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.DefaultListModel;
+import com.jidesoft.swing.CheckBoxList;
 
 /**
  * Un pulsante che, se premuto, apre un menu a tendina in cui è possibile selezionare uno o più elementi.
  */
 public class JPopupItemSelection<T> extends JPopupButton {
 
-    private ArrayList<T> elements;
-    private ArrayList<JCheckBoxMenuItemExtended> checkboxes;
+    private CheckBoxList checkboxList;
+    private DefaultListModel<T> listModel;
 
     /**
      * Crea un JPopupItemSelection senza testo o elementi.
      */
     public JPopupItemSelection() {
-        super();
-        setElements(null);
+        this(null, null);
     }
 
     /**
@@ -25,8 +27,7 @@ public class JPopupItemSelection<T> extends JPopupButton {
      *            testo del pulsante
      */
     public JPopupItemSelection(String text) {
-        super(text);
-        setElements(null);
+        this(text, null);
     }
 
     /**
@@ -36,8 +37,7 @@ public class JPopupItemSelection<T> extends JPopupButton {
      *            elementi da aggiungere al menu di selezione
      */
     public JPopupItemSelection(T[] elements) {
-        super();
-        setElements(elements);
+        this(null, elements);
     }
 
     /**
@@ -50,6 +50,13 @@ public class JPopupItemSelection<T> extends JPopupButton {
      */
     public JPopupItemSelection(String text, T[] elements) {
         super(text);
+
+        if (listModel == null)
+            listModel = new DefaultListModel<>();
+
+        this.checkboxList = new CheckBoxList(listModel);
+        addToPopupMenu(this.checkboxList);
+
         setElements(elements);
     }
 
@@ -60,24 +67,13 @@ public class JPopupItemSelection<T> extends JPopupButton {
      *            elementi selezionabili
      */
     public void setElements(T[] elements) {
-        removeAllFromPopupMenu();
+        listModel.clear();
 
-        if (elements == null) {
-            this.elements = new ArrayList<T>(0);
-            this.checkboxes = new ArrayList<JCheckBoxMenuItemExtended>(0);
+        if (elements == null)
             return;
-        }
 
-        this.elements = new ArrayList<T>(elements.length);
-        this.checkboxes = new ArrayList<JCheckBoxMenuItemExtended>(elements.length);
-
-        for (T item : elements) {
-            this.elements.add(item);
-
-            JCheckBoxMenuItemExtended checkbox = new JCheckBoxMenuItemExtended(String.valueOf(item));
-            this.checkboxes.add(checkbox);
-            addToPopupMenu(checkbox);
-        }
+        for (T item : elements)
+            listModel.addElement(item);
     }
 
     /**
@@ -89,14 +85,7 @@ public class JPopupItemSelection<T> extends JPopupButton {
      *             se {@code element == null}
      */
     public void addElement(T element) throws IllegalArgumentException {
-        if (element == null)
-            throw new IllegalArgumentException("element non può essere null");
-
-        elements.add(element);
-
-        JCheckBoxMenuItemExtended checkbox = new JCheckBoxMenuItemExtended(element.toString());
-        checkboxes.add(checkbox);
-        addToPopupMenu(checkbox);
+        listModel.addElement(element);
     }
 
     /**
@@ -105,15 +94,9 @@ public class JPopupItemSelection<T> extends JPopupButton {
      * @return
      *         elementi selezionati
      */
-    public ArrayList<T> getSelectedElements() {
-        ArrayList<T> selectedItems = new ArrayList<T>();
-
-        for (int i = 0; i < checkboxes.size(); i++) {
-            if (checkboxes.get(i).isSelected())
-                selectedItems.add(elements.get(i));
-        }
-
-        return selectedItems;
+    @SuppressWarnings("unchecked")
+    public List<T> getSelectedElements() {
+        return (List<T>) checkboxList.getSelectedValuesList();
     }
 
     /**
@@ -123,10 +106,14 @@ public class JPopupItemSelection<T> extends JPopupButton {
      *            elemento da selezionare
      */
     public void selectElement(T element) {
-        int index = elements.indexOf(element);
-        if (index != -1) {
-            checkboxes.get(index).setSelected(true);
-        }
+        checkboxList.setSelectedValue(element, true);
+    }
+
+    /**
+     * Deseleziona tutti gli elementi.
+     */
+    public void deselectAll() {
+        checkboxList.selectNone();
     }
 
 }
