@@ -76,7 +76,7 @@ public class ImageEditor extends OnlineResourceEditor<Image> {
 
     @Override
     protected void fillReferenceValues(Image reference) throws IllegalArgumentException, RequiredFieldMissingException {
-        super.fillReferenceValues(image);
+        super.fillReferenceValues(reference);
 
         image.setWidth(getWidthValue());
         image.setHeight(getHeightValue());

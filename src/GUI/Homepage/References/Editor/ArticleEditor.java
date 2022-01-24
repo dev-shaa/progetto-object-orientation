@@ -55,9 +55,9 @@ public class ArticleEditor extends PublicationEditor<Article> {
 
     @Override
     protected void saveReference() {
-        Article articleToFill = article == null ? new Article("placeholder") : article;
-
         try {
+            Article articleToFill = article == null ? new Article("placeholder") : article;
+
             fillReferenceValues(articleToFill);
 
             getReferenceDAO().saveArticle(articleToFill);
@@ -70,14 +70,9 @@ public class ArticleEditor extends PublicationEditor<Article> {
 
     @Override
     protected void fillReferenceValues(Article reference) throws IllegalArgumentException, RequiredFieldMissingException {
-        super.fillReferenceValues(article);
+        super.fillReferenceValues(reference);
 
-        article.setISSN(getISSNValue());
-    }
-
-    @Override
-    public void setVisible(boolean b) {
-        setVisible(b, null);
+        reference.setISSN(getISSNValue());
     }
 
     /**
@@ -86,7 +81,7 @@ public class ArticleEditor extends PublicationEditor<Article> {
      * @param ISSN
      *            ISSN iniziale dell'articolo
      */
-    protected void setISSNValue(String ISSN) {
+    private void setISSNValue(String ISSN) {
         this.ISSN.setText(ISSN);
     }
 
@@ -96,7 +91,7 @@ public class ArticleEditor extends PublicationEditor<Article> {
      * @return
      *         ISSN dell'articolo, {@code null} se non è stato inserito niente
      */
-    protected String getISSNValue() {
+    private String getISSNValue() {
         return convertEmptyStringToNull(ISSN.getText().trim());
     }
 

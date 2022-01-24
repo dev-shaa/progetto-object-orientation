@@ -32,7 +32,7 @@ public interface CategoryDAO {
      * @throws CategoryDatabaseException
      *             se la modifica della categoria nel database non va a buon fine
      */
-    public void changeCategory(Category category) throws CategoryDatabaseException;
+    public void updateCategoryName(Category category) throws CategoryDatabaseException;
 
     /**
      * Elimina una categoria nel database.

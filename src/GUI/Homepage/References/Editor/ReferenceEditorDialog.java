@@ -12,6 +12,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import com.toedter.calendar.JDateChooser;
@@ -195,6 +197,9 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
      *            riferimento da cui prendere i valori (se {@code null}, i campi verrano resettati)
      */
     protected void resetFields(T reference) {
+        // TODO: authors values
+        // TODO: category values
+
         if (reference == null) {
             setTitleValue(null);
             setPubblicationDateValue(null);
@@ -203,6 +208,7 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
             setTagValues(null);
             setLanguageValue(ReferenceLanguage.ENGLISH);
             setRelatedReferences(null);
+            setAuthorValues(null);
         } else {
             setTitleValue(reference.getTitle());
             setPubblicationDateValue(reference.getPubblicationDate());
@@ -211,7 +217,7 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
             setTagValues(reference.getTags());
             setLanguageValue(reference.getLanguage());
             setRelatedReferences(reference.getRelatedReferences());
-            // setCategoryValues(reference);
+            setAuthorValues(reference.getAuthors());
         }
     }
 
@@ -320,7 +326,7 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
      * @param text
      *            titolo iniziale del riferimento
      */
-    protected void setTitleValue(String text) {
+    private void setTitleValue(String text) {
         title.setText(text);
     }
 
@@ -332,7 +338,7 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
      * @throws RequiredFieldMissingException
      *             se non è stato inserito un titolo
      */
-    protected String getTitleValue() throws RequiredFieldMissingException {
+    private String getTitleValue() throws RequiredFieldMissingException {
         String referenceTitle = convertEmptyStringToNull(title.getText().trim());
 
         if (title == null)
@@ -347,7 +353,7 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
      * @param date
      *            data di pubblicazione iniziale del riferimento
      */
-    protected void setPubblicationDateValue(Date date) {
+    private void setPubblicationDateValue(Date date) {
         pubblicationDate.setDate(date);
     }
 
@@ -357,7 +363,7 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
      * @return
      *         data di pubblicazione del riferimento, {@code null} se non è stato inserito niente
      */
-    protected Date getPubblicationDateValue() {
+    private Date getPubblicationDateValue() {
         return pubblicationDate.getDate();
     }
 
@@ -367,7 +373,7 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
      * @param doi
      *            DOI iniziale del riferimento
      */
-    protected void setDOIValue(String doi) {
+    private void setDOIValue(String doi) {
         DOI.setText(doi);
     }
 
@@ -377,7 +383,7 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
      * @return
      *         DOI del riferimento, {@code null} se non è stato inserito niente
      */
-    protected String getDOIValue() {
+    private String getDOIValue() {
         return convertEmptyStringToNull(DOI.getText().trim());
     }
 
@@ -387,7 +393,7 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
      * @param description
      *            descrizione iniziale del riferimento
      */
-    protected void setDescriptionValue(String description) {
+    private void setDescriptionValue(String description) {
         this.description.setText(description);
     }
 
@@ -397,7 +403,7 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
      * @return
      *         descrizione del riferimento, {@code null} se non è stato inserito niente
      */
-    protected String getDescriptionValue() {
+    private String getDescriptionValue() {
         return convertEmptyStringToNull(description.getText().trim());
     }
 
@@ -407,7 +413,7 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
      * @param tags
      *            parole chiave del riferimento
      */
-    protected void setTagValues(Tag[] tags) {
+    private void setTagValues(Tag[] tags) {
         if (tags == null) {
             this.tags.setText(null);
             return;
@@ -428,7 +434,7 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
      * @return
      *         parole chiave del riferimento, {@code null} se non è stato inserito niente
      */
-    protected Tag[] getTagValues() {
+    private Tag[] getTagValues() {
         String[] tagsString = tags.getTerms();
 
         if (tagsString == null)
@@ -449,7 +455,7 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
      * @param language
      *            lingua del riferimento
      */
-    protected void setLanguageValue(ReferenceLanguage language) {
+    private void setLanguageValue(ReferenceLanguage language) {
         this.language.setSelectedItem(language);
     }
 
@@ -459,7 +465,7 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
      * @return
      *         lingua del riferimento
      */
-    protected ReferenceLanguage getLanguageValue() {
+    private ReferenceLanguage getLanguageValue() {
         return (ReferenceLanguage) language.getSelectedItem();
     }
 
@@ -469,7 +475,12 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
      * @param authors
      *            autori del riferimento
      */
-    protected void setAuthorValues(Author[] authors) {
+    private void setAuthorValues(Author[] authors) {
+        this.authors.deselectAll();
+
+        if (authors == null)
+            return;
+
         for (Author author : authors) {
             this.authors.selectElement(author);
         }
@@ -481,8 +492,8 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
      * @return
      *         autori del riferimento, {@code null} se non è stato inserito niente
      */
-    protected Author[] getAuthorValues() {
-        ArrayList<Author> selectedAuthors = authors.getSelectedElements();
+    private Author[] getAuthorValues() {
+        List<Author> selectedAuthors = authors.getSelectedElements();
 
         if (selectedAuthors == null || selectedAuthors.size() == 0)
             return null;
@@ -496,8 +507,11 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
      * @param categories
      *            categorie del riferimento
      */
-    protected void setCategoryValues(Category[] categories) {
+    private void setCategoryValues(Category[] categories) {
         // TODO: seleziona categorie
+
+        ArrayList<Category> categoriesList = new ArrayList<>(categories.length);
+
     }
 
     /**
@@ -506,7 +520,7 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
      * @return
      *         categorie del riferimento, {@code null} se non è stato inserito niente
      */
-    protected Category[] getCategoryValues() {
+    private Category[] getCategoryValues() {
         return categories.getSelectedCategories();
     }
 
@@ -516,7 +530,7 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
      * @param reference
      *            rimandi associati al riferimento
      */
-    protected void setRelatedReferences(BibliographicReference[] references) {
+    private void setRelatedReferences(BibliographicReference[] references) {
         if (references == null)
             return;
 
@@ -534,7 +548,7 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
      * @param reference
      *            rimando da associare
      */
-    protected void addRelatedReference(BibliographicReference reference) {
+    private void addRelatedReference(BibliographicReference reference) {
         if (reference == null)
             return;
 
@@ -574,7 +588,7 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
      * @return
      *         rimandi del riferimento, {@code null} se non è stato inserito niente
      */
-    protected BibliographicReference[] getRelatedReferenceValues() {
+    private BibliographicReference[] getRelatedReferenceValues() {
         if (relatedReferences == null || relatedReferences.isEmpty())
             return null;
 
@@ -606,7 +620,7 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
      * @throws RequiredFieldMissingException
      *             se i campi obbligatori non sono stati riempiti
      */
-    protected void fillReferenceValues(T reference) throws IllegalArgumentException, RequiredFieldMissingException {
+    protected void fillReferenceValues(T reference) throws RequiredFieldMissingException {
 
         // FIXME: reference è sempre null per qualche motivo
 

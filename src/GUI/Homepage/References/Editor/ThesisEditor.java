@@ -60,11 +60,11 @@ public class ThesisEditor extends PublicationEditor<Thesis> {
 
     @Override
     protected void saveReference() {
-        Thesis thesisToFill = thesis == null ? new Thesis("placeholder") : thesis;
+        Thesis thesisToSave = thesis == null ? new Thesis("placeholder") : thesis;
 
         try {
-            fillReferenceValues(thesisToFill);
-            getReferenceDAO().saveThesis(thesisToFill);
+            fillReferenceValues(thesisToSave);
+            getReferenceDAO().saveThesis(thesisToSave);
         } catch (RequiredFieldMissingException e) {
             JOptionPane.showMessageDialog(this, "Uno o più campi obbligatori non sono stati inseriti.", "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
         } catch (ReferenceDatabaseException e) {
@@ -74,7 +74,7 @@ public class ThesisEditor extends PublicationEditor<Thesis> {
 
     @Override
     protected void fillReferenceValues(Thesis reference) throws IllegalArgumentException, RequiredFieldMissingException {
-        super.fillReferenceValues(thesis);
+        super.fillReferenceValues(reference);
 
         thesis.setUniversity(getUniversityValue());
         thesis.setFaculty(getFacultyValue());

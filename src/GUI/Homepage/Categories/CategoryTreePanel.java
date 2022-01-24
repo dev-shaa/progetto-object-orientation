@@ -106,6 +106,7 @@ public class CategoryTreePanel extends JScrollPane {
      * @return
      *         nodo selezionato
      */
+    @SuppressWarnings("unchecked")
     public CustomTreeNode<Category> getSelectedNode() {
         return (CustomTreeNode<Category>) tree.getLastSelectedPathComponent();
     }

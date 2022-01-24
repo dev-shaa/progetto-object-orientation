@@ -69,7 +69,7 @@ public class BookEditor extends PublicationEditor<Book> {
 
     @Override
     protected void fillReferenceValues(Book reference) throws IllegalArgumentException, RequiredFieldMissingException {
-        super.fillReferenceValues(book);
+        super.fillReferenceValues(reference);
 
         book.setISBN(getISBNValue());
     }

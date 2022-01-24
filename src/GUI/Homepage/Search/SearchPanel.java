@@ -54,7 +54,10 @@ public class SearchPanel extends JPanel {
         searchPanel.setLayout(new BoxLayout(searchPanel, BoxLayout.PAGE_AXIS));
 
         tags = new JTermsField(searchFieldSeparator);
-        authors = new JPopupItemSelection<>("Premi per selezionare gli autori");
+
+        Author[] foo = { new Author("aaa", "aaa", null) };
+        authors = new JPopupItemSelection<>("Premi per selezionare gli autori", foo);
+
         dateFrom = new JDateChooser();
         dateTo = new JDateChooser();
 

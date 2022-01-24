@@ -2,8 +2,9 @@ package DAO;
 
 import Entities.*;
 import Exceptions.*;
-import GUI.Homepage.Categories.CategoryTreeNode;
+// import GUI.Homepage.Categories.CategoryTreeNode;
 import GUI.Homepage.Categories.CategoryTreeModel;
+import GUI.Utilities.CustomTreeNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -115,7 +116,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
     }
 
     @Override
-    public void changeCategory(Category category) throws IllegalArgumentException, CategoryDatabaseException {
+    public void updateCategoryName(Category category) throws IllegalArgumentException, CategoryDatabaseException {
         if (category == null)
             throw new IllegalArgumentException("category non può essere null");
 
@@ -133,8 +134,11 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
             throw new CategoryDatabaseException("Impossibile modificare questa categoria.");
         } finally {
             try {
-                statement.close();
-                connection.close();
+                if (statement != null)
+                    statement.close();
+
+                if (connection != null)
+                    connection.close();
             } catch (Exception e) {
                 // non fare niente
                 e.printStackTrace();
@@ -175,12 +179,12 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
 
         // TODO:
 
-        CategoryTreeNode root = new CategoryTreeNode(null);
+        CustomTreeNode<Category> root = new CustomTreeNode<Category>(null);
         root.setLabel("I miei riferimenti");
 
-        CategoryTreeNode nodeA = new CategoryTreeNode(new Category("AAA"));
-        CategoryTreeNode nodeB = new CategoryTreeNode(new Category("BBB"));
-        CategoryTreeNode nodeC = new CategoryTreeNode(new Category("CCC"));
+        CustomTreeNode<Category> nodeA = new CustomTreeNode<Category>(new Category("AAA"));
+        CustomTreeNode<Category> nodeB = new CustomTreeNode<Category>(new Category("BBB"));
+        CustomTreeNode<Category> nodeC = new CustomTreeNode<Category>(new Category("CCC"));
 
         CategoryTreeModel tree = new CategoryTreeModel(root);
 
