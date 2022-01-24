@@ -80,55 +80,6 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
     }
 
     @Override
-    public BibliographicReference[] getReferences(Category category) throws ReferenceDatabaseException {
-
-        return null;
-
-        // Connection connection = null;
-        // PreparedStatement statement = null;
-        // ResultSet resultSet = null;
-        // String query = "select * from reference natural join ? where parent_user = ?";
-        // ArrayList<BibliographicReference> references = new ArrayList<>();
-
-        // try {
-        // connection = DatabaseController.getConnection();
-        // statement = connection.prepareStatement(query);
-
-        // statement.setString(1, "article");
-        // statement.setString(2, user.getName());
-
-        // resultSet = statement.executeQuery();
-
-        // while (resultSet.next()) {
-        // // Article article = new Article(resultSet.getString("title"), authors)
-        // }
-
-        // return references.toArray(new BibliographicReference[references.size()]);
-        // } catch (Exception e) {
-        // throw new ReferenceDatabaseException("Impossibile recuperare i riferimenti dell'utente.");
-        // } finally {
-        // try {
-        // if (resultSet != null)
-        // resultSet.close();
-
-        // if (statement != null)
-        // statement.close();
-
-        // if (connection != null)
-        // connection.close();
-        // } catch (Exception e) {
-        // // non fare niente
-        // }
-        // }
-    }
-
-    @Override
-    public BibliographicReference[] getReferences(Search search) throws ReferenceDatabaseException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public void removeReference(BibliographicReference reference) throws ReferenceDatabaseException {
         Connection connection = null;
         Statement statement = null;

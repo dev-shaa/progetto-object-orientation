@@ -328,7 +328,7 @@ public class ReferencePanel extends JPanel implements ReferenceListSelectionList
      */
     public void showReferences(Search search) {
         try {
-            showReferences(referenceDAO.getReferences(search));
+            // showReferences(referenceDAO.getReferences(search));
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
