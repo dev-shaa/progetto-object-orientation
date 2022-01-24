@@ -26,11 +26,13 @@ public class CustomTreeNode<T extends Object> implements MutableTreeNode {
         setUserObject(userObject);
         setParent(parent);
         setAllowsChildren(allowsChildren);
+
+        children = new Vector<>();
     }
 
     @Override
     public CustomTreeNode<T> getChildAt(int childIndex) {
-        if (children == null)
+        if (children.isEmpty())
             throw new ArrayIndexOutOfBoundsException("node has no children");
 
         return children.elementAt(childIndex);
@@ -38,9 +40,6 @@ public class CustomTreeNode<T extends Object> implements MutableTreeNode {
 
     @Override
     public int getChildCount() {
-        if (children == null)
-            return 0;
-
         return children.size();
     }
 
@@ -65,7 +64,7 @@ public class CustomTreeNode<T extends Object> implements MutableTreeNode {
 
     @Override
     public boolean isLeaf() {
-        return children == null || children.isEmpty();
+        return children.isEmpty();
     }
 
     @Override
@@ -103,14 +102,12 @@ public class CustomTreeNode<T extends Object> implements MutableTreeNode {
 
     @Override
     public void remove(int index) {
-        if (children != null)
-            children.remove(index);
+        children.remove(index);
     }
 
     @Override
     public void remove(MutableTreeNode node) {
-        if (children != null)
-            children.remove(node);
+        children.remove(node);
     }
 
     @Override

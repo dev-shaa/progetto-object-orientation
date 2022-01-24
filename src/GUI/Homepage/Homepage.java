@@ -9,7 +9,6 @@ import GUI.Homepage.References.*;
 import GUI.Homepage.Search.*;
 import GUI.Homepage.UserInfo.LogoutListener;
 import GUI.Homepage.UserInfo.UserInfoPanel;
-import GUI.Utilities.CustomTreeModel;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -29,7 +28,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Logou
     private User user;
     private Controller controller;
 
-    private CategoryTreeModel categoriesTree;
+    // private CategoryTreeModel categoriesTree;
     private ReferencePanel referencePanel;
     private CategoriesPanel categoriesPanel;
     private SearchPanel referenceSearchPanel;
@@ -66,12 +65,15 @@ public class Homepage extends JFrame implements CategorySelectionListener, Logou
         contentPane.setLayout(new BorderLayout(5, 5));
         setContentPane(contentPane);
 
-        categoriesTree = new CategoryDAOPostgreSQL(user).getUserCategories();
-        categoriesPanel = new CategoriesPanel(categoriesTree);
+        CategoryDAO categoryDAO = new CategoryDAOPostgreSQL(user);
+        BibliographicReferenceDAO referenceDAO = new BibliographicReferenceDAOPostgreSQL(user);
+
+        // categoriesTree = new CategoryDAOPostgreSQL(user).getUserCategories();
+        categoriesPanel = new CategoriesPanel(categoryDAO);
         categoriesPanel.getTreePanel().addSelectionListener(this);
 
-        referencePanel = new ReferencePanel(categoriesTree, new BibliographicReferenceDAOPostgreSQL(user));
-        referenceSearchPanel = new SearchPanel(categoriesTree);
+        referencePanel = new ReferencePanel(categoriesPanel.getCategoriesTree(), referenceDAO);
+        referenceSearchPanel = new SearchPanel(categoriesPanel.getCategoriesTree());
         referenceSearchPanel.addReferenceSearchListener(this);
 
         JSplitPane subSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, categoriesPanel, referencePanel);

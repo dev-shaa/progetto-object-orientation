@@ -1,6 +1,9 @@
 package GUI.Homepage.Categories;
 
-import Entities.*;
+import Entities.Category;
+import DAO.CategoryDAO;
+import Exceptions.CategoryDatabaseException;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -21,19 +24,23 @@ public class CategoriesPanel extends JPanel implements CategorySelectionListener
     private JButton changeCategoryButton;
     private JButton removeCategoryButton;
 
+    private CategoryDAO categoryDAO;
+
     /**
-     * Crea un pannello con tutte le categorie associate dell'utente.
+     * Crea un pannello recuperando tutte le categorie associate dell'utente.
      * 
-     * @param categoriesTree
-     *            l'albero delle categorie dell'utente
+     * @param categoryDAO
+     *            classe DAO per interfacciarsi al database
      * @throws IllegalArgumentException
-     *             se categoriesTree è nullo.
-     * @see #setCategoriesTree(CategoriesTreeManager)
+     *             se {@code categoryDAO} è nullo
+     * @throws CategoryDatabaseException
+     *             se il recupero delle categorie non va a buon fine
+     * @see #setCategoryDAO(CategoryDAO)
      */
-    public CategoriesPanel(CategoryTreeModel categoriesTree) {
+    public CategoriesPanel(CategoryDAO categoryDAO) throws CategoryDatabaseException {
         super();
 
-        setCategoriesTree(categoriesTree);
+        setCategoryDAO(categoryDAO);
 
         setLayout(new BorderLayout(5, 5));
         setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -76,22 +83,32 @@ public class CategoriesPanel extends JPanel implements CategorySelectionListener
     }
 
     /**
-     * Imposta l'albero delle categorie dell'utente.
+     * Imposta la classe DAO per interfacciarsi al database e carica le categorie associate all'utente.
      * 
-     * @param categoriesTree
-     *            albero delle categorie
+     * @param categoryDAO
+     *            classe DAO per le categorie
      * @throws IllegalArgumentException
-     *             se {@code categoriesTree == null}
+     *             se {@code categoryDAO == null}
+     * @throws CategoryDatabaseException
+     *             se il recupero delle categorie non va a buon fine
      */
-    public void setCategoriesTree(CategoryTreeModel categoriesTree) {
-        if (treePanel == null) {
-            treePanel = new CategoryTreePanel(categoriesTree);
-            treePanel.addSelectionListener(this);
-        } else {
-            treePanel.setCategoriesTree(categoriesTree);
-        }
+    public void setCategoryDAO(CategoryDAO categoryDAO) throws CategoryDatabaseException {
+        if (categoryDAO == null)
+            throw new IllegalArgumentException("categoryDAO can't be null");
 
-        this.categoriesTree = categoriesTree;
+        this.categoryDAO = categoryDAO;
+
+        categoriesTree = categoryDAO.getUserCategories();
+    }
+
+    /**
+     * Restituisce l'albero delle categorie.
+     * 
+     * @return
+     *         albero delle categorie dell'utente
+     */
+    public CategoryTreeModel getCategoriesTree() {
+        return categoriesTree;
     }
 
     /**
@@ -117,9 +134,11 @@ public class CategoriesPanel extends JPanel implements CategorySelectionListener
             String newCategoryName = getCategoryNameFromUser("Nuova categoria");
 
             if (newCategoryName != null) {
-                categoriesTree.addNode(new CategoryTreeNode(new Category(newCategoryName)), treePanel.getSelectedNode());
+                Category newCategory = new Category(newCategoryName, treePanel.getSelectedNode().getUserObject());
 
-                // TODO: aggiungi al database
+                categoryDAO.addCategory(newCategory);
+
+                categoriesTree.addNode(new CategoryTreeNode(newCategory), treePanel.getSelectedNode());
             }
         } catch (Exception exception) {
             JOptionPane.showMessageDialog(null, exception.getMessage());
@@ -152,9 +171,8 @@ public class CategoriesPanel extends JPanel implements CategorySelectionListener
             int confirmDialogBoxOption = JOptionPane.showConfirmDialog(null, "Sicuro di volere eliminare questa categoria?", "Elimina categoria", JOptionPane.YES_NO_OPTION);
 
             if (confirmDialogBoxOption == JOptionPane.YES_OPTION) {
+                categoryDAO.removeCategory(treePanel.getSelectedNode().getUserObject());
                 categoriesTree.removeNodeFromParent(treePanel.getSelectedNode());
-
-                // TODO: rimuovi dal database
             }
         } catch (Exception exception) {
             JOptionPane.showMessageDialog(null, exception.getMessage());

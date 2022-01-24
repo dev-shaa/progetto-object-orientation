@@ -16,5 +16,4 @@ public class CategoryTreeNode extends CustomTreeNode<Category> {
     public CategoryTreeNode(Category userObject) {
         super(userObject);
     }
-
 }

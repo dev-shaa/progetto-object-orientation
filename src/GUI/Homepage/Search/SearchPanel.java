@@ -36,12 +36,14 @@ public class SearchPanel extends JPanel {
     private final float alignment = Container.LEFT_ALIGNMENT;
 
     /**
-     * TODO: commenta
+     * Crea un pannello per la ricerca di riferimenti con le categorie indicate.
      * 
      * @param categoriesTree
+     *            albero delle categorie da selezionare
      * @throws IllegalArgumentException
+     *             se {@code categoriesTree} è nullo
      */
-    public SearchPanel(CategoryTreeModel categoriesTree) throws IllegalArgumentException {
+    public SearchPanel(CategoryTreeModel categoriesTree) {
         setCategoriesTree(categoriesTree);
 
         setLayout(new BorderLayout(5, 5));
@@ -133,10 +135,12 @@ public class SearchPanel extends JPanel {
     }
 
     /**
-     * TODO:
+     * Imposta l'albero delle categorie da selezionare.
      * 
      * @param categoriesTree
+     *            albero delle categorie
      * @throws IllegalArgumentException
+     *             se {@code categoriesTree == null}
      */
     public void setCategoriesTree(CategoryTreeModel categoriesTree) {
         if (categories == null)

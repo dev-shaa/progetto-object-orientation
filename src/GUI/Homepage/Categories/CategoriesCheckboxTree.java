@@ -2,6 +2,7 @@ package GUI.Homepage.Categories;
 
 import Entities.Category;
 import GUI.Utilities.CheckboxTreeRenderer;
+import GUI.Utilities.CustomTreeNode;
 
 import javax.swing.JTree;
 import javax.swing.tree.TreePath;
@@ -57,14 +58,13 @@ public class CategoriesCheckboxTree extends JTree {
 
             @Override
             public void removeSelectionPath(TreePath path) {
-                // FIXME:
-                // Enumeration<TreeNode> children = ((MutableTreeNode) path.getLastPathComponent()).children();
+                Enumeration<CustomTreeNode<Category>> children = ((CategoryTreeNode) path.getLastPathComponent()).children();
 
-                // while (children.hasMoreElements()) {
-                // removeSelectionPath(path.pathByAddingChild(children.nextElement()));
-                // }
+                while (children.hasMoreElements()) {
+                    removeSelectionPath(path.pathByAddingChild(children.nextElement()));
+                }
 
-                // super.removeSelectionPath(path);
+                super.removeSelectionPath(path);
             }
 
             @Override
