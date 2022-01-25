@@ -197,9 +197,6 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
      *            riferimento da cui prendere i valori (se {@code null}, i campi verrano resettati)
      */
     protected void resetFields(T reference) {
-        // TODO: authors values
-        // TODO: category values
-
         if (reference == null) {
             setTitleValue(null);
             setPubblicationDateValue(null);
@@ -209,6 +206,7 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
             setLanguageValue(ReferenceLanguage.ENGLISH);
             setRelatedReferences(null);
             setAuthorValues(null);
+            setCategoryValues(null);
         } else {
             setTitleValue(reference.getTitle());
             setPubblicationDateValue(reference.getPubblicationDate());
@@ -218,6 +216,7 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
             setLanguageValue(reference.getLanguage());
             setRelatedReferences(reference.getRelatedReferences());
             setAuthorValues(reference.getAuthors());
+            setCategoryValues(reference.getCategoriesArray());
         }
     }
 
@@ -510,7 +509,14 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
     private void setCategoryValues(Category[] categories) {
         // TODO: seleziona categorie
 
-        ArrayList<Category> categoriesList = new ArrayList<>(categories.length);
+        if (categories == null)
+            return;
+
+        for (Category category : categories) {
+            this.categories.selectCategory(category);
+        }
+
+        // ArrayList<Category> categoriesList = new ArrayList<>(categories.length);
 
     }
 
@@ -635,6 +641,7 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
         reference.setPubblicationDate(getPubblicationDateValue());
         reference.setTags(getTagValues());
         reference.setRelatedReferences(getRelatedReferenceValues());
+        reference.setCategories(getCategoryValues());
     }
 
     // #endregion

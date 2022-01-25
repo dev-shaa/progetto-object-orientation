@@ -68,7 +68,6 @@ public class Homepage extends JFrame implements CategorySelectionListener, Logou
         CategoryDAO categoryDAO = new CategoryDAOPostgreSQL(user);
         BibliographicReferenceDAO referenceDAO = new BibliographicReferenceDAOPostgreSQL(user);
 
-        // categoriesTree = new CategoryDAOPostgreSQL(user).getUserCategories();
         categoriesPanel = new CategoriesPanel(categoryDAO);
         categoriesPanel.getTreePanel().addSelectionListener(this);
 

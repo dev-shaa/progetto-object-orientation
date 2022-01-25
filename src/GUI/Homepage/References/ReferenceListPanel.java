@@ -88,7 +88,7 @@ public class ReferenceListPanel extends JScrollPane implements ListSelectionList
     /**
      * Rimuove il riferimento selezionato attualmente dalla tabella.
      */
-    public void removeSelectedReference() throws IndexOutOfBoundsException {
+    public void removeSelectedReference() {
         displayedReferences.remove(getSelectedReferenceIndex());
         referencesTableModel.removeRow(getSelectedReferenceIndex());
     }
@@ -128,7 +128,7 @@ public class ReferenceListPanel extends JScrollPane implements ListSelectionList
      *             fuori degli estremi della tabella
      *             (non dovrebbe mai succedere)
      */
-    private int getSelectedReferenceIndex() throws IndexOutOfBoundsException {
+    private int getSelectedReferenceIndex() {
         return referencesTable.convertRowIndexToModel(referencesTable.getSelectedRow());
     }
 

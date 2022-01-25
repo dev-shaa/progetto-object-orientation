@@ -8,7 +8,7 @@ import java.util.ArrayList;
  */
 public abstract class Publication extends BibliographicReference {
 
-    private Integer pageCount;
+    private int pageCount;
     private String URL;
     private String publisher;
 
@@ -23,6 +23,8 @@ public abstract class Publication extends BibliographicReference {
      */
     public Publication(String title) throws IllegalArgumentException {
         super(title);
+
+        setPageCount(1);
     }
 
     /**
@@ -33,8 +35,8 @@ public abstract class Publication extends BibliographicReference {
      * @throws IllegalArgumentException
      *             se {@code pageCount <= 0}
      */
-    public void setPageCount(Integer pageCount) throws IllegalArgumentException {
-        if (pageCount != null && pageCount <= 0)
+    public void setPageCount(int pageCount) throws IllegalArgumentException {
+        if (pageCount < 1)
             throw new IllegalArgumentException("Il numero di pagine del libro non può essere inferiore a 1");
 
         this.pageCount = pageCount;
@@ -46,7 +48,7 @@ public abstract class Publication extends BibliographicReference {
      * @return
      *         numero di pagine della pubblicazione ({@code null} se non è indicato)
      */
-    public Integer getPageCount() {
+    public int getPageCount() {
         return this.pageCount;
     }
 

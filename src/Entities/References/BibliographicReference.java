@@ -18,9 +18,8 @@ public abstract class BibliographicReference {
     private String description;
     private ReferenceLanguage language;
     private Tag[] tags;
-    private BibliographicReference[] relatedReferences;
-    // private Category[] categories;
     private ArrayList<Category> categories;
+    private BibliographicReference[] relatedReferences;
 
     /**
      * Crea un nuovo riferimento con il titolo indicato.
@@ -232,8 +231,25 @@ public abstract class BibliographicReference {
         this.categories = categories;
     }
 
+    public void setCategories(Category[] categories) {
+        if (categories == null)
+            this.categories = null;
+
+        this.categories = new ArrayList<>(categories.length);
+        for (Category category : categories) {
+            this.categories.add(category);
+        }
+    }
+
     public ArrayList<Category> getCategories() {
         return this.categories;
+    }
+
+    public Category[] getCategoriesArray() {
+        if (categories == null)
+            return null;
+
+        return categories.toArray(new Category[categories.size()]);
     }
 
     /**
@@ -299,6 +315,9 @@ public abstract class BibliographicReference {
      *         rimandi del riferimento come stringa
      */
     public String getRelatedReferencesAsString() {
+        if (getRelatedReferences() == null)
+            return null;
+
         return getRelatedReferences().toString().substring(1).replace("]", "").trim();
     }
 

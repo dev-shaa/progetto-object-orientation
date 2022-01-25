@@ -3,7 +3,6 @@ package GUI.Homepage.References;
 import DAO.*;
 import GUI.*;
 import GUI.Homepage.Categories.CategoryTreeModel;
-import GUI.Homepage.References.Chooser.ReferenceChooserDialog;
 import GUI.Homepage.References.Editor.*;
 import GUI.Homepage.Search.Search;
 import GUI.Utilities.JPopupButton;
@@ -23,6 +22,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * Classe che si occupa di mostrare i riferimenti cercati o presenti in una
@@ -38,7 +38,6 @@ public class ReferencePanel extends JPanel implements ReferenceListSelectionList
 
     private ReferenceListPanel listPanel;
     private ReferenceInfoPanel infoPanel;
-    private ReferenceChooserDialog referenceChooser;
 
     private JButton editReferenceButton;
     private JButton deleteReferenceButton;
@@ -67,6 +66,11 @@ public class ReferencePanel extends JPanel implements ReferenceListSelectionList
     public ReferencePanel(CategoryTreeModel categoriesTree, BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
         setCategoriesTree(categoriesTree);
         setBibliographicReferenceDAO(referenceDAO);
+
+        references = new ArrayList<>();
+        for (BibliographicReference bibliographicReference : referenceDAO.getReferences()) {
+            references.add(bibliographicReference);
+        }
 
         setLayout(new BorderLayout(5, 5));
         setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -316,7 +320,9 @@ public class ReferencePanel extends JPanel implements ReferenceListSelectionList
         if (references == null)
             return;
 
-        List<BibliographicReference> referencesInCategory = references.stream().filter(e -> e.getCategories().contains(category)).toList();
+        Predicate<BibliographicReference> categoryFilter = e -> e.getCategories() == null ? category == null : e.getCategories().contains(category);
+
+        List<BibliographicReference> referencesInCategory = references.stream().filter(categoryFilter).toList();
         showReferences(referencesInCategory.toArray(new BibliographicReference[referencesInCategory.size()]));
     }
 
@@ -338,7 +344,7 @@ public class ReferencePanel extends JPanel implements ReferenceListSelectionList
     public void onReferenceSelection(BibliographicReference reference) {
         infoPanel.showReference(reference);
 
-        boolean shouldButtonsBeEnabled = reference == null;
+        boolean shouldButtonsBeEnabled = reference != null;
         editReferenceButton.setEnabled(shouldButtonsBeEnabled);
         deleteReferenceButton.setEnabled(shouldButtonsBeEnabled);
     }

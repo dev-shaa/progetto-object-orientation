@@ -30,28 +30,7 @@ public class CategoryTreePanel extends JScrollPane {
     public CategoryTreePanel(CategoryTreeModel categoriesTree) {
         super();
 
-        tree = new JTree();
-
         setCategoriesTree(categoriesTree);
-
-        tree.setEditable(false);
-        tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-        tree.addTreeSelectionListener(new TreeSelectionListener() {
-            @Override
-            public void valueChanged(TreeSelectionEvent e) {
-                if (getSelectedNode() == null || selectionListeners == null)
-                    return;
-
-                for (CategorySelectionListener categorySelectionListener : selectionListeners) {
-                    categorySelectionListener.onCategorySelected(getSelectedNode().getUserObject());
-                }
-            }
-        });
-
-        for (int i = 0; i < tree.getRowCount(); i++)
-            tree.expandRow(i);
-
-        tree.setSelectionRow(0);
 
         setViewportView(tree);
     }
@@ -68,7 +47,31 @@ public class CategoryTreePanel extends JScrollPane {
         if (categoriesTree == null)
             throw new IllegalArgumentException("categoriesTree non può essere null");
 
+        if (tree == null) {
+            tree = new JTree();
+
+            tree.setEditable(false);
+            tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+            tree.addTreeSelectionListener(new TreeSelectionListener() {
+                @Override
+                public void valueChanged(TreeSelectionEvent e) {
+                    if (getSelectedNode() == null || selectionListeners == null)
+                        return;
+
+                    for (CategorySelectionListener categorySelectionListener : selectionListeners) {
+                        categorySelectionListener.onCategorySelected(getSelectedNode().getUserObject());
+                    }
+                }
+            });
+
+        }
+
         tree.setModel(categoriesTree);
+
+        for (int i = 0; i < tree.getRowCount(); i++)
+            tree.expandRow(i);
+
+        tree.setSelectionRow(0);
     }
 
     /**
