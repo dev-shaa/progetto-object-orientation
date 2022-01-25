@@ -106,8 +106,11 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
             throw new CategoryDatabaseException("Impossibile aggiungere nuova categoria.");
         } finally {
             try {
-                statement.close();
-                connection.close();
+                if (statement != null)
+                    statement.close();
+
+                if (connection != null)
+                    connection.close();
             } catch (Exception e) {
                 // non fare niente
                 e.printStackTrace();
@@ -182,9 +185,9 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
         CustomTreeNode<Category> root = new CustomTreeNode<Category>(null);
         root.setLabel("I miei riferimenti");
 
-        CustomTreeNode<Category> nodeA = new CustomTreeNode<Category>(new Category("AAA"));
-        CustomTreeNode<Category> nodeB = new CustomTreeNode<Category>(new Category("BBB"));
-        CustomTreeNode<Category> nodeC = new CustomTreeNode<Category>(new Category("CCC"));
+        CustomTreeNode<Category> nodeA = new CustomTreeNode<Category>(new Category("AAA", 0));
+        CustomTreeNode<Category> nodeB = new CustomTreeNode<Category>(new Category("BBB", 1));
+        CustomTreeNode<Category> nodeC = new CustomTreeNode<Category>(new Category("CCC", 2));
 
         CategoryTreeModel tree = new CategoryTreeModel(root);
 
