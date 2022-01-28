@@ -2,12 +2,12 @@ package Controller;
 
 import DAO.CategoryDAO;
 import Entities.Category;
-import GUI.Homepage.Categories.CategoryTreeModel;
+import GUI.Utilities.CustomTreeModel;
 import GUI.Utilities.CustomTreeNode;
 
 public class CategoryController {
     private CategoryDAO categoryDAO;
-    private CategoryTreeModel categoryTree;
+    private CustomTreeModel<Category> categoryTree;
 
     public CategoryController(CategoryDAO categoryDAO) {
         this.setCategoryDAO(categoryDAO);
@@ -30,7 +30,7 @@ public class CategoryController {
         }
     }
 
-    public CategoryTreeModel getCategoriesTree() {
+    public CustomTreeModel<Category> getCategoriesTree() {
         return categoryTree;
     }
 

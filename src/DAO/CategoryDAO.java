@@ -2,7 +2,7 @@ package DAO;
 
 import Entities.*;
 import Exceptions.*;
-import GUI.Homepage.Categories.CategoryTreeModel;
+import GUI.Utilities.CustomTreeModel;
 
 /**
  * Classe astratta che si occupa di gestire la parte di database relativo alle
@@ -53,6 +53,6 @@ public interface CategoryDAO {
      * @throws CategoryDatabaseException
      *             se il recupero delle categorie dal database non va a buon fine
      */
-    public CategoryTreeModel getUserCategories() throws CategoryDatabaseException;
+    public CustomTreeModel<Category> getUserCategories() throws CategoryDatabaseException;
 
 }

@@ -1,8 +1,10 @@
 package GUI.Homepage.Categories;
 
 import Entities.*;
+import GUI.Utilities.CustomTreeModel;
 import GUI.Utilities.CustomTreeNode;
 import GUI.Utilities.JPopupButton;
+
 import java.awt.Dimension;
 import java.util.Enumeration;
 import javax.swing.tree.TreePath;
@@ -14,18 +16,16 @@ import com.jidesoft.swing.CheckBoxTree;
 public class CategoriesSelectionPopupMenu extends JPopupButton {
 
     private CheckBoxTree checkboxTree;
-    private CategoryTreeModel treeModel;
+    private CustomTreeModel<Category> categoriesTree;
 
     /**
      * Crea {@code CategoriesSelectionPopupMenu} con l'albero delle categorie dato.
      * 
      * @param categoriesTree
      *            l'albero delle categorie
-     * @throws IllegalArgumentException
-     *             se {@code categoriesTreeManager == null}
      */
-    public CategoriesSelectionPopupMenu(CategoryTreeModel categoriesTree) {
-        setText("Premi per selezionare le categorie");
+    public CategoriesSelectionPopupMenu(CustomTreeModel<Category> categoriesTree) {
+        super("Premi per selezionare le categorie");
 
         setCategoriesTree(categoriesTree);
 
@@ -37,14 +37,12 @@ public class CategoriesSelectionPopupMenu extends JPopupButton {
      * 
      * @param categoriesTree
      *            l'albero delle categorie
-     * @throws IllegalArgumentException
-     *             se {@code categoriesTreeManager == null}
      */
-    public void setCategoriesTree(CategoryTreeModel categoriesTree) {
-        treeModel = categoriesTree;
+    public void setCategoriesTree(CustomTreeModel<Category> categoriesTree) {
+        this.categoriesTree = categoriesTree;
 
         if (checkboxTree == null) {
-            checkboxTree = new CheckBoxTree(treeModel);
+            checkboxTree = new CheckBoxTree(categoriesTree);
 
             checkboxTree.setToggleClickCount(0);
             checkboxTree.setDigIn(false);
@@ -54,7 +52,7 @@ public class CategoriesSelectionPopupMenu extends JPopupButton {
             checkboxTree.setSelectPartialOnToggling(true);
             checkboxTree.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
         } else {
-            checkboxTree.setModel(treeModel);
+            checkboxTree.setModel(categoriesTree);
         }
     }
 
@@ -92,7 +90,7 @@ public class CategoriesSelectionPopupMenu extends JPopupButton {
         if (category == null)
             throw new IllegalArgumentException("category can't be null");
 
-        selectCategory(category, treeModel.getRoot());
+        selectCategory(category, categoriesTree.getRoot());
     }
 
     /**

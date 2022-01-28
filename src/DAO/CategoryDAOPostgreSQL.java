@@ -2,8 +2,7 @@ package DAO;
 
 import Entities.*;
 import Exceptions.*;
-// import GUI.Homepage.Categories.CategoryTreeNode;
-import GUI.Homepage.Categories.CategoryTreeModel;
+import GUI.Utilities.CustomTreeModel;
 import GUI.Utilities.CustomTreeNode;
 
 import java.util.ArrayList;
@@ -35,7 +34,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
      * @throws IllegalArgumentException
      *             se l'utente di input è {@code null}
      */
-    public CategoryDAOPostgreSQL(User user) throws IllegalArgumentException {
+    public CategoryDAOPostgreSQL(User user) {
         setUser(user);
     }
 
@@ -178,7 +177,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
     }
 
     @Override
-    public CategoryTreeModel getUserCategories() throws CategoryDatabaseException {
+    public CustomTreeModel<Category> getUserCategories() throws CategoryDatabaseException {
 
         // TODO:
 
@@ -189,7 +188,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
         CustomTreeNode<Category> nodeB = new CustomTreeNode<Category>(new Category("BBB", 1));
         CustomTreeNode<Category> nodeC = new CustomTreeNode<Category>(new Category("CCC", 2));
 
-        CategoryTreeModel tree = new CategoryTreeModel(root);
+        CustomTreeModel<Category> tree = new CustomTreeModel<Category>(root);
 
         tree.addNode(nodeA, root);
         tree.addNode(nodeB, root);
