@@ -1,7 +1,10 @@
 package GUI.Homepage.References;
 
 import Entities.References.*;
+
 import java.util.ArrayList;
+import java.util.Collection;
+
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
@@ -45,8 +48,6 @@ public class ReferenceListPanel extends JScrollPane implements ListSelectionList
             }
         };
 
-        displayedReferences = new ArrayList<>();
-
         referencesTable = new JTable(referencesTableModel);
         referencesTable.setFillsViewportHeight(true);
         referencesTable.setAutoCreateRowSorter(true);
@@ -60,18 +61,16 @@ public class ReferenceListPanel extends JScrollPane implements ListSelectionList
      * Imposta i riferimenti da mostrare nell'elenco.
      * 
      * @param references
-     *            i riferimenti da mostrare (se {@code references == null}
-     *            non viene mostrato nulla)
+     *            i riferimenti da mostrare (se {@code references == null} non viene mostrato nulla)
      */
-    public void setReferences(BibliographicReference[] references) {
+    public void setReferences(Collection<? extends BibliographicReference> references) {
         removeAllReferences();
 
         if (references == null)
             return;
 
-        for (BibliographicReference riferimento : references) {
+        for (BibliographicReference riferimento : references)
             addReference(riferimento);
-        }
     }
 
     /**
@@ -81,6 +80,9 @@ public class ReferenceListPanel extends JScrollPane implements ListSelectionList
      *            riferimento da aggiungere
      */
     public void addReference(BibliographicReference reference) {
+        if (displayedReferences == null)
+            displayedReferences = new ArrayList<>();
+
         displayedReferences.add(reference);
         referencesTableModel.addRow(new Object[] { reference.getTitle(), reference.getAuthorsAsString(), reference.getPubblicationDate() });
     }

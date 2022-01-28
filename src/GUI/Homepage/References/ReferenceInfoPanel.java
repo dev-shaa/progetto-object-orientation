@@ -28,8 +28,8 @@ public class ReferenceInfoPanel extends JScrollPane {
 
         JTable detailsTable = new JTable(detailsModel);
         detailsTable.setTableHeader(null);
-        detailsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         detailsTable.setCellSelectionEnabled(true);
+        detailsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         setViewportView(detailsTable);
     }
