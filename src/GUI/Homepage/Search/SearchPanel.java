@@ -4,18 +4,18 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.*;
 import javax.swing.border.*;
-
 import com.toedter.calendar.JDateChooser;
 
+import Controller.AuthorController;
+import Controller.CategoryController;
 import Entities.Author;
 import Entities.Tag;
 import Exceptions.EmptySearchException;
 import GUI.Homepage.Categories.*;
-import GUI.Utilities.JPopupItemSelection;
 import GUI.Utilities.JTermsField;
+import GUI.Utilities.PopupCheckboxList;
 
 /**
  * Pannello per la ricerca dei riferimenti per parole chiave, autori, categorie e data.
@@ -23,7 +23,7 @@ import GUI.Utilities.JTermsField;
 public class SearchPanel extends JPanel {
 
     private JTermsField tags;
-    private JPopupItemSelection<Author> authors;
+    private PopupCheckboxList<Author> authors;
     private CategoriesSelectionPopupMenu categories;
     private JDateChooser dateFrom;
     private JDateChooser dateTo;
@@ -36,15 +36,18 @@ public class SearchPanel extends JPanel {
     private final float alignment = Container.LEFT_ALIGNMENT;
 
     /**
-     * Crea un pannello per la ricerca di riferimenti con le categorie indicate.
+     * Crea un pannello per la ricerca di riferimenti.
      * 
-     * @param categoriesTree
-     *            albero delle categorie da selezionare
+     * @param categoryController
+     *            controller delle categorie che è possibile selezionare
+     * @param authorController
+     *            controller delle categorie che è possibile selezionare
      * @throws IllegalArgumentException
-     *             se {@code categoriesTree} è nullo
+     *             se {@code categoryController} o {@code authorController} sono nulli
      */
-    public SearchPanel(CategoryTreeModel categoriesTree) {
-        setCategoriesTree(categoriesTree);
+    public SearchPanel(CategoryController categoryController, AuthorController authorController) {
+        setCategoriesController(categoryController);
+        setAuthorController(authorController);
 
         setLayout(new BorderLayout(5, 5));
         setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -54,10 +57,6 @@ public class SearchPanel extends JPanel {
         searchPanel.setLayout(new BoxLayout(searchPanel, BoxLayout.PAGE_AXIS));
 
         tags = new JTermsField(searchFieldSeparator);
-
-        Author[] foo = { new Author("aaa", "aaa", null) };
-        authors = new JPopupItemSelection<>("Premi per selezionare gli autori", foo);
-
         dateFrom = new JDateChooser();
         dateTo = new JDateChooser();
 
@@ -138,18 +137,40 @@ public class SearchPanel extends JPanel {
     }
 
     /**
-     * Imposta l'albero delle categorie da selezionare.
+     * Imposta il controller delle categorie e reimposta l'albero delle categorie selezionabili.
      * 
-     * @param categoriesTree
-     *            albero delle categorie
+     * @param controller
+     *            controller delle categorie
      * @throws IllegalArgumentException
-     *             se {@code categoriesTree == null}
+     *             se {@code controller == null}
      */
-    public void setCategoriesTree(CategoryTreeModel categoriesTree) {
+    public void setCategoriesController(CategoryController controller) {
+        if (controller == null)
+            throw new IllegalArgumentException("controller can't be null");
+
         if (categories == null)
-            categories = new CategoriesSelectionPopupMenu(categoriesTree);
+            categories = new CategoriesSelectionPopupMenu(controller.getCategoriesTree());
         else
-            categories.setCategoriesTree(categoriesTree);
+            categories.setCategoriesTree(controller.getCategoriesTree());
+    }
+
+    /**
+     * Imposta il controller degli autori e reimposta la lista degli autori selezionabili.
+     * 
+     * @param controller
+     *            controller degli autori
+     * @throws IllegalArgumentException
+     *             se {@code controller == null}
+     */
+    public void setAuthorController(AuthorController controller) {
+        if (controller == null)
+            throw new IllegalArgumentException("controller can't be null");
+
+        if (authors == null) {
+            authors = new PopupCheckboxList<Author>("Premi per selezionare gli autori", controller.getAuthors());
+        } else {
+            authors.setElements(controller.getAuthors());
+        }
     }
 
     /**
