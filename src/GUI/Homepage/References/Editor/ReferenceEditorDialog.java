@@ -6,7 +6,6 @@ import GUI.Utilities.*;
 import GUI.Homepage.Categories.*;
 import GUI.Homepage.References.Chooser.*;
 import Exceptions.RequiredFieldMissingException;
-import DAO.BibliographicReferenceDAO;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -18,8 +17,12 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import com.toedter.calendar.JDateChooser;
 
+import Controller.AuthorController;
+import Controller.CategoryController;
+import Controller.ReferenceController;
+
 /**
- * Pannello per la creazione o modifica di un riferimento bibliografico.
+ * Finestra di dialogo per la creazione o modifica di un riferimento bibliografico.
  */
 public abstract class ReferenceEditorDialog<T extends BibliographicReference> extends JDialog implements ReferenceChooserSelectionListener {
 
@@ -30,7 +33,7 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
     private JDateChooser pubblicationDate;
     private JComboBox<ReferenceLanguage> language;
     private CategoriesSelectionPopupMenu categories;
-    private JPopupItemSelection<Author> authors;
+    private PopupCheckboxList<Author> authorsList;
 
     private JPopupButton relatedReferencesPopupButton;
     private ReferenceChooserDialog relatedReferencesDialog;
@@ -38,9 +41,10 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
 
     private JPanel fieldPanel;
     private AuthorEditor authorEditor;
-    private BibliographicReferenceDAO referenceDAO;
 
-    private CategoryTreeModel categoriesTree;
+    private CategoryController categoryController;
+    private ReferenceController referenceController;
+    private AuthorController authorController;
 
     private final String searchFieldSeparator = ",";
     private final Dimension maximumSize = new Dimension(Integer.MAX_VALUE, 24);
@@ -48,91 +52,42 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
     private final float alignment = Container.LEFT_ALIGNMENT;
 
     /**
-     * Crea un nuovo pannello di dialogo per la modifica di un riferimento, inserendo i valori già presenti all'interno dei campi.
+     * Crea una nuova finestra di dialogo.
      * 
      * @param dialogueTitle
-     *            titolo della schermata di dialogo
-     * @param categoriesTree
-     *            albero delle categorie in cui è possibile inserire il riferimento
-     * @param referenceDAO
-     *            classe DAO per salvare i riferimenti nel database
+     *            titolo della finestra
+     * @param categoryController
+     *            controller delle categorie
+     * @param referenceController
+     *            controller dei riferimenti
+     * @param authorController
+     *            controller degli autori
      * @throws IllegalArgumentException
-     *             se referenceDAO non è un valore valido
-     * 
-     * @see #setReferenceDAO(BibliographicReferenceDAO)
+     *             se {@code categoryController == null}, {@code referenceController == null} o {@code authorController == null}
      */
-    public ReferenceEditorDialog(String dialogueTitle, CategoryTreeModel categoriesTree, BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
+    public ReferenceEditorDialog(String dialogueTitle, CategoryController categoryController, ReferenceController referenceController, AuthorController authorController) {
         super();
 
         setTitle(dialogueTitle);
         setSize(500, 500);
         setResizable(false);
-
-        setReferenceDAO(referenceDAO);
-
-        // vogliamo che sia un'interfaccia modale
         setModal(true);
 
-        this.categoriesTree = categoriesTree;
+        setCategoryController(categoryController);
+        setReferenceController(referenceController);
+        setAuthorController(authorController);
 
-        // in questo modo le classi che ereditano ReferenceCreator possono fare l'overriding
-        // e aggiungere altri elementi prima delle descrizione
-        setup();
+        // in questo modo le classi figlie possono fare l'overriding e aggiungere altri elementi prima delle descrizione
+        initialize();
 
-        JLabel descriptionLabel = new JLabel("Descrizione");
-        descriptionLabel.setMaximumSize(maximumSize);
-        descriptionLabel.setAlignmentX(alignment);
-
-        description.setLineWrap(true);
-        description.setAlignmentX(alignment);
-
-        JButton confirmButton = new JButton("Salva riferimento");
-        confirmButton.setAlignmentX(alignment);
-        confirmButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                saveReference();
-                dispose();
-            }
-        });
-
-        fieldPanel.add(descriptionLabel);
-        fieldPanel.add(description);
-        fieldPanel.add(Box.createRigidArea(new Dimension(0, 20)));
-        fieldPanel.add(confirmButton);
-
-        resetFields(null);
-    }
-
-    /**
-     * Imposta la classe DAO per interfacciarsi col database.
-     * 
-     * @param referenceDAO
-     *            classe DAO dei riferimenti
-     * @throws IllegalArgumentException
-     *             se {@code referenceDAO == null}
-     */
-    private void setReferenceDAO(BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
-        if (referenceDAO == null)
-            throw new IllegalArgumentException("referenceDAO non può essere null");
-
-        this.referenceDAO = referenceDAO;
-    }
-
-    /**
-     * Restituisce la classe DAO per interfacciarsi al database dei riferimenti.
-     * 
-     * @return
-     *         classe DAO dei riferimenti
-     */
-    public BibliographicReferenceDAO getReferenceDAO() {
-        return referenceDAO;
+        // la descrizione e il pulsante di conferma li poniamo sotto tutti gli altri
+        initializeLastFields();
     }
 
     /**
      * Prepara i campi necessari per la creazione di un riferimento.
      */
-    protected void setup() {
+    protected void initialize() {
         fieldPanel = new JPanel();
         fieldPanel.setLayout(new BoxLayout(fieldPanel, BoxLayout.PAGE_AXIS));
         fieldPanel.setBorder(new EmptyBorder(50, 30, 50, 30));
@@ -144,12 +99,10 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
         DOI = new JTextField();
         pubblicationDate = new JDateChooser();
         language = new JComboBox<>(ReferenceLanguage.values());
-        categories = new CategoriesSelectionPopupMenu(categoriesTree);
         description = new JTextArea(10, 1);
-        authorEditor = new AuthorEditor();
 
-        // TODO: carica dal database gli autori
-        authors = new JPopupItemSelection<Author>("Premi per selezionare gli autori");
+        authorsList = new PopupCheckboxList<Author>("Premi per selezionare gli autori", getAuthorController().getAuthors());
+        authorEditor = new AuthorEditor(getAuthorController());
 
         JButton addAuthor = new JButton("+");
         addAuthor.addActionListener(new ActionListener() {
@@ -160,10 +113,10 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
         });
 
         JPanel authorsPanel = new JPanel(new BorderLayout(10, 0));
-        authorsPanel.add(authors, BorderLayout.CENTER);
+        authorsPanel.add(authorsList, BorderLayout.CENTER);
         authorsPanel.add(addAuthor, BorderLayout.EAST);
 
-        relatedReferencesDialog = new ReferenceChooserDialog(categoriesTree, null);
+        relatedReferencesDialog = new ReferenceChooserDialog(getCategoryController(), getReferenceController());
         relatedReferencesDialog.addReferenceChooserSelectionListener(this);
 
         relatedReferencesPopupButton = new JPopupButton("Rimandi selezionati");
@@ -189,68 +142,28 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
         addFieldComponent(relatedReferencesPanel, "Rimandi");
     }
 
-    /**
-     * Riempie i campi di input con i valori presenti nel riferimento passato.
-     * Se il riferimento è {@code null}, vengono svuotati.
-     * 
-     * @param reference
-     *            riferimento da cui prendere i valori (se {@code null}, i campi verrano resettati)
-     */
-    protected void resetFields(T reference) {
-        if (reference == null) {
-            setTitleValue(null);
-            setPubblicationDateValue(null);
-            setDOIValue(null);
-            setDescriptionValue(null);
-            setTagValues(null);
-            setLanguageValue(ReferenceLanguage.ENGLISH);
-            setRelatedReferences(null);
-            setAuthorValues(null);
-            setCategoryValues(null);
-        } else {
-            setTitleValue(reference.getTitle());
-            setPubblicationDateValue(reference.getPubblicationDate());
-            setDOIValue(reference.getDOI());
-            setDescriptionValue(reference.getDescription());
-            setTagValues(reference.getTags());
-            setLanguageValue(reference.getLanguage());
-            setRelatedReferences(reference.getRelatedReferences());
-            setAuthorValues(reference.getAuthors());
-            setCategoryValues(reference.getCategoriesArray());
-        }
-    }
+    private void initializeLastFields() {
+        JLabel descriptionLabel = new JLabel("Descrizione");
+        descriptionLabel.setMaximumSize(maximumSize);
+        descriptionLabel.setAlignmentX(alignment);
 
-    @Override
-    public void setVisible(boolean b) {
-        setVisible(b, null);
-    }
+        description.setLineWrap(true);
+        description.setAlignmentX(alignment);
 
-    /**
-     * Mostra o nasconde questo pannello a seconda del valore di {@code b}.
-     * Se {@code b == true}, i campi di input verranno riempiti con i valori presenti in {@code reference}.
-     * 
-     * @param b
-     *            se {@code true} il pannello verrà mostrato e verrano riempiti i campi con i valori di {@code reference},
-     *            se {@code false} il pannello verrà nascosto
-     * @param reference
-     *            riferimento da mostrare (eventualmente)
-     */
-    public void setVisible(boolean b, T reference) {
-        if (b) {
-            resetFields(reference);
-        }
+        JButton confirmButton = new JButton("Salva riferimento");
+        confirmButton.setAlignmentX(alignment);
+        confirmButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                saveReference();
+                setVisible(false);
+            }
+        });
 
-        super.setVisible(b);
-    }
-
-    /**
-     * Funzione chiamata quando viene premuto il tasto di conferma.
-     */
-    protected abstract void saveReference();
-
-    @Override
-    public void onReferenceChooserSelection(BibliographicReference reference) {
-        addRelatedReference(reference);
+        fieldPanel.add(descriptionLabel);
+        fieldPanel.add(description);
+        fieldPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        fieldPanel.add(confirmButton);
     }
 
     /**
@@ -317,26 +230,150 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
         addFieldComponent(component, label);
     }
 
-    // #region getter/setter
+    /**
+     * Riempie i campi di input con i valori presenti nel riferimento passato.
+     * Se il riferimento è {@code null}, vengono svuotati.
+     * 
+     * @param reference
+     *            riferimento da cui prendere i valori (se {@code null}, i campi verrano resettati)
+     */
+    protected void setFieldsValues(T reference) {
+        if (reference == null) {
+            setTitleValue(null);
+            setPubblicationDateValue(null);
+            setDOIValue(null);
+            setDescriptionValue(null);
+            setTagValues(null);
+            setLanguageValue(ReferenceLanguage.ENGLISH);
+            setRelatedReferences(null);
+            setAuthorValues(null);
+            setCategoryValues(null);
+        } else {
+            setTitleValue(reference.getTitle());
+            setPubblicationDateValue(reference.getPubblicationDate());
+            setDOIValue(reference.getDOI());
+            setDescriptionValue(reference.getDescription());
+            setTagValues(reference.getTags());
+            setLanguageValue(reference.getLanguage());
+            setRelatedReferences(reference.getRelatedReferences());
+            setAuthorValues(reference.getAuthors());
+            setCategoryValues(reference.getCategoriesArray());
+        }
+    }
 
     /**
-     * Imposta il valore iniziale del titolo.
-     * 
-     * @param text
-     *            titolo iniziale del riferimento
+     * Salva un nuovo riferimento con i dati inseriti dall'utente.
+     * Viene invocata quando viene premuto il tasto di conferma.
      */
+    protected abstract void saveReference();
+
+    @Override
+    public void onReferenceChooserSelection(BibliographicReference reference) {
+        addRelatedReference(reference);
+    }
+
+    @Override
+    public void setVisible(boolean b) {
+        setVisible(b, null);
+    }
+
+    /**
+     * Mostra o nasconde questo pannello a seconda del valore di {@code b}.
+     * Se {@code b == true}, i campi di input verranno riempiti con i valori presenti in {@code reference}.
+     * 
+     * @param b
+     *            se {@code true} il pannello verrà mostrato e verrano riempiti i campi con i valori di {@code reference},
+     *            se {@code false} il pannello verrà nascosto
+     * @param reference
+     *            riferimento da mostrare (eventualmente)
+     */
+    public void setVisible(boolean b, T reference) {
+        if (b) {
+            setFieldsValues(reference);
+        }
+
+        super.setVisible(b);
+    }
+
+    /**
+     * TODO: commenta
+     * 
+     * @param categoryController
+     * @throws IllegalArgumentException
+     *             se {@code categoryController == null}
+     */
+    public void setCategoryController(CategoryController categoryController) {
+        if (categoryController == null)
+            throw new IllegalArgumentException("categoryController can't be null");
+
+        this.categoryController = categoryController;
+
+        if (categories == null) {
+            categories = new CategoriesSelectionPopupMenu(categoryController.getCategoriesTree());
+        } else {
+            categories.setCategoriesTree(categoryController.getCategoriesTree());
+        }
+    }
+
+    /**
+     * TODO: commenta
+     * 
+     * @return
+     */
+    public CategoryController getCategoryController() {
+        return categoryController;
+    }
+
+    /**
+     * TODO: commenta
+     * 
+     * @param referenceController
+     * @throws IllegalArgumentException
+     *             se {@code referenceController == null}
+     */
+    public void setReferenceController(ReferenceController referenceController) {
+        if (categoryController == null)
+            throw new IllegalArgumentException("referenceController can't be null");
+
+        this.referenceController = referenceController;
+    }
+
+    /**
+     * TODO: commenta
+     * 
+     * @return
+     */
+    public ReferenceController getReferenceController() {
+        return referenceController;
+    }
+
+    /**
+     * TODO: commenta
+     * 
+     * @param authorController
+     * @throws IllegalArgumentException
+     *             se {@code authorController == null}
+     */
+    public void setAuthorController(AuthorController authorController) {
+        if (authorController == null)
+            throw new IllegalArgumentException("authorController can't be null");
+
+        this.authorController = authorController;
+    }
+
+    /**
+     * TODO: commenta
+     * 
+     * @return
+     */
+    public AuthorController getAuthorController() {
+        return authorController;
+    }
+
     private void setTitleValue(String text) {
         title.setText(text);
     }
 
-    /**
-     * Restituisce il titolo inserito dall'utente.
-     * 
-     * @return
-     *         titolo del riferimento
-     * @throws RequiredFieldMissingException
-     *             se non è stato inserito un titolo
-     */
     private String getTitleValue() throws RequiredFieldMissingException {
         String referenceTitle = convertEmptyStringToNull(title.getText().trim());
 
@@ -346,72 +383,30 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
         return referenceTitle;
     }
 
-    /**
-     * Imposta il valore iniziale della data di pubblicazione.
-     * 
-     * @param date
-     *            data di pubblicazione iniziale del riferimento
-     */
     private void setPubblicationDateValue(Date date) {
         pubblicationDate.setDate(date);
     }
 
-    /**
-     * Restituisce la data di pubblicazione inserita dall'utente.
-     * 
-     * @return
-     *         data di pubblicazione del riferimento, {@code null} se non è stato inserito niente
-     */
     private Date getPubblicationDateValue() {
         return pubblicationDate.getDate();
     }
 
-    /**
-     * Imposta il valore iniziale del DOI.
-     * 
-     * @param doi
-     *            DOI iniziale del riferimento
-     */
     private void setDOIValue(String doi) {
         DOI.setText(doi);
     }
 
-    /**
-     * Restituisce il DOI inserito dall'utente.
-     * 
-     * @return
-     *         DOI del riferimento, {@code null} se non è stato inserito niente
-     */
     private String getDOIValue() {
         return convertEmptyStringToNull(DOI.getText().trim());
     }
 
-    /**
-     * Imposta il valore iniziale della descrizione.
-     * 
-     * @param description
-     *            descrizione iniziale del riferimento
-     */
     private void setDescriptionValue(String description) {
         this.description.setText(description);
     }
 
-    /**
-     * Restituisce la descrizione inserito dall'utente.
-     * 
-     * @return
-     *         descrizione del riferimento, {@code null} se non è stato inserito niente
-     */
     private String getDescriptionValue() {
         return convertEmptyStringToNull(description.getText().trim());
     }
 
-    /**
-     * Imposta le parole chiave iniziali del riferimento.
-     * 
-     * @param tags
-     *            parole chiave del riferimento
-     */
     private void setTagValues(Tag[] tags) {
         if (tags == null) {
             this.tags.setText(null);
@@ -427,12 +422,6 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
         this.tags.setText(text);
     }
 
-    /**
-     * Restituisce le parole chiave inserite dall'utente.
-     * 
-     * @return
-     *         parole chiave del riferimento, {@code null} se non è stato inserito niente
-     */
     private Tag[] getTagValues() {
         String[] tagsString = tags.getTerms();
 
@@ -448,51 +437,27 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
         return tags;
     }
 
-    /**
-     * Imposta il valore iniziale della lingua.
-     * 
-     * @param language
-     *            lingua del riferimento
-     */
     private void setLanguageValue(ReferenceLanguage language) {
         this.language.setSelectedItem(language);
     }
 
-    /**
-     * Restituisce la lingua inserito dall'utente.
-     * 
-     * @return
-     *         lingua del riferimento
-     */
     private ReferenceLanguage getLanguageValue() {
         return (ReferenceLanguage) language.getSelectedItem();
     }
 
-    /**
-     * Imposta gli autori iniziali del riferimento.
-     * 
-     * @param authors
-     *            autori del riferimento
-     */
     private void setAuthorValues(Author[] authors) {
-        this.authors.deselectAll();
+        this.authorsList.deselectAll();
 
         if (authors == null)
             return;
 
         for (Author author : authors) {
-            this.authors.selectElement(author);
+            this.authorsList.selectElement(author);
         }
     }
 
-    /**
-     * Restituisce gli autori selezionati dall'utente.
-     * 
-     * @return
-     *         autori del riferimento, {@code null} se non è stato inserito niente
-     */
     private Author[] getAuthorValues() {
-        List<Author> selectedAuthors = authors.getSelectedElements();
+        List<Author> selectedAuthors = authorsList.getSelectedElements();
 
         if (selectedAuthors == null || selectedAuthors.size() == 0)
             return null;
@@ -500,42 +465,19 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
         return selectedAuthors.toArray(new Author[selectedAuthors.size()]);
     }
 
-    /**
-     * Imposta le categorie iniziali del riferimento.
-     * 
-     * @param categories
-     *            categorie del riferimento
-     */
     private void setCategoryValues(Category[] categories) {
-        // TODO: seleziona categorie
-
         if (categories == null)
             return;
 
         for (Category category : categories) {
             this.categories.selectCategory(category);
         }
-
-        // ArrayList<Category> categoriesList = new ArrayList<>(categories.length);
-
     }
 
-    /**
-     * Restituisce le categorie selezionate dall'utente.
-     * 
-     * @return
-     *         categorie del riferimento, {@code null} se non è stato inserito niente
-     */
     private Category[] getCategoryValues() {
         return categories.getSelectedCategories();
     }
 
-    /**
-     * Imposta i rimandi iniziali associati al riferimento.
-     * 
-     * @param reference
-     *            rimandi associati al riferimento
-     */
     private void setRelatedReferences(BibliographicReference[] references) {
         if (references == null)
             return;
@@ -548,12 +490,6 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
         }
     }
 
-    /**
-     * Aggiunge un rimando associato a questo riferimento. In caso {@code reference} sia nullo o già presente, non viene inserito.
-     * 
-     * @param reference
-     *            rimando da associare
-     */
     private void addRelatedReference(BibliographicReference reference) {
         if (reference == null)
             return;
@@ -588,12 +524,6 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
         relatedReferencesPopupButton.addToPopupMenu(panel);
     }
 
-    /**
-     * Restituisce i rimandi associati a questo riferimento selezionati dall'utente.
-     * 
-     * @return
-     *         rimandi del riferimento, {@code null} se non è stato inserito niente
-     */
     private BibliographicReference[] getRelatedReferenceValues() {
         if (relatedReferences == null || relatedReferences.isEmpty())
             return null;
@@ -643,7 +573,5 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
         reference.setRelatedReferences(getRelatedReferenceValues());
         reference.setCategories(getCategoryValues());
     }
-
-    // #endregion
 
 }

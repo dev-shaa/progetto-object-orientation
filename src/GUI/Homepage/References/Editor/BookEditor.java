@@ -1,10 +1,12 @@
 package GUI.Homepage.References.Editor;
 
-import DAO.BibliographicReferenceDAO;
 import Entities.References.PhysicalResources.Book;
 import Exceptions.ReferenceDatabaseException;
 import Exceptions.RequiredFieldMissingException;
-import GUI.Homepage.Categories.CategoryTreeModel;
+
+import Controller.AuthorController;
+import Controller.CategoryController;
+import Controller.ReferenceController;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -18,32 +20,27 @@ public class BookEditor extends PublicationEditor<Book> {
     private JTextField ISBN;
 
     /**
-     * Crea un nuovo pannello di dialogo per la creazione di un riferimento a un libro.
+     * TODO: commenta
      * 
-     * @param categoriesTree
-     *            albero delle categorie in cui è possibile inserire il riferimento
-     * @param referenceDAO
-     *            classe DAO per salvare i riferimenti nel database
-     * @throws IllegalArgumentException
-     *             se referenceDAO non è un valore valido
-     * 
-     * @see #setReferenceDAO(BibliographicReferenceDAO)
+     * @param categoryController
+     * @param referenceController
+     * @param authorController
      */
-    public BookEditor(CategoryTreeModel categoriesTree, BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
-        super("Libro", categoriesTree, referenceDAO);
+    public BookEditor(CategoryController categoryController, ReferenceController referenceController, AuthorController authorController) {
+        super("Libro", categoryController, referenceController, authorController);
     }
 
     @Override
-    protected void setup() {
-        super.setup();
+    protected void initialize() {
+        super.initialize();
 
         ISBN = new JTextField();
         addFieldComponent(ISBN, "ISBN");
     }
 
     @Override
-    protected void resetFields(Book publication) {
-        super.resetFields(publication);
+    protected void setFieldsValues(Book publication) {
+        super.setFieldsValues(publication);
 
         if (publication == null) {
             setISBNValue(null);
@@ -54,12 +51,11 @@ public class BookEditor extends PublicationEditor<Book> {
 
     @Override
     protected void saveReference() {
-        Book bookToFill = book == null ? new Book("placeholder", null) : book;
 
         try {
+            Book bookToFill = book == null ? new Book("placeholder", null) : book;
             fillReferenceValues(bookToFill);
-
-            getReferenceDAO().saveBook(bookToFill);
+            getReferenceController().saveReference(bookToFill);
         } catch (RequiredFieldMissingException e) {
             JOptionPane.showMessageDialog(this, "Uno o più campi obbligatori non sono stati inseriti.", "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
         } catch (ReferenceDatabaseException e) {
@@ -74,23 +70,11 @@ public class BookEditor extends PublicationEditor<Book> {
         book.setISBN(getISBNValue());
     }
 
-    /**
-     * Imposta il valore iniziale dell'ISBN.
-     * 
-     * @param ISBN
-     *            ISBN iniziale del libro
-     */
-    protected void setISBNValue(String ISBN) {
+    private void setISBNValue(String ISBN) {
         this.ISBN.setText(ISBN);
     }
 
-    /**
-     * Restituisce l'ISBN inserito dall'utente.
-     * 
-     * @return
-     *         ISBN del libro, {@code null} se non è stato inserito niente
-     */
-    protected String getISBNValue() {
+    private String getISBNValue() {
         return convertEmptyStringToNull(ISBN.getText().trim());
     }
 

@@ -1,10 +1,13 @@
 package GUI.Homepage.References.Editor;
 
-import DAO.BibliographicReferenceDAO;
 import Entities.References.OnlineResources.Image;
+
 import Exceptions.ReferenceDatabaseException;
 import Exceptions.RequiredFieldMissingException;
-import GUI.Homepage.Categories.CategoryTreeModel;
+
+import Controller.AuthorController;
+import Controller.CategoryController;
+import Controller.ReferenceController;
 
 import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
@@ -20,24 +23,19 @@ public class ImageEditor extends OnlineResourceEditor<Image> {
     private JSpinner height;
 
     /**
-     * Crea un nuovo pannello di dialogo per la creazione di un riferimento a un'immagine.
+     * TODO: commenta
      * 
-     * @param categoriesTree
-     *            albero delle categorie in cui è possibile inserire il riferimento
-     * @param referenceDAO
-     *            classe DAO per salvare i riferimenti nel database
-     * @throws IllegalArgumentException
-     *             se referenceDAO non è un valore valido
-     * 
-     * @see #setReferenceDAO(BibliographicReferenceDAO)
+     * @param categoryController
+     * @param referenceController
+     * @param authorController
      */
-    public ImageEditor(CategoryTreeModel categoriesTree, BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
-        super("Immagine", categoriesTree, referenceDAO);
+    public ImageEditor(CategoryController categoryController, ReferenceController referenceController, AuthorController authorController) {
+        super("Immagine", categoryController, referenceController, authorController);
     }
 
     @Override
-    protected void setup() {
-        super.setup();
+    protected void initialize() {
+        super.initialize();
 
         width = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
         height = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
@@ -47,8 +45,8 @@ public class ImageEditor extends OnlineResourceEditor<Image> {
     }
 
     @Override
-    protected void resetFields(Image reference) {
-        super.resetFields(reference);
+    protected void setFieldsValues(Image reference) {
+        super.setFieldsValues(reference);
 
         if (reference == null) {
             setWidthValue(1);
@@ -61,12 +59,10 @@ public class ImageEditor extends OnlineResourceEditor<Image> {
 
     @Override
     protected void saveReference() {
-        Image imageToFill = image == null ? new Image("placeholder", "placeholder") : image;
-
         try {
+            Image imageToFill = image == null ? new Image("placeholder", "placeholder") : image;
             fillReferenceValues(imageToFill);
-
-            getReferenceDAO().saveImage(imageToFill);
+            getReferenceController().saveReference(imageToFill);
         } catch (RequiredFieldMissingException e) {
             JOptionPane.showMessageDialog(this, "Uno o più campi obbligatori non sono stati inseriti.", "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
         } catch (ReferenceDatabaseException e) {
@@ -75,54 +71,26 @@ public class ImageEditor extends OnlineResourceEditor<Image> {
     }
 
     @Override
-    protected void fillReferenceValues(Image reference) throws IllegalArgumentException, RequiredFieldMissingException {
+    protected void fillReferenceValues(Image reference) throws RequiredFieldMissingException {
         super.fillReferenceValues(reference);
 
         image.setWidth(getWidthValue());
         image.setHeight(getHeightValue());
     }
 
-    /**
-     * Imposta il valore iniziale della larghezza.
-     * 
-     * @param width
-     *            larghezza iniziale dell'immagine
-     * @throws IllegalArgumentException
-     *             se {@code width < 1}
-     */
-    protected void setWidthValue(int width) throws IllegalArgumentException {
+    private void setWidthValue(int width) {
         this.width.setValue(width);
     }
 
-    /**
-     * Restituisce la larghezza inserita dall'utente.
-     * 
-     * @return
-     *         larghezza dell'immagine
-     */
-    protected int getWidthValue() {
+    private int getWidthValue() {
         return (int) width.getValue();
     }
 
-    /**
-     * Imposta il valore iniziale dell'altezza.
-     * 
-     * @param height
-     *            altezza iniziale dell'immagine
-     * @throws IllegalArgumentException
-     *             se {@code height < 1}
-     */
-    protected void setHeightValue(int height) throws IllegalArgumentException {
+    private void setHeightValue(int height) {
         this.height.setValue(height);
     }
 
-    /**
-     * Restituisce l'altezza inserita dall'utente.
-     * 
-     * @return
-     *         altezza dell'immagine
-     */
-    protected int getHeightValue() {
+    private int getHeightValue() {
         return (int) height.getValue();
     }
 

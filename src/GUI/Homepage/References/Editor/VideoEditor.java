@@ -1,10 +1,12 @@
 package GUI.Homepage.References.Editor;
 
-import DAO.BibliographicReferenceDAO;
 import Entities.References.OnlineResources.Video;
 import Exceptions.ReferenceDatabaseException;
 import Exceptions.RequiredFieldMissingException;
-import GUI.Homepage.Categories.CategoryTreeModel;
+
+import Controller.AuthorController;
+import Controller.CategoryController;
+import Controller.ReferenceController;
 
 import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
@@ -15,31 +17,26 @@ import javax.swing.SpinnerNumberModel;
  */
 public class VideoEditor extends OnlineResourceEditor<Video> {
 
+    /**
+     * TODO: commenta
+     * 
+     * @param categoryController
+     * @param referenceController
+     * @param authorController
+     */
+    public VideoEditor(CategoryController categoryController, ReferenceController referenceController, AuthorController authorController) {
+        super("Video", categoryController, referenceController, authorController);
+    }
+
     private Video video;
     private JSpinner width;
     private JSpinner height;
     private JSpinner frameRate;
     private JSpinner duration;
 
-    /**
-     * Crea un nuovo pannello di dialogo per la creazione di un riferimento a un video.
-     * 
-     * @param categoriesTree
-     *            albero delle categorie in cui è possibile inserire il riferimento
-     * @param referenceDAO
-     *            classe DAO per salvare i riferimenti nel database
-     * @throws IllegalArgumentException
-     *             se referenceDAO non è un valore valido
-     * 
-     * @see #setReferenceDAO(BibliographicReferenceDAO)
-     */
-    public VideoEditor(CategoryTreeModel categoriesTree, BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
-        super("Video", categoriesTree, referenceDAO);
-    }
-
     @Override
-    protected void resetFields(Video reference) {
-        super.resetFields(reference);
+    protected void setFieldsValues(Video reference) {
+        super.setFieldsValues(reference);
 
         if (video == null) {
             setWidthValue(1);
@@ -55,8 +52,8 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
     }
 
     @Override
-    protected void setup() {
-        super.setup();
+    protected void initialize() {
+        super.initialize();
 
         width = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
         height = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
@@ -71,11 +68,11 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
 
     @Override
     protected void saveReference() {
-        Video videoToFill = video == null ? new Video("placeholder", "placeholder") : video;
 
         try {
+            Video videoToFill = video == null ? new Video("placeholder", "placeholder") : video;
             fillReferenceValues(videoToFill);
-            getReferenceDAO().saveVideo(videoToFill);
+            getReferenceController().saveReference(videoToFill);
         } catch (RequiredFieldMissingException e) {
             JOptionPane.showMessageDialog(this, "Uno o più campi obbligatori non sono stati inseriti.", "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
         } catch (ReferenceDatabaseException e) {
@@ -93,83 +90,35 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
         video.setDuration(getDurationValue());
     }
 
-    /**
-     * Imposta il valore iniziale della larghezza.
-     * 
-     * @param university
-     *            larghezza iniziale del video
-     */
-    protected void setWidthValue(int width) {
+    private void setWidthValue(int width) {
         this.width.setValue(width);
     }
 
-    /**
-     * Restituisce la larghezza inserita dall'utente.
-     * 
-     * @return
-     *         larghezza del video
-     */
-    protected int getWidthValue() {
+    private int getWidthValue() {
         return (int) width.getValue();
     }
 
-    /**
-     * Imposta il valore iniziale dell'altezza.
-     * 
-     * @param frameRate
-     *            altezza iniziale del video
-     */
-    protected void setHeightValue(int height) {
+    private void setHeightValue(int height) {
         this.height.setValue(height);
     }
 
-    /**
-     * Restituisce l'altezza inserita dall'utente.
-     * 
-     * @return
-     *         altezza del video
-     */
-    protected int getHeightValue() {
+    private int getHeightValue() {
         return (int) height.getValue();
     }
 
-    /**
-     * Imposta il valore iniziale del frame rate.
-     * 
-     * @param frameRate
-     *            frame rate iniziale del video
-     */
-    protected void setFrameRateValue(int frameRate) {
+    private void setFrameRateValue(int frameRate) {
         this.frameRate.setValue(frameRate);
     }
 
-    /**
-     * Restituisce il frame rate inserito dall'utente.
-     * 
-     * @return
-     *         frame rate del video
-     */
-    protected int getFrameRateValue() {
+    private int getFrameRateValue() {
         return (int) frameRate.getValue();
     }
 
-    /**
-     * Imposta il valore iniziale della durata.
-     * 
-     * @param frameRate
-     *            durata iniziale del video
-     */
-    protected void setDurationValue(float duration) {
+    private void setDurationValue(float duration) {
         this.duration.setValue(duration);
     }
 
-    /**
-     * Restituisce la durata inserita dall'utente.
-     * 
-     * @return
-     *         durata del video
-     */
-    protected float getDurationValue() {
+    private float getDurationValue() {
         return (float) duration.getValue();
     }
 

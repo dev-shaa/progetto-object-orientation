@@ -1,11 +1,13 @@
 package GUI.Homepage.References.Editor;
 
-import DAO.BibliographicReferenceDAO;
 import Entities.References.OnlineResources.OnlineResource;
 import Exceptions.RequiredFieldMissingException;
-import GUI.Homepage.Categories.CategoryTreeModel;
 
 import javax.swing.*;
+
+import Controller.AuthorController;
+import Controller.CategoryController;
+import Controller.ReferenceController;
 
 /**
  * Pannello di dialogo per la creazione o modifica di un riferimento a una risorsa online.
@@ -15,26 +17,20 @@ public abstract class OnlineResourceEditor<T extends OnlineResource> extends Ref
     private JTextField URL;
 
     /**
-     * Crea un nuovo pannello di dialogo per la modifica di un riferimento a una risorsa online.
+     * TODO: commenta
      * 
      * @param dialogueTitle
-     *            titolo della schermata di dialogo
-     * @param categoriesTree
-     *            albero delle categorie in cui è possibile inserire il riferimento
-     * @param referenceDAO
-     *            classe DAO per salvare i riferimenti nel database
-     * @throws IllegalArgumentException
-     *             se referenceDAO non è un valore valido
-     * 
-     * @see #setReferenceDAO(BibliographicReferenceDAO)
+     * @param categoryController
+     * @param referenceController
+     * @param authorController
      */
-    public OnlineResourceEditor(String dialogueTitle, CategoryTreeModel categoriesTree, BibliographicReferenceDAO referenceDAO) {
-        super(dialogueTitle, categoriesTree, referenceDAO);
+    public OnlineResourceEditor(String dialogueTitle, CategoryController categoryController, ReferenceController referenceController, AuthorController authorController) {
+        super(dialogueTitle, categoryController, referenceController, authorController);
     }
 
     @Override
-    protected void setup() {
-        super.setup();
+    protected void initialize() {
+        super.initialize();
 
         URL = new JTextField();
 
@@ -42,38 +38,24 @@ public abstract class OnlineResourceEditor<T extends OnlineResource> extends Ref
     }
 
     @Override
-    protected void resetFields(T reference) {
-        super.resetFields(reference);
+    protected void setFieldsValues(T reference) {
+        super.setFieldsValues(reference);
 
         setURLValue(reference == null ? null : reference.getURL());
     }
 
     @Override
-    protected void fillReferenceValues(T reference) throws IllegalArgumentException, RequiredFieldMissingException {
+    protected void fillReferenceValues(T reference) throws RequiredFieldMissingException {
         super.fillReferenceValues(reference);
 
         reference.setURL(getURLValue());
     }
 
-    /**
-     * Imposta il valore iniziale dell'URL.
-     * 
-     * @param URL
-     *            URL iniziale del riferimento
-     */
-    protected void setURLValue(String URL) {
+    private void setURLValue(String URL) {
         this.URL.setText(URL);
     }
 
-    /**
-     * Restituisce l'URL inserito dall'utente.
-     * 
-     * @return
-     *         URL del riferimento
-     * @throws RequiredFieldMissingException
-     *             se non è stato inserito un URL
-     */
-    protected String getURLValue() throws RequiredFieldMissingException {
+    private String getURLValue() throws RequiredFieldMissingException {
         String newURL = convertEmptyStringToNull(URL.getText().trim());
 
         if (newURL == null)

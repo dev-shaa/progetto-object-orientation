@@ -1,16 +1,18 @@
 package GUI.Homepage.References.Editor;
 
-import DAO.BibliographicReferenceDAO;
 import Entities.References.PhysicalResources.Article;
 import Exceptions.ReferenceDatabaseException;
 import Exceptions.RequiredFieldMissingException;
-import GUI.Homepage.Categories.CategoryTreeModel;
+
+import Controller.AuthorController;
+import Controller.CategoryController;
+import Controller.ReferenceController;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 /**
- * Pannello di dialogo per la creazione o modifica di un riferimento a un articolo.
+ * Finestra di dialogo per la creazione o modifica di un riferimento a un articolo.
  */
 public class ArticleEditor extends PublicationEditor<Article> {
 
@@ -18,33 +20,27 @@ public class ArticleEditor extends PublicationEditor<Article> {
     private JTextField ISSN;
 
     /**
-     * Crea un nuovo pannello di dialogo per la creazione di un riferimento a un articolo.
+     * TODO: commenta
      * 
-     * @param categoriesTree
-     *            albero delle categorie in cui è possibile inserire il riferimento
-     * @param referenceDAO
-     *            classe DAO per salvare i riferimenti nel database
-     * @throws IllegalArgumentException
-     *             se referenceDAO non è un valore valido
-     * 
-     * @see #setReferenceDAO(BibliographicReferenceDAO)
+     * @param categoryController
+     * @param referenceController
+     * @param authorController
      */
-    public ArticleEditor(CategoryTreeModel categoriesTree, BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
-        super("Articolo", categoriesTree, referenceDAO);
+    public ArticleEditor(CategoryController categoryController, ReferenceController referenceController, AuthorController authorController) {
+        super("Articolo", categoryController, referenceController, authorController);
     }
 
     @Override
-    protected void setup() {
-        super.setup();
+    protected void initialize() {
+        super.initialize();
 
         ISSN = new JTextField();
-
         addFieldComponent(ISSN, "ISSN");
     }
 
     @Override
-    protected void resetFields(Article reference) {
-        super.resetFields(reference);
+    protected void setFieldsValues(Article reference) {
+        super.setFieldsValues(reference);
 
         if (reference == null) {
             setISSNValue(null);
@@ -56,15 +52,15 @@ public class ArticleEditor extends PublicationEditor<Article> {
     @Override
     protected void saveReference() {
         try {
-            Article articleToFill = article == null ? new Article("placeholder") : article;
+            Article articleToSave = article == null ? new Article("placeholder") : article;
 
-            fillReferenceValues(articleToFill);
+            fillReferenceValues(articleToSave);
 
-            getReferenceDAO().saveArticle(articleToFill);
+            getReferenceController().saveReference(articleToSave);
         } catch (RequiredFieldMissingException e) {
-            JOptionPane.showMessageDialog(this, "Uno o più campi obbligatori non sono stati inseriti.", "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
         } catch (ReferenceDatabaseException e) {
-            JOptionPane.showMessageDialog(this, "Si è verificato un errore durante il salvataggio", "Errore database", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Errore database", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -75,22 +71,10 @@ public class ArticleEditor extends PublicationEditor<Article> {
         reference.setISSN(getISSNValue());
     }
 
-    /**
-     * Imposta il valore iniziale dell'ISSN.
-     * 
-     * @param ISSN
-     *            ISSN iniziale dell'articolo
-     */
     private void setISSNValue(String ISSN) {
         this.ISSN.setText(ISSN);
     }
 
-    /**
-     * Restituisce l'ISSN inserito dall'utente.
-     * 
-     * @return
-     *         ISSN dell'articolo, {@code null} se non è stato inserito niente
-     */
     private String getISSNValue() {
         return convertEmptyStringToNull(ISSN.getText().trim());
     }

@@ -1,10 +1,12 @@
 package GUI.Homepage.References.Editor;
 
-import DAO.BibliographicReferenceDAO;
 import Entities.References.PhysicalResources.Thesis;
 import Exceptions.ReferenceDatabaseException;
 import Exceptions.RequiredFieldMissingException;
-import GUI.Homepage.Categories.CategoryTreeModel;
+
+import Controller.AuthorController;
+import Controller.CategoryController;
+import Controller.ReferenceController;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -19,24 +21,19 @@ public class ThesisEditor extends PublicationEditor<Thesis> {
     private JTextField faculty;
 
     /**
-     * Crea un nuovo pannello di dialogo per la creazione di un riferimento a una tesi.
+     * TODO:
      * 
-     * @param categoriesTree
-     *            albero delle categorie in cui è possibile inserire il riferimento
-     * @param referenceDAO
-     *            classe DAO per salvare i riferimenti nel database
-     * @throws IllegalArgumentException
-     *             se referenceDAO non è un valore valido
-     * 
-     * @see #setReferenceDAO(BibliographicReferenceDAO)
+     * @param categoryController
+     * @param referenceController
+     * @param authorController
      */
-    public ThesisEditor(CategoryTreeModel categoriesTree, BibliographicReferenceDAO referenceDAO) throws IllegalArgumentException {
-        super("Tesi", categoriesTree, referenceDAO);
+    public ThesisEditor(CategoryController categoryController, ReferenceController referenceController, AuthorController authorController) {
+        super("Tesi", categoryController, referenceController, authorController);
     }
 
     @Override
-    protected void setup() {
-        super.setup();
+    protected void initialize() {
+        super.initialize();
 
         university = new JTextField();
         faculty = new JTextField();
@@ -46,8 +43,8 @@ public class ThesisEditor extends PublicationEditor<Thesis> {
     }
 
     @Override
-    protected void resetFields(Thesis reference) {
-        super.resetFields(reference);
+    protected void setFieldsValues(Thesis reference) {
+        super.setFieldsValues(reference);
 
         if (reference == null) {
             setUniversityValue(null);
@@ -60,11 +57,10 @@ public class ThesisEditor extends PublicationEditor<Thesis> {
 
     @Override
     protected void saveReference() {
-        Thesis thesisToSave = thesis == null ? new Thesis("placeholder") : thesis;
-
         try {
+            Thesis thesisToSave = thesis == null ? new Thesis("placeholder") : thesis;
             fillReferenceValues(thesisToSave);
-            getReferenceDAO().saveThesis(thesisToSave);
+            getReferenceController().saveReference(thesisToSave);
         } catch (RequiredFieldMissingException e) {
             JOptionPane.showMessageDialog(this, "Uno o più campi obbligatori non sono stati inseriti.", "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
         } catch (ReferenceDatabaseException e) {
@@ -80,43 +76,19 @@ public class ThesisEditor extends PublicationEditor<Thesis> {
         thesis.setFaculty(getFacultyValue());
     }
 
-    /**
-     * Imposta il valore iniziale dell'università.
-     * 
-     * @param university
-     *            università iniziale della tesi
-     */
-    protected void setUniversityValue(String university) {
+    private void setUniversityValue(String university) {
         this.university.setText(university);
     }
 
-    /**
-     * Restituisce l'università inserita dall'utente.
-     * 
-     * @return
-     *         università della tesi, {@code null} se non è stato inserito niente
-     */
-    protected String getUniversityValue() {
+    private String getUniversityValue() {
         return convertEmptyStringToNull(university.getText().trim());
     }
 
-    /**
-     * Imposta il valore iniziale della facoltà.
-     * 
-     * @param programmingLanguage
-     *            facoltà iniziale della tesi
-     */
-    protected void setFacultyValue(String faculty) {
+    private void setFacultyValue(String faculty) {
         this.university.setText(faculty);
     }
 
-    /**
-     * Restituisce la facoltà inserita dall'utente.
-     * 
-     * @return
-     *         facoltà della tesi, {@code null} se non è stato inserito niente
-     */
-    protected String getFacultyValue() {
+    private String getFacultyValue() {
         return convertEmptyStringToNull(faculty.getText().trim());
     }
 

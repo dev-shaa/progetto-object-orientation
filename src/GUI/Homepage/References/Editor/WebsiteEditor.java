@@ -1,12 +1,14 @@
 package GUI.Homepage.References.Editor;
 
-import javax.swing.JOptionPane;
-
-import DAO.BibliographicReferenceDAO;
 import Entities.References.OnlineResources.Website;
 import Exceptions.ReferenceDatabaseException;
 import Exceptions.RequiredFieldMissingException;
-import GUI.Homepage.Categories.CategoryTreeModel;
+
+import Controller.AuthorController;
+import Controller.CategoryController;
+import Controller.ReferenceController;
+
+import javax.swing.JOptionPane;
 
 /**
  * Pannello di dialogo per la creazione o modifica di un riferimento a un sito web.
@@ -16,40 +18,32 @@ public class WebsiteEditor extends OnlineResourceEditor<Website> {
     private Website website;
 
     /**
-     * Crea un nuovo pannello di dialogo per la creazione di un riferimento a un sito web.
+     * TODO: commenta
      * 
-     * @param categoriesTree
-     *            albero delle categorie in cui è possibile inserire il riferimento
-     * @param referenceDAO
-     *            classe DAO per salvare i riferimenti nel database
-     * @throws IllegalArgumentException
-     *             se referenceDAO non è un valore valido
-     * 
-     * @see #setReferenceDAO(BibliographicReferenceDAO)
+     * @param categoryController
+     * @param referenceController
+     * @param authorController
      */
-    public WebsiteEditor(CategoryTreeModel categoriesTree, BibliographicReferenceDAO referenceDAO) {
-        super("Sito web", categoriesTree, referenceDAO);
+    public WebsiteEditor(CategoryController categoryController, ReferenceController referenceController, AuthorController authorController) {
+        super("Sito web", categoryController, referenceController, authorController);
     }
 
     @Override
-    protected void setup() {
-        super.setup();
+    protected void initialize() {
+        super.initialize();
     }
 
     @Override
-    protected void resetFields(Website reference) {
-        super.resetFields(reference);
+    protected void setFieldsValues(Website reference) {
+        super.setFieldsValues(reference);
     }
 
     @Override
     protected void saveReference() {
-        Website websiteToFill = website == null ? new Website("placeholder", "placeholder") : website;
-
-        System.out.println("aaa");
-
         try {
+            Website websiteToFill = website == null ? new Website("placeholder", "placeholder") : website;
             fillReferenceValues(websiteToFill);
-            getReferenceDAO().saveWebsite(websiteToFill);
+            getReferenceController().saveReference(websiteToFill);
         } catch (RequiredFieldMissingException e) {
             JOptionPane.showMessageDialog(this, "Uno o più campi obbligatori non sono stati inseriti.", "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
         } catch (ReferenceDatabaseException e) {

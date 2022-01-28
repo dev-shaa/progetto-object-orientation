@@ -15,26 +15,35 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import DAO.AuthorDAO;
+import Controller.AuthorController;
 import Entities.Author;
 
-// import Entities.Author;
-
+/**
+ * Finestra di dialogo per la registrazione di un nuovo autore.
+ */
 public class AuthorEditor extends JDialog {
 
-    private static JTextField firstName;
-    private static JTextField lastName;
-    private static JTextField ORCID;
+    private JTextField firstName;
+    private JTextField lastName;
+    private JTextField ORCID;
 
-    private AuthorDAO authorDAO;
+    private AuthorController controller;
 
     private final Dimension maximumSize = new Dimension(Integer.MAX_VALUE, 24);
     private final float alignment = Container.CENTER_ALIGNMENT;
 
-    public AuthorEditor() {
+    /**
+     * Crea una nuova finestra di dialogo.
+     * 
+     * @param controller
+     *            controller degli autori per la registrazione
+     * @throws IllegalArgumentException
+     *             se {@code controller == null}
+     */
+    public AuthorEditor(AuthorController controller) {
         super();
 
-        authorDAO = new AuthorDAO();
+        setController(controller);
 
         JPanel contentPane = new JPanel();
         contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.PAGE_AXIS));
@@ -69,6 +78,32 @@ public class AuthorEditor extends JDialog {
         contentPane.add(confirmButton);
     }
 
+    /**
+     * Imposta il controller degli autori.
+     * 
+     * @param controller
+     *            controller degli autori
+     * @throws IllegalArgumentException
+     *             se {@code controller == null}
+     */
+    public void setController(AuthorController controller) {
+        if (controller == null)
+            throw new IllegalArgumentException("controller can't be null");
+
+        this.controller = controller;
+    }
+
+    @Override
+    public void setVisible(boolean b) {
+        if (b) {
+            firstName.setName(null);
+            lastName.setName(null);
+            ORCID.setName(null);
+        }
+
+        super.setVisible(b);
+    }
+
     private void addField(String label, JComponent component) {
         JLabel labelField = new JLabel(label);
         labelField.setMaximumSize(maximumSize);
@@ -84,23 +119,12 @@ public class AuthorEditor extends JDialog {
 
     private void saveAuthor() {
         try {
-            authorDAO.SaveAuthor(new Author(firstName.getText().trim(), lastName.getText().trim(), ORCID.getText().trim()));
+            controller.saveAuthor(new Author(firstName.getText().trim(), lastName.getText().trim(), ORCID.getText().trim()));
 
             setVisible(false);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Impossibile creare un nuovo autore", "Errore creazione autore", JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    @Override
-    public void setVisible(boolean b) {
-        if (b) {
-            firstName.setName(null);
-            lastName.setName(null);
-            ORCID.setName(null);
-        }
-
-        super.setVisible(b);
     }
 
 }
