@@ -1,5 +1,6 @@
 import javax.swing.SwingUtilities;
-import GUI.Controller;
+
+import Controller.Controller;
 
 /**
  * Classe per avviare il programma.

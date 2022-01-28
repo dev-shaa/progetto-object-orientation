@@ -1,8 +1,13 @@
-package GUI;
+package Controller;
 
 import javax.swing.*;
 import com.formdev.flatlaf.*;
+
+import DAO.AuthorDAO;
+import DAO.BibliographicReferenceDAOPostgreSQL;
+import DAO.CategoryDAOPostgreSQL;
 import Entities.*;
+import GUI.LoginFrame;
 import GUI.Homepage.*;
 
 public class Controller {
@@ -36,7 +41,11 @@ public class Controller {
 
     public void openHomePage(User user) {
         try {
-            homepage = new Homepage(this, user);
+            CategoryController categoryController = new CategoryController(new CategoryDAOPostgreSQL(user));
+            ReferenceController referenceController = new ReferenceController(new BibliographicReferenceDAOPostgreSQL(user));
+            AuthorController authorController = new AuthorController(new AuthorDAO());
+
+            homepage = new Homepage(this, categoryController, referenceController, authorController, user);
             homepage.setVisible(true);
             loginFrame.setVisible(false);
         } catch (Exception e) {
@@ -44,4 +53,5 @@ public class Controller {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }
+
 }
