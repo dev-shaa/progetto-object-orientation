@@ -18,14 +18,13 @@ public class UserDAO {
 			System.out.println("Sto provando a salvare l'utente " + user.getName() + " " + user.getPassword());
 			String query = "INSERT INTO public.\"UtenteApp\" (\"Nome\", \"Password\") VALUES('" + user.getName() + "','"
 					+ user.getPassword() + "')";
-			
+
 			con = DatabaseController.getConnection();
 			if (con == null) {
-				System.out.println("Non c'è connesione al db");
+				System.out.println("Non c'ï¿½ connesione al db");
 				return;
 			}
-			stmt = con.createStatement(); // @R1ccardo FIXME: in caso non ci sia connessione, con diventa null e c'Ã¨ un
-											// null pointer exception
+			stmt = con.createStatement();
 			stmt.executeUpdate(query);
 			System.out.println("Utente aggiunto con successo");
 
@@ -51,7 +50,7 @@ public class UserDAO {
 		try {
 			con = DatabaseController.getConnection();
 			if (con == null) {
-				System.out.println("Non c'è connesione al db");
+				System.out.println("Non c'ï¿½ connesione al db");
 				return true;
 			}
 			stmt = con.createStatement();
@@ -78,43 +77,41 @@ public class UserDAO {
 		}
 	}
 
-	
-	public User GetUserLogin (User user) {
-		
+	public User GetUserLogin(User user) {
+
 		if (!ExistUser(user)) {
 			return null;
 		}
-		
-		String query = "select * from \"UtenteApp\" ua where \"Nome\" = '"+ user.getName()+"'";
+
+		String query = "select * from \"UtenteApp\" ua where \"Nome\" = '" + user.getName() + "'";
 		try {
 			con = DatabaseController.getConnection();
 			if (con == null) {
-				System.out.println("Non c'è connesione al db");
+				System.out.println("Non c'ï¿½ connesione al db");
 				return null;
 			}
 			stmt = con.createStatement();
 			rs = stmt.executeQuery(query);
 			rs.next();
-		    String username = rs.getString("Nome");	
-		    String password = rs.getString("Password");
-		    
-		    User userDB = new User(username, password);
-		    return userDB;
+			String username = rs.getString("Nome");
+			String password = rs.getString("Password");
+
+			User userDB = new User(username, password);
+			return userDB;
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
-		
-		
+
 	}
-	
+
 	public void DeleteUser(User user) {
 
 		try {
 
-			String query = "DELETE FROM public.\"UtenteApp\" WHERE \"Nome\"='"+ user.getName()+"' AND \"Password\"='"+user.getPassword()+"';";
+			String query = "DELETE FROM public.\"UtenteApp\" WHERE \"Nome\"='" + user.getName() + "' AND \"Password\"='" + user.getPassword() + "';";
 
 			con = DatabaseController.getConnection();
 			stmt = con.prepareStatement(query);

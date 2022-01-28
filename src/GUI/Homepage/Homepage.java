@@ -1,52 +1,53 @@
 package GUI.Homepage;
 
-import GUI.*;
-import DAO.*;
 import Entities.*;
-import Exceptions.*;
 import GUI.Homepage.Categories.*;
 import GUI.Homepage.References.*;
 import GUI.Homepage.Search.*;
 import GUI.Homepage.UserInfo.LogoutListener;
 import GUI.Homepage.UserInfo.UserInfoPanel;
 
+import Controller.AuthorController;
+import Controller.CategoryController;
+import Controller.Controller;
+import Controller.ReferenceController;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.BorderLayout;
 import javax.swing.*;
 
+import GUI.Homepage.References.Editor.*;
+import Entities.References.OnlineResources.*;
+import Entities.References.PhysicalResources.*;
+
 /**
- * Classe che si occupa di impostare le componenti base della pagina principale,
- * che mostra tutti i riferimenti e le categorie.
- * 
- * @see UserInfoPanel
- * @see CategoriesPanel
- * @see ReferencePanel
+ * Classe che si occupa di impostare le componenti base della pagina principale, che mostra tutti i riferimenti e le categorie.
  */
 public class Homepage extends JFrame implements CategorySelectionListener, LogoutListener, ReferenceSearchListener {
 
-    private User user;
     private Controller controller;
 
-    // private CategoryTreeModel categoriesTree;
     private ReferencePanel referencePanel;
     private CategoriesPanel categoriesPanel;
     private SearchPanel referenceSearchPanel;
 
-    /**
-     * TODO: commenta
-     * Crea la pagina principale con i dati relativi all'utente.
-     * 
-     * @param controller
-     * @param user
-     *            utente che ha eseguito l'accesso
-     * @throws IllegalArgumentException
-     *             se controller o user sono nulli
-     * @throws CategoryDatabaseException
-     */
-    public Homepage(Controller controller, User user) throws IllegalArgumentException, CategoryDatabaseException, ReferenceDatabaseException {
+    private CategoryController categoryController;
+    private ReferenceController referenceController;
+    private AuthorController authorController;
+
+    private ArticleEditor articleEditor;
+    private BookEditor bookEditor;
+    private ImageEditor imageEditor;
+    private SourceCodeEditor sourceCodeEditor;
+    private ThesisEditor thesisEditor;
+    private VideoEditor videoEditor;
+    private WebsiteEditor websiteEditor;
+
+    public Homepage(Controller controller, CategoryController categoryController, ReferenceController referenceController, AuthorController authorController, User user) {
         setController(controller);
-        setUser(user);
+
+        this.referenceController = referenceController;
 
         setTitle("Pagina principale");
         setMinimumSize(new Dimension(400, 400));
@@ -65,14 +66,11 @@ public class Homepage extends JFrame implements CategorySelectionListener, Logou
         contentPane.setLayout(new BorderLayout(5, 5));
         setContentPane(contentPane);
 
-        CategoryDAO categoryDAO = new CategoryDAOPostgreSQL(user);
-        BibliographicReferenceDAO referenceDAO = new BibliographicReferenceDAOPostgreSQL(user);
-
-        categoriesPanel = new CategoriesPanel(categoryDAO);
+        categoriesPanel = new CategoriesPanel(categoryController);
         categoriesPanel.getTreePanel().addSelectionListener(this);
 
-        referencePanel = new ReferencePanel(categoriesPanel.getCategoriesTree(), referenceDAO);
-        referenceSearchPanel = new SearchPanel(categoriesPanel.getCategoriesTree());
+        referencePanel = new ReferencePanel(this, referenceController);
+        referenceSearchPanel = new SearchPanel(categoryController, authorController);
         referenceSearchPanel.addReferenceSearchListener(this);
 
         JSplitPane subSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, categoriesPanel, referencePanel);
@@ -95,12 +93,12 @@ public class Homepage extends JFrame implements CategorySelectionListener, Logou
         this.controller = controller;
     }
 
-    public void setUser(User user) {
-        if (user == null)
-            throw new IllegalArgumentException("user non può essere null");
+    // public void setUser(User user) {
+    // if (user == null)
+    // throw new IllegalArgumentException("user non può essere null");
 
-        this.user = user;
-    }
+    // this.user = user;
+    // }
 
     @Override
     public void onLogout() {
@@ -109,12 +107,12 @@ public class Homepage extends JFrame implements CategorySelectionListener, Logou
 
     @Override
     public void onCategorySelected(Category selectedCategory) {
-        referencePanel.showReferences(selectedCategory);
+        referencePanel.setReferences(referenceController.getReferences(selectedCategory));
     }
 
     @Override
     public void onReferenceSearch(Search search) {
-        // referencePanel.showReferences(search);
+        referencePanel.setReferences(referenceController.getReferences(search));
     }
 
 }
