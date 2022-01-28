@@ -1,5 +1,6 @@
 package GUI.Utilities;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.swing.DefaultListModel;
@@ -8,37 +9,10 @@ import com.jidesoft.swing.CheckBoxList;
 /**
  * Un pulsante che, se premuto, apre un menu a tendina in cui è possibile selezionare uno o più elementi.
  */
-public class JPopupItemSelection<T> extends JPopupButton {
+public class PopupCheckboxList<T> extends JPopupButton {
 
     private CheckBoxList checkboxList;
     private DefaultListModel<T> listModel;
-
-    /**
-     * Crea un JPopupItemSelection senza testo o elementi.
-     */
-    public JPopupItemSelection() {
-        this(null, null);
-    }
-
-    /**
-     * Crea un JPopupItemSelection con testo ma senza elementi.
-     * 
-     * @param text
-     *            testo del pulsante
-     */
-    public JPopupItemSelection(String text) {
-        this(text, null);
-    }
-
-    /**
-     * Crea un JPopupItemSelection con degli elementi ma senza testo.
-     * 
-     * @param elements
-     *            elementi da aggiungere al menu di selezione
-     */
-    public JPopupItemSelection(T[] elements) {
-        this(null, elements);
-    }
 
     /**
      * Crea un JPopupItemSelection con testo ed elementi da selezionare.
@@ -48,7 +22,7 @@ public class JPopupItemSelection<T> extends JPopupButton {
      * @param elements
      *            elementi da aggiungere al menu di selezione
      */
-    public JPopupItemSelection(String text, T[] elements) {
+    public <V extends Collection<T>> PopupCheckboxList(String text, V elements) {
         super(text);
 
         if (listModel == null)
@@ -66,7 +40,7 @@ public class JPopupItemSelection<T> extends JPopupButton {
      * @param elements
      *            elementi selezionabili
      */
-    public void setElements(T[] elements) {
+    public <V extends Collection<T>> void setElements(V elements) {
         listModel.clear();
 
         if (elements == null)
