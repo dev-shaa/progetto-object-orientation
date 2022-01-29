@@ -42,7 +42,7 @@ public class JTermsField extends JTextField {
     /**
      * Restituisce i termini inseriti dall'utente che sono stati delimitati dal separatore indicato.</br>
      * Esempio: se il separatore impostato è {@code ,} e l'utente inserisce {@code Casa, Albero, Cane},
-     * l'array restituito sarà {@code [Casa, Albero, Cane]}.
+     * l'insieme restituito sarà {@code [Casa, Albero, Cane]}.
      * I termini vuoti inseriti non vengono contati.
      * 
      * @return

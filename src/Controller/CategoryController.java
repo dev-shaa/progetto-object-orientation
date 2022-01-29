@@ -87,6 +87,8 @@ public class CategoryController {
             category.setParent(parent.getUserObject());
 
         categoryDAO.addCategory(category);
+
+        categoryTree.addNode(new CustomTreeNode<Category>(category), parent);
     }
 
     /**
@@ -142,6 +144,10 @@ public class CategoryController {
             throw new IllegalArgumentException("can't delete null category");
 
         categoryDAO.removeCategory(category);
+
+        categoryNode.removeFromParent();
+
+        categoryTree.removeNodeFromParent(categoryNode);
     }
 
 }
