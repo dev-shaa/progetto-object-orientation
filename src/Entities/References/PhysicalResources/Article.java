@@ -1,7 +1,7 @@
 package Entities.References.PhysicalResources;
 
 import Entities.References.*;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Classe che rappresenta un riferimento bibliografico a un articolo.
@@ -44,8 +44,8 @@ public class Article extends Publication {
     }
 
     @Override
-    public ArrayList<BibliographicReferenceField> getReferenceFields() {
-        ArrayList<BibliographicReferenceField> fields = super.getReferenceFields();
+    public List<BibliographicReferenceField> getReferenceFields() {
+        List<BibliographicReferenceField> fields = super.getReferenceFields();
 
         fields.add(new BibliographicReferenceField("ISSN", getISSN()));
 

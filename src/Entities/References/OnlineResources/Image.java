@@ -1,12 +1,16 @@
 package Entities.References.OnlineResources;
 
+import java.util.List;
+
+import Entities.References.BibliographicReferenceField;
+
 /**
  * Classe che rappresenta un riferimento bibliografico a un'immagine.
  */
 public class Image extends OnlineResource {
 
-    private Integer width;
-    private Integer height;
+    private int width;
+    private int height;
 
     /**
      * Crea un nuovo riferimento a immagine con il titolo e l'url indicati.
@@ -22,6 +26,9 @@ public class Image extends OnlineResource {
      */
     public Image(String title, String URL) throws IllegalArgumentException {
         super(title, URL);
+
+        setWidth(1);
+        setHeight(1);
     }
 
     /**
@@ -29,8 +36,13 @@ public class Image extends OnlineResource {
      * 
      * @param width
      *            larghezza dell'immagine
+     * @throws IllegalArgumentHeight
+     *             se {@code width < 1}
      */
-    public void setWidth(Integer width) {
+    public void setWidth(int width) {
+        if (width < 1)
+            throw new IllegalArgumentException("width can't be less than 1");
+
         this.width = width;
     }
 
@@ -40,7 +52,7 @@ public class Image extends OnlineResource {
      * @return
      *         larghezza dell'immagine
      */
-    public Integer getWidth() {
+    public int getWidth() {
         return this.width;
     }
 
@@ -49,8 +61,13 @@ public class Image extends OnlineResource {
      * 
      * @param height
      *            altezza dell'immagine
+     * @throws IllegalArgumentHeight
+     *             se {@code height < 1}
      */
-    public void setHeight(Integer height) {
+    public void setHeight(int height) {
+        if (height < 1)
+            throw new IllegalArgumentException("height can't be less than 1");
+
         this.height = height;
     }
 
@@ -60,8 +77,18 @@ public class Image extends OnlineResource {
      * @return
      *         altezza dell'immagine
      */
-    public Integer getHeight() {
+    public int getHeight() {
         return this.height;
+    }
+
+    @Override
+    public List<BibliographicReferenceField> getReferenceFields() {
+        List<BibliographicReferenceField> fields = super.getReferenceFields();
+
+        fields.add(new BibliographicReferenceField("Larghezza", getWidth()));
+        fields.add(new BibliographicReferenceField("Altezza", getHeight()));
+
+        return fields;
     }
 
 }

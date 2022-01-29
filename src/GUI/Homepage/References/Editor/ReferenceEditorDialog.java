@@ -422,15 +422,15 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
     }
 
     private List<Tag> getTagValues() {
-        String[] tagsString = tags.getTerms();
+        List<String> tagsString = tags.getTerms();
 
         if (tagsString == null)
             return null;
 
-        ArrayList<Tag> tags = new ArrayList<>(tagsString.length);
+        ArrayList<Tag> tags = new ArrayList<>(tagsString.size());
 
         for (int i = 0; i < tags.size(); i++)
-            tags.set(i, new Tag(tagsString[i]));
+            tags.set(i, new Tag(tagsString.get(i)));
 
         return tags;
     }

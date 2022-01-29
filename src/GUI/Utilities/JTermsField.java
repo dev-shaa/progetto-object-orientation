@@ -48,7 +48,7 @@ public class JTermsField extends JTextField {
      * @return
      *         i termini inseriti dall'utente, {@code null} se non ci sono termini validi
      */
-    public String[] getTerms() {
+    public ArrayList<String> getTerms() {
         String[] text = getText().split(separator);
 
         ArrayList<String> terms = new ArrayList<>();
@@ -59,10 +59,9 @@ public class JTermsField extends JTextField {
                 terms.add(text[i]);
         }
 
-        if (terms.isEmpty())
-            return null;
+        terms.trimToSize();
 
-        return terms.toArray(new String[terms.size()]);
+        return terms;
     }
 
 }

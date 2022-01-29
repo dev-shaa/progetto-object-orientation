@@ -1,11 +1,15 @@
 package Entities.References.OnlineResources;
 
+import java.util.List;
+
+import Entities.References.BibliographicReferenceField;
+
 /**
  * Classe che rappresenta un riferimento bibliografico a codice sorgente.
  */
 public class SourceCode extends OnlineResource {
 
-    private ProgrammingLanguage programmingLanguage = null;
+    private ProgrammingLanguage programmingLanguage;
 
     /**
      * Crea un nuovo riferimento a codice sorgente con il titolo e l'url indicati.
@@ -25,6 +29,7 @@ public class SourceCode extends OnlineResource {
 
     /**
      * Imposta il linguaggio di programmazione del codice.
+     * TODO: handle null
      * 
      * @param programmingLanguage
      *            linguaggio di programmazione
@@ -41,6 +46,15 @@ public class SourceCode extends OnlineResource {
      */
     public ProgrammingLanguage getProgrammingLanguage() {
         return programmingLanguage;
+    }
+
+    @Override
+    public List<BibliographicReferenceField> getReferenceFields() {
+        List<BibliographicReferenceField> fields = super.getReferenceFields();
+
+        fields.add(new BibliographicReferenceField("Linguaggio", getProgrammingLanguage()));
+
+        return fields;
     }
 
 }

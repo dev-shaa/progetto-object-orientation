@@ -1,17 +1,17 @@
 package Entities.References.OnlineResources;
 
 import Entities.References.*;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Classe che rappresenta un riferimento bibliografico a un video.
  */
 public class Video extends OnlineResource {
 
-    private Integer width;
-    private Integer height;
-    private Integer frameRate;
-    private Float duration;
+    private int width;
+    private int height;
+    private int frameRate;
+    private float duration;
 
     /**
      * Crea un nuovo riferimento a video con il titolo e l'url indicati.
@@ -85,17 +85,22 @@ public class Video extends OnlineResource {
      * @return
      *         frequenza del video
      */
-    public Integer getFrameRate() {
-        return this.frameRate;
+    public int getFrameRate() {
+        return frameRate;
     }
 
     /**
      * Imposta la durata del video.
      * 
      * @param duration
-     *            durata del video
+     *            durata del video (in secondi)
+     * @throws IllegalArgumentException
+     *             se {@code duration <= 0}
      */
-    public void setDuration(Float duration) {
+    public void setDuration(float duration) {
+        if (duration <= 0)
+            throw new IllegalArgumentException("duration can't be 0 or less");
+
         this.duration = duration;
     }
 
@@ -103,15 +108,15 @@ public class Video extends OnlineResource {
      * Restituisce la durata del video.
      * 
      * @return
-     *         durata del video
+     *         durata del video (in secondi)
      */
-    public Float getDuration() {
+    public float getDuration() {
         return this.duration;
     }
 
     @Override
-    public ArrayList<BibliographicReferenceField> getReferenceFields() {
-        ArrayList<BibliographicReferenceField> fields = super.getReferenceFields();
+    public List<BibliographicReferenceField> getReferenceFields() {
+        List<BibliographicReferenceField> fields = super.getReferenceFields();
 
         fields.add(new BibliographicReferenceField("Larghezza", getWidth()));
         fields.add(new BibliographicReferenceField("Altezza", getHeight()));

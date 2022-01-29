@@ -6,7 +6,9 @@ import GUI.Utilities.CustomTreeNode;
 import GUI.Utilities.JPopupButton;
 
 import java.awt.Dimension;
+import java.util.ArrayList;
 import java.util.Enumeration;
+
 import javax.swing.tree.TreePath;
 import com.jidesoft.swing.CheckBoxTree;
 
@@ -63,16 +65,16 @@ public class CategoriesSelectionPopupMenu extends JPopupButton {
      *         categorie selezionate, {@code null} o array vuoto se non è selezionato niente
      */
     @SuppressWarnings("unchecked")
-    public Category[] getSelectedCategories() {
+    public ArrayList<Category> getSelectedCategories() {
         TreePath[] selectedPaths = checkboxTree.getCheckBoxTreeSelectionModel().getSelectionPaths();
 
         if (selectedPaths == null)
             return null;
 
-        Category[] selectedCategories = new Category[selectedPaths.length];
+        ArrayList<Category> selectedCategories = new ArrayList<>(selectedPaths.length);
 
-        for (int i = 0; i < selectedCategories.length; i++) {
-            selectedCategories[i] = ((CustomTreeNode<Category>) selectedPaths[i].getLastPathComponent()).getUserObject();
+        for (TreePath path : selectedPaths) {
+            selectedCategories.add(((CustomTreeNode<Category>) path.getLastPathComponent()).getUserObject());
         }
 
         return selectedCategories;

@@ -1,6 +1,7 @@
 package Entities.References.PhysicalResources;
 
-import java.util.ArrayList;
+import java.util.List;
+
 import Entities.Author;
 import Entities.References.BibliographicReferenceField;
 
@@ -45,8 +46,8 @@ public class Book extends Publication {
     }
 
     @Override
-    public ArrayList<BibliographicReferenceField> getReferenceFields() {
-        ArrayList<BibliographicReferenceField> fields = super.getReferenceFields();
+    public List<BibliographicReferenceField> getReferenceFields() {
+        List<BibliographicReferenceField> fields = super.getReferenceFields();
 
         fields.add(new BibliographicReferenceField("ISBN", getISBN()));
 
