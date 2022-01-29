@@ -82,7 +82,7 @@ public class ReferenceController {
      * @return lista dei riferimenti presenti in una categoria
      */
     public List<BibliographicReference> getReferences(Category category) {
-        Predicate<BibliographicReference> categoryFilter = e -> category == null ? e.getCategories().isEmpty() : e.getCategories().contains(category);
+        Predicate<BibliographicReference> categoryFilter = e -> e.isContainedIn(category);
         return getReferences(categoryFilter);
     }
 
@@ -99,8 +99,10 @@ public class ReferenceController {
         if (search == null)
             throw new IllegalArgumentException("search can't be null");
 
-        // FIXME: non completo
-        Predicate<BibliographicReference> searchFilter = e -> e.wasPublishedBetween(search.getFrom(), search.getTo());
+        Predicate<BibliographicReference> searchFilter = e -> e.wasPublishedBetween(search.getFrom(), search.getTo())
+                && e.wasWrittenBy(search.getAuthors())
+                && e.isTaggedWith(search.getTags())
+                && e.isContainedIn(search.getCategories());
 
         return getReferences(searchFilter);
     }

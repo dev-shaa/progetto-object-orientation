@@ -3,7 +3,7 @@ package GUI.Homepage.Search;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import javax.swing.*;
 import javax.swing.border.*;
 import com.toedter.calendar.JDateChooser;
@@ -107,27 +107,25 @@ public class SearchPanel extends JPanel {
         addFieldComponent(label, component, panel);
     }
 
-    private Tag[] stringToTags(String[] strings) {
-        if (strings == null || strings.length == 0)
+    private ArrayList<Tag> stringToTags(Collection<String> strings) {
+        if (strings == null || strings.isEmpty())
             return null;
 
-        Tag[] tags = new Tag[strings.length];
+        ArrayList<Tag> tags = new ArrayList<>(strings.size());
 
-        for (int i = 0; i < tags.length; i++)
-            tags[i] = new Tag(strings[i].trim());
+        for (String tag : strings)
+            tags.add(new Tag(tag.trim()));
 
         return tags;
     }
 
     private void search() {
         try {
-            List<Author> selectedAuthors = authors.getSelectedElements();
-
             Search search = new Search(dateFrom.getDate(),
                     dateTo.getDate(),
                     stringToTags(this.tags.getTerms()),
                     categories.getSelectedCategories(),
-                    selectedAuthors.toArray(new Author[selectedAuthors.size()]));
+                    authors.getSelectedElements());
 
             for (ReferenceSearchListener listener : searchListeners) {
                 listener.onReferenceSearch(search);

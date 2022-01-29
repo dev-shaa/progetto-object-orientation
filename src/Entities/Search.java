@@ -1,5 +1,6 @@
 package Entities;
 
+import java.util.Collection;
 import java.util.Date;
 import Exceptions.EmptySearchException;
 
@@ -9,9 +10,9 @@ import Exceptions.EmptySearchException;
 public class Search {
     private Date from;
     private Date to;
-    private Tag[] tags;
-    private Category[] categories;
-    private Author[] authors;
+    private Collection<? extends Tag> tags;
+    private Collection<? extends Author> authors;
+    private Collection<? extends Category> categories;
 
     /**
      * Crea una nuova ricerca dai termini indicati.
@@ -28,7 +29,7 @@ public class Search {
      * @throws EmptySearchException
      *             se tutti gli elementi sono {@code null} (in caso di array anche se hanno lunghezza 0)
      */
-    public Search(Date from, Date to, Tag[] tags, Category[] categories, Author[] authors) throws EmptySearchException {
+    public Search(Date from, Date to, Collection<? extends Tag> tags, Collection<? extends Category> categories, Collection<? extends Author> authors) throws EmptySearchException {
         if (areAllTermsNull(from, to, tags, categories, authors))
             throw new EmptySearchException("Almeno un elemento di ricerca deve essere specificato");
 
@@ -45,7 +46,7 @@ public class Search {
      * @return
      *         autori di ricerca (può essere {@code null})
      */
-    public Author[] getAuthors() {
+    public Collection<? extends Author> getAuthors() {
         return authors;
     }
 
@@ -55,7 +56,7 @@ public class Search {
      * @param categories
      *            autori di ricerca
      */
-    public void setAuthors(Author[] authors) {
+    public void setAuthors(Collection<? extends Author> authors) {
         this.authors = authors;
     }
 
@@ -65,7 +66,7 @@ public class Search {
      * @return
      *         categorie di ricerca (può essere {@code null})
      */
-    public Category[] getCategories() {
+    public Collection<? extends Category> getCategories() {
         return categories;
     }
 
@@ -75,7 +76,7 @@ public class Search {
      * @param categories
      *            categorie di ricerca
      */
-    private void setCategories(Category[] categories) {
+    private void setCategories(Collection<? extends Category> categories) {
         this.categories = categories;
     }
 
@@ -125,7 +126,7 @@ public class Search {
      * @return
      *         parole chiave della ricerca (può essere {@code null})
      */
-    public Tag[] getTags() {
+    public Collection<? extends Tag> getTags() {
         return tags;
     }
 
@@ -135,7 +136,7 @@ public class Search {
      * @param tags
      *            parole chiave della ricerca
      */
-    private void setTags(Tag[] tags) {
+    private void setTags(Collection<? extends Tag> tags) {
         this.tags = tags;
     }
 
@@ -153,8 +154,8 @@ public class Search {
      * @return
      *         {@code true} se tutti sono nulli (o hanno lunghezza 0), {@code false altrimenti}
      */
-    private boolean areAllTermsNull(Date from, Date to, Tag[] tags, Category[] categories, Author[] authors) {
-        return from == null && to == null && (tags == null || tags.length == 0) && (categories == null || categories.length == 0) && (authors == null || authors.length == 0);
+    private boolean areAllTermsNull(Date from, Date to, Collection<? extends Tag> tags, Collection<? extends Category> categories, Collection<? extends Author> authors) {
+        return from == null && to == null && (tags == null || tags.isEmpty()) && (categories == null || categories.isEmpty()) && (authors == null || authors.isEmpty());
     }
 
 }

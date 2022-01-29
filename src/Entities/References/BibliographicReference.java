@@ -409,6 +409,34 @@ public abstract class BibliographicReference {
         return getTags().containsAll(tags);
     }
 
+    /**
+     * Controlla se il riferimento è contenuto nella categoria indicata.
+     * 
+     * @param category
+     *            categoria da cercare
+     * @return {@code true} se il riferimento è presente nella categoria
+     */
+    public boolean isContainedIn(Category category) {
+        if (category == null)
+            return getCategories().isEmpty();
+
+        return getCategories().contains(category);
+    }
+
+    /**
+     * Controlla se il riferimento è contenuto nelle categorie indicate.
+     * 
+     * @param categories
+     *            categorie da cercare
+     * @return {@code true} se il riferimento è presente in tutte categorie
+     */
+    public boolean isContainedIn(Collection<? extends Category> categories) {
+        if (categories == null)
+            return getCategories().isEmpty();
+
+        return getCategories().containsAll(categories);
+    }
+
     private boolean isTitleValid(String title) {
         return title != null && !title.isBlank();
     }
