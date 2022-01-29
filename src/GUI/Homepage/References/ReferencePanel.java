@@ -16,7 +16,7 @@ import java.util.Collection;
 /**
  * Pannello che mostra i riferimenti cercati o presenti in una categoria, con funzioni di creazione, modifica e rimozione.
  */
-public class ReferencePanel extends JPanel implements ReferenceListSelectionListener {
+public class ReferencePanel extends JPanel implements ReferenceSelectionListener {
 
     private ReferenceController referenceManager;
 

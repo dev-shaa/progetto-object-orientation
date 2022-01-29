@@ -29,7 +29,7 @@ public class ReferenceListPanel extends JScrollPane implements ListSelectionList
     private DefaultTableModel referencesTableModel;
 
     private ArrayList<BibliographicReference> displayedReferences;
-    private ArrayList<ReferenceListSelectionListener> selectionListeners;
+    private ArrayList<ReferenceSelectionListener> selectionListeners;
 
     private final String titleLabel = "Titolo";
     private final String authorsLabel = "Autori";
@@ -140,7 +140,7 @@ public class ReferenceListPanel extends JScrollPane implements ListSelectionList
      * @param listener
      *            listener da aggiungere
      */
-    public void addReferenceSelectionListener(ReferenceListSelectionListener listener) {
+    public void addReferenceSelectionListener(ReferenceSelectionListener listener) {
         if (listener == null)
             return;
 
@@ -156,7 +156,7 @@ public class ReferenceListPanel extends JScrollPane implements ListSelectionList
      * @param listener
      *            listener da rimuovere
      */
-    public void removeReferenceSelectionListener(ReferenceListSelectionListener listener) {
+    public void removeReferenceSelectionListener(ReferenceSelectionListener listener) {
         if (listener == null || selectionListeners == null)
             return;
 
@@ -168,7 +168,7 @@ public class ReferenceListPanel extends JScrollPane implements ListSelectionList
         if (e.getValueIsAdjusting() || selectionListeners == null)
             return;
 
-        for (ReferenceListSelectionListener listener : selectionListeners) {
+        for (ReferenceSelectionListener listener : selectionListeners) {
             listener.onReferenceSelection(getSelectedReference());
         }
     }
