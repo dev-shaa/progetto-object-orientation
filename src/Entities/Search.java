@@ -1,10 +1,6 @@
-package GUI.Homepage.Search;
+package Entities;
 
 import java.util.Date;
-
-import Entities.Author;
-import Entities.Category;
-import Entities.Tag;
 import Exceptions.EmptySearchException;
 
 /**

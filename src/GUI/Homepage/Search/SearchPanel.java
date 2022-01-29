@@ -11,6 +11,7 @@ import com.toedter.calendar.JDateChooser;
 import Controller.AuthorController;
 import Controller.CategoryController;
 import Entities.Author;
+import Entities.Search;
 import Entities.Tag;
 import Exceptions.EmptySearchException;
 import GUI.Homepage.Categories.*;

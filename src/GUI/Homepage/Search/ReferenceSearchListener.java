@@ -2,6 +2,8 @@ package GUI.Homepage.Search;
 
 import java.util.EventListener;
 
+import Entities.Search;
+
 /**
  * L'interfaccia per i listener che vogliono essere avvertiti quando viene eseguita una ricerca.
  */
