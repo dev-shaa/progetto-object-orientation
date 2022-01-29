@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import Entities.Category;
 import Entities.User;
@@ -17,7 +19,6 @@ import Entities.References.PhysicalResources.Article;
 import Entities.References.PhysicalResources.Book;
 import Entities.References.PhysicalResources.Thesis;
 import Exceptions.ReferenceDatabaseException;
-import GUI.Homepage.Search.Search;
 
 public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferenceDAO {
 
@@ -38,8 +39,19 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         return user;
     }
 
-    public BibliographicReference[] getReferences() {
-        return null;
+    public List<BibliographicReference> getReferences() {
+        // TODO: DEBUG:
+        Article article = new Article("Articolo 1");
+        ArrayList<Category> categories = new ArrayList<>(1);
+        categories.add(new Category("AAA", 0));
+
+        article.setCategories(categories);
+        article.setDescription("Breve descrizione dell'articolo");
+
+        ArrayList<BibliographicReference> references = new ArrayList<>(1);
+        references.add(article);
+
+        return references;
 
         // Connection connection = null;
         // PreparedStatement tagsStatement = null;
@@ -105,7 +117,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
     }
 
     @Override
-    public void saveArticle(Article article) throws ReferenceDatabaseException, IllegalArgumentException {
+    public void saveReference(Article article) throws ReferenceDatabaseException, IllegalArgumentException {
         if (article == null)
             throw new IllegalArgumentException("article non può essere null");
 
@@ -171,37 +183,37 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
     }
 
     @Override
-    public void saveBook(Book book) throws ReferenceDatabaseException {
+    public void saveReference(Book book) throws ReferenceDatabaseException {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void saveThesis(Thesis thesis) throws ReferenceDatabaseException {
+    public void saveReference(Thesis thesis) throws ReferenceDatabaseException {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void saveImage(Image image) throws ReferenceDatabaseException {
+    public void saveReference(Image image) throws ReferenceDatabaseException {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void saveSourceCode(SourceCode sourceCode) throws ReferenceDatabaseException {
+    public void saveReference(SourceCode sourceCode) throws ReferenceDatabaseException {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void saveVideo(Video video) throws ReferenceDatabaseException {
+    public void saveReference(Video video) throws ReferenceDatabaseException {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void saveWebsite(Website website) throws ReferenceDatabaseException {
+    public void saveReference(Website website) throws ReferenceDatabaseException {
         // TODO Auto-generated method stub
 
     }
