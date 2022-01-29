@@ -52,7 +52,7 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
     private final float alignment = Container.LEFT_ALIGNMENT;
 
     /**
-     * Crea una nuova finestra di dialogo.
+     * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento.
      * 
      * @param dialogueTitle
      *            titolo della finestra
@@ -257,7 +257,7 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
             setLanguageValue(reference.getLanguage());
             setRelatedReferences(reference.getRelatedReferences());
             setAuthorValues(reference.getAuthors());
-            setCategoryValues(reference.getCategoriesArray());
+            setCategoryValues(reference.getCategories());
         }
     }
 
@@ -407,7 +407,7 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
         return convertEmptyStringToNull(description.getText().trim());
     }
 
-    private void setTagValues(Tag[] tags) {
+    private void setTagValues(List<Tag> tags) {
         if (tags == null) {
             this.tags.setText(null);
             return;
@@ -415,24 +415,22 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
 
         String text = "";
 
-        for (Tag tag : tags) {
+        for (Tag tag : tags)
             text += tag.getName() + ", ";
-        }
 
         this.tags.setText(text);
     }
 
-    private Tag[] getTagValues() {
+    private List<Tag> getTagValues() {
         String[] tagsString = tags.getTerms();
 
         if (tagsString == null)
             return null;
 
-        Tag[] tags = new Tag[tagsString.length];
+        ArrayList<Tag> tags = new ArrayList<>(tagsString.length);
 
-        for (int i = 0; i < tags.length; i++) {
-            tags[i] = new Tag(tagsString[i]);
-        }
+        for (int i = 0; i < tags.size(); i++)
+            tags.set(i, new Tag(tagsString[i]));
 
         return tags;
     }
@@ -445,27 +443,26 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
         return (ReferenceLanguage) language.getSelectedItem();
     }
 
-    private void setAuthorValues(Author[] authors) {
+    private void setAuthorValues(List<Author> authors) {
         this.authorsList.deselectAll();
 
         if (authors == null)
             return;
 
-        for (Author author : authors) {
+        for (Author author : authors)
             this.authorsList.selectElement(author);
-        }
     }
 
-    private Author[] getAuthorValues() {
+    private List<Author> getAuthorValues() {
         List<Author> selectedAuthors = authorsList.getSelectedElements();
 
         if (selectedAuthors == null || selectedAuthors.size() == 0)
             return null;
 
-        return selectedAuthors.toArray(new Author[selectedAuthors.size()]);
+        return selectedAuthors;
     }
 
-    private void setCategoryValues(Category[] categories) {
+    private void setCategoryValues(List<Category> categories) {
         if (categories == null)
             return;
 
@@ -474,11 +471,11 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
         }
     }
 
-    private Category[] getCategoryValues() {
+    private List<Category> getCategoryValues() {
         return categories.getSelectedCategories();
     }
 
-    private void setRelatedReferences(BibliographicReference[] references) {
+    private void setRelatedReferences(List<BibliographicReference> references) {
         if (references == null)
             return;
 
@@ -524,11 +521,11 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
         relatedReferencesPopupButton.addToPopupMenu(panel);
     }
 
-    private BibliographicReference[] getRelatedReferenceValues() {
+    private List<BibliographicReference> getRelatedReferenceValues() {
         if (relatedReferences == null || relatedReferences.isEmpty())
             return null;
 
-        return relatedReferences.toArray(new BibliographicReference[relatedReferences.size()]);
+        return relatedReferences;
     }
 
     /**

@@ -3,8 +3,6 @@ package GUI.Homepage.References;
 import GUI.Homepage.Homepage;
 import GUI.Utilities.JPopupButton;
 import Entities.References.*;
-import Entities.References.OnlineResources.*;
-import Entities.References.PhysicalResources.*;
 
 import javax.swing.*;
 import javax.swing.border.*;
@@ -37,7 +35,6 @@ public class ReferencePanel extends JPanel implements ReferenceListSelectionList
      * @throws IllegalArgumentException
      */
     public ReferencePanel(Homepage homepage, ReferenceController referenceManager) throws IllegalArgumentException {
-
         this.referenceManager = referenceManager;
 
         setLayout(new BorderLayout(5, 5));

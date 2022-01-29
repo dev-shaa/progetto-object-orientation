@@ -10,19 +10,25 @@ import Controller.CategoryController;
 import Controller.ReferenceController;
 
 /**
- * Pannello di dialogo per la creazione o modifica di un riferimento a una risorsa online.
+ * Finestra di dialogo per la creazione o modifica di un riferimento a una risorsa online.
  */
 public abstract class OnlineResourceEditor<T extends OnlineResource> extends ReferenceEditorDialog<T> {
 
     private JTextField URL;
 
     /**
-     * TODO: commenta
+     * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a una risorsa online.
      * 
      * @param dialogueTitle
+     *            titolo della finestra
      * @param categoryController
+     *            controller delle categorie
      * @param referenceController
+     *            controller dei riferimenti
      * @param authorController
+     *            controller degli autori
+     * @throws IllegalArgumentException
+     *             se {@code categoryController == null}, {@code referenceController == null} o {@code authorController == null}
      */
     public OnlineResourceEditor(String dialogueTitle, CategoryController categoryController, ReferenceController referenceController, AuthorController authorController) {
         super(dialogueTitle, categoryController, referenceController, authorController);

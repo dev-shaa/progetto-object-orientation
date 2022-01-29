@@ -12,7 +12,7 @@ import Controller.CategoryController;
 import Controller.ReferenceController;
 
 /**
- * Pannello di dialogo per la creazione o modifica di un riferimento a una pubblicazione.
+ * Finestra di dialogo per la creazione o modifica di un riferimento a una pubblicazione.
  */
 public abstract class PublicationEditor<T extends Publication> extends ReferenceEditorDialog<T> {
 
@@ -20,6 +20,20 @@ public abstract class PublicationEditor<T extends Publication> extends Reference
     private JTextField URL;
     private JTextField publisher;
 
+    /**
+     * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a una pubblicazione.
+     * 
+     * @param dialogueTitle
+     *            titolo della finestra
+     * @param categoryController
+     *            controller delle categorie
+     * @param referenceController
+     *            controller dei riferimenti
+     * @param authorController
+     *            controller degli autori
+     * @throws IllegalArgumentException
+     *             se {@code categoryController == null}, {@code referenceController == null} o {@code authorController == null}
+     */
     public PublicationEditor(String dialogueTitle, CategoryController categoryController, ReferenceController referenceController, AuthorController authorController) {
         super(dialogueTitle, categoryController, referenceController, authorController);
     }

@@ -12,7 +12,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 /**
- * Pannello di dialogo per la creazione o modifica di un riferimento a una tesi.
+ * Finestra di dialogo per la creazione o modifica di un riferimento a una tesi.
  */
 public class ThesisEditor extends PublicationEditor<Thesis> {
 
@@ -21,11 +21,16 @@ public class ThesisEditor extends PublicationEditor<Thesis> {
     private JTextField faculty;
 
     /**
-     * TODO:
+     * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a una tesi.
      * 
      * @param categoryController
+     *            controller delle categorie
      * @param referenceController
+     *            controller dei riferimenti
      * @param authorController
+     *            controller degli autori
+     * @throws IllegalArgumentException
+     *             se {@code categoryController == null}, {@code referenceController == null} o {@code authorController == null}
      */
     public ThesisEditor(CategoryController categoryController, ReferenceController referenceController, AuthorController authorController) {
         super("Tesi", categoryController, referenceController, authorController);

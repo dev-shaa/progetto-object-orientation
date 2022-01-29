@@ -20,11 +20,16 @@ public class ArticleEditor extends PublicationEditor<Article> {
     private JTextField ISSN;
 
     /**
-     * TODO: commenta
+     * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a un articolo.
      * 
      * @param categoryController
+     *            controller delle categorie
      * @param referenceController
+     *            controller dei riferimenti
      * @param authorController
+     *            controller degli autori
+     * @throws IllegalArgumentException
+     *             se {@code categoryController == null}, {@code referenceController == null} o {@code authorController == null}
      */
     public ArticleEditor(CategoryController categoryController, ReferenceController referenceController, AuthorController authorController) {
         super("Articolo", categoryController, referenceController, authorController);

@@ -12,7 +12,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 /**
- * Pannello di dialogo per la creazione o modifica di un riferimento a un libro.
+ * Finestra di dialogo per la creazione o modifica di un riferimento a un libro.
  */
 public class BookEditor extends PublicationEditor<Book> {
 
@@ -20,11 +20,16 @@ public class BookEditor extends PublicationEditor<Book> {
     private JTextField ISBN;
 
     /**
-     * TODO: commenta
+     * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a un libro.
      * 
      * @param categoryController
+     *            controller delle categorie
      * @param referenceController
+     *            controller dei riferimenti
      * @param authorController
+     *            controller degli autori
+     * @throws IllegalArgumentException
+     *             se {@code categoryController == null}, {@code referenceController == null} o {@code authorController == null}
      */
     public BookEditor(CategoryController categoryController, ReferenceController referenceController, AuthorController authorController) {
         super("Libro", categoryController, referenceController, authorController);

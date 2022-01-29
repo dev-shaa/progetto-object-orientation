@@ -14,7 +14,7 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
 /**
- * Pannello di dialogo per la creazione o modifica di un riferimento a un'immagine.
+ * Finestra di dialogo per la creazione o modifica di un riferimento a un'immagine.
  */
 public class ImageEditor extends OnlineResourceEditor<Image> {
 
@@ -23,11 +23,16 @@ public class ImageEditor extends OnlineResourceEditor<Image> {
     private JSpinner height;
 
     /**
-     * TODO: commenta
+     * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a un'immagine.
      * 
      * @param categoryController
+     *            controller delle categorie
      * @param referenceController
+     *            controller dei riferimenti
      * @param authorController
+     *            controller degli autori
+     * @throws IllegalArgumentException
+     *             se {@code categoryController == null}, {@code referenceController == null} o {@code authorController == null}
      */
     public ImageEditor(CategoryController categoryController, ReferenceController referenceController, AuthorController authorController) {
         super("Immagine", categoryController, referenceController, authorController);
