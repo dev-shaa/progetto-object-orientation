@@ -12,7 +12,7 @@ import Controller.ReferenceController;
 /**
  * Finestra di dialogo per la creazione o modifica di un riferimento a una risorsa online.
  */
-public abstract class OnlineResourceEditor<T extends OnlineResource> extends ReferenceEditorDialog<T> {
+public abstract class OnlineResourceEditor<T extends OnlineResource> extends ReferenceEditor<T> {
 
     private JTextField URL;
 

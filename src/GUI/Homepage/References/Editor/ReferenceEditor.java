@@ -24,7 +24,7 @@ import Controller.ReferenceController;
 /**
  * Finestra di dialogo per la creazione o modifica di un riferimento bibliografico.
  */
-public abstract class ReferenceEditorDialog<T extends BibliographicReference> extends JDialog implements ReferenceChooserSelectionListener {
+public abstract class ReferenceEditor<T extends BibliographicReference> extends JDialog implements ReferenceChooserSelectionListener {
 
     private JTextField title;
     private JTermsField tags;
@@ -67,7 +67,7 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
      * @throws IllegalArgumentException
      *             se {@code categoryController == null}, {@code referenceController == null} o {@code authorController == null}
      */
-    public ReferenceEditorDialog(String dialogueTitle, CategoryController categoryController, ReferenceController referenceController, AuthorController authorController) {
+    public ReferenceEditor(String dialogueTitle, CategoryController categoryController, ReferenceController referenceController, AuthorController authorController) {
         super();
 
         setTitle(dialogueTitle);
