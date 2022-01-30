@@ -71,8 +71,10 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
         Statement statement = null;
 
         try {
-            // connection = DatabaseController.getInstance().getConnection();
-            connection = DatabaseController.getConnection(); // TODO:
+            connection = DatabaseController.getConnection();
+
+            // il database genera, per ogni nuova categoria, un ID unico
+            // se non siamo in grado di recuperarlo e assegnarlo alla categoria, annulliamo tutta l'operazione
             connection.setAutoCommit(false);
 
             statement = connection.createStatement();
@@ -179,11 +181,9 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
     @Override
     public CustomTreeModel<Category> getUserCategories() throws CategoryDatabaseException {
 
-        // TODO:
-
+        // DEBUG: solo per testing
         CustomTreeNode<Category> root = new CustomTreeNode<Category>(null);
         root.setLabel("I miei riferimenti");
-
         CustomTreeNode<Category> nodeA = new CustomTreeNode<Category>(new Category("AAA", 0));
         CustomTreeNode<Category> nodeB = new CustomTreeNode<Category>(new Category("BBB", 1));
         CustomTreeNode<Category> nodeC = new CustomTreeNode<Category>(new Category("CCC", 2));
@@ -195,70 +195,67 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
         tree.addNode(nodeC, nodeB);
 
         return tree;
+
+        // TODO:
+
+        // Connection connection = null;
+        // Statement statement = null;
+        // ResultSet resultSet = null;
+
+        // CustomTreeNode<Category> root = new CustomTreeNode<Category>(null);
+        // root.setLabel("I miei riferimenti");
+
+        // CustomTreeModel<Category> tree = new CustomTreeModel<>(root);
+
+        // try {
+        // connection = DatabaseController.getConnection();
+        // statement = connection.createStatement();
+        // String query = "select * from category where parent_user = " + user.getName();
+        // resultSet = statement.executeQuery(query);
+
+        // ArrayList<CustomTreeNode<Category>> categories = new ArrayList<CustomTreeNode<Category>>();
+        // HashMap<Integer, CustomTreeNode<Category>> idToNode = new HashMap<Integer, CustomTreeNode<Category>>();
+
+        // idToNode.put(0, root);
+
+        // // occupiamoci prima di recuperare e creare tutte le categorie
+        // while (resultSet.next()) {
+        // Category category = new Category(resultSet.getString(nameKey), resultSet.getInt(idKey));
+        // CustomTreeNode<Category> node = new CustomTreeNode<Category>(category);
+
+        // categories.add(node);
+        // idToNode.put(category.getId(), node);
+        // }
+
+        // resultSet.first();
+
+        // // occupiamoci di assegnare i genitori giusti
+        // for (CustomTreeNode<Category> node : categories) {
+        // CustomTreeNode<Category> parent = idToNode.get(resultSet.getInt(parentKey));
+
+        // node.getUserObject().setParent(parent.getUserObject());
+        // tree.addNode(node, parent);
+
+        // resultSet.next();
+        // }
+
+        // return tree;
+        // } catch (Exception e) {
+        // throw new CategoryDatabaseException("Impossibile recuperare le categorie dell'utente.");
+        // } finally {
+        // try {
+        // if (resultSet != null)
+        // resultSet.close();
+
+        // if (statement != null)
+        // statement.close();
+
+        // if (connection != null)
+        // connection.close();
+        // } catch (Exception e) {
+        // // non fare niente
+        // }
+        // }
     }
-
-    // @Override
-    // public Category[] getUserCategories() throws CategoryDatabaseException {
-
-    // // DEBUG: solo per testing
-    // ArrayList<Category> categories = new ArrayList<Category>();
-    // Category aa = new Category("aaa");
-    // Category bb = new Category("bbb");
-    // bb.setParent(aa);
-    // Category cc = new Category("ccc");
-    // cc.setParent(aa);
-    // Category dd = new Category("ddd");
-    // categories.add(aa);
-    // categories.add(bb);
-    // categories.add(cc);
-    // categories.add(dd);
-    // return categories.toArray(new Category[categories.size()]);
-
-    // // Connection connection = null;
-    // // Statement statement = null;
-    // // ResultSet resultSet = null;
-
-    // // try {
-    // // connection = DatabaseController.getInstance().getConnection();
-    // // statement = connection.createStatement();
-    // // String query = "select * from category where parent_user = " +
-    // // user.getName();
-    // // resultSet = statement.executeQuery(query);
-
-    // // ArrayList<Category> categories = new ArrayList<Category>();
-    // // HashMap<String, Category> nameToCategory = new HashMap<String, Category>();
-
-    // // // occupiamoci prima di recuperare e creare tutte le categorie
-    // // while (resultSet.next()) {
-    // // Category category = new Category(resultSet.getString(nameKey),
-    // // resultSet.getInt(idKey));
-
-    // // categories.add(category);
-    // // nameToCategory.put(category.getName(), category);
-    // // }
-
-    // // resultSet.first();
-
-    // // // occupiamoci di assegnare i genitori giusti
-    // // for (Category category : categories) {
-    // // String parentCategoryName = resultSet.getString(parentKey);
-    // // category.setParent(nameToCategory.get(parentCategoryName));
-    // // resultSet.next();
-    // // }
-
-    // // return categories.toArray(new Category[categories.size()]);
-    // // } catch (Exception e) {
-    // // throw new CategoryDatabaseException("Impossibile recuperare le categorie dell'utente.");
-    // // } finally {
-    // // try {
-    // // resultSet.close();
-    // // statement.close();
-    // // connection.close();
-    // // } catch (Exception e) {
-    // // // non fare niente
-    // // }
-    // // }
-    // // }
-    // }
 
 }
