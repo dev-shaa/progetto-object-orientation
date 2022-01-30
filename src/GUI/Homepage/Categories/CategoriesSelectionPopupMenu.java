@@ -114,7 +114,7 @@ public class CategoriesSelectionPopupMenu extends JPopupButton {
         Category nodeCategory = startNode.getUserObject();
 
         if (nodeCategory != null && nodeCategory.equals(category)) {
-            checkboxTree.getCheckBoxTreeSelectionModel().addSelectionPath(new TreePath(startNode));
+            checkboxTree.getCheckBoxTreeSelectionModel().addSelectionPath(new TreePath(categoriesTree.getPathToRoot(startNode)));
             return true;
         }
 

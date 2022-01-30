@@ -115,6 +115,12 @@ public class CategoriesPanel extends JPanel implements CategorySelectionListener
         return treePanel;
     }
 
+    @Override
+    public void onCategorySelected(Category selectedCategory) {
+        changeCategoryButton.setEnabled(selectedCategory != null);
+        removeCategoryButton.setEnabled(selectedCategory != null);
+    }
+
     private void addCategory() {
         try {
             String newCategoryName = getCategoryNameFromUser("Nuova categoria");
@@ -153,12 +159,6 @@ public class CategoriesPanel extends JPanel implements CategorySelectionListener
 
     private String getCategoryNameFromUser(String defaultName) {
         return (String) JOptionPane.showInputDialog(null, "Inserisci il nome della categoria", "Nuova categoria", JOptionPane.PLAIN_MESSAGE, null, null, defaultName);
-    }
-
-    @Override
-    public void onCategorySelected(Category selectedCategory) {
-        changeCategoryButton.setEnabled(selectedCategory != null);
-        removeCategoryButton.setEnabled(selectedCategory != null);
     }
 
 }

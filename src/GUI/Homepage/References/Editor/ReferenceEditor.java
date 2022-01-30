@@ -264,6 +264,25 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     }
 
     /**
+     * Imposta il riferimento da modificare.
+     * 
+     * @param reference
+     *            riferimento da modificare
+     */
+    protected void setOpenReference(T reference) {
+        this.openReference = reference;
+    }
+
+    /**
+     * Restituisce l'eventuale riferimento da modificare.
+     * 
+     * @return il riferimento da modificare, {@code null} se stiamo creando un nuovo riferimento
+     */
+    protected T getOpenReference() {
+        return openReference;
+    }
+
+    /**
      * Salva un nuovo riferimento con i dati inseriti dall'utente.
      * Viene invocata quando viene premuto il tasto di conferma.
      */
@@ -296,25 +315,6 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         }
 
         super.setVisible(b);
-    }
-
-    /**
-     * Imposta il riferimento da modificare.
-     * 
-     * @param reference
-     *            riferimento da modificare
-     */
-    public void setOpenReference(T reference) {
-        this.openReference = reference;
-    }
-
-    /**
-     * Restituisce l'eventuale riferimento da modificare.
-     * 
-     * @return il riferimento da modificare, {@code null} se stiamo creando un nuovo riferimento
-     */
-    public T getOpenReference() {
-        return openReference;
     }
 
     /**
