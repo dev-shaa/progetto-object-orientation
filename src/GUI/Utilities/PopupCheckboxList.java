@@ -22,7 +22,7 @@ public class PopupCheckboxList<T> extends JPopupButton {
      * @param elements
      *            elementi da aggiungere al menu di selezione
      */
-    public <V extends Collection<T>> PopupCheckboxList(String text, V elements) {
+    public PopupCheckboxList(String text, Collection<? extends T> elements) {
         super(text);
 
         if (listModel == null)
@@ -40,11 +40,14 @@ public class PopupCheckboxList<T> extends JPopupButton {
      * @param elements
      *            elementi selezionabili
      */
-    public <V extends Collection<T>> void setElements(V elements) {
+    public void setElements(Collection<? extends T> elements) {
         listModel.clear();
 
-        if (elements == null)
+        if (elements == null || elements.isEmpty()) {
+            addToPopupMenu(getEmptyPopupLabel());
+
             return;
+        }
 
         for (T item : elements)
             listModel.addElement(item);
@@ -59,6 +62,8 @@ public class PopupCheckboxList<T> extends JPopupButton {
      *             se {@code element == null}
      */
     public void addElement(T element) throws IllegalArgumentException {
+        removeFromPopupMenu(getEmptyPopupLabel());
+
         listModel.addElement(element);
     }
 

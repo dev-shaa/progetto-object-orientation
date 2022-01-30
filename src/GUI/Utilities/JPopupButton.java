@@ -10,7 +10,7 @@ import javax.swing.*;
 public class JPopupButton extends JButton {
 
     private JPopupMenu popupMenu;
-    private final JMenuItem emptyPopupLabel;
+    private final JMenuItem emptyPopupLabel = new JMenuItem("Nessun elemento");;
 
     /**
      * Crea un pulsante senza testo o icona.
@@ -61,7 +61,6 @@ public class JPopupButton extends JButton {
 
         });
 
-        emptyPopupLabel = new JMenuItem("Nessun elemento");
         emptyPopupLabel.setEnabled(false);
         addToPopupMenu(emptyPopupLabel);
     }
@@ -119,6 +118,10 @@ public class JPopupButton extends JButton {
      */
     protected void onPopupOpen() {
         popupMenu.show(this, 0, getHeight());
+    }
+
+    protected JMenuItem getEmptyPopupLabel() {
+        return emptyPopupLabel;
     }
 
 }
