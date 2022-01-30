@@ -23,8 +23,7 @@ import Entities.Author;
  */
 public class AuthorEditor extends JDialog {
 
-    private JTextField firstName;
-    private JTextField lastName;
+    private JTextField name;
     private JTextField ORCID;
 
     private AuthorController controller;
@@ -55,11 +54,8 @@ public class AuthorEditor extends JDialog {
         setResizable(false);
         setModal(true);
 
-        firstName = new JTextField();
-        addField("Nome", firstName);
-
-        lastName = new JTextField();
-        addField("Cognome", lastName);
+        name = new JTextField();
+        addField("Nome", name);
 
         ORCID = new JTextField();
         addField("ORCID", ORCID);
@@ -96,8 +92,7 @@ public class AuthorEditor extends JDialog {
     @Override
     public void setVisible(boolean b) {
         if (b) {
-            firstName.setName(null);
-            lastName.setName(null);
+            name.setName(null);
             ORCID.setName(null);
         }
 
@@ -119,10 +114,9 @@ public class AuthorEditor extends JDialog {
 
     private void saveAuthor() {
         try {
-            controller.saveAuthor(new Author(firstName.getText().trim(), lastName.getText().trim(), ORCID.getText().trim()));
-
+            controller.saveAuthor(new Author(name.getText().trim(), ORCID.getText().trim()));
             setVisible(false);
-        } catch (Exception ex) {
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Impossibile creare un nuovo autore", "Errore creazione autore", JOptionPane.ERROR_MESSAGE);
         }
     }

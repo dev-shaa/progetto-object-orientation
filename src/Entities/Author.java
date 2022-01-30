@@ -6,8 +6,7 @@ import java.util.regex.Pattern;
  * Classe che rappresenta l'autore di un riferimento bibliografico.
  */
 public class Author {
-    private String firstName;
-    private String lastName;
+    private String name;
     private String ORCID;
 
     private final Pattern orcidPattern = Pattern.compile("^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9xX]$", Pattern.CASE_INSENSITIVE);
@@ -15,21 +14,18 @@ public class Author {
     /**
      * Crea un nuovo autore con il nome, cognome e ORCID dati.
      * 
-     * @param firstName
+     * @param name
      *            nome dell'autore
-     * @param lastName
-     *            cognome dell'autore
      * @param ORCID
      *            identificativo ORCID dell'autore
      * @throws IllegalArgumentException
      *             se firstName, lastName o ORCID non sono validi
-     * @see #setFirstName(String)
+     * @see #setName(String)
      * @see #setLastName(String)
      * @see #setORCID(String)
      */
-    public Author(String firstName, String lastName, String ORCID) throws IllegalArgumentException {
-        setFirstName(firstName);
-        setLastName(lastName);
+    public Author(String name, String ORCID) {
+        setName(name);
         setORCID(ORCID);
     }
 
@@ -41,11 +37,11 @@ public class Author {
      * @throws IllegalArgumentException
      *             se {@code firstName == null }
      */
-    public void setFirstName(String firstName) throws IllegalArgumentException {
+    public void setName(String firstName) {
         if (firstName == null)
             throw new IllegalArgumentException();
 
-        this.firstName = firstName;
+        this.name = firstName;
     }
 
     /**
@@ -54,33 +50,8 @@ public class Author {
      * @return
      *         nome dell'autore
      */
-    public String getFirstName() {
-        return firstName;
-    }
-
-    /**
-     * Imposta il cognome dell'autore.
-     * 
-     * @param lastName
-     *            cognome dell'autore
-     * @throws IllegalArgumentException
-     *             se {@code lastName == null }
-     */
-    public void setLastName(String lastName) throws IllegalArgumentException {
-        if (lastName == null)
-            throw new IllegalArgumentException();
-
-        this.lastName = lastName;
-    }
-
-    /**
-     * Restituisce il cognome dell'autore.
-     * 
-     * @return
-     *         cognome dell'autore
-     */
-    public String getLastName() {
-        return lastName;
+    public String getName() {
+        return name;
     }
 
     /**
@@ -91,8 +62,8 @@ public class Author {
      * @throws IllegalArgumentException
      *             se la stringa di input non rispetta il pattern del codice ORCID
      */
-    public void setORCID(String ORCID) throws IllegalArgumentException {
-        if (ORCID != null && !isORCIDValid(ORCID))
+    public void setORCID(String ORCID) {
+        if (!isORCIDValid(ORCID))
             throw new IllegalArgumentException("Codice ORCID non valido");
 
         this.ORCID = ORCID;
@@ -110,16 +81,18 @@ public class Author {
 
     @Override
     public String toString() {
-        String string = firstName + " " + lastName;
+        String string = name;
 
-        if (getORCID() != null) {
+        if (getORCID() != null)
             string += " [ORCID: " + getORCID() + "]";
-        }
 
         return string;
     }
 
     private boolean isORCIDValid(String ORCID) {
+        if (ORCID == null || ORCID.isBlank())
+            return true;
+
         return orcidPattern.matcher(ORCID).find();
     }
 
