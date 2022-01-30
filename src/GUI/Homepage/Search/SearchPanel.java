@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Collection;
+
 import javax.swing.*;
 import javax.swing.border.*;
 import com.toedter.calendar.JDateChooser;
@@ -84,6 +85,8 @@ public class SearchPanel extends JPanel {
 
         add(new JLabel("<html><b>Ricerca riferimenti</b></html>"), BorderLayout.NORTH);
         add(searchPanel, BorderLayout.CENTER);
+
+        reset();
     }
 
     private void addFieldComponent(JComponent component, JPanel panel) {
@@ -107,6 +110,14 @@ public class SearchPanel extends JPanel {
         addFieldComponent(label, component, panel);
     }
 
+    private void reset() {
+        tags.setText(null);
+        authors.deselectAll();
+        categories.deselectAll();
+        dateFrom.setDate(null);
+        dateTo.setDate(null);
+    }
+
     private ArrayList<Tag> stringToTags(Collection<String> strings) {
         if (strings == null || strings.isEmpty())
             return null;
@@ -127,9 +138,10 @@ public class SearchPanel extends JPanel {
                     categories.getSelectedCategories(),
                     authors.getSelectedElements());
 
-            for (ReferenceSearchListener listener : searchListeners) {
+            for (ReferenceSearchListener listener : searchListeners)
                 listener.onReferenceSearch(search);
-            }
+
+            reset();
         } catch (EmptySearchException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
@@ -165,11 +177,10 @@ public class SearchPanel extends JPanel {
         if (controller == null)
             throw new IllegalArgumentException("controller can't be null");
 
-        if (authors == null) {
+        if (authors == null)
             authors = new PopupCheckboxList<Author>("Premi per selezionare gli autori", controller.getAuthors());
-        } else {
+        else
             authors.setElements(controller.getAuthors());
-        }
     }
 
     /**

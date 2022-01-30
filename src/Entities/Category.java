@@ -105,20 +105,6 @@ public class Category {
     }
 
     /**
-     * Controlla se il nome di input può essere accettato come nome di una
-     * categoria.
-     * Un nome valido deve essere non nullo e non vuoto.
-     * 
-     * @param name
-     *            nome da controllare
-     * @return
-     *         {@code true} se il nome è valido
-     */
-    public boolean isNameValid(String name) {
-        return name != null && !name.isBlank();
-    }
-
-    /**
      * Imposta il genitore di questa categoria
      * 
      * @param parent
@@ -154,4 +140,9 @@ public class Category {
 
         return ((Category) obj).getId() == getId();
     }
+
+    private boolean isNameValid(String name) {
+        return name != null && !name.isBlank();
+    }
+
 }
