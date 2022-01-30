@@ -22,6 +22,8 @@ public abstract class BibliographicReference {
     private List<Category> categories;
     private List<BibliographicReference> relatedReferences;
 
+    public static final int NO_ID = Integer.MIN_VALUE;
+
     /**
      * Crea un nuovo riferimento con il titolo indicato.
      * 
@@ -31,6 +33,7 @@ public abstract class BibliographicReference {
      *             se il titolo è nullo o vuoto
      */
     public BibliographicReference(String title) {
+        setID(NO_ID);
         setTitle(title);
         setLanguage(ReferenceLanguage.OTHER);
     }

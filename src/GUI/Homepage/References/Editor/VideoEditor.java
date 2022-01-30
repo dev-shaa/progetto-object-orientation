@@ -33,7 +33,6 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
         super("Video", categoryController, referenceController, authorController);
     }
 
-    private Video video;
     private JSpinner width;
     private JSpinner height;
     private JSpinner frameRate;
@@ -43,16 +42,16 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
     protected void setFieldsValues(Video reference) {
         super.setFieldsValues(reference);
 
-        if (video == null) {
+        if (reference == null) {
             setWidthValue(1);
             setHeightValue(1);
             setFrameRateValue(1);
             setDurationValue(1);
         } else {
-            setWidthValue(video.getWidth());
-            setHeightValue(video.getHeight());
-            setFrameRateValue(video.getFrameRate());
-            setDurationValue(video.getDuration());
+            setWidthValue(reference.getWidth());
+            setHeightValue(reference.getHeight());
+            setFrameRateValue(reference.getFrameRate());
+            setDurationValue(reference.getDuration());
         }
     }
 
@@ -73,15 +72,14 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
 
     @Override
     protected void saveReference() {
-
         try {
-            Video videoToFill = video == null ? new Video("placeholder", "placeholder") : video;
-            fillReferenceValues(videoToFill);
-            getReferenceController().saveReference(videoToFill);
+            Video videoToSave = getOpenReference() == null ? new Video("temp", "temp") : getOpenReference();
+            fillReferenceValues(videoToSave);
+            getReferenceController().saveReference(videoToSave);
         } catch (RequiredFieldMissingException e) {
-            JOptionPane.showMessageDialog(this, "Uno o più campi obbligatori non sono stati inseriti.", "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
         } catch (ReferenceDatabaseException e) {
-            JOptionPane.showMessageDialog(this, "Si è verificato un errore durante il salvataggio", "Errore database", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Errore database", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -89,10 +87,10 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
     protected void fillReferenceValues(Video reference) throws IllegalArgumentException, RequiredFieldMissingException {
         super.fillReferenceValues(reference);
 
-        video.setWidth(getWidthValue());
-        video.setHeight(getHeightValue());
-        video.setFrameRate(getFrameRateValue());
-        video.setDuration(getDurationValue());
+        reference.setWidth(getWidthValue());
+        reference.setHeight(getHeightValue());
+        reference.setFrameRate(getFrameRateValue());
+        reference.setDuration(getDurationValue());
     }
 
     private void setWidthValue(int width) {

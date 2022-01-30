@@ -18,7 +18,6 @@ import javax.swing.SpinnerNumberModel;
  */
 public class ImageEditor extends OnlineResourceEditor<Image> {
 
-    private Image image;
     private JSpinner width;
     private JSpinner height;
 
@@ -65,9 +64,9 @@ public class ImageEditor extends OnlineResourceEditor<Image> {
     @Override
     protected void saveReference() {
         try {
-            Image imageToFill = image == null ? new Image("placeholder", "placeholder") : image;
-            fillReferenceValues(imageToFill);
-            getReferenceController().saveReference(imageToFill);
+            Image imageToSave = getOpenReference() == null ? new Image("temp", "temp") : getOpenReference();
+            fillReferenceValues(imageToSave);
+            getReferenceController().saveReference(imageToSave);
         } catch (RequiredFieldMissingException e) {
             JOptionPane.showMessageDialog(this, "Uno o più campi obbligatori non sono stati inseriti.", "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
         } catch (ReferenceDatabaseException e) {
@@ -76,11 +75,11 @@ public class ImageEditor extends OnlineResourceEditor<Image> {
     }
 
     @Override
-    protected void fillReferenceValues(Image reference) throws RequiredFieldMissingException {
+    protected void fillReferenceValues(Image reference) throws IllegalArgumentException, RequiredFieldMissingException {
         super.fillReferenceValues(reference);
 
-        image.setWidth(getWidthValue());
-        image.setHeight(getHeightValue());
+        reference.setWidth(getWidthValue());
+        reference.setHeight(getHeightValue());
     }
 
     private void setWidthValue(int width) {

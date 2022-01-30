@@ -46,6 +46,8 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
     private ReferenceController referenceController;
     private AuthorController authorController;
 
+    private T openReference;
+
     private final String searchFieldSeparator = ",";
     private final Dimension maximumSize = new Dimension(Integer.MAX_VALUE, 24);
     private final Dimension spacingSize = new Dimension(0, 10);
@@ -289,6 +291,7 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
      */
     public void setVisible(boolean b, T reference) {
         if (b) {
+            setOpenReference(reference);
             setFieldsValues(reference);
         }
 
@@ -296,9 +299,29 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
     }
 
     /**
-     * TODO: commenta
+     * Imposta il riferimento da modificare.
+     * 
+     * @param reference
+     *            riferimento da modificare
+     */
+    public void setOpenReference(T reference) {
+        this.openReference = reference;
+    }
+
+    /**
+     * Restituisce l'eventuale riferimento da modificare.
+     * 
+     * @return il riferimento da modificare, {@code null} se stiamo creando un nuovo riferimento
+     */
+    public T getOpenReference() {
+        return openReference;
+    }
+
+    /**
+     * Imposta il controller delle categorie da usare per recuperare le categorie da scegliere.
      * 
      * @param categoryController
+     *            nuovo controller delle categorie
      * @throws IllegalArgumentException
      *             se {@code categoryController == null}
      */
@@ -316,18 +339,19 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
     }
 
     /**
-     * TODO: commenta
+     * Restituisce il controller delle categorie.
      * 
-     * @return
+     * @return controller delle categorie
      */
     public CategoryController getCategoryController() {
         return categoryController;
     }
 
     /**
-     * TODO: commenta
+     * Imposta il controller dei riferimenti da usare per salvare i riferimenti creati.
      * 
      * @param referenceController
+     *            nuovo controller dei riferimenti
      * @throws IllegalArgumentException
      *             se {@code referenceController == null}
      */
@@ -339,16 +363,17 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
     }
 
     /**
-     * TODO: commenta
+     * Restituisce il controller dei riferimenti.
      * 
      * @return
+     *         controller dei riferimenti
      */
     public ReferenceController getReferenceController() {
         return referenceController;
     }
 
     /**
-     * TODO: commenta
+     * Imposta il controller degli autori per recuperare gli autori da cui scegliere.
      * 
      * @param authorController
      * @throws IllegalArgumentException
@@ -362,9 +387,9 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
     }
 
     /**
-     * TODO: commenta
+     * Restituisce il controller degli autori.
      * 
-     * @return
+     * @return controller degli autori
      */
     public AuthorController getAuthorController() {
         return authorController;
@@ -377,7 +402,7 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
     private String getTitleValue() throws RequiredFieldMissingException {
         String referenceTitle = convertEmptyStringToNull(title.getText().trim());
 
-        if (title == null)
+        if (referenceTitle == null)
             throw new RequiredFieldMissingException("Il titolo del riferimento non può essere nullo.");
 
         return referenceTitle;
@@ -553,10 +578,7 @@ public abstract class ReferenceEditorDialog<T extends BibliographicReference> ex
      * @throws RequiredFieldMissingException
      *             se i campi obbligatori non sono stati riempiti
      */
-    protected void fillReferenceValues(T reference) throws RequiredFieldMissingException {
-
-        // FIXME: reference è sempre null per qualche motivo
-
+    protected void fillReferenceValues(T reference) throws IllegalArgumentException, RequiredFieldMissingException {
         if (reference == null)
             throw new IllegalArgumentException("reference non può essere null");
 

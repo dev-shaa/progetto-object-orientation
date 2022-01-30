@@ -1,16 +1,19 @@
 package GUI.Homepage.References;
 
+import Controller.ReferenceController;
 import GUI.Homepage.Homepage;
 import GUI.Utilities.JPopupButton;
 import Entities.References.*;
+import Entities.References.PhysicalResources.*;
+import Entities.References.OnlineResources.*;
+import Entities.References.OnlineResources.Image;
 
 import javax.swing.*;
 import javax.swing.border.*;
 
-import Controller.ReferenceController;
-
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -25,6 +28,8 @@ public class ReferencePanel extends JPanel implements ReferenceSelectionListener
 
     private JButton editReferenceButton;
     private JButton deleteReferenceButton;
+
+    private ArrayList<ReferenceEditorOptionListener> listeners;
 
     /**
      * TODO: commenta
@@ -51,49 +56,49 @@ public class ReferencePanel extends JPanel implements ReferenceSelectionListener
         JMenuItem articleOption = new JMenuItem("Articolo");
         articleOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // homepage.openArticleEditor(null);
+                triggerArticleEditor(null);
             }
         });
 
         JMenuItem bookOption = new JMenuItem("Libro");
         bookOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // homepage.openBookEditor(null);
+                triggerBookEditor(null);
             }
         });
 
         JMenuItem thesisOption = new JMenuItem("Tesi");
         thesisOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // openThesisEditor(null);
+                triggerThesisEditor(null);
             }
         });
 
         JMenuItem websiteOption = new JMenuItem("Sito web");
         websiteOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // openWebsiteEditor(null);
+                triggerWebsiteEditor(null);
             }
         });
 
         JMenuItem sourceCodeOption = new JMenuItem("Codice sorgente");
         sourceCodeOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // openSourceCodeEditor(null);
+                triggerSourceCodeEditor(null);
             }
         });
 
         JMenuItem imageOption = new JMenuItem("Immagine");
         imageOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // openImageEditor(null);
+                triggerImageEditor(null);
             }
         });
 
         JMenuItem videoOption = new JMenuItem("Video");
         videoOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // openVideoEditor(null);
+                triggerVideoEditor(null);
             }
         });
 
@@ -152,27 +157,48 @@ public class ReferencePanel extends JPanel implements ReferenceSelectionListener
         deleteReferenceButton.setEnabled(shouldButtonsBeEnabled);
     }
 
+    public void setReferences(Collection<? extends BibliographicReference> references) {
+        listPanel.setReferences(references);
+    }
+
+    public void addListener(ReferenceEditorOptionListener listener) {
+        if (listener == null)
+            return;
+
+        if (listeners == null)
+            listeners = new ArrayList<>(3);
+
+        listeners.add(listener);
+    }
+
+    public void removeListener(ReferenceEditorOptionListener listener) {
+        if (listener == null || listeners == null)
+            return;
+
+        listeners.remove(listener);
+    }
+
     private void changeSelectedReference() {
         BibliographicReference selectedReference = listPanel.getSelectedReference();
 
         if (selectedReference == null)
             return;
 
-        // if (selectedReference instanceof Article) {
-        // openArticleEditor((Article) selectedReference);
-        // } else if (selectedReference instanceof Book) {
-        // openBookEditor((Book) selectedReference);
-        // } else if (selectedReference instanceof Image) {
-        // openImageEditor((Image) selectedReference);
-        // } else if (selectedReference instanceof SourceCode) {
-        // openSourceCodeEditor((SourceCode) selectedReference);
-        // } else if (selectedReference instanceof Thesis) {
-        // openThesisEditor((Thesis) selectedReference);
-        // } else if (selectedReference instanceof Video) {
-        // openVideoEditor((Video) selectedReference);
-        // } else if (selectedReference instanceof Website) {
-        // openWebsiteEditor((Website) selectedReference);
-        // }
+        if (selectedReference instanceof Article) {
+            triggerArticleEditor((Article) selectedReference);
+        } else if (selectedReference instanceof Book) {
+            triggerBookEditor((Book) selectedReference);
+        } else if (selectedReference instanceof Image) {
+            triggerImageEditor((Image) selectedReference);
+        } else if (selectedReference instanceof SourceCode) {
+            triggerSourceCodeEditor((SourceCode) selectedReference);
+        } else if (selectedReference instanceof Thesis) {
+            triggerThesisEditor((Thesis) selectedReference);
+        } else if (selectedReference instanceof Video) {
+            triggerVideoEditor((Video) selectedReference);
+        } else if (selectedReference instanceof Website) {
+            triggerWebsiteEditor((Website) selectedReference);
+        }
     }
 
     private void removeSelectedReference() {
@@ -188,8 +214,67 @@ public class ReferencePanel extends JPanel implements ReferenceSelectionListener
         }
     }
 
-    public void setReferences(Collection<? extends BibliographicReference> references) {
-        listPanel.setReferences(references);
+    private void triggerArticleEditor(Article article) {
+        if (listeners == null)
+            return;
+
+        for (ReferenceEditorOptionListener listener : listeners) {
+            listener.onArticleEditorCall(article);
+        }
+    }
+
+    private void triggerBookEditor(Book book) {
+        if (listeners == null)
+            return;
+
+        for (ReferenceEditorOptionListener listener : listeners) {
+            listener.onBookEditorCall(book);
+        }
+    }
+
+    private void triggerImageEditor(Image image) {
+        if (listeners == null)
+            return;
+
+        for (ReferenceEditorOptionListener listener : listeners) {
+            listener.onImageEditorCall(image);
+        }
+    }
+
+    private void triggerSourceCodeEditor(SourceCode sourceCode) {
+        if (listeners == null)
+            return;
+
+        for (ReferenceEditorOptionListener listener : listeners) {
+            listener.onSourceCodeEditorCall(sourceCode);
+        }
+    }
+
+    private void triggerThesisEditor(Thesis thesis) {
+        if (listeners == null)
+            return;
+
+        for (ReferenceEditorOptionListener listener : listeners) {
+            listener.onThesisEditorCall(thesis);
+        }
+    }
+
+    private void triggerVideoEditor(Video video) {
+        if (listeners == null)
+            return;
+
+        for (ReferenceEditorOptionListener listener : listeners) {
+            listener.onVideoEditorCall(video);
+        }
+    }
+
+    private void triggerWebsiteEditor(Website website) {
+        if (listeners == null)
+            return;
+
+        for (ReferenceEditorOptionListener listener : listeners) {
+            listener.onWebsiteEditorCall(website);
+        }
     }
 
 }

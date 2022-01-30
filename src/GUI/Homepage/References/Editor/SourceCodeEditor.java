@@ -17,7 +17,6 @@ import javax.swing.JOptionPane;
  */
 public class SourceCodeEditor extends OnlineResourceEditor<SourceCode> {
 
-    private SourceCode sourceCode;
     private JComboBox<ProgrammingLanguage> programmingLanguage;
 
     /**
@@ -54,13 +53,13 @@ public class SourceCodeEditor extends OnlineResourceEditor<SourceCode> {
     @Override
     protected void saveReference() {
         try {
-            SourceCode sourceCodeToFill = sourceCode == null ? new SourceCode("placeholder", "placeholder") : sourceCode;
+            SourceCode sourceCodeToFill = getOpenReference() == null ? new SourceCode("temp", "temp") : getOpenReference();
             fillReferenceValues(sourceCodeToFill);
             getReferenceController().saveReference(sourceCodeToFill);
         } catch (RequiredFieldMissingException e) {
-            JOptionPane.showMessageDialog(this, "Uno o più campi obbligatori non sono stati inseriti.", "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
         } catch (ReferenceDatabaseException e) {
-            JOptionPane.showMessageDialog(this, "Si è verificato un errore durante il salvataggio", "Errore database", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Errore database", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -68,7 +67,7 @@ public class SourceCodeEditor extends OnlineResourceEditor<SourceCode> {
     protected void fillReferenceValues(SourceCode reference) throws IllegalArgumentException, RequiredFieldMissingException {
         super.fillReferenceValues(reference);
 
-        sourceCode.setProgrammingLanguage(getProgrammingLanguageValue());
+        reference.setProgrammingLanguage(getProgrammingLanguageValue());
     }
 
     private void setProgrammingLanguageValue(ProgrammingLanguage programmingLanguage) {

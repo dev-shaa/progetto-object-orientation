@@ -51,7 +51,7 @@ public abstract class OnlineResourceEditor<T extends OnlineResource> extends Ref
     }
 
     @Override
-    protected void fillReferenceValues(T reference) throws RequiredFieldMissingException {
+    protected void fillReferenceValues(T reference) throws IllegalArgumentException, RequiredFieldMissingException {
         super.fillReferenceValues(reference);
 
         reference.setURL(getURLValue());

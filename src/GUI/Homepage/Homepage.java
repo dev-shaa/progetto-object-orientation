@@ -19,12 +19,13 @@ import javax.swing.*;
 
 import GUI.Homepage.References.Editor.*;
 import Entities.References.OnlineResources.*;
+import Entities.References.OnlineResources.Image;
 import Entities.References.PhysicalResources.*;
 
 /**
  * Classe che si occupa di impostare le componenti base della pagina principale, che mostra tutti i riferimenti e le categorie.
  */
-public class Homepage extends JFrame implements CategorySelectionListener, LogoutListener, ReferenceSearchListener {
+public class Homepage extends JFrame implements CategorySelectionListener, LogoutListener, ReferenceSearchListener, ReferenceEditorOptionListener {
 
     private Controller controller;
 
@@ -38,16 +39,18 @@ public class Homepage extends JFrame implements CategorySelectionListener, Logou
 
     private ArticleEditor articleEditor;
     private BookEditor bookEditor;
+    private ThesisEditor thesisEditor;
     private ImageEditor imageEditor;
     private SourceCodeEditor sourceCodeEditor;
-    private ThesisEditor thesisEditor;
     private VideoEditor videoEditor;
     private WebsiteEditor websiteEditor;
 
     public Homepage(Controller controller, CategoryController categoryController, ReferenceController referenceController, AuthorController authorController, User user) {
         setController(controller);
 
+        this.categoryController = categoryController;
         this.referenceController = referenceController;
+        this.authorController = authorController;
 
         setTitle("Pagina principale");
         setMinimumSize(new Dimension(400, 400));
@@ -70,6 +73,8 @@ public class Homepage extends JFrame implements CategorySelectionListener, Logou
         categoriesPanel.getTreePanel().addSelectionListener(this);
 
         referencePanel = new ReferencePanel(this, referenceController);
+        referencePanel.addListener(this);
+
         referenceSearchPanel = new SearchPanel(categoryController, authorController);
         referenceSearchPanel.addReferenceSearchListener(this);
 
@@ -113,6 +118,62 @@ public class Homepage extends JFrame implements CategorySelectionListener, Logou
     @Override
     public void onReferenceSearch(Search search) {
         referencePanel.setReferences(referenceController.getReferences(search));
+    }
+
+    @Override
+    public void onArticleEditorCall(Article article) {
+        if (articleEditor == null)
+            articleEditor = new ArticleEditor(categoryController, referenceController, authorController);
+
+        articleEditor.setVisible(true, article);
+    }
+
+    @Override
+    public void onBookEditorCall(Book book) {
+        if (bookEditor == null)
+            bookEditor = new BookEditor(categoryController, referenceController, authorController);
+
+        bookEditor.setVisible(true, book);
+    }
+
+    @Override
+    public void onThesisEditorCall(Thesis thesis) {
+        if (thesisEditor == null)
+            thesisEditor = new ThesisEditor(categoryController, referenceController, authorController);
+
+        thesisEditor.setVisible(true, thesis);
+    }
+
+    @Override
+    public void onSourceCodeEditorCall(SourceCode sourceCode) {
+        if (sourceCodeEditor == null)
+            sourceCodeEditor = new SourceCodeEditor(categoryController, referenceController, authorController);
+
+        sourceCodeEditor.setVisible(true, sourceCode);
+    }
+
+    @Override
+    public void onImageEditorCall(Image image) {
+        if (imageEditor == null)
+            imageEditor = new ImageEditor(categoryController, referenceController, authorController);
+
+        imageEditor.setVisible(true, image);
+    }
+
+    @Override
+    public void onVideoEditorCall(Video video) {
+        if (videoEditor == null)
+            videoEditor = new VideoEditor(categoryController, referenceController, authorController);
+
+        videoEditor.setVisible(true, video);
+    }
+
+    @Override
+    public void onWebsiteEditorCall(Website website) {
+        if (websiteEditor == null)
+            websiteEditor = new WebsiteEditor(categoryController, referenceController, authorController);
+
+        websiteEditor.setVisible(true, website);
     }
 
 }

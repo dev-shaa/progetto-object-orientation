@@ -67,7 +67,7 @@ public abstract class PublicationEditor<T extends Publication> extends Reference
     }
 
     @Override
-    protected void fillReferenceValues(T reference) throws RequiredFieldMissingException {
+    protected void fillReferenceValues(T reference) throws IllegalArgumentException, RequiredFieldMissingException {
         super.fillReferenceValues(reference);
 
         reference.setPageCount(getPageCountValue());

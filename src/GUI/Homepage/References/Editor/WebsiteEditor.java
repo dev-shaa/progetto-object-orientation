@@ -15,8 +15,6 @@ import javax.swing.JOptionPane;
  */
 public class WebsiteEditor extends OnlineResourceEditor<Website> {
 
-    private Website website;
-
     /**
      * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a un sito web.
      * 
@@ -46,21 +44,19 @@ public class WebsiteEditor extends OnlineResourceEditor<Website> {
     @Override
     protected void saveReference() {
         try {
-            Website websiteToFill = website == null ? new Website("placeholder", "placeholder") : website;
-            fillReferenceValues(websiteToFill);
-            getReferenceController().saveReference(websiteToFill);
+            Website websiteToSave = getOpenReference() == null ? new Website("temp", "temp") : getOpenReference();
+            fillReferenceValues(websiteToSave);
+            getReferenceController().saveReference(websiteToSave);
         } catch (RequiredFieldMissingException e) {
-            JOptionPane.showMessageDialog(this, "Uno o più campi obbligatori non sono stati inseriti.", "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
         } catch (ReferenceDatabaseException e) {
-            JOptionPane.showMessageDialog(this, "Si è verificato un errore durante il salvataggio", "Errore database", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Errore database", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     @Override
-    protected void fillReferenceValues(Website reference) throws RequiredFieldMissingException {
+    protected void fillReferenceValues(Website reference) throws IllegalArgumentException, RequiredFieldMissingException {
         super.fillReferenceValues(reference);
-
-        // qui non dobbiamo fare niente in realtà, però mettiamola per correttezza
     }
 
 }

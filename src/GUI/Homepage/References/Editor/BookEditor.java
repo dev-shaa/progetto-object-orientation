@@ -16,7 +16,6 @@ import javax.swing.JTextField;
  */
 public class BookEditor extends PublicationEditor<Book> {
 
-    private Book book;
     private JTextField ISBN;
 
     /**
@@ -44,35 +43,29 @@ public class BookEditor extends PublicationEditor<Book> {
     }
 
     @Override
-    protected void setFieldsValues(Book publication) {
-        super.setFieldsValues(publication);
+    protected void setFieldsValues(Book reference) {
+        super.setFieldsValues(reference);
 
-        if (publication == null) {
-            setISBNValue(null);
-        } else {
-            setISBNValue(publication.getISBN());
-        }
+        setISBNValue(reference == null ? null : reference.getISBN());
     }
 
     @Override
     protected void saveReference() {
-
         try {
-            Book bookToFill = book == null ? new Book("placeholder", null) : book;
-            fillReferenceValues(bookToFill);
-            getReferenceController().saveReference(bookToFill);
+            Book bookToSave = getOpenReference() == null ? new Book("temp") : getOpenReference();
+            fillReferenceValues(bookToSave);
+            getReferenceController().saveReference(bookToSave);
         } catch (RequiredFieldMissingException e) {
-            JOptionPane.showMessageDialog(this, "Uno o più campi obbligatori non sono stati inseriti.", "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
         } catch (ReferenceDatabaseException e) {
-            JOptionPane.showMessageDialog(this, "Si è verificato un errore durante il salvataggio", "Errore database", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Errore database", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     @Override
     protected void fillReferenceValues(Book reference) throws IllegalArgumentException, RequiredFieldMissingException {
         super.fillReferenceValues(reference);
-
-        book.setISBN(getISBNValue());
+        reference.setISBN(getISBNValue());
     }
 
     private void setISBNValue(String ISBN) {

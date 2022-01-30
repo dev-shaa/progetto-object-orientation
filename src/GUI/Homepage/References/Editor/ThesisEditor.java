@@ -16,7 +16,6 @@ import javax.swing.JTextField;
  */
 public class ThesisEditor extends PublicationEditor<Thesis> {
 
-    private Thesis thesis;
     private JTextField university;
     private JTextField faculty;
 
@@ -63,13 +62,13 @@ public class ThesisEditor extends PublicationEditor<Thesis> {
     @Override
     protected void saveReference() {
         try {
-            Thesis thesisToSave = thesis == null ? new Thesis("placeholder") : thesis;
+            Thesis thesisToSave = getOpenReference() == null ? new Thesis("temp") : getOpenReference();
             fillReferenceValues(thesisToSave);
             getReferenceController().saveReference(thesisToSave);
         } catch (RequiredFieldMissingException e) {
-            JOptionPane.showMessageDialog(this, "Uno o più campi obbligatori non sono stati inseriti.", "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
         } catch (ReferenceDatabaseException e) {
-            JOptionPane.showMessageDialog(this, "Si è verificato un errore durante il salvataggio", "Errore database", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Errore database", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -77,8 +76,8 @@ public class ThesisEditor extends PublicationEditor<Thesis> {
     protected void fillReferenceValues(Thesis reference) throws IllegalArgumentException, RequiredFieldMissingException {
         super.fillReferenceValues(reference);
 
-        thesis.setUniversity(getUniversityValue());
-        thesis.setFaculty(getFacultyValue());
+        reference.setUniversity(getUniversityValue());
+        reference.setFaculty(getFacultyValue());
     }
 
     private void setUniversityValue(String university) {

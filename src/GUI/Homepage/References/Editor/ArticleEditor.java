@@ -16,7 +16,6 @@ import javax.swing.JTextField;
  */
 public class ArticleEditor extends PublicationEditor<Article> {
 
-    private Article article;
     private JTextField ISSN;
 
     /**
@@ -47,20 +46,14 @@ public class ArticleEditor extends PublicationEditor<Article> {
     protected void setFieldsValues(Article reference) {
         super.setFieldsValues(reference);
 
-        if (reference == null) {
-            setISSNValue(null);
-        } else {
-            setISSNValue(reference.getISSN());
-        }
+        setISSNValue(reference == null ? null : reference.getISSN());
     }
 
     @Override
     protected void saveReference() {
         try {
-            Article articleToSave = article == null ? new Article("placeholder") : article;
-
+            Article articleToSave = getOpenReference() == null ? new Article("temp") : getOpenReference();
             fillReferenceValues(articleToSave);
-
             getReferenceController().saveReference(articleToSave);
         } catch (RequiredFieldMissingException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
