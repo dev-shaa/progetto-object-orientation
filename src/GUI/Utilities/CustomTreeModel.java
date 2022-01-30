@@ -31,8 +31,8 @@ public class CustomTreeModel<T extends Object> extends DefaultTreeModel {
     public void setRoot(TreeNode root) throws IllegalArgumentException {
         try {
             super.setRoot((CustomTreeNode<T>) root);
-        } catch (Exception e) {
-            throw new IllegalArgumentException();
+        } catch (ClassCastException e) {
+            throw new IllegalArgumentException("root is not a valid type of node for this tree");
         }
     }
 
@@ -42,7 +42,7 @@ public class CustomTreeModel<T extends Object> extends DefaultTreeModel {
         try {
             super.insertNodeInto((CustomTreeNode<T>) newChild, (CustomTreeNode<T>) parent, index);
         } catch (ClassCastException e) {
-            throw new IllegalArgumentException("foo");
+            throw new IllegalArgumentException("newChild or parent are not a valid type of node for this tree");
         }
     }
 

@@ -1,7 +1,6 @@
 package GUI.Homepage.References;
 
 import Controller.ReferenceController;
-import GUI.Homepage.Homepage;
 import GUI.Utilities.JPopupButton;
 import Entities.References.*;
 import Entities.References.PhysicalResources.*;
@@ -21,7 +20,7 @@ import java.util.Collection;
  */
 public class ReferencePanel extends JPanel implements ReferenceSelectionListener {
 
-    private ReferenceController referenceManager;
+    private ReferenceController referenceController;
 
     private ReferenceListPanel listPanel;
     private ReferenceInfoPanel infoPanel;
@@ -32,15 +31,15 @@ public class ReferencePanel extends JPanel implements ReferenceSelectionListener
     private ArrayList<ReferenceEditorOptionListener> listeners;
 
     /**
-     * TODO: commenta
-     * Crea un nuovo pannello.
+     * Crea un nuovo pannello dei riferimenti.
      * 
-     * @param categoryManager
-     * @param referenceManager
+     * @param referenceController
+     *            controller dei riferimenti
      * @throws IllegalArgumentException
+     *             se {@code referenceController == null}
      */
-    public ReferencePanel(Homepage homepage, ReferenceController referenceManager) throws IllegalArgumentException {
-        this.referenceManager = referenceManager;
+    public ReferencePanel(ReferenceController referenceController) {
+        setReferenceController(referenceController);
 
         setLayout(new BorderLayout(5, 5));
         setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -157,10 +156,44 @@ public class ReferencePanel extends JPanel implements ReferenceSelectionListener
         deleteReferenceButton.setEnabled(shouldButtonsBeEnabled);
     }
 
+    /**
+     * Imposta il controller dei riferimenti.
+     * 
+     * @param referenceController
+     *            controller dei riferimenti
+     * @throws IllegalArgumentException
+     *             se {@code referenceController == null}
+     */
+    public void setReferenceController(ReferenceController referenceController) {
+        if (referenceController == null)
+            throw new IllegalArgumentException("referenceController can't be null");
+
+        this.referenceController = referenceController;
+    }
+
+    /**
+     * Restituisce il controller dei riferimenti.
+     * 
+     * @return
+     *         controller dei riferimenti
+     */
+    public ReferenceController getReferenceController() {
+        return referenceController;
+    }
+
+    /**
+     * TODO:
+     * 
+     * @param references
+     */
     public void setReferences(Collection<? extends BibliographicReference> references) {
         listPanel.setReferences(references);
     }
 
+    /**
+     * 
+     * @param listener
+     */
     public void addListener(ReferenceEditorOptionListener listener) {
         if (listener == null)
             return;
@@ -171,6 +204,10 @@ public class ReferencePanel extends JPanel implements ReferenceSelectionListener
         listeners.add(listener);
     }
 
+    /**
+     * 
+     * @param listener
+     */
     public void removeListener(ReferenceEditorOptionListener listener) {
         if (listener == null || listeners == null)
             return;
@@ -206,7 +243,7 @@ public class ReferencePanel extends JPanel implements ReferenceSelectionListener
             int result = JOptionPane.showConfirmDialog(null, "Vuoi eliminare questo riferimento?", "Elimina riferimento", JOptionPane.YES_NO_OPTION);
 
             if (result == JOptionPane.YES_OPTION) {
-                referenceManager.removeReference(listPanel.getSelectedReference());
+                getReferenceController().removeReference(listPanel.getSelectedReference());
                 listPanel.removeSelectedReference();
             }
         } catch (Exception e) {

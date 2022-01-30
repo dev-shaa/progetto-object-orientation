@@ -12,16 +12,15 @@ public class Author {
     private final Pattern orcidPattern = Pattern.compile("^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9xX]$", Pattern.CASE_INSENSITIVE);
 
     /**
-     * Crea un nuovo autore con il nome, cognome e ORCID dati.
+     * Crea un nuovo autore con il nome e l'ORCID dati.
      * 
      * @param name
      *            nome dell'autore
      * @param ORCID
      *            identificativo ORCID dell'autore
      * @throws IllegalArgumentException
-     *             se firstName, lastName o ORCID non sono validi
+     *             se {@code name} o {@code ORCID} non sono validi
      * @see #setName(String)
-     * @see #setLastName(String)
      * @see #setORCID(String)
      */
     public Author(String name, String ORCID) {
@@ -32,16 +31,16 @@ public class Author {
     /**
      * Imposta il nome dell'autore.
      * 
-     * @param firstName
+     * @param name
      *            nome dell'autore
      * @throws IllegalArgumentException
-     *             se {@code firstName == null }
+     *             se {@code name} è nullo o vuoto
      */
-    public void setName(String firstName) {
-        if (firstName == null)
-            throw new IllegalArgumentException();
+    public void setName(String name) {
+        if (name == null || name.isBlank())
+            throw new IllegalArgumentException("name can't be null");
 
-        this.name = firstName;
+        this.name = name;
     }
 
     /**

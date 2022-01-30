@@ -491,9 +491,8 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         if (categories == null)
             return;
 
-        for (Category category : categories) {
+        for (Category category : categories)
             this.categories.selectCategory(category);
-        }
     }
 
     private List<Category> getCategoryValues() {

@@ -72,7 +72,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Logou
         categoriesPanel = new CategoriesPanel(categoryController);
         categoriesPanel.getTreePanel().addSelectionListener(this);
 
-        referencePanel = new ReferencePanel(this, referenceController);
+        referencePanel = new ReferencePanel(referenceController);
         referencePanel.addListener(this);
 
         referenceSearchPanel = new SearchPanel(categoryController, authorController);

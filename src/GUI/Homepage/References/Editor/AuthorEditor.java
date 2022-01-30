@@ -50,7 +50,7 @@ public class AuthorEditor extends JDialog {
         setContentPane(contentPane);
 
         setTitle("Nuovo autore");
-        setSize(300, 300);
+        setSize(300, 250);
         setResizable(false);
         setModal(true);
 
@@ -92,8 +92,8 @@ public class AuthorEditor extends JDialog {
     @Override
     public void setVisible(boolean b) {
         if (b) {
-            name.setName(null);
-            ORCID.setName(null);
+            name.setText(null);
+            ORCID.setText(null);
         }
 
         super.setVisible(b);
@@ -117,7 +117,7 @@ public class AuthorEditor extends JDialog {
             controller.saveAuthor(new Author(name.getText().trim(), ORCID.getText().trim()));
             setVisible(false);
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Impossibile creare un nuovo autore", "Errore creazione autore", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Impossibile creare autore", "Errore creazione autore", JOptionPane.ERROR_MESSAGE);
         }
     }
 

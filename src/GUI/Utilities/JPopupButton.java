@@ -10,7 +10,7 @@ import javax.swing.*;
 public class JPopupButton extends JButton {
 
     private JPopupMenu popupMenu;
-    private final JMenuItem emptyPopupLabel = new JMenuItem("Nessun elemento");;
+    private final JMenuItem emptyPopupLabel = new JMenuItem("Nessun elemento");
 
     /**
      * Crea un pulsante senza testo o icona.
