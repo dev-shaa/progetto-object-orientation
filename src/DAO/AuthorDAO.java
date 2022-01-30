@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import Entities.Author;
 
@@ -16,9 +17,8 @@ public class AuthorDAO {
 		public void SaveAuthor(Author author) {
 
 			try {
-				System.out.println("Sto provando a salvare l'utente " + author.getFirstName() + " " + author.getLastName() + " " + author.getORCID());				
-				String query = "insert into \"AutoriApp\" (\"Nome\", \"Cognome\",\"ORCID\") values ('"+author.getFirstName()+"','"
-						+ ""+author.getLastName()+"','"+ author.getORCID()+"')";
+				System.out.println("Salvataggio autore " + author.getName() + " " + author.getORCID());				
+				String query = "insert into \"AutoriApp\" (\"Nome\",\"ORCID\") values ('"+author.getName()+"','" + author.getORCID()+"')";
 				
 				con = DatabaseController.getConnection();
 				if (con == null) {
@@ -44,40 +44,37 @@ public class AuthorDAO {
 		}
 		
 		
-		public void FindAllAuthor (Author author) {
-			
+		public ArrayList <Author> FindAllAuthor() {	
 			try {
-				
-				String query = "select * from \"AutoriApp\"";
+				String query ="select * from \"AutoriApp\" aa";
 				con = DatabaseController.getConnection();
 				if (con == null) {
 					System.out.println("Non c'è connesione al db");
-					return;
+					return null;
 				}
 				stmt = con.createStatement(); 
-				stmt.executeUpdate(query);
-				while (rs.next()) {
-					System.out.println("Nome: "+author.getFirstName() + "\nCognome: "+author.getLastName() + "\nORCID: "+author.getORCID());
+				rs = stmt.executeQuery(query);
+				Author authorDB = null;
+				
+				ArrayList <Author> authorList = new ArrayList<Author>();
+				
+				while (rs.next()) { 	
+				String firstName = rs.getString("Nome");
+				String ORCID = rs.getString("ORCID");
+				authorDB = new Author(firstName, ORCID);
+				authorList.add(authorDB);
 				}
-			} catch (Exception e) {
+				
+//				for ( int i = 0; i < authorList.size(); i++) {
+//					System.out.println(authorList.get(i));
+//				}		
+				return authorList;
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} finally {
-				try {
-					if (stmt != null)
-						stmt.close();
-					if (con != null)
-						con.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
+				return null;
 			}
 		}
-			
-			
-			
-		}
-		
-	
-	
-	
+}
+
 

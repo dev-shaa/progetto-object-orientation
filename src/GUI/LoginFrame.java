@@ -6,6 +6,10 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import Controller.Controller;
+import DAO.AuthorDAO;
+
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JTextField;
@@ -19,6 +23,8 @@ import javax.swing.JOptionPane;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+
 import javax.swing.DropMode;
 import javax.swing.JFormattedTextField;
 
@@ -27,14 +33,12 @@ public class LoginFrame extends JFrame {
 	private JPanel contentPane;
 	private JTextField userName_TF;
 	private JPasswordField passwordField;
-//	private Controller theController;
 
 	/**
 	 * Create the frame.
 	 */
 
 	public LoginFrame(Controller c) {
-//		theController = c;
 		
 		Login login = new Login();
 
