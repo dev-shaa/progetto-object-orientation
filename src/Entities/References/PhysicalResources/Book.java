@@ -1,8 +1,6 @@
 package Entities.References.PhysicalResources;
 
 import java.util.List;
-
-import Entities.Author;
 import Entities.References.BibliographicReferenceField;
 
 /**
@@ -21,7 +19,7 @@ public class Book extends Publication {
      *             se il titolo non è valido
      * @see #setTitle(String)
      */
-    public Book(String title, Author[] authors) throws IllegalArgumentException {
+    public Book(String title) throws IllegalArgumentException {
         super(title);
     }
 
