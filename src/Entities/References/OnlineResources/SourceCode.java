@@ -23,18 +23,22 @@ public class SourceCode extends OnlineResource {
      * @see #setTitle(String)
      * @see #setURL(String)
      */
-    public SourceCode(String title, String URL) throws IllegalArgumentException {
+    public SourceCode(String title, String URL) {
         super(title, URL);
     }
 
     /**
      * Imposta il linguaggio di programmazione del codice.
-     * TODO: handle null
      * 
      * @param programmingLanguage
      *            linguaggio di programmazione
+     * @throws IllegalArgumentException
+     *             se {@code programmingLanguage == null}
      */
     public void setProgrammingLanguage(ProgrammingLanguage programmingLanguage) {
+        if (programmingLanguage == null)
+            throw new IllegalArgumentException("programmingLanguage can't be null");
+
         this.programmingLanguage = programmingLanguage;
     }
 

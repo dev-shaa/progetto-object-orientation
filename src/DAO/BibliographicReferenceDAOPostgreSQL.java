@@ -116,8 +116,16 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         }
     }
 
+    // https://stackoverflow.com/a/63970374
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @throws IllegalArgumentException
+     *             se {@code article == null}
+     */
     @Override
-    public void saveReference(Article article) throws ReferenceDatabaseException, IllegalArgumentException {
+    public void saveReference(Article article) throws ReferenceDatabaseException {
         if (article == null)
             throw new IllegalArgumentException("article non può essere null");
 
@@ -130,6 +138,9 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
             connection.setAutoCommit(false);
 
             statement = connection.createStatement();
+
+            // INSERT INTO t VALUES (1,'foo updated'),(3,'new record')
+            // ON CONFLICT (id) DO UPDATE SET txt = EXCLUDED.txt;
 
             String query = "insert into category(title, pubblicationDate, DOI, description, language) values("
                     + article.getTitle() + ", "
@@ -165,7 +176,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
                 // non fare niente
             }
 
-            throw new ReferenceDatabaseException("Impossibile aggiungere nuova categoria.");
+            throw new ReferenceDatabaseException("Impossibile aggiungere nuovo riferimento.");
         } finally {
             try {
                 if (set != null)
@@ -182,36 +193,72 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @throws IllegalArgumentException
+     *             se {@code book == null}
+     */
     @Override
     public void saveReference(Book book) throws ReferenceDatabaseException {
         // TODO Auto-generated method stub
 
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @throws IllegalArgumentException
+     *             se {@code thesis == null}
+     */
     @Override
     public void saveReference(Thesis thesis) throws ReferenceDatabaseException {
         // TODO Auto-generated method stub
 
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @throws IllegalArgumentException
+     *             se {@code image == null}
+     */
     @Override
     public void saveReference(Image image) throws ReferenceDatabaseException {
         // TODO Auto-generated method stub
 
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @throws IllegalArgumentException
+     *             se {@code sourceCode == null}
+     */
     @Override
     public void saveReference(SourceCode sourceCode) throws ReferenceDatabaseException {
         // TODO Auto-generated method stub
 
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @throws IllegalArgumentException
+     *             se {@code video == null}
+     */
     @Override
     public void saveReference(Video video) throws ReferenceDatabaseException {
         // TODO Auto-generated method stub
 
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @throws IllegalArgumentException
+     *             se {@code website == null}
+     */
     @Override
     public void saveReference(Website website) throws ReferenceDatabaseException {
         // TODO Auto-generated method stub

@@ -376,8 +376,12 @@ public abstract class BibliographicReference {
      * Controlla se questo riferimento è stato pubblicato in un certo intervallo compreso tra {@code start} e {@code end}.
      * 
      * @param start
+     *            data di inizio intervallo
      * @param end
-     * @return TODO: commenta
+     *            data di fine intervallo
+     * @return restituisce {@code true} se è stato pubblicato tra l'inizio e la fine dell'intervallo.
+     * @see #wasPublishedAfter(Date)
+     * @see #wasPublishedBefore(Date)
      */
     public boolean wasPublishedBetween(Date start, Date end) {
         return wasPublishedAfter(start) && wasPublishedBefore(end);

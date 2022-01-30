@@ -5,8 +5,7 @@ import Exceptions.*;
 import GUI.Utilities.CustomTreeModel;
 
 /**
- * Classe astratta che si occupa di gestire la parte di database relativo alle
- * categorie.
+ * Interfaccia che deve essere implementata per gestire la parte di database relativo alle categorie.
  */
 public interface CategoryDAO {
 
@@ -15,8 +14,6 @@ public interface CategoryDAO {
      * 
      * @param category
      *            nuova categoria da salvare.
-     * @throws IllegalArgumentException
-     *             se {@code category == null}
      * @throws CategoryDatabaseException
      *             se l'aggiunta della categoria al database non va a buon fine
      */
@@ -27,8 +24,6 @@ public interface CategoryDAO {
      * 
      * @param category
      *            categoria modificata da aggiornare nel database
-     * @throws IllegalArgumentException
-     *             se {@code category == null}
      * @throws CategoryDatabaseException
      *             se la modifica della categoria nel database non va a buon fine
      */
@@ -39,8 +34,6 @@ public interface CategoryDAO {
      * 
      * @param category
      *            categoria da eliminare.
-     * @throws IllegalArgumentException
-     *             se {@code category == null}
      * @throws CategoryDatabaseException
      *             se la rimozione della categoria dal database non va a buon fine
      */

@@ -62,8 +62,14 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
         return this.user;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @throws IllegalArgumentException
+     *             se {@code category == null}
+     */
     @Override
-    public void addCategory(Category category) throws IllegalArgumentException, CategoryDatabaseException {
+    public void addCategory(Category category) throws CategoryDatabaseException {
         if (category == null)
             throw new IllegalArgumentException("category non può essere null");
 
@@ -119,8 +125,14 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @throws IllegalArgumentException
+     *             se {@code category == null}
+     */
     @Override
-    public void updateCategoryName(Category category) throws IllegalArgumentException, CategoryDatabaseException {
+    public void updateCategoryName(Category category) throws CategoryDatabaseException {
         if (category == null)
             throw new IllegalArgumentException("category non può essere null");
 
@@ -150,8 +162,14 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @throws IllegalArgumentException
+     *             se {@code category == null}
+     */
     @Override
-    public void removeCategory(Category category) throws IllegalArgumentException, CategoryDatabaseException {
+    public void removeCategory(Category category) throws CategoryDatabaseException {
         if (category == null)
             throw new IllegalArgumentException("category non può essere null");
 
@@ -196,7 +214,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
 
         return tree;
 
-        // TODO:
+        // TODO: decommenta
 
         // Connection connection = null;
         // Statement statement = null;
