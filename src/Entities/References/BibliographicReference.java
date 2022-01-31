@@ -218,18 +218,6 @@ public abstract class BibliographicReference {
     }
 
     /**
-     * TODO:
-     * 
-     * @param tag
-     */
-    public void addTag(Tag tag) {
-        if (tags == null)
-            tags = new ArrayList<>();
-
-        tags.add(tag);
-    }
-
-    /**
      * Restituisce le parole chiave associate al riferimento.
      * 
      * @return
