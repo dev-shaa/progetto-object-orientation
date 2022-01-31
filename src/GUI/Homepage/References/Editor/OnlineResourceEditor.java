@@ -16,6 +16,9 @@ public abstract class OnlineResourceEditor<T extends OnlineResource> extends Ref
 
     private JTextField URL;
 
+    private final String URLLabel = "URL (obbligatorio)";
+    private final String URLTooltip = "URL della risorsa online";
+
     /**
      * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a una risorsa online.
      * 
@@ -40,7 +43,7 @@ public abstract class OnlineResourceEditor<T extends OnlineResource> extends Ref
 
         URL = new JTextField();
 
-        addFieldComponent(URL, "URL*", "URL della risorsa");
+        addFieldComponent(URL, URLLabel, URLTooltip);
     }
 
     @Override

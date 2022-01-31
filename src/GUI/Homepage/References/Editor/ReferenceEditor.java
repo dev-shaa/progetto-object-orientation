@@ -48,6 +48,23 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
 
     private T openReference;
 
+    private final String titleLabel = "Titolo (obbligatorio)";
+    private final String titleTooltip = "Titolo del riferimento";
+    private final String tagsLabel = "Parole chiave";
+    private final String tagsTooltip = "Parole chiave associate al riferimento, separate da una virgola";
+    private final String DOILabel = "DOI";
+    private final String DOITooltip = "Codice identificativo DOI del riferimento";
+    private final String pubblicationDateLabel = "Data di pubblicazione";
+    private final String pubblicationDateTooltip = "Data di pubblicazione del riferimento";
+    private final String languageLabel = "Lingua";
+    private final String languageTooltip = "Lingua del riferimento";
+    private final String categoriesLabel = "Categorie";
+    private final String categoriesTooltip = "Categorie a cui deve essere associato questo riferimento";
+    private final String authorsLabel = "Autori";
+    private final String authorsTooltip = "Autori del riferimento";
+    private final String relatedReferencesLabel = "Rimandi";
+    private final String relatedReferencesTooltip = "Riferimenti menzionati nel testo";
+
     private final String searchFieldSeparator = ",";
     private final Dimension maximumSize = new Dimension(Integer.MAX_VALUE, 24);
     private final Dimension spacingSize = new Dimension(0, 10);
@@ -142,14 +159,14 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         relatedReferencesPanel.add(relatedReferencesPopupButton, BorderLayout.CENTER);
         relatedReferencesPanel.add(addRelatedReference, BorderLayout.EAST);
 
-        addFieldComponent(title, "Titolo*", "Titolo del riferimento");
-        addFieldComponent(tags, "Parole chiave", "Parole chiave associate al riferimento, separate da una virgola");
-        addFieldComponent(DOI, "DOI", "Codice identificativo DOI del riferimento");
-        addFieldComponent(pubblicationDate, "Data di pubblicazione", "Data di pubblicazione del riferimento");
-        addFieldComponent(language, "Lingua");
-        addFieldComponent(categories, "Categorie");
-        addFieldComponent(authorsPanel, "Autori");
-        addFieldComponent(relatedReferencesPanel, "Rimandi");
+        addFieldComponent(title, titleLabel, titleTooltip);
+        addFieldComponent(tags, tagsLabel, tagsTooltip);
+        addFieldComponent(DOI, DOILabel, DOITooltip);
+        addFieldComponent(pubblicationDate, pubblicationDateLabel, pubblicationDateTooltip);
+        addFieldComponent(language, languageLabel, languageTooltip);
+        addFieldComponent(categories, categoriesLabel, categoriesTooltip);
+        addFieldComponent(authorsPanel, authorsLabel, authorsTooltip);
+        addFieldComponent(relatedReferencesPanel, relatedReferencesLabel, relatedReferencesTooltip);
     }
 
     private void initializeLastFields() {

@@ -18,6 +18,9 @@ public class ArticleEditor extends PublicationEditor<Article> {
 
     private JTextField ISSN;
 
+    private final String ISSNLabel = "ISSN";
+    private final String ISSNTooltip = "Codice identificativo ISSN dell'articolo";
+
     /**
      * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a un articolo.
      * 
@@ -39,7 +42,7 @@ public class ArticleEditor extends PublicationEditor<Article> {
         super.initialize();
 
         ISSN = new JTextField();
-        addFieldComponent(ISSN, "ISSN");
+        addFieldComponent(ISSN, ISSNLabel, ISSNTooltip);
     }
 
     @Override

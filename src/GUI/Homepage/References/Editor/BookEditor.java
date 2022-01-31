@@ -18,6 +18,9 @@ public class BookEditor extends PublicationEditor<Book> {
 
     private JTextField ISBN;
 
+    private final String ISBNLabel = "ISSN";
+    private final String ISBNTooltip = "Codice identificativo ISSN dell'articolo";
+
     /**
      * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a un libro.
      * 
@@ -39,7 +42,7 @@ public class BookEditor extends PublicationEditor<Book> {
         super.initialize();
 
         ISBN = new JTextField();
-        addFieldComponent(ISBN, "ISBN");
+        addFieldComponent(ISBN, ISBNLabel, ISBNTooltip);
     }
 
     @Override

@@ -19,6 +19,9 @@ public class SourceCodeEditor extends OnlineResourceEditor<SourceCode> {
 
     private JComboBox<ProgrammingLanguage> programmingLanguage;
 
+    private final String programmingLanguageLabel = "Linguaggio";
+    private final String programmingLanguageTooltip = "Linguaggio di programmazione del codice";
+
     /**
      * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a codice sorgente.
      * 
@@ -40,7 +43,7 @@ public class SourceCodeEditor extends OnlineResourceEditor<SourceCode> {
         super.initialize();
 
         programmingLanguage = new JComboBox<>(ProgrammingLanguage.values());
-        addFieldComponent(programmingLanguage, "Linguaggio");
+        addFieldComponent(programmingLanguage, programmingLanguageLabel, programmingLanguageTooltip);
     }
 
     @Override

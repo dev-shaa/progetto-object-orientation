@@ -46,9 +46,9 @@ public abstract class PublicationEditor<T extends Publication> extends Reference
         URL = new JTextField();
         publisher = new JTextField();
 
-        addFieldComponent(pageCount, "Pagine");
-        addFieldComponent(URL, "URL");
-        addFieldComponent(publisher, "Editore");
+        addFieldComponent(pageCount, "Pagine", "Numero di pagine della pubblicazione");
+        addFieldComponent(URL, "URL", "URL della pubblicazione");
+        addFieldComponent(publisher, "Editore", "Editore della pubblicazione");
     }
 
     @Override

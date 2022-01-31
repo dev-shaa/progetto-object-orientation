@@ -21,6 +21,11 @@ public class ImageEditor extends OnlineResourceEditor<Image> {
     private JSpinner width;
     private JSpinner height;
 
+    private final String widthLabel = "Larghezza";
+    private final String widthTooltip = "Larghezza dell'immagine";
+    private final String heightLabel = "Altezza";
+    private final String heightTooltip = "Altezza dell'immagine";
+
     /**
      * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a un'immagine.
      * 
@@ -44,8 +49,8 @@ public class ImageEditor extends OnlineResourceEditor<Image> {
         width = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
         height = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
 
-        addFieldComponent(width, "Larghezza");
-        addFieldComponent(height, "Altezza");
+        addFieldComponent(width, widthLabel, widthTooltip);
+        addFieldComponent(height, heightLabel, heightTooltip);
     }
 
     @Override
