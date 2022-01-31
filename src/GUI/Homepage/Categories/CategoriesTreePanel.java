@@ -14,7 +14,7 @@ import GUI.Utilities.CustomTreeNode;
 /**
  * Pannello che mostra l'albero delle categorie che l'utente può selezionare.
  */
-public class CategoryTreePanel extends JScrollPane implements TreeSelectionListener {
+public class CategoriesTreePanel extends JScrollPane implements TreeSelectionListener {
 
     private JTree tree;
     private ArrayList<CategorySelectionListener> selectionListeners;
@@ -28,7 +28,7 @@ public class CategoryTreePanel extends JScrollPane implements TreeSelectionListe
      * @throws IllegalArgumentException
      *             se {@code categoriesTree} è nullo
      */
-    public CategoryTreePanel(CustomTreeModel<Category> categoriesTree) {
+    public CategoriesTreePanel(CustomTreeModel<Category> categoriesTree) {
         super();
         setCategoriesTree(categoriesTree);
         setViewportView(tree);

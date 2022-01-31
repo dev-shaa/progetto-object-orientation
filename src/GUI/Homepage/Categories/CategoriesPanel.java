@@ -14,11 +14,22 @@ import Entities.Category;
 public class CategoriesPanel extends JPanel implements CategorySelectionListener {
 
     private CategoryController categoryController;
-    private CategoryTreePanel treePanel;
+    private CategoriesTreePanel treePanel;
 
     private JButton addCategoryButton;
     private JButton changeCategoryButton;
     private JButton removeCategoryButton;
+
+    private final String addCategoryTooltip = "Crea nuova categoria";
+    private final String changeCategoryTooltip = "Modifica categoria selezionata";
+    private final String removeCategoryTooltip = "Elimina categoria selezionata";
+
+    private final String categoryNameDialogTitle = "Nuova categoria";
+    private final String categoryNameDialogPrompt = "Inserisci il nuovo nome della categoria";
+    private final String defaultCategoryName = "Nuova categoria";
+
+    private final String removeCategoryDialogTitle = "Elimina categoria";
+    private final String removeCategoryDialogPrompt = "Sicuro di voler eliminare questa categoria?";
 
     /**
      * Crea un pannello con tutte le categorie associate dell'utente.
@@ -40,7 +51,7 @@ public class CategoriesPanel extends JPanel implements CategorySelectionListener
         toolbar.setFloatable(false);
 
         addCategoryButton = new JButton(new ImageIcon("images/folder_add.png"));
-        addCategoryButton.setToolTipText("Nuova categoria");
+        addCategoryButton.setToolTipText(addCategoryTooltip);
         addCategoryButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 addCategory();
@@ -48,7 +59,7 @@ public class CategoriesPanel extends JPanel implements CategorySelectionListener
         });
 
         changeCategoryButton = new JButton(new ImageIcon("images/folder_edit.png"));
-        changeCategoryButton.setToolTipText("Modifica categoria");
+        changeCategoryButton.setToolTipText(changeCategoryTooltip);
         changeCategoryButton.setEnabled(false);
         changeCategoryButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -57,7 +68,7 @@ public class CategoriesPanel extends JPanel implements CategorySelectionListener
         });
 
         removeCategoryButton = new JButton(new ImageIcon("images/folder_delete.png"));
-        removeCategoryButton.setToolTipText("Elimina categoria");
+        removeCategoryButton.setToolTipText(removeCategoryTooltip);
         removeCategoryButton.setEnabled(false);
         removeCategoryButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -88,7 +99,7 @@ public class CategoriesPanel extends JPanel implements CategorySelectionListener
         this.categoryController = categoryController;
 
         if (treePanel == null) {
-            treePanel = new CategoryTreePanel(getCategoryController().getCategoriesTree());
+            treePanel = new CategoriesTreePanel(getCategoryController().getCategoriesTree());
             treePanel.addSelectionListener(this);
         } else {
             treePanel.setCategoriesTree(getCategoryController().getCategoriesTree());
@@ -111,7 +122,7 @@ public class CategoriesPanel extends JPanel implements CategorySelectionListener
      * @return
      *         pannello dell'albero
      */
-    public CategoryTreePanel getTreePanel() {
+    public CategoriesTreePanel getTreePanel() {
         return treePanel;
     }
 
@@ -123,7 +134,7 @@ public class CategoriesPanel extends JPanel implements CategorySelectionListener
 
     private void addCategory() {
         try {
-            String newCategoryName = getCategoryNameFromUser("Nuova categoria");
+            String newCategoryName = getCategoryNameFromUser(defaultCategoryName);
 
             if (newCategoryName != null) {
                 getCategoryController().addCategory(newCategoryName, treePanel.getSelectedNode());
@@ -135,7 +146,7 @@ public class CategoriesPanel extends JPanel implements CategorySelectionListener
 
     private void changeCategory() {
         try {
-            String newName = getCategoryNameFromUser(null);
+            String newName = getCategoryNameFromUser(treePanel.getSelectedNode().getUserObject().getName());
 
             if (newName != null) {
                 getCategoryController().changeCategory(treePanel.getSelectedNode(), newName);
@@ -147,7 +158,7 @@ public class CategoriesPanel extends JPanel implements CategorySelectionListener
 
     private void removeCategory() {
         try {
-            int confirmDialogBoxOption = JOptionPane.showConfirmDialog(null, "Sicuro di volere eliminare questa categoria?", "Elimina categoria", JOptionPane.YES_NO_OPTION);
+            int confirmDialogBoxOption = JOptionPane.showConfirmDialog(null, removeCategoryDialogPrompt, removeCategoryDialogTitle, JOptionPane.YES_NO_OPTION);
 
             if (confirmDialogBoxOption == JOptionPane.YES_OPTION) {
                 getCategoryController().removeCategory(treePanel.getSelectedNode());
@@ -158,7 +169,7 @@ public class CategoriesPanel extends JPanel implements CategorySelectionListener
     }
 
     private String getCategoryNameFromUser(String defaultName) {
-        return (String) JOptionPane.showInputDialog(null, "Inserisci il nome della categoria", "Nuova categoria", JOptionPane.PLAIN_MESSAGE, null, null, defaultName);
+        return (String) JOptionPane.showInputDialog(null, categoryNameDialogPrompt, categoryNameDialogTitle, JOptionPane.PLAIN_MESSAGE, null, null, defaultName);
     }
 
 }
