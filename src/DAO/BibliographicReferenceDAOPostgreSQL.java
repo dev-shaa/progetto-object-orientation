@@ -6,18 +6,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
+import Controller.DatabaseController;
 import Entities.Category;
+import Entities.Tag;
 import Entities.User;
 import Entities.References.BibliographicReference;
-import Entities.References.OnlineResources.Image;
-import Entities.References.OnlineResources.SourceCode;
-import Entities.References.OnlineResources.Video;
-import Entities.References.OnlineResources.Website;
-import Entities.References.PhysicalResources.Article;
-import Entities.References.PhysicalResources.Book;
-import Entities.References.PhysicalResources.Thesis;
+import Entities.References.ReferenceLanguage;
+import Entities.References.OnlineResources.*;
+import Entities.References.PhysicalResources.*;
 import Exceptions.ReferenceDatabaseException;
 
 public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferenceDAO {
@@ -39,40 +39,103 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         return user;
     }
 
-    public List<BibliographicReference> getReferences() {
+    @Override
+    public List<BibliographicReference> getReferences() throws ReferenceDatabaseException {
         // TODO: DEBUG:
-        Article article = new Article("Articolo 1");
-        ArrayList<Category> categories = new ArrayList<>(1);
-        categories.add(new Category("AAA", 0));
+        try {
+            Article article = new Article("Articolo 1");
+            ArrayList<Category> categories = new ArrayList<>(1);
+            categories.add(new Category("AAA", 1));
 
-        article.setCategories(categories);
-        article.setDescription("Breve descrizione dell'articolo");
+            article.setCategories(categories);
+            article.setDescription("Breve descrizione dell'articolo");
 
-        ArrayList<BibliographicReference> references = new ArrayList<>(1);
-        references.add(article);
+            ArrayList<BibliographicReference> references = new ArrayList<>(1);
+            references.add(article);
 
-        return references;
+            return references;
+        } catch (Exception e) {
+            throw new ReferenceDatabaseException();
+        }
 
         // Connection connection = null;
+
+        // PreparedStatement referenceStatement = null;
+        // ResultSet referenceResultSet = null;
+        // String referenceQuery = "select * from bibliographic_reference natural join ? where user = " + getUser().getName();
+
         // PreparedStatement tagsStatement = null;
         // ResultSet tagsResultSet = null;
         // String tagsQuery = "select * from tags natural join reference_tag where id = ?";
+
+        // PreparedStatement relatedReferencesStatement = null;
+        // ResultSet relatedReferencesResultSet = null;
+        // String relatedReferencesQuery = "select * from quotations where id = ?";
+
         // ArrayList<BibliographicReference> references = new ArrayList<>();
+
+        // HashMap<Integer, BibliographicReference> idToReference = new HashMap<>();
+        // HashMap<BibliographicReference, Collection<Integer>> referenceToRelatedID = new HashMap<>();
 
         // try {
         // connection = DatabaseController.getConnection();
+
+        // referenceStatement = connection.prepareStatement(referenceQuery);
         // tagsStatement = connection.prepareStatement(tagsQuery);
+        // relatedReferencesStatement = connection.prepareStatement(relatedReferencesQuery);
 
-        // tagsStatement.setString(1, "article");
-        // tagsStatement.setString(2, user.getName());
+        // referenceStatement.setString(1, "article");
+        // referenceResultSet = referenceStatement.executeQuery();
+        // while (referenceResultSet.next()) {
+        // Article article = new Article(referenceResultSet.getString("name"));
+        // article.setID(referenceResultSet.getInt("id"));
+        // article.setDOI(referenceResultSet.getString("doi"));
+        // article.setPubblicationDate(referenceResultSet.getDate("pubblicationDate"));
+        // article.setDescription(referenceResultSet.getString("description"));
+        // article.setLanguage(ReferenceLanguage.valueOf(referenceResultSet.getString("language")));
 
+        // article.setISSN(referenceResultSet.getString("issn"));
+
+        // // TODO: tag, autori, categorie
+
+        // tagsStatement.setString(1, article.getID().toString());
         // tagsResultSet = tagsStatement.executeQuery();
 
-        // while (tagsResultSet.next()) {
-        // // Article article = new Article(resultSet.getString("title"), authors)
+        // ArrayList<Tag> tags = new ArrayList<>();
+
+        // while (tagsResultSet.next())
+        // tags.add(new Tag(tagsResultSet.getString("name")));
+
+        // tags.trimToSize();
+        // article.setTags(tags);
+
+        // relatedReferencesStatement.setString(1, article.getID().toString());
+        // relatedReferencesResultSet = relatedReferencesStatement.executeQuery();
+
+        // ArrayList<Integer> relatedReferencesID = new ArrayList<>();
+
+        // while (relatedReferencesResultSet.next())
+        // relatedReferencesID.add(relatedReferencesResultSet.getInt("aaa"));
+
+        // relatedReferencesID.trimToSize();
+
+        // referenceToRelatedID.put(article, relatedReferencesID);
+        // idToReference.put(article.getID(), article);
+
+        // references.add(article);
         // }
 
-        // return references.toArray(new BibliographicReference[references.size()]);
+        // for (BibliographicReference reference : references) {
+        // ArrayList<BibliographicReference> relatedReferences = new ArrayList<>();
+
+        // for (Integer referenceID : referenceToRelatedID.get(reference)) {
+        // relatedReferences.add(idToReference.get(referenceID));
+        // }
+
+        // reference.setRelatedReferences(relatedReferences);
+        // }
+
+        // return references;
         // } catch (Exception e) {
         // throw new ReferenceDatabaseException("Impossibile recuperare i riferimenti dell'utente.");
         // } finally {
@@ -82,6 +145,12 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
 
         // if (tagsStatement != null)
         // tagsStatement.close();
+
+        // if (referenceResultSet != null)
+        // referenceResultSet.close();
+
+        // if (referenceStatement != null)
+        // referenceStatement.close();
 
         // if (connection != null)
         // connection.close();
@@ -138,9 +207,6 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
             connection.setAutoCommit(false);
 
             statement = connection.createStatement();
-
-            // INSERT INTO t VALUES (1,'foo updated'),(3,'new record')
-            // ON CONFLICT (id) DO UPDATE SET txt = EXCLUDED.txt;
 
             String query = "insert into category(title, pubblicationDate, DOI, description, language) values("
                     + article.getTitle() + ", "

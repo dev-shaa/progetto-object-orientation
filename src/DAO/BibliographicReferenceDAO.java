@@ -22,8 +22,10 @@ public interface BibliographicReferenceDAO {
      * 
      * @return
      *         lista con i riferimenti dell'utente
+     * @throws ReferenceDatabaseException
+     *             se il recupero non va a buon fine
      */
-    public List<BibliographicReference> getReferences();
+    public List<BibliographicReference> getReferences() throws ReferenceDatabaseException;
 
     /**
      * Rimuove un riferimento dal database.
