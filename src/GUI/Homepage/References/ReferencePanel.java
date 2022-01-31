@@ -28,7 +28,7 @@ public class ReferencePanel extends JPanel implements ReferenceSelectionListener
     private JButton editReferenceButton;
     private JButton deleteReferenceButton;
 
-    private ArrayList<ReferenceEditorOptionListener> listeners;
+    private ArrayList<ReferenceEditorOpenListener> listeners;
 
     /**
      * Crea un nuovo pannello dei riferimenti.
@@ -194,7 +194,7 @@ public class ReferencePanel extends JPanel implements ReferenceSelectionListener
      * 
      * @param listener
      */
-    public void addListener(ReferenceEditorOptionListener listener) {
+    public void addListener(ReferenceEditorOpenListener listener) {
         if (listener == null)
             return;
 
@@ -208,7 +208,7 @@ public class ReferencePanel extends JPanel implements ReferenceSelectionListener
      * 
      * @param listener
      */
-    public void removeListener(ReferenceEditorOptionListener listener) {
+    public void removeListener(ReferenceEditorOpenListener listener) {
         if (listener == null || listeners == null)
             return;
 
@@ -255,7 +255,7 @@ public class ReferencePanel extends JPanel implements ReferenceSelectionListener
         if (listeners == null)
             return;
 
-        for (ReferenceEditorOptionListener listener : listeners) {
+        for (ReferenceEditorOpenListener listener : listeners) {
             listener.openArticleEditor(article);
         }
     }
@@ -264,7 +264,7 @@ public class ReferencePanel extends JPanel implements ReferenceSelectionListener
         if (listeners == null)
             return;
 
-        for (ReferenceEditorOptionListener listener : listeners) {
+        for (ReferenceEditorOpenListener listener : listeners) {
             listener.openBookEditor(book);
         }
     }
@@ -273,7 +273,7 @@ public class ReferencePanel extends JPanel implements ReferenceSelectionListener
         if (listeners == null)
             return;
 
-        for (ReferenceEditorOptionListener listener : listeners) {
+        for (ReferenceEditorOpenListener listener : listeners) {
             listener.openImageEditor(image);
         }
     }
@@ -282,7 +282,7 @@ public class ReferencePanel extends JPanel implements ReferenceSelectionListener
         if (listeners == null)
             return;
 
-        for (ReferenceEditorOptionListener listener : listeners) {
+        for (ReferenceEditorOpenListener listener : listeners) {
             listener.openSourceCodeEditor(sourceCode);
         }
     }
@@ -291,7 +291,7 @@ public class ReferencePanel extends JPanel implements ReferenceSelectionListener
         if (listeners == null)
             return;
 
-        for (ReferenceEditorOptionListener listener : listeners) {
+        for (ReferenceEditorOpenListener listener : listeners) {
             listener.openThesisEditor(thesis);
         }
     }
@@ -300,7 +300,7 @@ public class ReferencePanel extends JPanel implements ReferenceSelectionListener
         if (listeners == null)
             return;
 
-        for (ReferenceEditorOptionListener listener : listeners) {
+        for (ReferenceEditorOpenListener listener : listeners) {
             listener.openVideoEditor(video);
         }
     }
@@ -309,7 +309,7 @@ public class ReferencePanel extends JPanel implements ReferenceSelectionListener
         if (listeners == null)
             return;
 
-        for (ReferenceEditorOptionListener listener : listeners) {
+        for (ReferenceEditorOpenListener listener : listeners) {
             listener.openWebsiteEditor(website);
         }
     }

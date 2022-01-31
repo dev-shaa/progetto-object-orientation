@@ -8,7 +8,7 @@ import Entities.References.PhysicalResources.*;
 /**
  * L'interfaccia per i listener che vogliono essere avvertiti quando viene dato l'input di aprire l'editor di riferimenti.
  */
-public interface ReferenceEditorOptionListener extends EventListener {
+public interface ReferenceEditorOpenListener extends EventListener {
 
     /**
      * Invocato quando viene dato l'input di aprire l'editor per articoli.
