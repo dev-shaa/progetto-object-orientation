@@ -57,6 +57,7 @@ public class AuthorController {
         this.authorDAO = authorDAO;
 
         // TODO: recupera dal database
+        authors = new ArrayList<>();
     }
 
     /**
@@ -74,8 +75,15 @@ public class AuthorController {
      * 
      * @param author
      *            autore da salvare
+     * @throws IllegalArgumentException
+     *             se {@code author == null}
      */
     public void saveAuthor(Author author) {
+        if (author == null)
+            throw new IllegalArgumentException("author can't be null");
+
         authorDAO.SaveAuthor(author);
+        authors.add(author);
     }
+
 }

@@ -182,9 +182,10 @@ public class ReferencePanel extends JPanel implements ReferenceSelectionListener
     }
 
     /**
-     * TODO:
+     * Imposta i riferimenti da mostrare.
      * 
      * @param references
+     *            riferimenti da mostrare
      */
     public void setReferences(Collection<? extends BibliographicReference> references) {
         listPanel.setReferences(references);

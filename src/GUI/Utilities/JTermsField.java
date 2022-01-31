@@ -52,11 +52,12 @@ public class JTermsField extends JTextField {
         String[] text = getText().split(separator);
 
         ArrayList<String> terms = new ArrayList<>();
-        for (int i = 0; i < text.length; i++) {
-            text[i] = text[i].trim();
 
-            if (!text[i].isBlank())
-                terms.add(text[i]);
+        for (String item : text) {
+            item = item.trim();
+
+            if (!item.isBlank())
+                terms.add(item);
         }
 
         terms.trimToSize();

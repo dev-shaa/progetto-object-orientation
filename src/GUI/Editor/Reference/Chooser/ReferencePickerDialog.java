@@ -15,7 +15,7 @@ import Controller.ReferenceController;
 import Entities.Category;
 import Entities.References.BibliographicReference;
 import GUI.Homepage.Categories.CategorySelectionListener;
-import GUI.Homepage.Categories.CategoryTreePanel;
+import GUI.Homepage.Categories.CategoriesTreePanel;
 import GUI.Homepage.References.ReferenceListPanel;
 import GUI.Homepage.References.ReferenceSelectionListener;
 
@@ -30,7 +30,7 @@ public class ReferencePickerDialog extends JDialog implements CategorySelectionL
 
     private ReferenceController referenceController;
 
-    private CategoryTreePanel categoriesPanel;
+    private CategoriesTreePanel categoriesPanel;
     private ReferenceListPanel referencesPanel;
     private JButton confirmButton;
 
@@ -186,7 +186,7 @@ public class ReferencePickerDialog extends JDialog implements CategorySelectionL
 
     private void initializeCategoriesPanel(CategoryController categoryController) {
         if (categoriesPanel == null) {
-            categoriesPanel = new CategoryTreePanel(categoryController.getCategoriesTree());
+            categoriesPanel = new CategoriesTreePanel(categoryController.getCategoriesTree());
             categoriesPanel.addSelectionListener(this);
         } else {
             categoriesPanel.setCategoriesTree(categoryController.getCategoriesTree());

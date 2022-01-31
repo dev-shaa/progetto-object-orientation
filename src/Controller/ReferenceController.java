@@ -126,6 +126,10 @@ public class ReferenceController {
             throw new IllegalArgumentException("reference can't be null");
 
         getReferenceDAO().removeReference(reference);
+
+        getReferences().remove(reference);
+
+        removeFromQuotationCount(reference);
     }
 
     /**
@@ -143,7 +147,11 @@ public class ReferenceController {
             throw new IllegalArgumentException("reference can't be null");
 
         getReferenceDAO().saveReference(reference);
-        getReferences().add(reference);
+
+        if (!getReferences().contains(reference))
+            getReferences().add(reference);
+
+        addToQuotationCount(reference);
     }
 
     /**
@@ -160,8 +168,10 @@ public class ReferenceController {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
-        getReferenceDAO().saveReference(reference);
-        getReferences().add(reference);
+        if (!getReferences().contains(reference))
+            getReferences().add(reference);
+
+        addToQuotationCount(reference);
     }
 
     /**
@@ -252,6 +262,24 @@ public class ReferenceController {
 
         getReferenceDAO().saveReference(reference);
         getReferences().add(reference);
+    }
+
+    private void addToQuotationCount(BibliographicReference reference) {
+        if (reference == null)
+            throw new IllegalArgumentException("reference can't be null");
+
+        for (BibliographicReference bibliographicReference : reference.getRelatedReferences()) {
+            bibliographicReference.setQuotationCount(bibliographicReference.getQuotationCount() + 1);
+        }
+    }
+
+    private void removeFromQuotationCount(BibliographicReference reference) {
+        if (reference == null)
+            throw new IllegalArgumentException("reference can't be null");
+
+        for (BibliographicReference bibliographicReference : reference.getRelatedReferences()) {
+            bibliographicReference.setQuotationCount(bibliographicReference.getQuotationCount() - 1);
+        }
     }
 
 }
