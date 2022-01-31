@@ -1,4 +1,4 @@
-package GUI.Homepage.References.Editor;
+package GUI.Editor.Reference;
 
 import Entities.References.PhysicalResources.Thesis;
 import Exceptions.ReferenceDatabaseException;

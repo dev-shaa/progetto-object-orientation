@@ -1,4 +1,4 @@
-package GUI.Homepage.References.Editor;
+package GUI.Editor.Reference;
 
 import Entities.References.OnlineResources.OnlineResource;
 import Exceptions.RequiredFieldMissingException;

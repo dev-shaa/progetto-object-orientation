@@ -1,10 +1,11 @@
-package GUI.Homepage.References.Editor;
+package GUI.Editor.Reference;
 
 import Entities.*;
 import Entities.References.*;
 import GUI.Utilities.*;
+import GUI.Editor.Author.AuthorEditor;
+import GUI.Editor.Reference.Chooser.*;
 import GUI.Homepage.Categories.*;
-import GUI.Homepage.References.Chooser.*;
 import Exceptions.RequiredFieldMissingException;
 
 import java.awt.*;
@@ -24,7 +25,7 @@ import Controller.ReferenceController;
 /**
  * Finestra di dialogo per la creazione o modifica di un riferimento bibliografico.
  */
-public abstract class ReferenceEditor<T extends BibliographicReference> extends JDialog implements ReferenceChooserSelectionListener {
+public abstract class ReferenceEditor<T extends BibliographicReference> extends JDialog implements ReferencePickerSelectionListener {
 
     private JTextField title;
     private JTermsField tags;
@@ -36,7 +37,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     private PopupCheckboxList<Author> authorsList;
 
     private JPopupButton relatedReferencesPopupButton;
-    private ReferenceChooserDialog relatedReferencesDialog;
+    private ReferencePickerDialog relatedReferencesDialog;
     private ArrayList<BibliographicReference> relatedReferences;
 
     private JPanel fieldPanel;
@@ -135,7 +136,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         authorsPanel.add(authorsList, BorderLayout.CENTER);
         authorsPanel.add(addAuthor, BorderLayout.EAST);
 
-        relatedReferencesDialog = new ReferenceChooserDialog(getCategoryController(), getReferenceController());
+        relatedReferencesDialog = new ReferencePickerDialog(getCategoryController(), getReferenceController());
         relatedReferencesDialog.addReferenceChooserSelectionListener(this);
 
         relatedReferencesPopupButton = new JPopupButton("Premi per vedere i rimandi");
@@ -314,7 +315,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     protected abstract void saveReference();
 
     @Override
-    public void onReferenceChooserSelection(BibliographicReference reference) {
+    public void onReferencePick(BibliographicReference reference) {
         addRelatedReference(reference);
     }
 
