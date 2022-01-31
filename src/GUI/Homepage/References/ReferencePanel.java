@@ -55,49 +55,49 @@ public class ReferencePanel extends JPanel implements ReferenceSelectionListener
         JMenuItem articleOption = new JMenuItem("Articolo");
         articleOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                triggerArticleEditor(null);
+                notifyArticleEditor(null);
             }
         });
 
         JMenuItem bookOption = new JMenuItem("Libro");
         bookOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                triggerBookEditor(null);
+                notifyBookEditor(null);
             }
         });
 
         JMenuItem thesisOption = new JMenuItem("Tesi");
         thesisOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                triggerThesisEditor(null);
+                notifyThesisEditor(null);
             }
         });
 
         JMenuItem websiteOption = new JMenuItem("Sito web");
         websiteOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                triggerWebsiteEditor(null);
+                notifyWebsiteEditor(null);
             }
         });
 
         JMenuItem sourceCodeOption = new JMenuItem("Codice sorgente");
         sourceCodeOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                triggerSourceCodeEditor(null);
+                notifySourceCodeEditor(null);
             }
         });
 
         JMenuItem imageOption = new JMenuItem("Immagine");
         imageOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                triggerImageEditor(null);
+                notifyImageEditor(null);
             }
         });
 
         JMenuItem videoOption = new JMenuItem("Video");
         videoOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                triggerVideoEditor(null);
+                notifyVideoEditor(null);
             }
         });
 
@@ -222,19 +222,19 @@ public class ReferencePanel extends JPanel implements ReferenceSelectionListener
             return;
 
         if (selectedReference instanceof Article) {
-            triggerArticleEditor((Article) selectedReference);
+            notifyArticleEditor((Article) selectedReference);
         } else if (selectedReference instanceof Book) {
-            triggerBookEditor((Book) selectedReference);
+            notifyBookEditor((Book) selectedReference);
         } else if (selectedReference instanceof Image) {
-            triggerImageEditor((Image) selectedReference);
+            notifyImageEditor((Image) selectedReference);
         } else if (selectedReference instanceof SourceCode) {
-            triggerSourceCodeEditor((SourceCode) selectedReference);
+            notifySourceCodeEditor((SourceCode) selectedReference);
         } else if (selectedReference instanceof Thesis) {
-            triggerThesisEditor((Thesis) selectedReference);
+            notifyThesisEditor((Thesis) selectedReference);
         } else if (selectedReference instanceof Video) {
-            triggerVideoEditor((Video) selectedReference);
+            notifyVideoEditor((Video) selectedReference);
         } else if (selectedReference instanceof Website) {
-            triggerWebsiteEditor((Website) selectedReference);
+            notifyWebsiteEditor((Website) selectedReference);
         }
     }
 
@@ -251,66 +251,66 @@ public class ReferencePanel extends JPanel implements ReferenceSelectionListener
         }
     }
 
-    private void triggerArticleEditor(Article article) {
+    private void notifyArticleEditor(Article article) {
         if (listeners == null)
             return;
 
         for (ReferenceEditorOptionListener listener : listeners) {
-            listener.onArticleEditorCall(article);
+            listener.openArticleEditor(article);
         }
     }
 
-    private void triggerBookEditor(Book book) {
+    private void notifyBookEditor(Book book) {
         if (listeners == null)
             return;
 
         for (ReferenceEditorOptionListener listener : listeners) {
-            listener.onBookEditorCall(book);
+            listener.openBookEditor(book);
         }
     }
 
-    private void triggerImageEditor(Image image) {
+    private void notifyImageEditor(Image image) {
         if (listeners == null)
             return;
 
         for (ReferenceEditorOptionListener listener : listeners) {
-            listener.onImageEditorCall(image);
+            listener.openImageEditor(image);
         }
     }
 
-    private void triggerSourceCodeEditor(SourceCode sourceCode) {
+    private void notifySourceCodeEditor(SourceCode sourceCode) {
         if (listeners == null)
             return;
 
         for (ReferenceEditorOptionListener listener : listeners) {
-            listener.onSourceCodeEditorCall(sourceCode);
+            listener.openSourceCodeEditor(sourceCode);
         }
     }
 
-    private void triggerThesisEditor(Thesis thesis) {
+    private void notifyThesisEditor(Thesis thesis) {
         if (listeners == null)
             return;
 
         for (ReferenceEditorOptionListener listener : listeners) {
-            listener.onThesisEditorCall(thesis);
+            listener.openThesisEditor(thesis);
         }
     }
 
-    private void triggerVideoEditor(Video video) {
+    private void notifyVideoEditor(Video video) {
         if (listeners == null)
             return;
 
         for (ReferenceEditorOptionListener listener : listeners) {
-            listener.onVideoEditorCall(video);
+            listener.openVideoEditor(video);
         }
     }
 
-    private void triggerWebsiteEditor(Website website) {
+    private void notifyWebsiteEditor(Website website) {
         if (listeners == null)
             return;
 
         for (ReferenceEditorOptionListener listener : listeners) {
-            listener.onWebsiteEditorCall(website);
+            listener.openWebsiteEditor(website);
         }
     }
 

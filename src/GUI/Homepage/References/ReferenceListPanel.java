@@ -23,7 +23,7 @@ import javax.swing.table.DefaultTableModel;
  * 
  * @see ReferencePanel
  */
-public class ReferenceListPanel extends JScrollPane implements ListSelectionListener {
+public class ReferenceListPanel extends JScrollPane {
 
     private JTable referencesTable;
     private DefaultTableModel referencesTableModel;
@@ -52,7 +52,17 @@ public class ReferenceListPanel extends JScrollPane implements ListSelectionList
         referencesTable.setFillsViewportHeight(true);
         referencesTable.setAutoCreateRowSorter(true);
         referencesTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        referencesTable.getSelectionModel().addListSelectionListener(this);
+        referencesTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (e.getValueIsAdjusting())
+                    return;
+
+                notifyReferenceSelectionListeners();
+            }
+
+        });
 
         setViewportView(referencesTable);
     }
@@ -88,6 +98,20 @@ public class ReferenceListPanel extends JScrollPane implements ListSelectionList
     }
 
     /**
+     * Restituisce il riferimento selezionato nella tabella.
+     * 
+     * @return
+     *         il riferimento selezionato, {@code null} se non è selezionato niente
+     */
+    public BibliographicReference getSelectedReference() {
+        try {
+            return displayedReferences.get(getSelectedReferenceIndex());
+        } catch (IndexOutOfBoundsException e) {
+            return null;
+        }
+    }
+
+    /**
      * Rimuove il riferimento selezionato attualmente dalla tabella.
      */
     public void removeSelectedReference() {
@@ -103,35 +127,6 @@ public class ReferenceListPanel extends JScrollPane implements ListSelectionList
             displayedReferences.clear();
 
         referencesTableModel.setRowCount(0);
-    }
-
-    /**
-     * Restituisce il riferimento selezionato nella tabella.
-     * 
-     * @return
-     *         il riferimento selezionato, {@code null} se non è selezionato niente
-     */
-    public BibliographicReference getSelectedReference() {
-        try {
-            return displayedReferences.get(getSelectedReferenceIndex());
-        } catch (IndexOutOfBoundsException e) {
-            return null;
-        }
-    }
-
-    /**
-     * Restituisce l'indice del riferimento selezionato.
-     * 
-     * @return
-     *         l'indice del riferimento selezionato
-     * @throws IndexOutOfBoundsException
-     *             se l'ordinamento è attivo e l'indice del
-     *             riferimento selezionato si trova al di
-     *             fuori degli estremi della tabella
-     *             (non dovrebbe mai succedere)
-     */
-    private int getSelectedReferenceIndex() {
-        return referencesTable.convertRowIndexToModel(referencesTable.getSelectedRow());
     }
 
     /**
@@ -163,9 +158,12 @@ public class ReferenceListPanel extends JScrollPane implements ListSelectionList
         selectionListeners.remove(listener);
     }
 
-    @Override
-    public void valueChanged(ListSelectionEvent e) {
-        if (e.getValueIsAdjusting() || selectionListeners == null)
+    private int getSelectedReferenceIndex() {
+        return referencesTable.convertRowIndexToModel(referencesTable.getSelectedRow());
+    }
+
+    private void notifyReferenceSelectionListeners() {
+        if (selectionListeners == null)
             return;
 
         for (ReferenceSelectionListener listener : selectionListeners) {

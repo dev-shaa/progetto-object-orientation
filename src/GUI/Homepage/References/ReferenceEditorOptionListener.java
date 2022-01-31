@@ -18,7 +18,7 @@ public interface ReferenceEditorOptionListener extends EventListener {
      * @param reference
      *            eventuale riferimento da modificare (può essere {@code null})
      */
-    public void onArticleEditorCall(Article reference);
+    public void openArticleEditor(Article reference);
 
     /**
      * Invocato quando viene dato l'input di aprire l'editor per libri.
@@ -28,7 +28,7 @@ public interface ReferenceEditorOptionListener extends EventListener {
      * @param reference
      *            eventuale riferimento da modificare (può essere {@code null})
      */
-    public void onBookEditorCall(Book reference);
+    public void openBookEditor(Book reference);
 
     /**
      * Invocato quando viene dato l'input di aprire l'editor per tesi.
@@ -38,7 +38,7 @@ public interface ReferenceEditorOptionListener extends EventListener {
      * @param reference
      *            eventuale riferimento da modificare (può essere {@code null})
      */
-    public void onThesisEditorCall(Thesis reference);
+    public void openThesisEditor(Thesis reference);
 
     /**
      * Invocato quando viene dato l'input di aprire l'editor per codice sorgente.
@@ -48,7 +48,7 @@ public interface ReferenceEditorOptionListener extends EventListener {
      * @param reference
      *            eventuale riferimento da modificare (può essere {@code null})
      */
-    public void onSourceCodeEditorCall(SourceCode reference);
+    public void openSourceCodeEditor(SourceCode reference);
 
     /**
      * Invocato quando viene dato l'input di aprire l'editor per immagini.
@@ -58,7 +58,7 @@ public interface ReferenceEditorOptionListener extends EventListener {
      * @param reference
      *            eventuale riferimento da modificare (può essere {@code null})
      */
-    public void onImageEditorCall(Image reference);
+    public void openImageEditor(Image reference);
 
     /**
      * Invocato quando viene dato l'input di aprire l'editor per video.
@@ -68,7 +68,7 @@ public interface ReferenceEditorOptionListener extends EventListener {
      * @param reference
      *            eventuale riferimento da modificare (può essere {@code null})
      */
-    public void onVideoEditorCall(Video reference);
+    public void openVideoEditor(Video reference);
 
     /**
      * Invocato quando viene dato l'input di aprire l'editor per siti web.
@@ -78,5 +78,5 @@ public interface ReferenceEditorOptionListener extends EventListener {
      * @param reference
      *            eventuale riferimento da modificare (può essere {@code null})
      */
-    public void onWebsiteEditorCall(Website reference);
+    public void openWebsiteEditor(Website reference);
 }
