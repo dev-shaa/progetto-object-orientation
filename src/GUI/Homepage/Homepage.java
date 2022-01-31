@@ -4,53 +4,35 @@ import Entities.*;
 import GUI.Homepage.Categories.*;
 import GUI.Homepage.References.*;
 import GUI.Homepage.Search.*;
-import GUI.Homepage.UserInfo.LogoutListener;
 import GUI.Homepage.UserInfo.UserInfoPanel;
 
-import Controller.AuthorController;
-import Controller.CategoryController;
 import Controller.Controller;
-import Controller.ReferenceController;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.BorderLayout;
 import javax.swing.*;
 
-import GUI.Homepage.References.Editor.*;
-import Entities.References.OnlineResources.*;
-import Entities.References.OnlineResources.Image;
-import Entities.References.PhysicalResources.*;
-
 /**
  * Classe che si occupa di impostare le componenti base della pagina principale, che mostra tutti i riferimenti e le categorie.
  */
-public class Homepage extends JFrame implements CategorySelectionListener, LogoutListener, ReferenceSearchListener, ReferenceEditorOptionListener {
+public class Homepage extends JFrame implements CategorySelectionListener, ReferenceSearchListener {
 
     private Controller controller;
 
     private ReferencePanel referencePanel;
     private CategoriesPanel categoriesPanel;
     private SearchPanel referenceSearchPanel;
+    private UserInfoPanel userInfoPanel;
 
-    private CategoryController categoryController;
-    private ReferenceController referenceController;
-    private AuthorController authorController;
-
-    private ArticleEditor articleEditor;
-    private BookEditor bookEditor;
-    private ThesisEditor thesisEditor;
-    private ImageEditor imageEditor;
-    private SourceCodeEditor sourceCodeEditor;
-    private VideoEditor videoEditor;
-    private WebsiteEditor websiteEditor;
-
-    public Homepage(Controller controller, CategoryController categoryController, ReferenceController referenceController, AuthorController authorController, User user) {
+    /**
+     * Crea una nuova pagina principale con il controller indicato.
+     * 
+     * @param controller
+     *            controller della GUI
+     */
+    public Homepage(Controller controller) {
         setController(controller);
-
-        this.categoryController = categoryController;
-        this.referenceController = referenceController;
-        this.authorController = authorController;
 
         setTitle("Pagina principale");
         setMinimumSize(new Dimension(400, 400));
@@ -69,13 +51,15 @@ public class Homepage extends JFrame implements CategorySelectionListener, Logou
         contentPane.setLayout(new BorderLayout(5, 5));
         setContentPane(contentPane);
 
-        categoriesPanel = new CategoriesPanel(categoryController);
+        userInfoPanel = new UserInfoPanel(getController().getUser());
+        contentPane.add(userInfoPanel, BorderLayout.NORTH);
+
+        categoriesPanel = new CategoriesPanel(getController().getCategoryController());
         categoriesPanel.getTreePanel().addSelectionListener(this);
 
-        referencePanel = new ReferencePanel(referenceController);
-        referencePanel.addListener(this);
+        referencePanel = new ReferencePanel(getController().getReferenceController());
 
-        referenceSearchPanel = new SearchPanel(categoryController, authorController);
+        referenceSearchPanel = new SearchPanel(getController().getCategoryController(), getController().getAuthorController());
         referenceSearchPanel.addReferenceSearchListener(this);
 
         JSplitPane subSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, categoriesPanel, referencePanel);
@@ -84,96 +68,91 @@ public class Homepage extends JFrame implements CategorySelectionListener, Logou
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, subSplitPane, referenceSearchPanel);
         splitPane.setResizeWeight(1);
 
-        UserInfoPanel userInfoPanel = new UserInfoPanel(user);
-        userInfoPanel.addLogoutListener(this);
-
-        contentPane.add(userInfoPanel, BorderLayout.NORTH);
         contentPane.add(splitPane, BorderLayout.CENTER);
     }
 
-    public void setController(Controller controller) throws IllegalArgumentException {
-        if (controller == null)
-            throw new IllegalArgumentException("controller non può essere null");
-
-        this.controller = controller;
-    }
-
-    // public void setUser(User user) {
-    // if (user == null)
-    // throw new IllegalArgumentException("user non può essere null");
-
-    // this.user = user;
-    // }
-
     @Override
-    public void onLogout() {
-        controller.openLoginPage();
+    public void setVisible(boolean b) {
+        if (b)
+            reset();
+
+        super.setVisible(b);
     }
 
     @Override
     public void onCategorySelected(Category selectedCategory) {
-        referencePanel.setReferences(referenceController.getReferences(selectedCategory));
+        referencePanel.setReferences(getController().getReferenceController().getReferences(selectedCategory));
     }
 
     @Override
     public void onReferenceSearch(Search search) {
-        referencePanel.setReferences(referenceController.getReferences(search));
+        referencePanel.setReferences(getController().getReferenceController().getReferences(search));
     }
 
-    @Override
-    public void onArticleEditorCall(Article article) {
-        if (articleEditor == null)
-            articleEditor = new ArticleEditor(categoryController, referenceController, authorController);
-
-        articleEditor.setVisible(true, article);
+    /**
+     * Restituisce il controller della GUI.
+     * 
+     * @return controller
+     */
+    public Controller getController() {
+        return controller;
     }
 
-    @Override
-    public void onBookEditorCall(Book book) {
-        if (bookEditor == null)
-            bookEditor = new BookEditor(categoryController, referenceController, authorController);
+    /**
+     * Imposta il controller della GUI.
+     * 
+     * @param controller
+     *            controller della GUI
+     */
+    public void setController(Controller controller) {
+        if (controller == null)
+            throw new IllegalArgumentException("controller can't be null");
 
-        bookEditor.setVisible(true, book);
+        this.controller = controller;
     }
 
-    @Override
-    public void onThesisEditorCall(Thesis thesis) {
-        if (thesisEditor == null)
-            thesisEditor = new ThesisEditor(categoryController, referenceController, authorController);
-
-        thesisEditor.setVisible(true, thesis);
+    /**
+     * Restituisce il pannello dei riferimenti.
+     * 
+     * @return pannello dei riferimenti
+     */
+    public ReferencePanel getReferencePanel() {
+        return referencePanel;
     }
 
-    @Override
-    public void onSourceCodeEditorCall(SourceCode sourceCode) {
-        if (sourceCodeEditor == null)
-            sourceCodeEditor = new SourceCodeEditor(categoryController, referenceController, authorController);
-
-        sourceCodeEditor.setVisible(true, sourceCode);
+    /**
+     * Restituisce il pannello delle categorie.
+     * 
+     * @return pannello delle categorie
+     */
+    public CategoriesPanel getCategoriesPanel() {
+        return categoriesPanel;
     }
 
-    @Override
-    public void onImageEditorCall(Image image) {
-        if (imageEditor == null)
-            imageEditor = new ImageEditor(categoryController, referenceController, authorController);
-
-        imageEditor.setVisible(true, image);
+    /**
+     * Restituisce il pannello della ricerca.
+     * 
+     * @return pannello della ricerca
+     */
+    public SearchPanel getReferenceSearchPanel() {
+        return referenceSearchPanel;
     }
 
-    @Override
-    public void onVideoEditorCall(Video video) {
-        if (videoEditor == null)
-            videoEditor = new VideoEditor(categoryController, referenceController, authorController);
-
-        videoEditor.setVisible(true, video);
+    /**
+     * Restituisce il pannello delle informazioni utente
+     * 
+     * @return pannello utente
+     */
+    public UserInfoPanel getUserInfoPanel() {
+        return userInfoPanel;
     }
 
-    @Override
-    public void onWebsiteEditorCall(Website website) {
-        if (websiteEditor == null)
-            websiteEditor = new WebsiteEditor(categoryController, referenceController, authorController);
-
-        websiteEditor.setVisible(true, website);
+    private void reset() {
+        getCategoriesPanel().setCategoryController(getController().getCategoryController());
+        getReferencePanel().setReferenceController(getController().getReferenceController());
+        getReferenceSearchPanel().setCategoriesController(getController().getCategoryController());
+        getReferenceSearchPanel().setAuthorController(getController().getAuthorController());
+        getUserInfoPanel().setUser(getController().getUser());
     }
 
 }
