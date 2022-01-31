@@ -121,12 +121,20 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         relatedReferencesDialog = new ReferenceChooserDialog(getCategoryController(), getReferenceController());
         relatedReferencesDialog.addReferenceChooserSelectionListener(this);
 
-        relatedReferencesPopupButton = new JPopupButton("Rimandi selezionati");
+        relatedReferencesPopupButton = new JPopupButton("Premi per vedere i rimandi");
         JButton addRelatedReference = new JButton("+");
         addRelatedReference.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                relatedReferencesDialog.setVisible(true);
+                List<BibliographicReference> referencesToExclude = new ArrayList<>();
+
+                if (getRelatedReferenceValues() != null)
+                    referencesToExclude.addAll(getRelatedReferenceValues());
+
+                if (getOpenReference() != null)
+                    referencesToExclude.add(getOpenReference());
+
+                relatedReferencesDialog.setVisible(true, referencesToExclude);
             }
         });
 
@@ -512,7 +520,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     }
 
     private void addRelatedReference(BibliographicReference reference) {
-        if (reference == null)
+        if (reference == null || reference.equals(getOpenReference()))
             return;
 
         if (relatedReferences == null)

@@ -1,6 +1,8 @@
 package GUI.Homepage.References.Chooser;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -33,6 +35,7 @@ public class ReferenceChooserDialog extends JDialog implements CategorySelection
     private JButton confirmButton;
 
     private ArrayList<ReferenceChooserSelectionListener> selectionListeners;
+    private Collection<? extends BibliographicReference> referencesToExclude;
 
     /**
      * Crea una nuova finestra di dialogo in cui è possibile scegliere un riferimento.
@@ -118,7 +121,12 @@ public class ReferenceChooserDialog extends JDialog implements CategorySelection
 
     @Override
     public void onCategorySelected(Category selectedCategory) {
-        referencesPanel.setReferences(referenceController.getReferences(selectedCategory));
+        List<BibliographicReference> referencesToShow = referenceController.getReferences(selectedCategory);
+
+        if (referencesToExclude != null)
+            referencesToShow.removeAll(referencesToExclude);
+
+        referencesPanel.setReferences(referencesToShow);
     }
 
     @Override
@@ -153,6 +161,26 @@ public class ReferenceChooserDialog extends JDialog implements CategorySelection
     public void removeReferenceChooserSelectionListener(ReferenceChooserSelectionListener listener) {
         if (listener != null && selectionListeners != null)
             selectionListeners.remove(listener);
+    }
+
+    @Override
+    public void setVisible(boolean b) {
+        setVisible(b, null);
+    }
+
+    /**
+     * Chiama la funzione {@code setVisible(b)} e imposta i riferimenti da escludere quando viene selezionata una categoria.
+     * 
+     * @param b
+     * @param referencesToExclude
+     *            riferimenti da escludere
+     */
+    public void setVisible(boolean b, Collection<? extends BibliographicReference> referencesToExclude) {
+        if (b) {
+            this.referencesToExclude = referencesToExclude;
+        }
+
+        super.setVisible(b);
     }
 
     private void initializeCategoriesPanel(CategoryController categoryController) {
