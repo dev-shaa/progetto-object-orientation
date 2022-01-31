@@ -43,4 +43,16 @@ public class Tag {
 
         this.value = value;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this)
+            return true;
+
+        if (!(obj instanceof Tag))
+            return false;
+
+        return ((Tag) obj).getName() == getName();
+    }
+
 }

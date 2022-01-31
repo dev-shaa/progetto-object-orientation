@@ -94,7 +94,7 @@ public class ReferenceListPanel extends JScrollPane {
             displayedReferences = new ArrayList<>();
 
         displayedReferences.add(reference);
-        referencesTableModel.addRow(new Object[] { reference.getTitle(), reference.getAuthorsAsString(), reference.getPubblicationDate() });
+        referencesTableModel.addRow(new Object[] { reference.getTitle(), reference.getAuthorsAsString(), reference.getPubblicationDate(), reference.getQuotationCount() });
     }
 
     /**

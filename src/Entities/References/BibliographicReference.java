@@ -11,7 +11,7 @@ import java.util.List;
  */
 public abstract class BibliographicReference {
 
-    private int id;
+    private Integer id;
     private String title;
     private Date pubblicationDate;
     private String DOI;
@@ -21,8 +21,7 @@ public abstract class BibliographicReference {
     private List<Tag> tags;
     private List<Category> categories;
     private List<BibliographicReference> relatedReferences;
-
-    public static final int NO_ID = Integer.MIN_VALUE;
+    private int quotationCount;
 
     /**
      * Crea un nuovo riferimento con il titolo indicato.
@@ -33,7 +32,7 @@ public abstract class BibliographicReference {
      *             se il titolo è nullo o vuoto
      */
     public BibliographicReference(String title) {
-        setID(NO_ID);
+        setID(null);
         setTitle(title);
         setLanguage(ReferenceLanguage.OTHER);
     }
@@ -65,7 +64,7 @@ public abstract class BibliographicReference {
      * @param id
      *            id del riferimento
      */
-    public void setID(int id) {
+    public void setID(Integer id) {
         this.id = id;
     }
 
@@ -75,7 +74,7 @@ public abstract class BibliographicReference {
      * @return
      *         id del riferimento
      */
-    public int getID() {
+    public Integer getID() {
         return id;
     }
 
@@ -219,6 +218,18 @@ public abstract class BibliographicReference {
     }
 
     /**
+     * TODO:
+     * 
+     * @param tag
+     */
+    public void addTag(Tag tag) {
+        if (tags == null)
+            tags = new ArrayList<>();
+
+        tags.add(tag);
+    }
+
+    /**
      * Restituisce le parole chiave associate al riferimento.
      * 
      * @return
@@ -296,6 +307,30 @@ public abstract class BibliographicReference {
         fields.add(new BibliographicReferenceField("Rimandi", getRelatedReferencesAsString()));
 
         return fields;
+    }
+
+    /**
+     * Imposta il numero di citazioni ricevute da altri riferimenti.
+     * 
+     * @param quotationCount
+     *            numero di citazioni ricevute
+     * @throws IllegalArgumentException
+     *             se {@code quotationCount < 0}
+     */
+    public void setQuotationCount(int quotationCount) {
+        if (quotationCount < 0)
+            throw new IllegalArgumentException("quotationCount can't be less than 0");
+
+        this.quotationCount = quotationCount;
+    }
+
+    /**
+     * Restituisce il numero di citazioni ricevute da altri riferimenti.
+     * 
+     * @return numero di citazioni ricevute
+     */
+    public int getQuotationCount() {
+        return quotationCount;
     }
 
     /**

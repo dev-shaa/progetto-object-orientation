@@ -1,12 +1,10 @@
 package Entities;
 
-// PLACEHOLDER
-
 public class User {
     private String name;
     private String password;
-	
-	public User(String name, String password) {
+
+    public User(String name, String password) {
         setName(name);
         setPassword(password);
     }
@@ -18,13 +16,12 @@ public class User {
     public String getName() {
         return this.name;
     }
-    
+
     public String getPassword() {
-		return password;
-	}
+        return password;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}	
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }
-
