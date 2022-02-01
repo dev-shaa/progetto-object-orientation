@@ -140,20 +140,6 @@ public class Search {
         this.tags = tags;
     }
 
-    /**
-     * Controlla se tutti i parametri di ricerca sono nulli.
-     * 
-     * @param from
-     *            data di inizio
-     * @param to
-     *            data di fine
-     * @param tags
-     *            parole chiave
-     * @param categories
-     *            categorie
-     * @return
-     *         {@code true} se tutti sono nulli (o hanno lunghezza 0), {@code false altrimenti}
-     */
     private boolean areAllTermsNull(Date from, Date to, Collection<? extends Tag> tags, Collection<? extends Category> categories, Collection<? extends Author> authors) {
         return from == null && to == null && (tags == null || tags.isEmpty()) && (categories == null || categories.isEmpty()) && (authors == null || authors.isEmpty());
     }

@@ -34,7 +34,7 @@ public abstract class BibliographicReference {
     public BibliographicReference(String title) {
         setID(null);
         setTitle(title);
-        setLanguage(ReferenceLanguage.OTHER);
+        setLanguage(ReferenceLanguage.NOTSPECIFIED);
     }
 
     @Override
