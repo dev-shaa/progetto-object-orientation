@@ -28,6 +28,29 @@ public class Author {
         setORCID(ORCID);
     }
 
+    @Override
+    public String toString() {
+        String string = name;
+
+        if (getORCID() != null)
+            string += " [ORCID: " + getORCID() + "]";
+
+        return string;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this)
+            return true;
+
+        if (!(obj instanceof Author))
+            return false;
+
+        Author author = (Author) obj;
+
+        return getName().equals(author.getName()) && ((getORCID() == null && author.getORCID() == null) || (getORCID() != null && getORCID().equals(author.getORCID())));
+    }
+
     /**
      * Imposta il nome dell'autore.
      * 
@@ -78,40 +101,18 @@ public class Author {
         return ORCID;
     }
 
-    @Override
-    public String toString() {
-        String string = name;
-
-        if (getORCID() != null)
-            string += " [ORCID: " + getORCID() + "]";
-
-        return string;
-    }
-
     /**
-     * TODO:
+     * Controlla se la stringa di input è un ORCID valido.
      * 
      * @param ORCID
-     * @return
+     *            stringa da controllare
+     * @return {@code true} se la stringa è nulla o se rispetta il codice ORCID.
      */
     public static boolean isORCIDValid(String ORCID) {
         if (ORCID == null || ORCID.isBlank())
             return true;
 
         return orcidPattern.matcher(ORCID).find();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this)
-            return true;
-
-        if (!(obj instanceof Author))
-            return false;
-
-        Author author = (Author) obj;
-
-        return getName().equals(author.getName()) && ((getORCID() == null && author.getORCID() == null) || (getORCID() != null && getORCID().equals(author.getORCID())));
     }
 
 }

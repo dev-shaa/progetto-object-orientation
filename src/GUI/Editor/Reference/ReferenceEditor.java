@@ -31,7 +31,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     private JTextArea description;
     private JDateChooser pubblicationDate;
     private JComboBox<ReferenceLanguage> language;
-    private CategoriesSelectionPopupMenu categories;
+    private PopupCheckboxTree<Category> categories;
     private TagInputField tags;
     private AuthorInputField authors;
 
@@ -342,9 +342,9 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         this.categoryController = categoryController;
 
         if (categories == null) {
-            categories = new CategoriesSelectionPopupMenu(categoryController.getCategoriesTree());
+            categories = new PopupCheckboxTree<Category>(categoryController.getCategoriesTree());
         } else {
-            categories.setCategoriesTree(categoryController.getCategoriesTree());
+            categories.setTreeModel(categoryController.getCategoriesTree());
         }
     }
 
@@ -484,11 +484,11 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
             return;
 
         for (Category category : categories)
-            this.categories.selectCategory(category);
+            this.categories.selectItem(category);
     }
 
     private List<Category> getCategoryValues() {
-        return categories.getSelectedCategories();
+        return categories.getSelectedItems();
     }
 
     private void setRelatedReferences(List<BibliographicReference> references) {

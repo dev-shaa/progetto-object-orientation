@@ -9,11 +9,12 @@ import javax.swing.border.*;
 import com.toedter.calendar.JDateChooser;
 
 import Controller.CategoryController;
+import Entities.Category;
 import Entities.Search;
 import Exceptions.EmptySearchException;
 import GUI.Editor.AuthorInputField;
-import GUI.Editor.CategoriesSelectionPopupMenu;
 import GUI.Editor.TagInputField;
+import GUI.Utilities.PopupCheckboxTree;
 
 /**
  * Pannello per la ricerca dei riferimenti per parole chiave, autori, categorie e data.
@@ -22,7 +23,7 @@ public class SearchPanel extends JPanel {
 
     private TagInputField tags;
     private AuthorInputField authors;
-    private CategoriesSelectionPopupMenu categories;
+    private PopupCheckboxTree<Category> categories;
     private JDateChooser dateFrom;
     private JDateChooser dateTo;
     private JButton searchButton;
@@ -114,7 +115,7 @@ public class SearchPanel extends JPanel {
 
     private void search() {
         try {
-            Search search = new Search(dateFrom.getDate(), dateTo.getDate(), tags.getTags(), categories.getSelectedCategories(), authors.getAuthors());
+            Search search = new Search(dateFrom.getDate(), dateTo.getDate(), tags.getTags(), categories.getSelectedItems(), authors.getAuthors());
 
             for (ReferenceSearchListener listener : searchListeners)
                 listener.onReferenceSearch(search);
@@ -138,9 +139,9 @@ public class SearchPanel extends JPanel {
             throw new IllegalArgumentException("controller can't be null");
 
         if (categories == null)
-            categories = new CategoriesSelectionPopupMenu(controller.getCategoriesTree());
+            categories = new PopupCheckboxTree<Category>(controller.getCategoriesTree());
         else
-            categories.setCategoriesTree(controller.getCategoriesTree());
+            categories.setTreeModel(controller.getCategoriesTree());
     }
 
     /**
