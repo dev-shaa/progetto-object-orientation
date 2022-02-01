@@ -98,7 +98,7 @@ public class CategoriesSelectionPopupMenu extends JPopupButton {
     /**
      * Deseleziona tutti gli elementi.
      */
-    public void deselectAll() {
+    public void clearSelection() {
         checkboxTree.getCheckBoxTreeSelectionModel().clearSelection();
     }
 

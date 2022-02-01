@@ -14,7 +14,7 @@ import GUI.Utilities.CustomTreeNode;
 /**
  * Pannello che mostra l'albero delle categorie che l'utente può selezionare.
  */
-public class CategoriesTreePanel extends JScrollPane implements TreeSelectionListener {
+public class CategoriesTreePanel extends JScrollPane {
 
     private JTree tree;
     private ArrayList<CategorySelectionListener> selectionListeners;
@@ -51,7 +51,16 @@ public class CategoriesTreePanel extends JScrollPane implements TreeSelectionLis
 
             tree.setEditable(false);
             tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-            tree.addTreeSelectionListener(this);
+            tree.addTreeSelectionListener(new TreeSelectionListener() {
+                @Override
+                public void valueChanged(TreeSelectionEvent e) {
+                    if (getSelectedNode() == null || selectionListeners == null)
+                        return;
+
+                    for (CategorySelectionListener categorySelectionListener : selectionListeners)
+                        categorySelectionListener.onCategorySelected(getSelectedNode().getUserObject());
+                }
+            });
         }
 
         tree.setModel(categoriesTree);
@@ -69,6 +78,13 @@ public class CategoriesTreePanel extends JScrollPane implements TreeSelectionLis
     @SuppressWarnings("unchecked")
     public CustomTreeNode<Category> getSelectedNode() {
         return (CustomTreeNode<Category>) tree.getLastSelectedPathComponent();
+    }
+
+    /**
+     * Deseleziona tutto
+     */
+    public void clearSelection() {
+        tree.clearSelection();
     }
 
     /**
@@ -98,15 +114,6 @@ public class CategoriesTreePanel extends JScrollPane implements TreeSelectionLis
             return;
 
         selectionListeners.remove(listener);
-    }
-
-    @Override
-    public void valueChanged(TreeSelectionEvent e) {
-        if (getSelectedNode() == null || selectionListeners == null)
-            return;
-
-        for (CategorySelectionListener categorySelectionListener : selectionListeners)
-            categorySelectionListener.onCategorySelected(getSelectedNode().getUserObject());
     }
 
 }
