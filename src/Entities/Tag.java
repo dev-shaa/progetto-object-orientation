@@ -15,7 +15,7 @@ public class Tag {
      *             se il nome non è valido
      * @see #setName(String)
      */
-    public Tag(String value) throws IllegalArgumentException {
+    public Tag(String value) {
         setName(value);
     }
 
@@ -37,11 +37,16 @@ public class Tag {
      * @throws IllegalArgumentException
      *             se il nome è nullo o vuoto
      */
-    public void setName(String value) throws IllegalArgumentException {
+    public void setName(String value) {
         if (value == null || value.isBlank())
             throw new IllegalArgumentException("value non può essere null");
 
         this.value = value;
+    }
+
+    @Override
+    public String toString() {
+        return getName();
     }
 
     @Override
@@ -52,7 +57,7 @@ public class Tag {
         if (!(obj instanceof Tag))
             return false;
 
-        return ((Tag) obj).getName() == getName();
+        return getName().equals(((Tag) obj).getName());
     }
 
 }

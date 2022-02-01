@@ -5,7 +5,7 @@ package Entities;
  */
 public class Category {
 
-    private int id;
+    private Integer id;
     private String name;
     private Category parent;
 
@@ -57,6 +57,24 @@ public class Category {
         setParent(parent);
     }
 
+    @Override
+    public String toString() {
+        return getName();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        // due categorie sono uguali se hanno lo stesso id
+
+        if (obj == this)
+            return true;
+
+        if (!(obj instanceof Category))
+            return false;
+
+        return String.valueOf(getId()).equals(String.valueOf(((Category) obj).getId()));
+    }
+
     /**
      * Imposta l'identificativo della categoria.
      * ATTENZIONE: dovrebbe essere chiamata solo durante la creazione di una nuova
@@ -65,7 +83,7 @@ public class Category {
      * @param id
      *            identificativo della categoria
      */
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -75,7 +93,7 @@ public class Category {
      * @return
      *         identificativo della categoria
      */
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -121,24 +139,6 @@ public class Category {
      */
     public Category getParent() {
         return this.parent;
-    }
-
-    @Override
-    public String toString() {
-        return getName();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        // due categorie sono uguali se hanno lo stesso id
-
-        if (obj == this)
-            return true;
-
-        if (!(obj instanceof Category))
-            return false;
-
-        return ((Category) obj).getId() == getId();
     }
 
     private boolean isNameValid(String name) {

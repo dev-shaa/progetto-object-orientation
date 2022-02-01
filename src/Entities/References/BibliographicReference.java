@@ -52,7 +52,9 @@ public abstract class BibliographicReference {
         if (!(obj instanceof BibliographicReference))
             return false;
 
-        return ((BibliographicReference) obj).getID() == getID();
+        BibliographicReference reference = (BibliographicReference) obj;
+
+        return (getID() == null && reference == null) || (getID() != null && getID().equals(reference.getID()));
     }
 
     /**

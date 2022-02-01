@@ -95,4 +95,17 @@ public class Author {
         return orcidPattern.matcher(ORCID).find();
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this)
+            return true;
+
+        if (!(obj instanceof Author))
+            return false;
+
+        Author author = (Author) obj;
+
+        return getName().equals(author.getName()) && ((getORCID() == null && author.getORCID() == null) || (getORCID() != null && getORCID().equals(author.getORCID())));
+    }
+
 }
