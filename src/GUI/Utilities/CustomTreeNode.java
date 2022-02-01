@@ -58,6 +58,11 @@ public class CustomTreeNode<T extends Object> implements MutableTreeNode {
     }
 
     @Override
+    public String toString() {
+        return label == null ? String.valueOf(getUserObject()) : label;
+    }
+
+    @Override
     public CustomTreeNode<T> getChildAt(int childIndex) {
         if (children.isEmpty())
             throw new ArrayIndexOutOfBoundsException("node has no children");
@@ -193,11 +198,6 @@ public class CustomTreeNode<T extends Object> implements MutableTreeNode {
             ancestor = ancestor.getParent();
 
         return ancestor != null;
-    }
-
-    @Override
-    public String toString() {
-        return label == null ? String.valueOf(getUserObject()) : label;
     }
 
     /**

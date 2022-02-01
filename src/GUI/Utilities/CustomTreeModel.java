@@ -5,16 +5,18 @@ import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 
 /**
- * Modello di albero
+ * Modello di albero che estende {@code DefaultTreeModel} e che usa {@code CustomTreeNode} di un tipo specifico.
  */
 public class CustomTreeModel<T extends Object> extends DefaultTreeModel {
 
+    /**
+     * Crea un nuovo albero con la radice indicata.
+     * 
+     * @param root
+     *            nodo radice
+     */
     public CustomTreeModel(CustomTreeNode<T> root) {
         super(root);
-    }
-
-    public CustomTreeModel(CustomTreeNode<T> root, boolean asksAllowsChildren) {
-        super(root, asksAllowsChildren);
     }
 
     @Override
@@ -49,6 +51,14 @@ public class CustomTreeModel<T extends Object> extends DefaultTreeModel {
         }
     }
 
+    /**
+     * Aggiunge un nodo figlio e chiama tutti gli eventi necessari.
+     * 
+     * @param newChild
+     *            nodo figlio da aggiungere
+     * @param parent
+     *            genitore a cui aggiungere il nodo
+     */
     public void addNode(CustomTreeNode<T> newChild, CustomTreeNode<T> parent) {
         insertNodeInto(newChild, parent, parent.getChildCount());
     }
