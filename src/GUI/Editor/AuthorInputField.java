@@ -6,22 +6,24 @@ import Entities.Author;
 import GUI.Utilities.JTermsField;
 
 /**
- * TODO: commenta
+ * Un {@code JTermsField} che restituisce degli autori a partire dai termini inseriti dall'utente.
  */
 public class AuthorInputField extends JTermsField {
 
     /**
+     * Crea un nuovo {@code AuthorInputField} con il separatore indicato.
      * 
      * @param separator
+     *            separatore dei termini
      */
     public AuthorInputField(String separator) {
         super(separator);
     }
 
     /**
-     * TODO:
+     * Restituisce gli autori dai termini inseriti dall'utente.
      * 
-     * @return
+     * @return lista di autori
      */
     public ArrayList<Author> getAuthors() {
         ArrayList<String> terms = getTerms();
