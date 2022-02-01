@@ -12,8 +12,8 @@ import Controller.CategoryController;
 import Entities.Search;
 import Exceptions.EmptySearchException;
 import GUI.Editor.AuthorInputField;
+import GUI.Editor.CategoriesSelectionPopupMenu;
 import GUI.Editor.TagInputField;
-import GUI.Homepage.Categories.*;
 
 /**
  * Pannello per la ricerca dei riferimenti per parole chiave, autori, categorie e data.

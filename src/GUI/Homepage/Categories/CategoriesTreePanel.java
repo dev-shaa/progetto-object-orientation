@@ -62,7 +62,7 @@ public class CategoriesTreePanel extends JScrollPane {
                             categorySelectionListener.onCategoryClearSelection();
                     } else {
                         for (CategorySelectionListener categorySelectionListener : selectionListeners)
-                            categorySelectionListener.onCategorySelected(getSelectedNode().getUserObject());
+                            categorySelectionListener.onCategorySelection(getSelectedNode().getUserObject());
                     }
                 }
             });

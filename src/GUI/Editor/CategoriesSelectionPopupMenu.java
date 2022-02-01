@@ -1,4 +1,4 @@
-package GUI.Homepage.Categories;
+package GUI.Editor;
 
 import Entities.*;
 import GUI.Utilities.CustomTreeModel;

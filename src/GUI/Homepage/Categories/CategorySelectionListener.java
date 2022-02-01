@@ -11,10 +11,10 @@ public interface CategorySelectionListener extends EventListener {
     /**
      * Invocato quando viene selezionata una categoria.
      * 
-     * @param selectedCategory
+     * @param category
      *            categoria selezionata
      */
-    public void onCategorySelected(Category selectedCategory);
+    public void onCategorySelection(Category category);
 
     /**
      * Invocato quando viene deselezionato tutto.

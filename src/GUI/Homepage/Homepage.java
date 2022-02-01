@@ -80,7 +80,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
     }
 
     @Override
-    public void onCategorySelected(Category selectedCategory) {
+    public void onCategorySelection(Category selectedCategory) {
         getReferencePanel().setReferences(getController().getReferenceController().getReferences(selectedCategory));
     }
 

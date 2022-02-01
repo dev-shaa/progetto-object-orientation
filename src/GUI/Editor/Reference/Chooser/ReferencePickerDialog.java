@@ -142,7 +142,7 @@ public class ReferencePickerDialog extends JDialog implements CategorySelectionL
     }
 
     @Override
-    public void onCategorySelected(Category selectedCategory) {
+    public void onCategorySelection(Category selectedCategory) {
         List<BibliographicReference> referencesToShow = referenceController.getReferences(selectedCategory);
 
         if (referencesToExclude != null)

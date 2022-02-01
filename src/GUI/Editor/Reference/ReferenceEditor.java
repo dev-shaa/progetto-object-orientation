@@ -3,10 +3,8 @@ package GUI.Editor.Reference;
 import Entities.*;
 import Entities.References.*;
 import GUI.Utilities.*;
-import GUI.Editor.AuthorInputField;
-import GUI.Editor.TagInputField;
+import GUI.Editor.*;
 import GUI.Editor.Reference.Chooser.*;
-import GUI.Homepage.Categories.*;
 import Exceptions.RequiredFieldMissingException;
 
 import java.awt.*;
