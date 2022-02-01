@@ -59,7 +59,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
 
         referencePanel = new ReferencePanel(getController().getReferenceController());
 
-        referenceSearchPanel = new SearchPanel(getController().getCategoryController(), getController().getAuthorController());
+        referenceSearchPanel = new SearchPanel(getController().getCategoryController());
         referenceSearchPanel.addReferenceSearchListener(this);
 
         JSplitPane subSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, categoriesPanel, referencePanel);
@@ -157,7 +157,6 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         getCategoriesPanel().setCategoryController(getController().getCategoryController());
         getReferencePanel().setReferenceController(getController().getReferenceController());
         getReferenceSearchPanel().setCategoriesController(getController().getCategoryController());
-        getReferenceSearchPanel().setAuthorController(getController().getAuthorController());
         getUserInfoPanel().setUser(getController().getUser());
     }
 

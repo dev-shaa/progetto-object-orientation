@@ -331,7 +331,7 @@ public abstract class BibliographicReference {
      *         autori come stringa
      */
     public String getAuthorsAsString() {
-        return getAuthors().toString().substring(1).replace("]", "").trim();
+        return getAuthors().toString().substring(1, getAuthors().toString().lastIndexOf(']'));
     }
 
     /**
@@ -342,7 +342,7 @@ public abstract class BibliographicReference {
      *         parole chiave come stringa
      */
     public String getTagsAsString() {
-        return getTags().toString().substring(1).replace("]", "").trim();
+        return getTags().toString().substring(1, getTags().toString().lastIndexOf(']'));
     }
 
     /**
@@ -353,10 +353,7 @@ public abstract class BibliographicReference {
      *         rimandi del riferimento come stringa
      */
     public String getRelatedReferencesAsString() {
-        if (getRelatedReferences() == null)
-            return null;
-
-        return getRelatedReferences().toString().substring(1).replace("]", "").trim();
+        return getRelatedReferences().toString().substring(1, getRelatedReferences().toString().lastIndexOf(']'));
     }
 
     /**

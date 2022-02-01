@@ -3,7 +3,8 @@ package GUI.Editor.Reference;
 import Entities.*;
 import Entities.References.*;
 import GUI.Utilities.*;
-import GUI.Editor.Author.AuthorEditor;
+import GUI.Editor.AuthorInputField;
+import GUI.Editor.TagInputField;
 import GUI.Editor.Reference.Chooser.*;
 import GUI.Homepage.Categories.*;
 import Exceptions.RequiredFieldMissingException;
@@ -28,20 +29,19 @@ import Controller.ReferenceController;
 public abstract class ReferenceEditor<T extends BibliographicReference> extends JDialog implements ReferencePickerSelectionListener {
 
     private JTextField title;
-    private JTermsField tags;
     private JTextField DOI;
     private JTextArea description;
     private JDateChooser pubblicationDate;
     private JComboBox<ReferenceLanguage> language;
     private CategoriesSelectionPopupMenu categories;
-    private PopupCheckboxList<Author> authorsList;
+    private TagInputField tags;
+    private AuthorInputField authors;
 
     private JPopupButton relatedReferencesPopupButton;
     private ReferencePickerDialog relatedReferencesDialog;
     private ArrayList<BibliographicReference> relatedReferences;
 
     private JPanel fieldPanel;
-    private AuthorEditor authorEditor;
 
     private CategoryController categoryController;
     private ReferenceController referenceController;
@@ -66,7 +66,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     private final String relatedReferencesLabel = "Rimandi";
     private final String relatedReferencesTooltip = "Riferimenti menzionati nel testo";
 
-    private final String searchFieldSeparator = ",";
+    private final String separator = ",";
     private final Dimension maximumSize = new Dimension(Integer.MAX_VALUE, 24);
     private final Dimension spacingSize = new Dimension(0, 10);
     private final float alignment = Container.LEFT_ALIGNMENT;
@@ -115,26 +115,12 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         setContentPane(new JScrollPane(fieldPanel));
 
         title = new JTextField();
-        tags = new JTermsField(searchFieldSeparator);
+        tags = new TagInputField(separator);
+        authors = new AuthorInputField(separator);
         DOI = new JTextField();
         pubblicationDate = new JDateChooser();
         language = new JComboBox<>(ReferenceLanguage.values());
         description = new JTextArea(10, 1);
-
-        authorsList = new PopupCheckboxList<Author>("Premi per selezionare gli autori", getAuthorController().getAuthors());
-        authorEditor = new AuthorEditor(getAuthorController());
-
-        JButton addAuthor = new JButton("+");
-        addAuthor.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                authorEditor.setVisible(true);
-            }
-        });
-
-        JPanel authorsPanel = new JPanel(new BorderLayout(10, 0));
-        authorsPanel.add(authorsList, BorderLayout.CENTER);
-        authorsPanel.add(addAuthor, BorderLayout.EAST);
 
         relatedReferencesDialog = new ReferencePickerDialog(getCategoryController(), getReferenceController());
         relatedReferencesDialog.addReferenceChooserSelectionListener(this);
@@ -166,7 +152,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         addFieldComponent(pubblicationDate, pubblicationDateLabel, pubblicationDateTooltip);
         addFieldComponent(language, languageLabel, languageTooltip);
         addFieldComponent(categories, categoriesLabel, categoriesTooltip);
-        addFieldComponent(authorsPanel, authorsLabel, authorsTooltip);
+        addFieldComponent(authors, authorsLabel, authorsTooltip);
         addFieldComponent(relatedReferencesPanel, relatedReferencesLabel, relatedReferencesTooltip);
     }
 
@@ -464,26 +450,11 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
             return;
         }
 
-        String text = "";
-
-        for (Tag tag : tags)
-            text += tag.getName() + ", ";
-
-        this.tags.setText(text);
+        this.tags.setText(tags.toString().substring(1, tags.toString().lastIndexOf(']')));
     }
 
     private List<Tag> getTagValues() {
-        List<String> tagsString = tags.getTerms();
-
-        if (tagsString == null)
-            return null;
-
-        ArrayList<Tag> tags = new ArrayList<>(tagsString.size());
-
-        for (String string : tagsString)
-            tags.add(new Tag(string));
-
-        return tags;
+        return tags.getTags();
     }
 
     private void setLanguageValue(ReferenceLanguage language) {
@@ -495,22 +466,19 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     }
 
     private void setAuthorValues(List<Author> authors) {
-        this.authorsList.deselectAll();
-
-        if (authors == null)
+        if (authors == null) {
+            this.authors.setText(null);
             return;
+        }
 
-        for (Author author : authors)
-            this.authorsList.selectElement(author);
+        String foo = authors.toString().substring(1, authors.toString().lastIndexOf(']'));
+        foo = foo.replaceAll("ORCID: ", "");
+
+        this.authors.setText(foo);
     }
 
     private List<Author> getAuthorValues() {
-        List<Author> selectedAuthors = authorsList.getSelectedElements();
-
-        if (selectedAuthors == null || selectedAuthors.size() == 0)
-            return null;
-
-        return selectedAuthors;
+        return authors.getAuthors();
     }
 
     private void setCategoryValues(List<Category> categories) {

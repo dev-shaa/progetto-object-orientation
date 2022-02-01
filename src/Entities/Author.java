@@ -9,7 +9,7 @@ public class Author {
     private String name;
     private String ORCID;
 
-    private final Pattern orcidPattern = Pattern.compile("^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9xX]$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern orcidPattern = Pattern.compile("^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9xX]$", Pattern.CASE_INSENSITIVE);
 
     /**
      * Crea un nuovo autore con il nome e l'ORCID dati.
@@ -88,7 +88,13 @@ public class Author {
         return string;
     }
 
-    private boolean isORCIDValid(String ORCID) {
+    /**
+     * TODO:
+     * 
+     * @param ORCID
+     * @return
+     */
+    public static boolean isORCIDValid(String ORCID) {
         if (ORCID == null || ORCID.isBlank())
             return true;
 
