@@ -7,6 +7,9 @@ import GUI.Utilities.CustomTreeNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import Controller.DatabaseController;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -202,9 +205,9 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
         // DEBUG: solo per testing
         CustomTreeNode<Category> root = new CustomTreeNode<Category>(null);
         root.setLabel("I miei riferimenti");
-        CustomTreeNode<Category> nodeA = new CustomTreeNode<Category>(new Category("AAA", 0));
-        CustomTreeNode<Category> nodeB = new CustomTreeNode<Category>(new Category("BBB", 1));
-        CustomTreeNode<Category> nodeC = new CustomTreeNode<Category>(new Category("CCC", 2));
+        CustomTreeNode<Category> nodeA = new CustomTreeNode<Category>(new Category("AAA", 1));
+        CustomTreeNode<Category> nodeB = new CustomTreeNode<Category>(new Category("BBB", 2));
+        CustomTreeNode<Category> nodeC = new CustomTreeNode<Category>(new Category("CCC", 3));
 
         CustomTreeModel<Category> tree = new CustomTreeModel<Category>(root);
 

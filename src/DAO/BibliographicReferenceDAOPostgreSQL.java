@@ -28,6 +28,11 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         setUser(user);
     }
 
+    /**
+     * 
+     * @param user
+     * @throws IllegalArgumentException
+     */
     public void setUser(User user) throws IllegalArgumentException {
         if (user == null)
             throw new IllegalArgumentException("user non può essere null");
@@ -35,6 +40,10 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         this.user = user;
     }
 
+    /**
+     * 
+     * @return
+     */
     public User getUser() {
         return user;
     }
@@ -50,8 +59,20 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
             article.setCategories(categories);
             article.setDescription("Breve descrizione dell'articolo");
 
-            ArrayList<BibliographicReference> references = new ArrayList<>(1);
+            Website website = new Website("Sito web 1", "www.sitoweb.com");
+            ArrayList<Tag> tags = new ArrayList<>(2);
+            tags.add(new Tag("tag1"));
+            tags.add(new Tag("oo"));
+
+            ArrayList<BibliographicReference> related = new ArrayList<>(1);
+            related.add(article);
+
+            website.setTags(tags);
+            website.setRelatedReferences(related);
+
+            ArrayList<BibliographicReference> references = new ArrayList<>(2);
             references.add(article);
+            references.add(website);
 
             return references;
         } catch (Exception e) {

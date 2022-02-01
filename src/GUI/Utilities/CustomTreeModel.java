@@ -4,6 +4,9 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 
+/**
+ * Modello di albero
+ */
 public class CustomTreeModel<T extends Object> extends DefaultTreeModel {
 
     public CustomTreeModel(CustomTreeNode<T> root) {
