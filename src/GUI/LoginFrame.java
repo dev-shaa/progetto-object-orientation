@@ -92,7 +92,6 @@ public class LoginFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				String username = userName_TF.getText();
 				String pwd = new String(passwordField.getPassword());
-				
 				if (login.Register(username, pwd)) {
 				c.openHomePage(new User(username, pwd));
 				}
