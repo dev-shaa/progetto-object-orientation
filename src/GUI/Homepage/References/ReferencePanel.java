@@ -1,6 +1,7 @@
 package GUI.Homepage.References;
 
 import Controller.ReferenceController;
+import GUI.Homepage.Search.ReferenceSearchListener;
 import GUI.Utilities.JPopupButton;
 import Entities.References.*;
 import Entities.References.PhysicalResources.*;
