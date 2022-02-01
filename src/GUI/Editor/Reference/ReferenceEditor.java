@@ -480,8 +480,8 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
 
         ArrayList<Tag> tags = new ArrayList<>(tagsString.size());
 
-        for (int i = 0; i < tags.size(); i++)
-            tags.set(i, new Tag(tagsString.get(i)));
+        for (String string : tagsString)
+            tags.add(new Tag(string));
 
         return tags;
     }

@@ -81,12 +81,18 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
 
     @Override
     public void onCategorySelected(Category selectedCategory) {
-        referencePanel.setReferences(getController().getReferenceController().getReferences(selectedCategory));
+        getReferencePanel().setReferences(getController().getReferenceController().getReferences(selectedCategory));
+    }
+
+    @Override
+    public void onCategoryClearSelection() {
+        // non fare niente
     }
 
     @Override
     public void onReferenceSearch(Search search) {
-        referencePanel.setReferences(getController().getReferenceController().getReferences(search));
+        getCategoriesPanel().getTreePanel().clearSelection();
+        getReferencePanel().setReferences(getController().getReferenceController().getReferences(search));
     }
 
     /**

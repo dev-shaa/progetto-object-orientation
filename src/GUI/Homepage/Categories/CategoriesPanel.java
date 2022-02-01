@@ -132,6 +132,12 @@ public class CategoriesPanel extends JPanel implements CategorySelectionListener
         removeCategoryButton.setEnabled(selectedCategory != null);
     }
 
+    @Override
+    public void onCategoryClearSelection() {
+        changeCategoryButton.setEnabled(false);
+        removeCategoryButton.setEnabled(false);
+    }
+
     private void addCategory() {
         try {
             String newCategoryName = getCategoryNameFromUser(defaultCategoryName);

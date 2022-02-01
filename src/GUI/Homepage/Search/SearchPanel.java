@@ -113,7 +113,7 @@ public class SearchPanel extends JPanel {
     private void reset() {
         tags.setText(null);
         authors.deselectAll();
-        categories.deselectAll();
+        categories.clearSelection();
         dateFrom.setDate(null);
         dateTo.setDate(null);
     }

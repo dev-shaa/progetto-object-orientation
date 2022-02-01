@@ -87,6 +87,28 @@ public class ReferencePickerDialog extends JDialog implements CategorySelectionL
         contentPane.add(buttonPanel, BorderLayout.SOUTH);
     }
 
+    @Override
+    public void setVisible(boolean b) {
+        setVisible(b, null);
+    }
+
+    /**
+     * Chiama la funzione {@code setVisible(b)} e imposta i riferimenti da escludere quando viene selezionata una categoria.
+     * 
+     * @param b
+     *            se {@code true}, viene mostrato il pannello
+     * @param referencesToExclude
+     *            riferimenti da escludere
+     */
+    public void setVisible(boolean b, Collection<? extends BibliographicReference> referencesToExclude) {
+        if (b) {
+            this.referencesToExclude = referencesToExclude;
+            categoriesPanel.clearSelection();
+        }
+
+        super.setVisible(b);
+    }
+
     /**
      * Imposta il controller delle categorie.
      * Reimposta i pannelli delle categorie e dei riferimenti.
@@ -130,6 +152,11 @@ public class ReferencePickerDialog extends JDialog implements CategorySelectionL
     }
 
     @Override
+    public void onCategoryClearSelection() {
+        referencesPanel.setReferences(null);
+    }
+
+    @Override
     public void onReferenceSelection(BibliographicReference reference) {
         confirmButton.setEnabled(reference != null);
     }
@@ -161,27 +188,6 @@ public class ReferencePickerDialog extends JDialog implements CategorySelectionL
     public void removeReferenceChooserSelectionListener(ReferencePickerSelectionListener listener) {
         if (listener != null && selectionListeners != null)
             selectionListeners.remove(listener);
-    }
-
-    @Override
-    public void setVisible(boolean b) {
-        setVisible(b, null);
-    }
-
-    /**
-     * Chiama la funzione {@code setVisible(b)} e imposta i riferimenti da escludere quando viene selezionata una categoria.
-     * 
-     * @param b
-     *            se {@code true}, viene mostrato il pannello
-     * @param referencesToExclude
-     *            riferimenti da escludere
-     */
-    public void setVisible(boolean b, Collection<? extends BibliographicReference> referencesToExclude) {
-        if (b) {
-            this.referencesToExclude = referencesToExclude;
-        }
-
-        super.setVisible(b);
     }
 
     private void initializeCategoriesPanel(CategoryController categoryController) {

@@ -54,11 +54,16 @@ public class CategoriesTreePanel extends JScrollPane {
             tree.addTreeSelectionListener(new TreeSelectionListener() {
                 @Override
                 public void valueChanged(TreeSelectionEvent e) {
-                    if (getSelectedNode() == null || selectionListeners == null)
+                    if (selectionListeners == null)
                         return;
 
-                    for (CategorySelectionListener categorySelectionListener : selectionListeners)
-                        categorySelectionListener.onCategorySelected(getSelectedNode().getUserObject());
+                    if (getSelectedNode() == null) {
+                        for (CategorySelectionListener categorySelectionListener : selectionListeners)
+                            categorySelectionListener.onCategoryClearSelection();
+                    } else {
+                        for (CategorySelectionListener categorySelectionListener : selectionListeners)
+                            categorySelectionListener.onCategorySelected(getSelectedNode().getUserObject());
+                    }
                 }
             });
         }
