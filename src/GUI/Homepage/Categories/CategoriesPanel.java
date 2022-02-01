@@ -41,6 +41,7 @@ public class CategoriesPanel extends JPanel implements CategorySelectionListener
 
         addCategoryButton = new JButton(new ImageIcon("images/folder_add.png"));
         addCategoryButton.setToolTipText("Crea nuova categoria");
+        addCategoryButton.setEnabled(false);
         addCategoryButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 addCategory();
@@ -117,12 +118,15 @@ public class CategoriesPanel extends JPanel implements CategorySelectionListener
 
     @Override
     public void onCategorySelection(Category selectedCategory) {
+        // addCategoryButton.setEnabled(selectedCategory != null);
+        addCategoryButton.setEnabled(true);
         changeCategoryButton.setEnabled(selectedCategory != null);
         removeCategoryButton.setEnabled(selectedCategory != null);
     }
 
     @Override
     public void onCategoryClearSelection() {
+        addCategoryButton.setEnabled(false);
         changeCategoryButton.setEnabled(false);
         removeCategoryButton.setEnabled(false);
     }
