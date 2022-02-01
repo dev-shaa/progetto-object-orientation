@@ -125,9 +125,11 @@ public class ReferenceController {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
-        getReferenceDAO().removeReference(reference);
+        // getReferenceDAO().removeReference(reference);
 
         getReferences().remove(reference);
+
+        removeReferenceFromRelated(reference);
 
         removeFromQuotationCount(reference);
     }
@@ -146,7 +148,7 @@ public class ReferenceController {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
-        getReferenceDAO().saveReference(reference);
+        // getReferenceDAO().saveReference(reference);
 
         if (!getReferences().contains(reference))
             getReferences().add(reference);
@@ -188,8 +190,10 @@ public class ReferenceController {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
-        getReferenceDAO().saveReference(reference);
-        getReferences().add(reference);
+        if (!getReferences().contains(reference))
+            getReferences().add(reference);
+
+        addToQuotationCount(reference);
     }
 
     /**
@@ -206,8 +210,10 @@ public class ReferenceController {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
-        getReferenceDAO().saveReference(reference);
-        getReferences().add(reference);
+        if (!getReferences().contains(reference))
+            getReferences().add(reference);
+
+        addToQuotationCount(reference);
     }
 
     /**
@@ -224,8 +230,10 @@ public class ReferenceController {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
-        getReferenceDAO().saveReference(reference);
-        getReferences().add(reference);
+        if (!getReferences().contains(reference))
+            getReferences().add(reference);
+
+        addToQuotationCount(reference);
     }
 
     /**
@@ -242,8 +250,10 @@ public class ReferenceController {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
-        getReferenceDAO().saveReference(reference);
-        getReferences().add(reference);
+        if (!getReferences().contains(reference))
+            getReferences().add(reference);
+
+        addToQuotationCount(reference);
     }
 
     /**
@@ -260,8 +270,19 @@ public class ReferenceController {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
-        getReferenceDAO().saveReference(reference);
-        getReferences().add(reference);
+        if (!getReferences().contains(reference))
+            getReferences().add(reference);
+
+        addToQuotationCount(reference);
+    }
+
+    private void removeReferenceFromRelated(BibliographicReference reference) {
+        if (reference == null)
+            throw new IllegalArgumentException("reference can't be null");
+
+        for (BibliographicReference bibliographicReference : getReferences()) {
+            bibliographicReference.getRelatedReferences().remove(reference);
+        }
     }
 
     private void addToQuotationCount(BibliographicReference reference) {

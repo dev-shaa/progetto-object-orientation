@@ -51,7 +51,7 @@ public class JTermsField extends JTextField {
     public ArrayList<String> getTerms() {
         String[] text = getText().split(separator);
 
-        ArrayList<String> terms = new ArrayList<>();
+        ArrayList<String> terms = new ArrayList<>(text.length);
 
         for (String item : text) {
             item = item.trim();

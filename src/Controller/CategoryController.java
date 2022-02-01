@@ -87,7 +87,6 @@ public class CategoryController {
             category.setParent(parent.getUserObject());
 
         categoryDAO.addCategory(category);
-
         categoryTree.addNode(new CustomTreeNode<Category>(category), parent);
     }
 
