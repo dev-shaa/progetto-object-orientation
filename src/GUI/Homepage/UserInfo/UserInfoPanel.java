@@ -25,7 +25,7 @@ public class UserInfoPanel extends JPanel {
      *             se {@code user == null}
      * @see #setUser(User)
      */
-    public UserInfoPanel(User user) throws IllegalArgumentException {
+    public UserInfoPanel(User user) {
 
         Color darkGray = Color.decode("#24292f");
 
@@ -60,7 +60,7 @@ public class UserInfoPanel extends JPanel {
      * @throws IllegalArgumentException
      *             se {@code user == null}
      */
-    public void setUser(User user) throws IllegalArgumentException {
+    public void setUser(User user) {
         if (user == null)
             throw new IllegalArgumentException("user non può essere null");
 
