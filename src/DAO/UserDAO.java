@@ -107,31 +107,4 @@ public class UserDAO {
 
 	}
 
-	public void DeleteUser(User user) {
-
-		try {
-
-			String query = "DELETE FROM public.\"UtenteApp\" WHERE \"Nome\"='" + user.getName() + "' AND \"Password\"='" + user.getPassword() + "';";
-
-			con = DatabaseController.getConnection();
-			stmt = con.prepareStatement(query);
-			rs = stmt.executeQuery(query);
-
-			System.out.println("Utente eliminato con successo");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (stmt != null)
-					stmt.close();
-				if (con != null)
-					con.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
 }

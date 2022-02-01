@@ -45,12 +45,10 @@ public class Login {
 		
 		UserDAO userDao = new UserDAO();
 		User userDB = userDao.GetUserLogin(user);
-		
 		if(userDB == null) {
 			System.out.println("Utente null");
 			return false;
 		}
-		
 		if (user.getName().equals(userDB.getName()) && user.getPassword().equals(userDB.getPassword())) {
 			System.out.println("Utente loggato");
 			return true;
