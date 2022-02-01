@@ -144,9 +144,6 @@ public class CategoryController {
             throw new IllegalArgumentException("can't delete null category");
 
         categoryDAO.removeCategory(category);
-
-        categoryNode.removeFromParent();
-
         categoryTree.removeNodeFromParent(categoryNode);
     }
 
