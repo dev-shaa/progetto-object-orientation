@@ -118,7 +118,6 @@ public class CategoriesPanel extends JPanel implements CategorySelectionListener
 
     @Override
     public void onCategorySelection(Category selectedCategory) {
-        // addCategoryButton.setEnabled(selectedCategory != null);
         addCategoryButton.setEnabled(true);
         changeCategoryButton.setEnabled(selectedCategory != null);
         removeCategoryButton.setEnabled(selectedCategory != null);

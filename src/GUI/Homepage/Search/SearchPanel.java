@@ -8,12 +8,12 @@ import javax.swing.*;
 import javax.swing.border.*;
 import com.toedter.calendar.JDateChooser;
 
-import Controller.CategoryController;
 import Entities.Category;
 import Entities.Search;
 import Exceptions.EmptySearchException;
 import GUI.Editor.AuthorInputField;
 import GUI.Editor.TagInputField;
+import GUI.Utilities.CustomTreeModel;
 import GUI.Utilities.PopupCheckboxTree;
 
 /**
@@ -28,6 +28,8 @@ public class SearchPanel extends JPanel {
     private JDateChooser dateTo;
     private JButton searchButton;
 
+    private JPanel searchPanel;
+
     private ArrayList<ReferenceSearchListener> searchListeners;
 
     private final String searchFieldSeparator = ",";
@@ -37,18 +39,18 @@ public class SearchPanel extends JPanel {
     /**
      * Crea un pannello per la ricerca di riferimenti.
      * 
-     * @param categoryController
-     *            controller delle categorie che è possibile selezionare
+     * @param treeModel
+     *            albero delle categorie selezionabili
      * @throws IllegalArgumentException
-     *             se {@code categoryController == null}
+     *             se {@code treeModel == null}
      */
-    public SearchPanel(CategoryController categoryController) {
-        setCategoriesController(categoryController);
+    public SearchPanel(CustomTreeModel<Category> treeModel) {
+        setTreeModel(treeModel);
 
         setLayout(new BorderLayout(5, 5));
         setBorder(new EmptyBorder(5, 5, 5, 5));
 
-        JPanel searchPanel = new JPanel();
+        searchPanel = new JPanel();
         searchPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
         searchPanel.setLayout(new BoxLayout(searchPanel, BoxLayout.PAGE_AXIS));
 
@@ -57,11 +59,11 @@ public class SearchPanel extends JPanel {
         dateFrom = new JDateChooser();
         dateTo = new JDateChooser();
 
-        addFieldComponent("Parole chiave", tags, searchPanel, "Inserisci le parole chiave da ricercare nel riferimento, delimitate da '" + searchFieldSeparator + "'");
-        addFieldComponent("Autori", authors, searchPanel, "Inserisci gli autori da ricercare, delimitati da '" + searchFieldSeparator + "'");
-        addFieldComponent("Categorie", categories, searchPanel, "Seleziona le categorie in cui cercare il riferimento");
-        addFieldComponent("Da", dateFrom, searchPanel);
-        addFieldComponent("A", dateTo, searchPanel);
+        addFieldComponent("Parole chiave", tags, "Inserisci le parole chiave da ricercare nel riferimento, delimitate da '" + searchFieldSeparator + "'");
+        addFieldComponent("Autori", authors, "Inserisci gli autori da ricercare, delimitati da '" + searchFieldSeparator + "'");
+        addFieldComponent("Categorie", categories, "Seleziona le categorie in cui cercare il riferimento");
+        addFieldComponent("Da", dateFrom);
+        addFieldComponent("A", dateTo);
 
         Component spacing = Box.createVerticalGlue();
         spacing.setMaximumSize(new Dimension(100, 32));
@@ -84,25 +86,24 @@ public class SearchPanel extends JPanel {
         reset();
     }
 
-    private void addFieldComponent(JComponent component, JPanel panel) {
+    private void addFieldComponent(JComponent component) {
         component.setMaximumSize(maximumSize);
         component.setAlignmentX(alignment);
-
-        panel.add(component);
+        searchPanel.add(component);
     }
 
-    private void addFieldComponent(String label, JComponent component, JPanel panel) {
+    private void addFieldComponent(String label, JComponent component) {
         JLabel labelField = new JLabel(label);
         labelField.setMaximumSize(maximumSize);
         labelField.setAlignmentX(alignment);
 
-        addFieldComponent(labelField, panel);
-        addFieldComponent(component, panel);
+        addFieldComponent(labelField);
+        addFieldComponent(component);
     }
 
-    private void addFieldComponent(String label, JComponent component, JPanel panel, String tooltip) {
+    private void addFieldComponent(String label, JComponent component, String tooltip) {
         component.setToolTipText(tooltip);
-        addFieldComponent(label, component, panel);
+        addFieldComponent(label, component);
     }
 
     private void reset() {
@@ -127,21 +128,20 @@ public class SearchPanel extends JPanel {
     }
 
     /**
-     * Imposta il controller delle categorie e reimposta l'albero delle categorie selezionabili.
+     * Imposta l'albero delle categorie selezionabili.
      * 
-     * @param controller
-     *            controller delle categorie
+     * @param treeModel
      * @throws IllegalArgumentException
-     *             se {@code controller == null}
+     *             se {@code treeModel == null}
      */
-    public void setCategoriesController(CategoryController controller) {
-        if (controller == null)
-            throw new IllegalArgumentException("controller can't be null");
+    public void setTreeModel(CustomTreeModel<Category> treeModel) {
+        if (treeModel == null)
+            throw new IllegalArgumentException("treeModel can't be null");
 
         if (categories == null)
-            categories = new PopupCheckboxTree<Category>(controller.getCategoriesTree());
+            categories = new PopupCheckboxTree<Category>(treeModel);
         else
-            categories.setTreeModel(controller.getCategoriesTree());
+            categories.setTreeModel(treeModel);
     }
 
     /**

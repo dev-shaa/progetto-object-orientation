@@ -15,8 +15,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 /**
- * Implementazione dell'interfaccia CategoryDAO per database relazionali
- * PostgreSQL.
+ * Implementazione dell'interfaccia CategoryDAO per database relazionali PostgreSQL.
  * 
  * @see CategoryDAO
  */

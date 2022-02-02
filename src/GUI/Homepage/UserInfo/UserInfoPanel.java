@@ -16,6 +16,8 @@ public class UserInfoPanel extends JPanel {
     private JLabel userLabel;
     private ArrayList<LogoutListener> logoutListeners;
 
+    private final Color darkGray = Color.decode("#24292f");
+
     /**
      * Crea il pannello con le informazioni dell'utente passato.
      * 
@@ -26,14 +28,11 @@ public class UserInfoPanel extends JPanel {
      * @see #setUser(User)
      */
     public UserInfoPanel(User user) {
-
-        Color darkGray = Color.decode("#24292f");
+        setUser(user);
 
         setLayout(new BorderLayout(5, 0));
         setBorder(new EmptyBorder(15, 15, 15, 15));
         setBackground(darkGray);
-
-        setUser(user);
 
         JButton logout = new JButton(new ImageIcon("images/logout_white.png"));
         logout.setToolTipText("Esci");
