@@ -1,16 +1,12 @@
 package GUI.Editor.Reference;
 
 import Entities.References.OnlineResources.Video;
-import Exceptions.ReferenceDatabaseException;
 import Exceptions.RequiredFieldMissingException;
 
-import Controller.AuthorController;
 import Controller.CategoryController;
 import Controller.ReferenceController;
 
 import java.awt.Frame;
-
-import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
@@ -33,13 +29,11 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
      *            controller delle categorie
      * @param referenceController
      *            controller dei riferimenti
-     * @param authorController
-     *            controller degli autori
      * @throws IllegalArgumentException
-     *             se {@code categoryController == null}, {@code referenceController == null} o {@code authorController == null}
+     *             se {@code categoryController == null} o {@code referenceController == null}
      */
-    public VideoEditor(Frame owner, CategoryController categoryController, ReferenceController referenceController, AuthorController authorController) {
-        super(owner, "Video", categoryController, referenceController, authorController);
+    public VideoEditor(Frame owner, CategoryController categoryController, ReferenceController referenceController) {
+        super(owner, "Video", categoryController, referenceController);
     }
 
     @Override
@@ -68,23 +62,15 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
         frameRate = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
         duration = new JSpinner(new SpinnerNumberModel(1.0, 1.0, null, 1));
 
-        addFieldComponent(width, "Larghezza");
-        addFieldComponent(height, "Altezza");
-        addFieldComponent(frameRate, "Frequenza");
-        addFieldComponent(duration, "Durata");
+        addFieldComponent(width, "Larghezza", "Largezza del video.");
+        addFieldComponent(height, "Altezza", "Altezza del video.");
+        addFieldComponent(frameRate, "Frequenza", "Numero di fotogrammi al secondo del video.");
+        addFieldComponent(duration, "Durata", "Durata del video (in secondi).");
     }
 
     @Override
-    protected void saveReference() {
-        try {
-            Video videoToSave = getOpenReference() == null ? new Video("temp", "temp") : getOpenReference();
-            fillReferenceValues(videoToSave);
-            getReferenceController().saveReference(videoToSave);
-        } catch (RequiredFieldMissingException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
-        } catch (ReferenceDatabaseException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Errore database", JOptionPane.ERROR_MESSAGE);
-        }
+    protected Video getNewInstance() {
+        return new Video("title", "URL");
     }
 
     @Override

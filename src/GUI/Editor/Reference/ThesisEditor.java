@@ -1,16 +1,12 @@
 package GUI.Editor.Reference;
 
 import Entities.References.PhysicalResources.Thesis;
-import Exceptions.ReferenceDatabaseException;
 import Exceptions.RequiredFieldMissingException;
 
-import Controller.AuthorController;
 import Controller.CategoryController;
 import Controller.ReferenceController;
 
 import java.awt.Frame;
-
-import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 /**
@@ -30,13 +26,11 @@ public class ThesisEditor extends PublicationEditor<Thesis> {
      *            controller delle categorie
      * @param referenceController
      *            controller dei riferimenti
-     * @param authorController
-     *            controller degli autori
      * @throws IllegalArgumentException
-     *             se {@code categoryController == null}, {@code referenceController == null} o {@code authorController == null}
+     *             se {@code categoryController == null} o {@code referenceController == null}
      */
-    public ThesisEditor(Frame owner, CategoryController categoryController, ReferenceController referenceController, AuthorController authorController) {
-        super(owner, "Tesi", categoryController, referenceController, authorController);
+    public ThesisEditor(Frame owner, CategoryController categoryController, ReferenceController referenceController) {
+        super(owner, "Tesi", categoryController, referenceController);
     }
 
     @Override
@@ -46,8 +40,8 @@ public class ThesisEditor extends PublicationEditor<Thesis> {
         university = new JTextField();
         faculty = new JTextField();
 
-        addFieldComponent(university, "Università");
-        addFieldComponent(faculty, "Facoltà");
+        addFieldComponent(university, "Università", "Università della tesi.");
+        addFieldComponent(faculty, "Facoltà", "Facoltà dell'università.");
     }
 
     @Override
@@ -64,16 +58,8 @@ public class ThesisEditor extends PublicationEditor<Thesis> {
     }
 
     @Override
-    protected void saveReference() {
-        try {
-            Thesis thesisToSave = getOpenReference() == null ? new Thesis("temp") : getOpenReference();
-            fillReferenceValues(thesisToSave);
-            getReferenceController().saveReference(thesisToSave);
-        } catch (RequiredFieldMissingException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
-        } catch (ReferenceDatabaseException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Errore database", JOptionPane.ERROR_MESSAGE);
-        }
+    protected Thesis getNewInstance() {
+        return new Thesis("title");
     }
 
     @Override

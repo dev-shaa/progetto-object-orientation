@@ -1,16 +1,12 @@
 package GUI.Editor.Reference;
 
 import Entities.References.PhysicalResources.Book;
-import Exceptions.ReferenceDatabaseException;
 import Exceptions.RequiredFieldMissingException;
 
-import Controller.AuthorController;
 import Controller.CategoryController;
 import Controller.ReferenceController;
 
 import java.awt.Frame;
-
-import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 /**
@@ -19,9 +15,6 @@ import javax.swing.JTextField;
 public class BookEditor extends PublicationEditor<Book> {
 
     private JTextField ISBN;
-
-    private final String ISBNLabel = "ISSN";
-    private final String ISBNTooltip = "Codice identificativo ISSN dell'articolo";
 
     /**
      * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento.
@@ -32,13 +25,11 @@ public class BookEditor extends PublicationEditor<Book> {
      *            controller delle categorie
      * @param referenceController
      *            controller dei riferimenti
-     * @param authorController
-     *            controller degli autori
      * @throws IllegalArgumentException
-     *             se {@code categoryController == null}, {@code referenceController == null} o {@code authorController == null}
+     *             se {@code categoryController == null} o {@code referenceController == null}
      */
-    public BookEditor(Frame owner, CategoryController categoryController, ReferenceController referenceController, AuthorController authorController) {
-        super(owner, "Libro", categoryController, referenceController, authorController);
+    public BookEditor(Frame owner, CategoryController categoryController, ReferenceController referenceController) {
+        super(owner, "Libro", categoryController, referenceController);
     }
 
     @Override
@@ -46,7 +37,7 @@ public class BookEditor extends PublicationEditor<Book> {
         super.initializeFields();
 
         ISBN = new JTextField();
-        addFieldComponent(ISBN, ISBNLabel, ISBNTooltip);
+        addFieldComponent(ISBN, "ISBN", "Codice identificativo ISBN dell'articolo.");
     }
 
     @Override
@@ -57,16 +48,8 @@ public class BookEditor extends PublicationEditor<Book> {
     }
 
     @Override
-    protected void saveReference() {
-        try {
-            Book bookToSave = getOpenReference() == null ? new Book("temp") : getOpenReference();
-            fillReferenceValues(bookToSave);
-            getReferenceController().saveReference(bookToSave);
-        } catch (RequiredFieldMissingException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
-        } catch (ReferenceDatabaseException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Errore database", JOptionPane.ERROR_MESSAGE);
-        }
+    protected Book getNewInstance() {
+        return new Book("title");
     }
 
     @Override

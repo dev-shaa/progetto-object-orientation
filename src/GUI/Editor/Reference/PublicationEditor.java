@@ -3,15 +3,13 @@ package GUI.Editor.Reference;
 import Entities.References.PhysicalResources.Publication;
 import Exceptions.RequiredFieldMissingException;
 
-import java.awt.Frame;
+import Controller.CategoryController;
+import Controller.ReferenceController;
 
+import java.awt.Frame;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
-
-import Controller.AuthorController;
-import Controller.CategoryController;
-import Controller.ReferenceController;
 
 /**
  * Finestra di dialogo per la creazione o modifica di un riferimento a una pubblicazione.
@@ -33,13 +31,11 @@ public abstract class PublicationEditor<T extends Publication> extends Reference
      *            controller delle categorie
      * @param referenceController
      *            controller dei riferimenti
-     * @param authorController
-     *            controller degli autori
      * @throws IllegalArgumentException
-     *             se {@code categoryController == null}, {@code referenceController == null} o {@code authorController == null}
+     *             se {@code categoryController == null} o {@code referenceController == null}
      */
-    public PublicationEditor(Frame owner, String title, CategoryController categoryController, ReferenceController referenceController, AuthorController authorController) {
-        super(owner, title, categoryController, referenceController, authorController);
+    public PublicationEditor(Frame owner, String title, CategoryController categoryController, ReferenceController referenceController) {
+        super(owner, title, categoryController, referenceController);
     }
 
     @Override
@@ -50,9 +46,9 @@ public abstract class PublicationEditor<T extends Publication> extends Reference
         URL = new JTextField();
         publisher = new JTextField();
 
-        addFieldComponent(pageCount, "Pagine", "Numero di pagine della pubblicazione");
-        addFieldComponent(URL, "URL", "URL della pubblicazione");
-        addFieldComponent(publisher, "Editore", "Editore della pubblicazione");
+        addFieldComponent(pageCount, "Pagine", "Numero di pagine della pubblicazione.");
+        addFieldComponent(URL, "URL", "URL della pubblicazione.");
+        addFieldComponent(publisher, "Editore", "Editore della pubblicazione.");
     }
 
     @Override

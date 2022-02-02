@@ -4,7 +4,7 @@ import Entities.*;
 import Entities.References.*;
 import GUI.Utilities.*;
 import GUI.Editor.*;
-import GUI.Editor.Reference.Chooser.*;
+import GUI.Editor.Reference.Picker.*;
 import Exceptions.RequiredFieldMissingException;
 
 import java.awt.*;
@@ -17,14 +17,13 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import com.toedter.calendar.JDateChooser;
 
-import Controller.AuthorController;
 import Controller.CategoryController;
 import Controller.ReferenceController;
 
 /**
  * Finestra di dialogo per la creazione o modifica di un riferimento bibliografico.
  */
-public abstract class ReferenceEditor<T extends BibliographicReference> extends JDialog implements ReferencePickerSelectionListener {
+public abstract class ReferenceEditor<T extends BibliographicReference> extends JDialog implements ReferencePickerListener {
 
     private JTextField title;
     private JTextField DOI;
@@ -36,33 +35,16 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     private AuthorInputField authors;
 
     private PopupButton relatedReferencesPopupButton;
-    private ReferencePickerDialog relatedReferencesDialog;
+    private ReferencePicker relatedReferencesDialog;
     private ArrayList<BibliographicReference> relatedReferences;
 
     private JPanel fieldPanel;
 
     private CategoryController categoryController;
     private ReferenceController referenceController;
-    private AuthorController authorController;
 
     private T openReference;
-
-    private final String titleLabel = "Titolo (obbligatorio)";
-    private final String titleTooltip = "Titolo del riferimento";
-    private final String tagsLabel = "Parole chiave";
-    private final String tagsTooltip = "Parole chiave associate al riferimento, separate da una virgola";
-    private final String DOILabel = "DOI";
-    private final String DOITooltip = "Codice identificativo DOI del riferimento";
-    private final String pubblicationDateLabel = "Data di pubblicazione";
-    private final String pubblicationDateTooltip = "Data di pubblicazione del riferimento";
-    private final String languageLabel = "Lingua";
-    private final String languageTooltip = "Lingua del riferimento";
-    private final String categoriesLabel = "Categorie";
-    private final String categoriesTooltip = "Categorie a cui deve essere associato questo riferimento";
-    private final String authorsLabel = "Autori";
-    private final String authorsTooltip = "Autori del riferimento";
-    private final String relatedReferencesLabel = "Rimandi";
-    private final String relatedReferencesTooltip = "Riferimenti menzionati nel testo";
+    // private ArrayList<SaveListener<T>> listeners;
 
     private final String separator = ",";
     private final Dimension maximumSize = new Dimension(Integer.MAX_VALUE, 24);
@@ -80,12 +62,10 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      *            controller delle categorie
      * @param referenceController
      *            controller dei riferimenti
-     * @param authorController
-     *            controller degli autori
      * @throws IllegalArgumentException
-     *             se {@code categoryController == null}, {@code referenceController == null} o {@code authorController == null}
+     *             se {@code categoryController == null} o {@code referenceController == null}
      */
-    public ReferenceEditor(Frame owner, String title, CategoryController categoryController, ReferenceController referenceController, AuthorController authorController) {
+    public ReferenceEditor(Frame owner, String title, CategoryController categoryController, ReferenceController referenceController) {
         super(owner, title, true);
 
         setSize(500, 500);
@@ -93,7 +73,6 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
 
         setCategoryController(categoryController);
         setReferenceController(referenceController);
-        setAuthorController(authorController);
 
         setupComponents();
     }
@@ -114,8 +93,8 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         language = new JComboBox<>(ReferenceLanguage.values());
         description = new JTextArea(10, 1);
 
-        relatedReferencesDialog = new ReferencePickerDialog(getCategoryController(), getReferenceController());
-        relatedReferencesDialog.addReferenceChooserSelectionListener(this);
+        relatedReferencesDialog = new ReferencePicker(getCategoryController(), getReferenceController());
+        relatedReferencesDialog.addReferencePickerListener(this);
 
         relatedReferencesPopupButton = new PopupButton("Premi per vedere i rimandi");
         JButton addRelatedReference = new JButton("+");
@@ -138,14 +117,14 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         relatedReferencesPanel.add(relatedReferencesPopupButton, BorderLayout.CENTER);
         relatedReferencesPanel.add(addRelatedReference, BorderLayout.EAST);
 
-        addFieldComponent(title, titleLabel, titleTooltip);
-        addFieldComponent(tags, tagsLabel, tagsTooltip);
-        addFieldComponent(DOI, DOILabel, DOITooltip);
-        addFieldComponent(pubblicationDate, pubblicationDateLabel, pubblicationDateTooltip);
-        addFieldComponent(language, languageLabel, languageTooltip);
-        addFieldComponent(categories, categoriesLabel, categoriesTooltip);
-        addFieldComponent(authors, authorsLabel, authorsTooltip);
-        addFieldComponent(relatedReferencesPanel, relatedReferencesLabel, relatedReferencesTooltip);
+        addFieldComponent(title, "Titolo (obbligatorio)", "Titolo univoco del riferimento.");
+        addFieldComponent(tags, "Parole chiave", "Parole chiave associate al riferimento, separate da una virgola.");
+        addFieldComponent(DOI, "DOI", "Codice identificativo DOI del riferimento.");
+        addFieldComponent(pubblicationDate, "Data di pubblicazione", "Data di pubblicazione del riferimento.");
+        addFieldComponent(language, "Lingua", "Lingua del riferimento.");
+        addFieldComponent(categories, "Categorie", "Categorie a cui deve essere associato questo riferimento.");
+        addFieldComponent(authors, "Autori", "Autori del riferimento.");
+        addFieldComponent(relatedReferencesPanel, "Rimandi", "Riferimenti menzionati all'interno del testo.");
 
         initializeFields();
 
@@ -164,7 +143,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
             @Override
             public void actionPerformed(ActionEvent e) {
                 saveReference();
-                setVisible(false);
+                // setVisible(false);
             }
         });
 
@@ -277,29 +256,28 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     }
 
     /**
-     * Imposta il riferimento da modificare.
+     * Restituisce un nuovo riferimento da riempire.
      * 
-     * @param reference
-     *            riferimento da modificare
+     * @return
      */
-    protected void setOpenReference(T reference) {
+    protected abstract T getNewInstance();
+
+    private void setOpenReference(T reference) {
         this.openReference = reference;
     }
 
-    /**
-     * Restituisce l'eventuale riferimento da modificare.
-     * 
-     * @return il riferimento da modificare, {@code null} se stiamo creando un nuovo riferimento
-     */
-    protected T getOpenReference() {
+    private T getOpenReference() {
         return openReference;
     }
 
-    /**
-     * Salva un nuovo riferimento con i dati inseriti dall'utente.
-     * Viene invocata quando viene premuto il tasto di conferma.
-     */
-    protected abstract void saveReference();
+    private void saveReference() {
+        try {
+            T reference = getOpenReference() == null ? getNewInstance() : getOpenReference();
+            fillReferenceValues(reference);
+        } catch (RequiredFieldMissingException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
     @Override
     public void onReferencePick(BibliographicReference reference) {
@@ -385,28 +363,23 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         return referenceController;
     }
 
-    /**
-     * Imposta il controller degli autori per recuperare gli autori da cui scegliere.
-     * 
-     * @param authorController
-     * @throws IllegalArgumentException
-     *             se {@code authorController == null}
-     */
-    public void setAuthorController(AuthorController authorController) {
-        if (authorController == null)
-            throw new IllegalArgumentException("authorController can't be null");
+    // TODO:
+    // public void addListener(SaveListener<T> listener) {
+    // if (listener == null)
+    // return;
 
-        this.authorController = authorController;
-    }
+    // if (listeners == null)
+    // listeners = new ArrayList<>(2);
 
-    /**
-     * Restituisce il controller degli autori.
-     * 
-     * @return controller degli autori
-     */
-    public AuthorController getAuthorController() {
-        return authorController;
-    }
+    // listeners.add(listener);
+    // }
+
+    // public void removeListener(SaveListener<T> listener) {
+    // if (listener == null || listeners == null)
+    // return;
+
+    // listeners.remove(listener);
+    // }
 
     private void setTitleValue(String text) {
         title.setText(text);

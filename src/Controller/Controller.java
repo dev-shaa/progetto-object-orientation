@@ -34,7 +34,6 @@ public class Controller {
     private User user;
     private CategoryController categoryController;
     private ReferenceController referenceController;
-    private AuthorController authorController;
 
     /**
      * Crea un nuovo controller.
@@ -45,15 +44,6 @@ public class Controller {
         loginFrame = new LoginFrame(this);
 
         openLoginPage();
-    }
-
-    /**
-     * Restituisce il controller degli autori.
-     * 
-     * @return controller degli autori
-     */
-    public AuthorController getAuthorController() {
-        return authorController;
     }
 
     /**
@@ -104,7 +94,6 @@ public class Controller {
             this.user = user;
             this.categoryController = new CategoryController(new CategoryDAOPostgreSQL(user));
             this.referenceController = new ReferenceController(new BibliographicReferenceDAOPostgreSQL(user));
-            this.authorController = new AuthorController(new AuthorDAO());
 
             homepage = new Homepage(this);
 
@@ -118,49 +107,49 @@ public class Controller {
 
     public void openArticleEditor(Article article) {
         if (articleEditor == null)
-            articleEditor = new ArticleEditor(homepage, categoryController, referenceController, authorController);
+            articleEditor = new ArticleEditor(homepage, categoryController, referenceController);
 
         articleEditor.setVisible(true, article);
     }
 
     public void openBookEditor(Book book) {
         if (bookEditor == null)
-            bookEditor = new BookEditor(homepage, categoryController, referenceController, authorController);
+            bookEditor = new BookEditor(homepage, categoryController, referenceController);
 
         bookEditor.setVisible(true, book);
     }
 
     public void openThesisEditor(Thesis thesis) {
         if (thesisEditor == null)
-            thesisEditor = new ThesisEditor(homepage, categoryController, referenceController, authorController);
+            thesisEditor = new ThesisEditor(homepage, categoryController, referenceController);
 
         thesisEditor.setVisible(true, thesis);
     }
 
     public void openSourceCodeEditor(SourceCode sourceCode) {
         if (sourceCodeEditor == null)
-            sourceCodeEditor = new SourceCodeEditor(homepage, categoryController, referenceController, authorController);
+            sourceCodeEditor = new SourceCodeEditor(homepage, categoryController, referenceController);
 
         sourceCodeEditor.setVisible(true, sourceCode);
     }
 
     public void openImageEditor(Image image) {
         if (imageEditor == null)
-            imageEditor = new ImageEditor(homepage, categoryController, referenceController, authorController);
+            imageEditor = new ImageEditor(homepage, categoryController, referenceController);
 
         imageEditor.setVisible(true, image);
     }
 
     public void openVideoEditor(Video video) {
         if (videoEditor == null)
-            videoEditor = new VideoEditor(homepage, categoryController, referenceController, authorController);
+            videoEditor = new VideoEditor(homepage, categoryController, referenceController);
 
         videoEditor.setVisible(true, video);
     }
 
     public void openWebsiteEditor(Website website) {
         if (websiteEditor == null)
-            websiteEditor = new WebsiteEditor(homepage, categoryController, referenceController, authorController);
+            websiteEditor = new WebsiteEditor(homepage, categoryController, referenceController);
 
         websiteEditor.setVisible(true, website);
     }

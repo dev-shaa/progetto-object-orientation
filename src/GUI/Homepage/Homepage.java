@@ -170,6 +170,22 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         return categoriesPanel;
     }
 
+    @Override
+    public void onCategorySelection(Category selectedCategory) {
+        createCategoryButton.setEnabled(true);
+        changeCategoryButton.setEnabled(selectedCategory != null);
+        removeCategoryButton.setEnabled(selectedCategory != null);
+
+        referenceListPanel.setReferences(getController().getReferenceController().getReferences(selectedCategory));
+    }
+
+    @Override
+    public void onCategoryClearSelection() {
+        createCategoryButton.setEnabled(false);
+        changeCategoryButton.setEnabled(false);
+        removeCategoryButton.setEnabled(false);
+    }
+
     private void addCategory() {
         try {
             String newCategoryName = getCategoryNameFromUser("Nuova categoria");
@@ -208,22 +224,6 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
 
     private String getCategoryNameFromUser(String defaultName) {
         return (String) JOptionPane.showInputDialog(this, "Inserisci il nuovo nome della categoria", "Nuova categoria", JOptionPane.PLAIN_MESSAGE, null, null, defaultName);
-    }
-
-    @Override
-    public void onCategorySelection(Category selectedCategory) {
-        createCategoryButton.setEnabled(true);
-        changeCategoryButton.setEnabled(selectedCategory != null);
-        removeCategoryButton.setEnabled(selectedCategory != null);
-
-        referenceListPanel.setReferences(getController().getReferenceController().getReferences(selectedCategory));
-    }
-
-    @Override
-    public void onCategoryClearSelection() {
-        createCategoryButton.setEnabled(false);
-        changeCategoryButton.setEnabled(false);
-        removeCategoryButton.setEnabled(false);
     }
 
     // REFERENCES
@@ -385,7 +385,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         referenceListPanel.setReferences(getController().getReferenceController().getReferences(search));
     }
 
-    // USER PANEL
+    // USER
 
     @Override
     public void logout() {

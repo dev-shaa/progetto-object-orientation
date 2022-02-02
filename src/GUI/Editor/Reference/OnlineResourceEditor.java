@@ -3,13 +3,11 @@ package GUI.Editor.Reference;
 import Entities.References.OnlineResources.OnlineResource;
 import Exceptions.RequiredFieldMissingException;
 
-import java.awt.Frame;
-
-import javax.swing.*;
-
-import Controller.AuthorController;
 import Controller.CategoryController;
 import Controller.ReferenceController;
+
+import javax.swing.*;
+import java.awt.Frame;
 
 /**
  * Finestra di dialogo per la creazione o modifica di un riferimento a una risorsa online.
@@ -17,9 +15,6 @@ import Controller.ReferenceController;
 public abstract class OnlineResourceEditor<T extends OnlineResource> extends ReferenceEditor<T> {
 
     private JTextField URL;
-
-    private final String URLLabel = "URL (obbligatorio)";
-    private final String URLTooltip = "URL della risorsa online";
 
     /**
      * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento.
@@ -32,13 +27,11 @@ public abstract class OnlineResourceEditor<T extends OnlineResource> extends Ref
      *            controller delle categorie
      * @param referenceController
      *            controller dei riferimenti
-     * @param authorController
-     *            controller degli autori
      * @throws IllegalArgumentException
-     *             se {@code categoryController == null}, {@code referenceController == null} o {@code authorController == null}
+     *             se {@code categoryController == null} o {@code referenceController == null}
      */
-    public OnlineResourceEditor(Frame owner, String title, CategoryController categoryController, ReferenceController referenceController, AuthorController authorController) {
-        super(owner, title, categoryController, referenceController, authorController);
+    public OnlineResourceEditor(Frame owner, String title, CategoryController categoryController, ReferenceController referenceController) {
+        super(owner, title, categoryController, referenceController);
     }
 
     @Override
@@ -47,7 +40,7 @@ public abstract class OnlineResourceEditor<T extends OnlineResource> extends Ref
 
         URL = new JTextField();
 
-        addFieldComponent(URL, URLLabel, URLTooltip);
+        addFieldComponent(URL, "URL (obbligatorio)", "URL della risorsa online.");
     }
 
     @Override

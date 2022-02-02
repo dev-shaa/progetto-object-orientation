@@ -1,16 +1,12 @@
 package GUI.Editor.Reference;
 
 import Entities.References.PhysicalResources.Article;
-import Exceptions.ReferenceDatabaseException;
 import Exceptions.RequiredFieldMissingException;
 
-import Controller.AuthorController;
 import Controller.CategoryController;
 import Controller.ReferenceController;
 
 import java.awt.Frame;
-
-import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 /**
@@ -19,9 +15,6 @@ import javax.swing.JTextField;
 public class ArticleEditor extends PublicationEditor<Article> {
 
     private JTextField ISSN;
-
-    private final String ISSNLabel = "ISSN";
-    private final String ISSNTooltip = "Codice identificativo ISSN dell'articolo";
 
     /**
      * Crea una nuova finestra di dialogo per la creazione o modifica di un articolo.
@@ -32,13 +25,11 @@ public class ArticleEditor extends PublicationEditor<Article> {
      *            controller delle categorie
      * @param referenceController
      *            controller dei riferimenti
-     * @param authorController
-     *            controller degli autori
      * @throws IllegalArgumentException
-     *             se {@code categoryController == null}, {@code referenceController == null} o {@code authorController == null}
+     *             se {@code categoryController == null} o {@code referenceController == null}
      */
-    public ArticleEditor(Frame owner, CategoryController categoryController, ReferenceController referenceController, AuthorController authorController) {
-        super(owner, "Articolo", categoryController, referenceController, authorController);
+    public ArticleEditor(Frame owner, CategoryController categoryController, ReferenceController referenceController) {
+        super(owner, "Articolo", categoryController, referenceController);
     }
 
     @Override
@@ -46,7 +37,7 @@ public class ArticleEditor extends PublicationEditor<Article> {
         super.initializeFields();
 
         ISSN = new JTextField();
-        addFieldComponent(ISSN, ISSNLabel, ISSNTooltip);
+        addFieldComponent(ISSN, "ISSN", "Codice identificativo ISSN dell'articolo.");
     }
 
     @Override
@@ -57,16 +48,8 @@ public class ArticleEditor extends PublicationEditor<Article> {
     }
 
     @Override
-    protected void saveReference() {
-        try {
-            Article articleToSave = getOpenReference() == null ? new Article("temp") : getOpenReference();
-            fillReferenceValues(articleToSave);
-            getReferenceController().saveReference(articleToSave);
-        } catch (RequiredFieldMissingException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
-        } catch (ReferenceDatabaseException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Errore database", JOptionPane.ERROR_MESSAGE);
-        }
+    protected Article getNewInstance() {
+        return new Article("temp");
     }
 
     @Override

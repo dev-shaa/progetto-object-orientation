@@ -2,17 +2,13 @@ package GUI.Editor.Reference;
 
 import Entities.References.OnlineResources.SourceCode;
 import Entities.References.OnlineResources.ProgrammingLanguage;
-import Exceptions.ReferenceDatabaseException;
 import Exceptions.RequiredFieldMissingException;
 
-import Controller.AuthorController;
 import Controller.CategoryController;
 import Controller.ReferenceController;
 
 import java.awt.Frame;
-
 import javax.swing.JComboBox;
-import javax.swing.JOptionPane;
 
 /**
  * Finestra di dialogo per la creazione o modifica di un riferimento a del codice sorgente.
@@ -20,9 +16,6 @@ import javax.swing.JOptionPane;
 public class SourceCodeEditor extends OnlineResourceEditor<SourceCode> {
 
     private JComboBox<ProgrammingLanguage> programmingLanguage;
-
-    private final String programmingLanguageLabel = "Linguaggio";
-    private final String programmingLanguageTooltip = "Linguaggio di programmazione del codice";
 
     /**
      * Crea una nuova finestra di dialogo per la creazione o modifica di codice sorgente.
@@ -33,13 +26,11 @@ public class SourceCodeEditor extends OnlineResourceEditor<SourceCode> {
      *            controller delle categorie
      * @param referenceController
      *            controller dei riferimenti
-     * @param authorController
-     *            controller degli autori
      * @throws IllegalArgumentException
-     *             se {@code categoryController == null}, {@code referenceController == null} o {@code authorController == null}
+     *             se {@code categoryController == null} o {@code referenceController == null}
      */
-    public SourceCodeEditor(Frame owner, CategoryController categoryController, ReferenceController referenceController, AuthorController authorController) {
-        super(owner, "Codice sorgente", categoryController, referenceController, authorController);
+    public SourceCodeEditor(Frame owner, CategoryController categoryController, ReferenceController referenceController) {
+        super(owner, "Codice sorgente", categoryController, referenceController);
     }
 
     @Override
@@ -47,7 +38,7 @@ public class SourceCodeEditor extends OnlineResourceEditor<SourceCode> {
         super.initializeFields();
 
         programmingLanguage = new JComboBox<>(ProgrammingLanguage.values());
-        addFieldComponent(programmingLanguage, programmingLanguageLabel, programmingLanguageTooltip);
+        addFieldComponent(programmingLanguage, "Linguaggio", "Linguaggio di programmazione del codice.");
     }
 
     @Override
@@ -58,16 +49,8 @@ public class SourceCodeEditor extends OnlineResourceEditor<SourceCode> {
     }
 
     @Override
-    protected void saveReference() {
-        try {
-            SourceCode sourceCodeToFill = getOpenReference() == null ? new SourceCode("temp", "temp") : getOpenReference();
-            fillReferenceValues(sourceCodeToFill);
-            getReferenceController().saveReference(sourceCodeToFill);
-        } catch (RequiredFieldMissingException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
-        } catch (ReferenceDatabaseException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Errore database", JOptionPane.ERROR_MESSAGE);
-        }
+    protected SourceCode getNewInstance() {
+        return new SourceCode("title", "URL");
     }
 
     @Override

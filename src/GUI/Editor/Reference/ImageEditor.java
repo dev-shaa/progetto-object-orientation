@@ -1,17 +1,12 @@
 package GUI.Editor.Reference;
 
 import Entities.References.OnlineResources.Image;
-
-import Exceptions.ReferenceDatabaseException;
 import Exceptions.RequiredFieldMissingException;
 
-import Controller.AuthorController;
 import Controller.CategoryController;
 import Controller.ReferenceController;
 
 import java.awt.Frame;
-
-import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
@@ -23,11 +18,6 @@ public class ImageEditor extends OnlineResourceEditor<Image> {
     private JSpinner width;
     private JSpinner height;
 
-    private final String widthLabel = "Larghezza";
-    private final String widthTooltip = "Larghezza dell'immagine";
-    private final String heightLabel = "Altezza";
-    private final String heightTooltip = "Altezza dell'immagine";
-
     /**
      * Crea una nuova finestra di dialogo per la creazione o modifica di un'immagine.
      * 
@@ -37,13 +27,11 @@ public class ImageEditor extends OnlineResourceEditor<Image> {
      *            controller delle categorie
      * @param referenceController
      *            controller dei riferimenti
-     * @param authorController
-     *            controller degli autori
      * @throws IllegalArgumentException
-     *             se {@code categoryController == null}, {@code referenceController == null} o {@code authorController == null}
+     *             se {@code categoryController == null} o {@code referenceController == null}
      */
-    public ImageEditor(Frame owner, CategoryController categoryController, ReferenceController referenceController, AuthorController authorController) {
-        super(owner, "Immagine", categoryController, referenceController, authorController);
+    public ImageEditor(Frame owner, CategoryController categoryController, ReferenceController referenceController) {
+        super(owner, "Immagine", categoryController, referenceController);
     }
 
     @Override
@@ -53,8 +41,8 @@ public class ImageEditor extends OnlineResourceEditor<Image> {
         width = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
         height = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
 
-        addFieldComponent(width, widthLabel, widthTooltip);
-        addFieldComponent(height, heightLabel, heightTooltip);
+        addFieldComponent(width, "Larghezza", "Larghezza dell'immagine.");
+        addFieldComponent(height, "Altezza", "Altezza dell'immagine.");
     }
 
     @Override
@@ -71,16 +59,8 @@ public class ImageEditor extends OnlineResourceEditor<Image> {
     }
 
     @Override
-    protected void saveReference() {
-        try {
-            Image imageToSave = getOpenReference() == null ? new Image("temp", "temp") : getOpenReference();
-            fillReferenceValues(imageToSave);
-            getReferenceController().saveReference(imageToSave);
-        } catch (RequiredFieldMissingException e) {
-            JOptionPane.showMessageDialog(this, "Uno o più campi obbligatori non sono stati inseriti.", "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
-        } catch (ReferenceDatabaseException e) {
-            JOptionPane.showMessageDialog(this, "Si è verificato un errore durante il salvataggio", "Errore database", JOptionPane.ERROR_MESSAGE);
-        }
+    protected Image getNewInstance() {
+        return new Image("title", "URL");
     }
 
     @Override
