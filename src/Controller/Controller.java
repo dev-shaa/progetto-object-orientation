@@ -3,14 +3,14 @@ package Controller;
 import javax.swing.*;
 import com.formdev.flatlaf.*;
 
-import DAO.AuthorDAO;
-import DAO.BibliographicReferenceDAOPostgreSQL;
 import DAO.CategoryDAOPostgreSQL;
-import Entities.*;
+import DAO.BibliographicReferenceDAOPostgreSQL;
 
 import GUI.*;
 import GUI.Editor.Reference.*;
 import GUI.Homepage.*;
+
+import Entities.*;
 import Entities.References.OnlineResources.*;
 import Entities.References.OnlineResources.Image;
 import Entities.References.PhysicalResources.*;
@@ -105,6 +105,12 @@ public class Controller {
         }
     }
 
+    /**
+     * Apre l'editor di riferimenti per articoli.
+     * 
+     * @param article
+     *            articolo da modificare (se {@code null}, viene aperto la creazione, altrimenti per la modifica)
+     */
     public void openArticleEditor(Article article) {
         if (articleEditor == null)
             articleEditor = new ArticleEditor(homepage, categoryController, referenceController);
@@ -112,6 +118,12 @@ public class Controller {
         articleEditor.setVisible(true, article);
     }
 
+    /**
+     * Apre l'editor di riferimenti per libri.
+     * 
+     * @param book
+     *            libro da modificare (se {@code null}, viene aperto la creazione, altrimenti per la modifica)
+     */
     public void openBookEditor(Book book) {
         if (bookEditor == null)
             bookEditor = new BookEditor(homepage, categoryController, referenceController);
@@ -119,6 +131,12 @@ public class Controller {
         bookEditor.setVisible(true, book);
     }
 
+    /**
+     * Apre l'editor di riferimenti per tesi.
+     * 
+     * @param thesis
+     *            tesi da modificare (se {@code null}, viene aperto la creazione, altrimenti per la modifica)
+     */
     public void openThesisEditor(Thesis thesis) {
         if (thesisEditor == null)
             thesisEditor = new ThesisEditor(homepage, categoryController, referenceController);
@@ -126,6 +144,12 @@ public class Controller {
         thesisEditor.setVisible(true, thesis);
     }
 
+    /**
+     * Apre l'editor di riferimenti per codice sorgente.
+     * 
+     * @param sourceCode
+     *            codice sorgente da modificare (se {@code null}, viene aperto la creazione, altrimenti per la modifica)
+     */
     public void openSourceCodeEditor(SourceCode sourceCode) {
         if (sourceCodeEditor == null)
             sourceCodeEditor = new SourceCodeEditor(homepage, categoryController, referenceController);
@@ -133,6 +157,12 @@ public class Controller {
         sourceCodeEditor.setVisible(true, sourceCode);
     }
 
+    /**
+     * Apre l'editor di riferimenti per immagini.
+     * 
+     * @param image
+     *            immagine da modificare (se {@code null}, viene aperto la creazione, altrimenti per la modifica)
+     */
     public void openImageEditor(Image image) {
         if (imageEditor == null)
             imageEditor = new ImageEditor(homepage, categoryController, referenceController);
@@ -140,6 +170,12 @@ public class Controller {
         imageEditor.setVisible(true, image);
     }
 
+    /**
+     * Apre l'editor di riferimenti per video.
+     * 
+     * @param video
+     *            video da modificare (se {@code null}, viene aperto la creazione, altrimenti per la modifica)
+     */
     public void openVideoEditor(Video video) {
         if (videoEditor == null)
             videoEditor = new VideoEditor(homepage, categoryController, referenceController);
@@ -147,6 +183,12 @@ public class Controller {
         videoEditor.setVisible(true, video);
     }
 
+    /**
+     * Apre l'editor di riferimenti per siti web.
+     * 
+     * @param website
+     *            sito web da modificare (se {@code null}, viene aperto la creazione, altrimenti per la modifica)
+     */
     public void openWebsiteEditor(Website website) {
         if (websiteEditor == null)
             websiteEditor = new WebsiteEditor(homepage, categoryController, referenceController);
