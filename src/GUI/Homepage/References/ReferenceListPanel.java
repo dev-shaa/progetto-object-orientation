@@ -131,6 +131,7 @@ public class ReferenceListPanel extends JScrollPane {
 
     /**
      * Aggiunge un listener all'evento di selezione di un riferimento.
+     * Se {@code listener == null} o se è già registrato all'evento, non succede niente.
      * 
      * @param listener
      *            listener da aggiungere
@@ -140,7 +141,10 @@ public class ReferenceListPanel extends JScrollPane {
             return;
 
         if (selectionListeners == null)
-            selectionListeners = new ArrayList<>(5);
+            selectionListeners = new ArrayList<>(2);
+
+        if (selectionListeners.contains(listener))
+            return;
 
         selectionListeners.add(listener);
     }

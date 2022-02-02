@@ -26,7 +26,7 @@ import java.awt.event.ActionListener;
 /**
  * Finestra di dialogo per scegliere un riferimento.
  */
-public class ReferencePickerDialog extends JDialog implements CategorySelectionListener, ReferenceSelectionListener {
+public class ReferencePicker extends JDialog implements CategorySelectionListener, ReferenceSelectionListener {
 
     private ReferenceController referenceController;
 
@@ -34,7 +34,7 @@ public class ReferencePickerDialog extends JDialog implements CategorySelectionL
     private ReferenceListPanel referencesPanel;
     private JButton confirmButton;
 
-    private ArrayList<ReferencePickerSelectionListener> selectionListeners;
+    private ArrayList<ReferencePickerListener> pickerListeners;
     private Collection<? extends BibliographicReference> referencesToExclude;
 
     /**
@@ -47,7 +47,7 @@ public class ReferencePickerDialog extends JDialog implements CategorySelectionL
      * @throws IllegalArgumentException
      *             se {@code categoryManager} o {@code referenceManager} sono nulli.
      */
-    public ReferencePickerDialog(CategoryController categoryController, ReferenceController referenceController) {
+    public ReferencePicker(CategoryController categoryController, ReferenceController referenceController) {
         setCategoryController(categoryController);
         setReferenceController(referenceController);
 
@@ -70,10 +70,10 @@ public class ReferencePickerDialog extends JDialog implements CategorySelectionL
         confirmButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (selectionListeners == null)
+                if (pickerListeners == null)
                     return;
 
-                for (ReferencePickerSelectionListener listener : selectionListeners) {
+                for (ReferencePickerListener listener : pickerListeners) {
                     setVisible(false);
                     listener.onReferencePick(referencesPanel.getSelectedReference());
                 }
@@ -163,19 +163,22 @@ public class ReferencePickerDialog extends JDialog implements CategorySelectionL
 
     /**
      * Aggiunge un listener all'evento di selezione di un riferimento.
-     * Se {@code listener == null}, non succede niente.
+     * Se {@code listener == null} o se è già registrato all'evento, non succede niente.
      * 
      * @param listener
      *            listener da aggiungere
      */
-    public void addReferenceChooserSelectionListener(ReferencePickerSelectionListener listener) {
+    public void addReferencePickerListener(ReferencePickerListener listener) {
         if (listener == null)
             return;
 
-        if (selectionListeners == null)
-            selectionListeners = new ArrayList<>(3);
+        if (pickerListeners == null)
+            pickerListeners = new ArrayList<>(3);
 
-        selectionListeners.add(listener);
+        if (pickerListeners.contains(listener))
+            return;
+
+        pickerListeners.add(listener);
     }
 
     /**
@@ -185,9 +188,9 @@ public class ReferencePickerDialog extends JDialog implements CategorySelectionL
      * @param listener
      *            listener da rimuovere
      */
-    public void removeReferenceChooserSelectionListener(ReferencePickerSelectionListener listener) {
-        if (listener != null && selectionListeners != null)
-            selectionListeners.remove(listener);
+    public void removeReferencePickerListener(ReferencePickerListener listener) {
+        if (listener != null && pickerListeners != null)
+            pickerListeners.remove(listener);
     }
 
     private void initializeCategoriesPanel(CategoryController categoryController) {

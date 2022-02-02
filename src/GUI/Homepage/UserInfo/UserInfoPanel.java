@@ -76,17 +76,22 @@ public class UserInfoPanel extends JPanel {
 
     /**
      * Aggiunge un listener all'evento di logout.
+     * Se {@code listener == null} o se è già registrato all'evento, non succede niente.
      * 
      * @param listener
      *            listener da aggiungere
      */
     public void addLogoutListener(LogoutListener listener) {
-        if (listener != null) {
-            if (logoutListeners == null)
-                logoutListeners = new ArrayList<>(1);
+        if (listener == null)
+            return;
 
-            logoutListeners.add(listener);
-        }
+        if (logoutListeners == null)
+            logoutListeners = new ArrayList<>(5);
+
+        if (logoutListeners.contains(listener))
+            return;
+
+        logoutListeners.add(listener);
     }
 
     /**
