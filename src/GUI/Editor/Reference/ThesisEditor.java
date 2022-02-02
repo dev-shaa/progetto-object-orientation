@@ -8,6 +8,8 @@ import Controller.AuthorController;
 import Controller.CategoryController;
 import Controller.ReferenceController;
 
+import java.awt.Frame;
+
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
@@ -20,8 +22,10 @@ public class ThesisEditor extends PublicationEditor<Thesis> {
     private JTextField faculty;
 
     /**
-     * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a una tesi.
+     * Crea una nuova finestra di dialogo per la creazione o modifica di una tesi.
      * 
+     * @param owner
+     *            proprietario di questa finestra di dialogo
      * @param categoryController
      *            controller delle categorie
      * @param referenceController
@@ -31,13 +35,13 @@ public class ThesisEditor extends PublicationEditor<Thesis> {
      * @throws IllegalArgumentException
      *             se {@code categoryController == null}, {@code referenceController == null} o {@code authorController == null}
      */
-    public ThesisEditor(CategoryController categoryController, ReferenceController referenceController, AuthorController authorController) {
-        super("Tesi", categoryController, referenceController, authorController);
+    public ThesisEditor(Frame owner, CategoryController categoryController, ReferenceController referenceController, AuthorController authorController) {
+        super(owner, "Tesi", categoryController, referenceController, authorController);
     }
 
     @Override
-    protected void initialize() {
-        super.initialize();
+    protected void initializeFields() {
+        super.initializeFields();
 
         university = new JTextField();
         faculty = new JTextField();

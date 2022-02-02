@@ -3,6 +3,8 @@ package GUI.Editor.Reference;
 import Entities.References.PhysicalResources.Publication;
 import Exceptions.RequiredFieldMissingException;
 
+import java.awt.Frame;
+
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
@@ -21,9 +23,11 @@ public abstract class PublicationEditor<T extends Publication> extends Reference
     private JTextField publisher;
 
     /**
-     * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a una pubblicazione.
+     * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento.
      * 
-     * @param dialogueTitle
+     * @param owner
+     *            proprietario di questa finestra di dialogo
+     * @param title
      *            titolo della finestra
      * @param categoryController
      *            controller delle categorie
@@ -34,13 +38,13 @@ public abstract class PublicationEditor<T extends Publication> extends Reference
      * @throws IllegalArgumentException
      *             se {@code categoryController == null}, {@code referenceController == null} o {@code authorController == null}
      */
-    public PublicationEditor(String dialogueTitle, CategoryController categoryController, ReferenceController referenceController, AuthorController authorController) {
-        super(dialogueTitle, categoryController, referenceController, authorController);
+    public PublicationEditor(Frame owner, String title, CategoryController categoryController, ReferenceController referenceController, AuthorController authorController) {
+        super(owner, title, categoryController, referenceController, authorController);
     }
 
     @Override
-    protected void initialize() {
-        super.initialize();
+    protected void initializeFields() {
+        super.initializeFields();
 
         pageCount = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
         URL = new JTextField();

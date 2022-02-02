@@ -9,6 +9,8 @@ import Controller.AuthorController;
 import Controller.CategoryController;
 import Controller.ReferenceController;
 
+import java.awt.Frame;
+
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 
@@ -23,8 +25,10 @@ public class SourceCodeEditor extends OnlineResourceEditor<SourceCode> {
     private final String programmingLanguageTooltip = "Linguaggio di programmazione del codice";
 
     /**
-     * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a codice sorgente.
+     * Crea una nuova finestra di dialogo per la creazione o modifica di codice sorgente.
      * 
+     * @param owner
+     *            proprietario di questa finestra di dialogo
      * @param categoryController
      *            controller delle categorie
      * @param referenceController
@@ -34,13 +38,13 @@ public class SourceCodeEditor extends OnlineResourceEditor<SourceCode> {
      * @throws IllegalArgumentException
      *             se {@code categoryController == null}, {@code referenceController == null} o {@code authorController == null}
      */
-    public SourceCodeEditor(CategoryController categoryController, ReferenceController referenceController, AuthorController authorController) {
-        super("Codice sorgente", categoryController, referenceController, authorController);
+    public SourceCodeEditor(Frame owner, CategoryController categoryController, ReferenceController referenceController, AuthorController authorController) {
+        super(owner, "Codice sorgente", categoryController, referenceController, authorController);
     }
 
     @Override
-    protected void initialize() {
-        super.initialize();
+    protected void initializeFields() {
+        super.initializeFields();
 
         programmingLanguage = new JComboBox<>(ProgrammingLanguage.values());
         addFieldComponent(programmingLanguage, programmingLanguageLabel, programmingLanguageTooltip);

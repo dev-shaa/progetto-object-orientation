@@ -72,7 +72,9 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     /**
      * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento.
      * 
-     * @param dialogueTitle
+     * @param owner
+     *            proprietario di questa finestra di dialogo
+     * @param title
      *            titolo della finestra
      * @param categoryController
      *            controller delle categorie
@@ -83,30 +85,22 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      * @throws IllegalArgumentException
      *             se {@code categoryController == null}, {@code referenceController == null} o {@code authorController == null}
      */
-    public ReferenceEditor(String dialogueTitle, CategoryController categoryController, ReferenceController referenceController, AuthorController authorController) {
-        super();
+    public ReferenceEditor(Frame owner, String title, CategoryController categoryController, ReferenceController referenceController, AuthorController authorController) {
+        super(owner, title, true);
 
-        setTitle(dialogueTitle);
         setSize(500, 500);
         setResizable(false);
-        setModal(true);
 
         setCategoryController(categoryController);
         setReferenceController(referenceController);
         setAuthorController(authorController);
 
-        // in questo modo le classi figlie possono fare l'overriding e aggiungere altri elementi prima delle descrizione
-        initialize();
-
-        // la descrizione e il pulsante di conferma li poniamo sotto tutti gli altri
-        initializeLastFields();
+        setupComponents();
     }
 
-    /**
-     * Prepara i campi necessari per la creazione di un riferimento.
-     */
-    protected void initialize() {
+    private void setupComponents() {
         fieldPanel = new JPanel();
+
         fieldPanel.setLayout(new BoxLayout(fieldPanel, BoxLayout.PAGE_AXIS));
         fieldPanel.setBorder(new EmptyBorder(50, 30, 50, 30));
 
@@ -152,9 +146,11 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         addFieldComponent(categories, categoriesLabel, categoriesTooltip);
         addFieldComponent(authors, authorsLabel, authorsTooltip);
         addFieldComponent(relatedReferencesPanel, relatedReferencesLabel, relatedReferencesTooltip);
-    }
 
-    private void initializeLastFields() {
+        initializeFields();
+
+        // la descrizione e il tasto di conferma vogliamo che siano sempre alla fine
+
         JLabel descriptionLabel = new JLabel("Descrizione");
         descriptionLabel.setMaximumSize(maximumSize);
         descriptionLabel.setAlignmentX(alignment);
@@ -176,6 +172,13 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         fieldPanel.add(description);
         fieldPanel.add(Box.createRigidArea(new Dimension(0, 20)));
         fieldPanel.add(confirmButton);
+    }
+
+    /**
+     * Prepara i campi necessari per la creazione di un riferimento.
+     */
+    protected void initializeFields() {
+        // serve solo come funzione per override e aggiungere altri componenti
     }
 
     /**

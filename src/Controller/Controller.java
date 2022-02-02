@@ -118,49 +118,49 @@ public class Controller {
 
     public void openArticleEditor(Article article) {
         if (articleEditor == null)
-            articleEditor = new ArticleEditor(categoryController, referenceController, authorController);
+            articleEditor = new ArticleEditor(homepage, categoryController, referenceController, authorController);
 
         articleEditor.setVisible(true, article);
     }
 
     public void openBookEditor(Book book) {
         if (bookEditor == null)
-            bookEditor = new BookEditor(categoryController, referenceController, authorController);
+            bookEditor = new BookEditor(homepage, categoryController, referenceController, authorController);
 
         bookEditor.setVisible(true, book);
     }
 
     public void openThesisEditor(Thesis thesis) {
         if (thesisEditor == null)
-            thesisEditor = new ThesisEditor(categoryController, referenceController, authorController);
+            thesisEditor = new ThesisEditor(homepage, categoryController, referenceController, authorController);
 
         thesisEditor.setVisible(true, thesis);
     }
 
     public void openSourceCodeEditor(SourceCode sourceCode) {
         if (sourceCodeEditor == null)
-            sourceCodeEditor = new SourceCodeEditor(categoryController, referenceController, authorController);
+            sourceCodeEditor = new SourceCodeEditor(homepage, categoryController, referenceController, authorController);
 
         sourceCodeEditor.setVisible(true, sourceCode);
     }
 
     public void openImageEditor(Image image) {
         if (imageEditor == null)
-            imageEditor = new ImageEditor(categoryController, referenceController, authorController);
+            imageEditor = new ImageEditor(homepage, categoryController, referenceController, authorController);
 
         imageEditor.setVisible(true, image);
     }
 
     public void openVideoEditor(Video video) {
         if (videoEditor == null)
-            videoEditor = new VideoEditor(categoryController, referenceController, authorController);
+            videoEditor = new VideoEditor(homepage, categoryController, referenceController, authorController);
 
         videoEditor.setVisible(true, video);
     }
 
     public void openWebsiteEditor(Website website) {
         if (websiteEditor == null)
-            websiteEditor = new WebsiteEditor(categoryController, referenceController, authorController);
+            websiteEditor = new WebsiteEditor(homepage, categoryController, referenceController, authorController);
 
         websiteEditor.setVisible(true, website);
     }

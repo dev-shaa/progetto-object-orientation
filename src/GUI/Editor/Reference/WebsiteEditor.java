@@ -8,6 +8,8 @@ import Controller.AuthorController;
 import Controller.CategoryController;
 import Controller.ReferenceController;
 
+import java.awt.Frame;
+
 import javax.swing.JOptionPane;
 
 /**
@@ -16,8 +18,10 @@ import javax.swing.JOptionPane;
 public class WebsiteEditor extends OnlineResourceEditor<Website> {
 
     /**
-     * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a un sito web.
+     * Crea una nuova finestra di dialogo per la creazione o modifica di codice sorgente.
      * 
+     * @param owner
+     *            proprietario di questa finestra di dialogo
      * @param categoryController
      *            controller delle categorie
      * @param referenceController
@@ -27,13 +31,13 @@ public class WebsiteEditor extends OnlineResourceEditor<Website> {
      * @throws IllegalArgumentException
      *             se {@code categoryController == null}, {@code referenceController == null} o {@code authorController == null}
      */
-    public WebsiteEditor(CategoryController categoryController, ReferenceController referenceController, AuthorController authorController) {
-        super("Sito web", categoryController, referenceController, authorController);
+    public WebsiteEditor(Frame owner, CategoryController categoryController, ReferenceController referenceController, AuthorController authorController) {
+        super(owner, "Sito web", categoryController, referenceController, authorController);
     }
 
     @Override
-    protected void initialize() {
-        super.initialize();
+    protected void initializeFields() {
+        super.initializeFields();
     }
 
     @Override

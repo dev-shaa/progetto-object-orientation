@@ -8,6 +8,8 @@ import Controller.AuthorController;
 import Controller.CategoryController;
 import Controller.ReferenceController;
 
+import java.awt.Frame;
+
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
@@ -22,8 +24,10 @@ public class ArticleEditor extends PublicationEditor<Article> {
     private final String ISSNTooltip = "Codice identificativo ISSN dell'articolo";
 
     /**
-     * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a un articolo.
+     * Crea una nuova finestra di dialogo per la creazione o modifica di un articolo.
      * 
+     * @param owner
+     *            proprietario di questa finestra di dialogo
      * @param categoryController
      *            controller delle categorie
      * @param referenceController
@@ -33,13 +37,13 @@ public class ArticleEditor extends PublicationEditor<Article> {
      * @throws IllegalArgumentException
      *             se {@code categoryController == null}, {@code referenceController == null} o {@code authorController == null}
      */
-    public ArticleEditor(CategoryController categoryController, ReferenceController referenceController, AuthorController authorController) {
-        super("Articolo", categoryController, referenceController, authorController);
+    public ArticleEditor(Frame owner, CategoryController categoryController, ReferenceController referenceController, AuthorController authorController) {
+        super(owner, "Articolo", categoryController, referenceController, authorController);
     }
 
     @Override
-    protected void initialize() {
-        super.initialize();
+    protected void initializeFields() {
+        super.initializeFields();
 
         ISSN = new JTextField();
         addFieldComponent(ISSN, ISSNLabel, ISSNTooltip);

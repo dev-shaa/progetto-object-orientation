@@ -9,6 +9,8 @@ import Controller.AuthorController;
 import Controller.CategoryController;
 import Controller.ReferenceController;
 
+import java.awt.Frame;
+
 import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
@@ -27,8 +29,10 @@ public class ImageEditor extends OnlineResourceEditor<Image> {
     private final String heightTooltip = "Altezza dell'immagine";
 
     /**
-     * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a un'immagine.
+     * Crea una nuova finestra di dialogo per la creazione o modifica di un'immagine.
      * 
+     * @param owner
+     *            proprietario di questa finestra di dialogo
      * @param categoryController
      *            controller delle categorie
      * @param referenceController
@@ -38,13 +42,13 @@ public class ImageEditor extends OnlineResourceEditor<Image> {
      * @throws IllegalArgumentException
      *             se {@code categoryController == null}, {@code referenceController == null} o {@code authorController == null}
      */
-    public ImageEditor(CategoryController categoryController, ReferenceController referenceController, AuthorController authorController) {
-        super("Immagine", categoryController, referenceController, authorController);
+    public ImageEditor(Frame owner, CategoryController categoryController, ReferenceController referenceController, AuthorController authorController) {
+        super(owner, "Immagine", categoryController, referenceController, authorController);
     }
 
     @Override
-    protected void initialize() {
-        super.initialize();
+    protected void initializeFields() {
+        super.initializeFields();
 
         width = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
         height = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
