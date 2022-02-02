@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import Controller.DatabaseController;
 import Entities.Author;
+import Entities.References.BibliographicReference;
 
 public class AuthorDAO {
 
@@ -44,35 +45,45 @@ public class AuthorDAO {
 		}
 	}
 
+	// @R1ccardo ho commentato per debug
+
 	public ArrayList<Author> FindAllAuthor() {
-		try {
-			String query = "select * from \"AutoriApp\" aa";
-			con = DatabaseController.getConnection();
-			if (con == null) {
-				System.out.println("Non c'� connesione al db");
-				return null;
-			}
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(query);
-			Author authorDB = null;
+		return null;
+		// try {
+		// String query = "select * from \"AutoriApp\" aa";
+		// con = DatabaseController.getConnection();
+		// if (con == null) {
+		// System.out.println("Non c'� connesione al db");
+		// return null;
+		// }
+		// stmt = con.createStatement();
+		// rs = stmt.executeQuery(query);
+		// Author authorDB = null;
 
-			ArrayList<Author> authorList = new ArrayList<Author>();
+		// ArrayList<Author> authorList = new ArrayList<Author>();
 
-			while (rs.next()) {
-				String firstName = rs.getString("Nome");
-				String ORCID = rs.getString("ORCID");
-				authorDB = new Author(firstName, ORCID);
-				authorList.add(authorDB);
-			}
+		// while (rs.next()) {
+		// String firstName = rs.getString("Nome");
+		// String ORCID = rs.getString("ORCID");
+		// authorDB = new Author(firstName, ORCID);
+		// authorList.add(authorDB);
+		// }
 
-			// for ( int i = 0; i < authorList.size(); i++) {
-			// System.out.println(authorList.get(i));
-			// }
-			return authorList;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
+		// // for ( int i = 0; i < authorList.size(); i++) {
+		// // System.out.println(authorList.get(i));
+		// // }
+		// return authorList;
+		// } catch (SQLException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// return null;
+		// }
 	}
+
+	public ArrayList<Author> getAuthorsOf(BibliographicReference reference) {
+		// TODO:
+
+		return null;
+	}
+
 }

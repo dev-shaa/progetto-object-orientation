@@ -43,68 +43,73 @@ public class UserDAO {
 		}
 	}
 
+	// @R1ccardo ho commentato per debug
+
 	public boolean ExistUser(User user) {
 
-		String query = "select count(*) from \"UtenteApp\" ua \r\n" + "where  \"Nome\" = '" + user.getName() + "'";
-		int risultato = 1;
+		return true;
+		// String query = "select count(*) from \"UtenteApp\" ua \r\n" + "where \"Nome\" = '" + user.getName() + "'";
+		// int risultato = 1;
 
-		try {
-			con = DatabaseController.getConnection();
-			if (con == null) {
-				System.out.println("Non c'� connesione al db");
-				return true;
-			}
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(query);
+		// try {
+		// con = DatabaseController.getConnection();
+		// if (con == null) {
+		// System.out.println("Non c'� connesione al db");
+		// return true;
+		// }
+		// stmt = con.createStatement();
+		// rs = stmt.executeQuery(query);
 
-			while (rs.next()) {
-				risultato = rs.getInt("count");
-				System.out.printf("Ci sono: " + risultato);
+		// while (rs.next()) {
+		// risultato = rs.getInt("count");
+		// System.out.printf("Ci sono: " + risultato);
 
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		// }
+		// } catch (SQLException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
 
-		if (risultato == 0) {
+		// if (risultato == 0) {
 
-			return false;
+		// return false;
 
-		}
+		// }
 
-		else {
-			return true;
-		}
+		// else {
+		// return true;
+		// }
 	}
 
 	public User GetUserLogin(User user) {
 
-		if (!ExistUser(user)) {
-			return null;
-		}
+		return null;
 
-		String query = "select * from \"UtenteApp\" ua where \"Nome\" = '" + user.getName() + "'";
-		try {
-			con = DatabaseController.getConnection();
-			if (con == null) {
-				System.out.println("Non c'� connesione al db");
-				return null;
-			}
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(query);
-			rs.next();
-			String username = rs.getString("Nome");
-			String password = rs.getString("Password");
+		// if (!ExistUser(user)) {
+		// return null;
+		// }
 
-			User userDB = new User(username, password);
-			return userDB;
+		// String query = "select * from \"UtenteApp\" ua where \"Nome\" = '" + user.getName() + "'";
+		// try {
+		// con = DatabaseController.getConnection();
+		// if (con == null) {
+		// System.out.println("Non c'� connesione al db");
+		// return null;
+		// }
+		// stmt = con.createStatement();
+		// rs = stmt.executeQuery(query);
+		// rs.next();
+		// String username = rs.getString("Nome");
+		// String password = rs.getString("Password");
 
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
+		// User userDB = new User(username, password);
+		// return userDB;
+
+		// } catch (SQLException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// return null;
+		// }
 
 	}
 
