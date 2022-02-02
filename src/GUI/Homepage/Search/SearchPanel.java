@@ -30,7 +30,7 @@ public class SearchPanel extends JPanel {
 
     private JPanel searchPanel;
 
-    private ArrayList<ReferenceSearchListener> searchListeners;
+    private ArrayList<SearchListener> searchListeners;
 
     private final String searchFieldSeparator = ",";
     private final Dimension maximumSize = new Dimension(Integer.MAX_VALUE, 24);
@@ -118,8 +118,8 @@ public class SearchPanel extends JPanel {
         try {
             Search search = new Search(dateFrom.getDate(), dateTo.getDate(), tags.getTags(), categories.getSelectedItems(), authors.getAuthors());
 
-            for (ReferenceSearchListener listener : searchListeners)
-                listener.onReferenceSearch(search);
+            for (SearchListener listener : searchListeners)
+                listener.search(search);
 
             reset();
         } catch (EmptySearchException e) {
@@ -150,7 +150,7 @@ public class SearchPanel extends JPanel {
      * @param listener
      *            listener da aggiungere
      */
-    public void addReferenceSearchListener(ReferenceSearchListener listener) {
+    public void addReferenceSearchListener(SearchListener listener) {
         if (listener == null)
             return;
 
@@ -166,7 +166,7 @@ public class SearchPanel extends JPanel {
      * @param listener
      *            listener da rimuovere
      */
-    public void removeReferenceSearchListener(ReferenceSearchListener listener) {
+    public void removeReferenceSearchListener(SearchListener listener) {
         if (listener == null || searchListeners == null)
             return;
 

@@ -16,7 +16,7 @@ import javax.swing.*;
 /**
  * Classe che si occupa di impostare le componenti base della pagina principale, che mostra tutti i riferimenti e le categorie.
  */
-public class Homepage extends JFrame implements CategorySelectionListener, ReferenceSearchListener {
+public class Homepage extends JFrame implements CategorySelectionListener, SearchListener {
 
     private Controller controller;
 
@@ -59,7 +59,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
 
         referencePanel = new ReferencePanel(getController().getReferenceController());
 
-        referenceSearchPanel = new SearchPanel(getController().getCategoryController());
+        referenceSearchPanel = new SearchPanel(getController().getCategoryController().getCategoriesTree());
         referenceSearchPanel.addReferenceSearchListener(this);
 
         JSplitPane subSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, categoriesPanel, referencePanel);
@@ -90,7 +90,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
     }
 
     @Override
-    public void onReferenceSearch(Search search) {
+    public void search(Search search) {
         getCategoriesPanel().getTreePanel().clearSelection();
         getReferencePanel().setReferences(getController().getReferenceController().getReferences(search));
     }
@@ -156,7 +156,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
     private void reset() {
         getCategoriesPanel().setCategoryController(getController().getCategoryController());
         getReferencePanel().setReferenceController(getController().getReferenceController());
-        getReferenceSearchPanel().setCategoriesController(getController().getCategoryController());
+        getReferenceSearchPanel().setTreeModel(getController().getCategoryController().getCategoriesTree());
         getUserInfoPanel().setUser(getController().getUser());
     }
 
