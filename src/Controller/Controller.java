@@ -12,7 +12,6 @@ import GUI.*;
 import GUI.Editor.Reference.*;
 import GUI.Homepage.*;
 import GUI.Homepage.References.*;
-import GUI.Homepage.Search.ReferenceSearchListener;
 import GUI.Homepage.UserInfo.LogoutListener;
 import Entities.References.OnlineResources.*;
 import Entities.References.OnlineResources.Image;

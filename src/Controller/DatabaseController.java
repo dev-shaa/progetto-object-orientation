@@ -1,51 +1,24 @@
 package Controller;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.sql.DriverManager;
+import Exceptions.DatabaseConnectionException;
 
 public class DatabaseController {
-	private static String connectionURL = "jdbc:postgresql://localhost:5432/Esame";
-	private static String connectionUser = "postgres";
-	private static String connectionPassword = "Riccardo11";
 
-	// private static DatabaseController Instance = null;
-	//
-	// public static DatabaseController getInstance() throws Exception {
-	// if (Instance == null)
-	// Instance = new DatabaseController();
-	//
-	// return Instance;
-	// }
-	//
-	// public DatabaseController() throws Exception {
-	// Class.forName("org.postgresql.Driver");
-	// }
-	//
-	// public Connection getConnection() throws SQLException {
-	// return DriverManager.getConnection(connectionURL, connectionUser, connectionPassword);
-	// }
-	//
-	// }
+	// @R1ccardo puoi cambiare le credenziali per accedere
 
-	private static Connection con;
-	private static String urlstring;
+	private static final String connectionURL = "jdbc:postgresql://localhost:5432/progetto";
+	private static final String connectionUser = "postgres";
+	private static final String connectionPassword = "tarallo";
 
-	// @R1ccardo
-	// FIXME: forse più che stampare messaggi di errore sulla console conviene che lanci un'eccezione
-	public static Connection getConnection() {
+	public static Connection getConnection() throws DatabaseConnectionException {
 		try {
 			Class.forName("org.postgresql.Driver");
-			try {
-				con = DriverManager.getConnection(connectionURL, connectionUser, connectionPassword);
-			} catch (SQLException ex) {
-
-				System.out.println("Errore nella connesione al database");
-			}
-		} catch (ClassNotFoundException ex) {
-
-			System.out.println("Driver non trovato.");
+			Connection connection = DriverManager.getConnection(connectionURL, connectionUser, connectionPassword);
+			return connection;
+		} catch (Exception e) {
+			throw new DatabaseConnectionException("Impossibile stabilire una connessione al database");
 		}
-		return con;
 	}
 }
