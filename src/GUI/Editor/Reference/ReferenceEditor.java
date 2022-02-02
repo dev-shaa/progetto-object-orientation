@@ -35,7 +35,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     private TagInputField tags;
     private AuthorInputField authors;
 
-    private JPopupButton relatedReferencesPopupButton;
+    private PopupButton relatedReferencesPopupButton;
     private ReferencePickerDialog relatedReferencesDialog;
     private ArrayList<BibliographicReference> relatedReferences;
 
@@ -123,7 +123,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         relatedReferencesDialog = new ReferencePickerDialog(getCategoryController(), getReferenceController());
         relatedReferencesDialog.addReferenceChooserSelectionListener(this);
 
-        relatedReferencesPopupButton = new JPopupButton("Premi per vedere i rimandi");
+        relatedReferencesPopupButton = new PopupButton("Premi per vedere i rimandi");
         JButton addRelatedReference = new JButton("+");
         addRelatedReference.addActionListener(new ActionListener() {
             @Override

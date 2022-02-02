@@ -1,7 +1,7 @@
 package GUI.Homepage.References;
 
 import Controller.ReferenceController;
-import GUI.Utilities.JPopupButton;
+import GUI.Utilities.PopupButton;
 import Entities.References.*;
 import Entities.References.PhysicalResources.*;
 import Entities.References.OnlineResources.*;
@@ -49,7 +49,7 @@ public class ReferencePanel extends JPanel implements ReferenceSelectionListener
 
         // #region create button
 
-        JPopupButton createReferenceButton = new JPopupButton(new ImageIcon("images/file_add.png"));
+        PopupButton createReferenceButton = new PopupButton(new ImageIcon("images/file_add.png"));
         createReferenceButton.setToolTipText("Crea riferimento");
 
         JMenuItem articleOption = new JMenuItem("Articolo");

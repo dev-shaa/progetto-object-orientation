@@ -7,7 +7,7 @@ import java.util.Enumeration;
 import javax.swing.tree.TreePath;
 import com.jidesoft.swing.CheckBoxTree;
 
-public class PopupCheckboxTree<T> extends JPopupButton {
+public class PopupCheckboxTree<T> extends PopupButton {
 
     private CheckBoxTree checkboxTree;
     private CustomTreeModel<T> categoriesTree;

@@ -5,9 +5,9 @@ import java.awt.event.*;
 import javax.swing.*;
 
 /**
- * Un JButton che, quando premuto, apre un menu popup.
+ * Un {@code JButton} che, quando premuto, apre un menu popup.
  */
-public class JPopupButton extends JButton {
+public class PopupButton extends JButton {
 
     private JPopupMenu popupMenu;
     private JMenuItem emptyPopupLabel = new JMenuItem("Nessun elemento");
@@ -15,7 +15,7 @@ public class JPopupButton extends JButton {
     /**
      * Crea un pulsante senza testo o icona.
      */
-    public JPopupButton() {
+    public PopupButton() {
         this(null, null);
     }
 
@@ -25,7 +25,7 @@ public class JPopupButton extends JButton {
      * @param text
      *            testo del pulsante
      */
-    public JPopupButton(String text) {
+    public PopupButton(String text) {
         this(text, null);
     }
 
@@ -35,7 +35,7 @@ public class JPopupButton extends JButton {
      * @param icon
      *            icona del pulsante
      */
-    public JPopupButton(Icon icon) {
+    public PopupButton(Icon icon) {
         this(null, icon);
     }
 
@@ -47,7 +47,7 @@ public class JPopupButton extends JButton {
      * @param icon
      *            icona del pulsante
      */
-    public JPopupButton(String text, Icon icon) {
+    public PopupButton(String text, Icon icon) {
         super(text, icon);
 
         popupMenu = new JPopupMenu();
