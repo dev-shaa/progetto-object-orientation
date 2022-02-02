@@ -10,5 +10,5 @@ public interface LogoutListener extends EventListener {
     /**
      * Invocato quando viene eseguito il logout.
      */
-    public void onLogout();
+    public void logout();
 }

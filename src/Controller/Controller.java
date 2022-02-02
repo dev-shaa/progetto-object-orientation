@@ -11,8 +11,6 @@ import Entities.*;
 import GUI.*;
 import GUI.Editor.Reference.*;
 import GUI.Homepage.*;
-import GUI.Homepage.References.*;
-import GUI.Homepage.UserInfo.LogoutListener;
 import Entities.References.OnlineResources.*;
 import Entities.References.OnlineResources.Image;
 import Entities.References.PhysicalResources.*;
@@ -20,7 +18,7 @@ import Entities.References.PhysicalResources.*;
 /**
  * Controller dell'applicazione.
  */
-public class Controller implements ReferenceEditorOpenListener, LogoutListener {
+public class Controller {
 
     private LoginFrame loginFrame;
     private Homepage homepage;
@@ -109,8 +107,6 @@ public class Controller implements ReferenceEditorOpenListener, LogoutListener {
             this.authorController = new AuthorController(new AuthorDAO());
 
             homepage = new Homepage(this);
-            homepage.getReferencePanel().addListener(this);
-            homepage.getUserInfoPanel().addLogoutListener(this);
 
             homepage.setVisible(true);
             loginFrame.setVisible(false);
@@ -120,7 +116,6 @@ public class Controller implements ReferenceEditorOpenListener, LogoutListener {
         }
     }
 
-    @Override
     public void openArticleEditor(Article article) {
         if (articleEditor == null)
             articleEditor = new ArticleEditor(categoryController, referenceController, authorController);
@@ -128,7 +123,6 @@ public class Controller implements ReferenceEditorOpenListener, LogoutListener {
         articleEditor.setVisible(true, article);
     }
 
-    @Override
     public void openBookEditor(Book book) {
         if (bookEditor == null)
             bookEditor = new BookEditor(categoryController, referenceController, authorController);
@@ -136,7 +130,6 @@ public class Controller implements ReferenceEditorOpenListener, LogoutListener {
         bookEditor.setVisible(true, book);
     }
 
-    @Override
     public void openThesisEditor(Thesis thesis) {
         if (thesisEditor == null)
             thesisEditor = new ThesisEditor(categoryController, referenceController, authorController);
@@ -144,7 +137,6 @@ public class Controller implements ReferenceEditorOpenListener, LogoutListener {
         thesisEditor.setVisible(true, thesis);
     }
 
-    @Override
     public void openSourceCodeEditor(SourceCode sourceCode) {
         if (sourceCodeEditor == null)
             sourceCodeEditor = new SourceCodeEditor(categoryController, referenceController, authorController);
@@ -152,7 +144,6 @@ public class Controller implements ReferenceEditorOpenListener, LogoutListener {
         sourceCodeEditor.setVisible(true, sourceCode);
     }
 
-    @Override
     public void openImageEditor(Image image) {
         if (imageEditor == null)
             imageEditor = new ImageEditor(categoryController, referenceController, authorController);
@@ -160,7 +151,6 @@ public class Controller implements ReferenceEditorOpenListener, LogoutListener {
         imageEditor.setVisible(true, image);
     }
 
-    @Override
     public void openVideoEditor(Video video) {
         if (videoEditor == null)
             videoEditor = new VideoEditor(categoryController, referenceController, authorController);
@@ -168,17 +158,11 @@ public class Controller implements ReferenceEditorOpenListener, LogoutListener {
         videoEditor.setVisible(true, video);
     }
 
-    @Override
     public void openWebsiteEditor(Website website) {
         if (websiteEditor == null)
             websiteEditor = new WebsiteEditor(categoryController, referenceController, authorController);
 
         websiteEditor.setVisible(true, website);
-    }
-
-    @Override
-    public void onLogout() {
-        openLoginPage();
     }
 
     private void setupLookAndFeel() {

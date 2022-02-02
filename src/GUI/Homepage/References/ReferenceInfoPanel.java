@@ -12,21 +12,22 @@ import javax.swing.table.DefaultTableModel;
  */
 public class ReferenceInfoPanel extends JScrollPane {
 
-    private DefaultTableModel detailsModel;
+    private DefaultTableModel details;
+    private BibliographicReference reference;
 
     /**
      * Crea un pannello contenente una tabella composta da due colonne,
      * la prima contenente il nome dell'informazione e la seconda l'informazione stessa.
      */
     public ReferenceInfoPanel() {
-        detailsModel = new DefaultTableModel(0, 2) {
+        details = new DefaultTableModel(0, 2) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
 
-        JTable detailsTable = new JTable(detailsModel);
+        JTable detailsTable = new JTable(details);
         detailsTable.setTableHeader(null);
         detailsTable.setCellSelectionEnabled(true);
         detailsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -41,19 +42,30 @@ public class ReferenceInfoPanel extends JScrollPane {
      * @param reference
      *            riferimento da mostrare
      */
-    public void showReference(BibliographicReference reference) {
+    public void setReference(BibliographicReference reference) {
+        this.reference = reference;
+
         if (reference == null) {
-            detailsModel.setRowCount(0);
+            details.setRowCount(0);
         } else {
             List<BibliographicReferenceField> referenceInfo = reference.getReferenceFields();
 
-            detailsModel.setRowCount(referenceInfo.size());
+            details.setRowCount(referenceInfo.size());
 
             for (int i = 0; i < referenceInfo.size(); i++) {
-                detailsModel.setValueAt(referenceInfo.get(i).getName(), i, 0);
-                detailsModel.setValueAt(referenceInfo.get(i).getValue(), i, 1);
+                details.setValueAt(referenceInfo.get(i).getName(), i, 0);
+                details.setValueAt(referenceInfo.get(i).getValue(), i, 1);
             }
         }
+    }
+
+    /**
+     * Restituisce il riferimento mostrato attualmente.
+     * 
+     * @return riferimento mostrato (può essere {@code null})
+     */
+    public BibliographicReference getReference() {
+        return reference;
     }
 
 }

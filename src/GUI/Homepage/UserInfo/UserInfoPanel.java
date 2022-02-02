@@ -42,7 +42,7 @@ public class UserInfoPanel extends JPanel {
         logout.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 for (LogoutListener logoutListener : logoutListeners) {
-                    logoutListener.onLogout();
+                    logoutListener.logout();
                 }
             }
         });
