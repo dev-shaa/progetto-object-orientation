@@ -14,10 +14,17 @@ import GUI.Utilities.CustomTreeNode;
 /**
  * Pannello che mostra l'albero delle categorie che l'utente può selezionare.
  */
-public class CategoriesTreePanel extends JScrollPane {
+public class CategoriesTreePanel extends JScrollPane implements TreeSelectionListener {
 
     private JTree tree;
     private ArrayList<CategorySelectionListener> selectionListeners;
+
+    /**
+     * Crea un nuovo pannello vuoto.
+     */
+    public CategoriesTreePanel() {
+        this(null);
+    }
 
     /**
      * Crea un nuovo pannello con l'albero delle categorie indicato.
@@ -44,21 +51,7 @@ public class CategoriesTreePanel extends JScrollPane {
 
             tree.setEditable(false);
             tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-            tree.addTreeSelectionListener(new TreeSelectionListener() {
-                @Override
-                public void valueChanged(TreeSelectionEvent e) {
-                    if (selectionListeners == null)
-                        return;
-
-                    if (getSelectedNode() == null) {
-                        for (CategorySelectionListener categorySelectionListener : selectionListeners)
-                            categorySelectionListener.onCategoryClearSelection();
-                    } else {
-                        for (CategorySelectionListener categorySelectionListener : selectionListeners)
-                            categorySelectionListener.onCategorySelection(getSelectedNode().getUserObject());
-                    }
-                }
-            });
+            tree.addTreeSelectionListener(this);
         }
 
         tree.setModel(categoriesTree);
@@ -71,7 +64,7 @@ public class CategoriesTreePanel extends JScrollPane {
      * Restituisce l'ultimo nodo selezionato.
      * 
      * @return
-     *         nodo selezionato
+     *         nodo selezionato, {@code null se non è selezionato niente}
      */
     @SuppressWarnings("unchecked")
     public CustomTreeNode<Category> getSelectedNode() {
@@ -116,6 +109,20 @@ public class CategoriesTreePanel extends JScrollPane {
             return;
 
         selectionListeners.remove(listener);
+    }
+
+    @Override
+    public void valueChanged(TreeSelectionEvent e) {
+        if (selectionListeners == null)
+            return;
+
+        if (getSelectedNode() == null) {
+            for (CategorySelectionListener categorySelectionListener : selectionListeners)
+                categorySelectionListener.onCategoryClearSelection();
+        } else {
+            for (CategorySelectionListener categorySelectionListener : selectionListeners)
+                categorySelectionListener.onCategorySelection(getSelectedNode().getUserObject());
+        }
     }
 
 }
