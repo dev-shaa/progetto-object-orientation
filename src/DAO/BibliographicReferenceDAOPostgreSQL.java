@@ -1,6 +1,7 @@
 package DAO;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import Controller.DatabaseController;
+import Entities.Author;
 import Entities.Category;
 import Entities.Tag;
 import Entities.User;
@@ -18,22 +20,36 @@ import Entities.References.BibliographicReference;
 import Entities.References.ReferenceLanguage;
 import Entities.References.OnlineResources.*;
 import Entities.References.PhysicalResources.*;
+import Exceptions.DatabaseConnectionException;
 import Exceptions.ReferenceDatabaseException;
 
+/**
+ * Implementazione dell'interfaccia BibliographicReferenceDAO per database relazionali PostgreSQL.
+ * 
+ * @see BibliographicReferenceDAO
+ */
 public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferenceDAO {
 
     private User user;
-
-    public BibliographicReferenceDAOPostgreSQL(User user) throws IllegalArgumentException {
-        setUser(user);
-    }
 
     /**
      * 
      * @param user
      * @throws IllegalArgumentException
      */
-    public void setUser(User user) throws IllegalArgumentException {
+    public BibliographicReferenceDAOPostgreSQL(User user) throws IllegalArgumentException {
+        setUser(user);
+    }
+
+    /**
+     * Imposta l'utente di cui recuperare i riferimenti.
+     * 
+     * @param user
+     *            utente di cui recuperare i riferimenti
+     * @throws IllegalArgumentException
+     *             se {@code user == null}
+     */
+    public void setUser(User user) {
         if (user == null)
             throw new IllegalArgumentException("user non può essere null");
 
@@ -41,158 +57,132 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
     }
 
     /**
+     * Restituisce l'utente assegnato a questo DAO.
      * 
-     * @return
+     * @return utente assegnato al DAO
      */
     public User getUser() {
         return user;
     }
 
     @Override
-    public List<BibliographicReference> getReferences() throws ReferenceDatabaseException {
-        // TODO: DEBUG:
+    public List<BibliographicReference> getAll() throws ReferenceDatabaseException {
+        Connection connection = null;
+
+        Statement referenceStatement = null;
+        ResultSet referenceResultSet = null;
+        String referenceQuery = "select * from bibliographic_reference natural join website where owner = '" + getUser().getName() + "'";
+
+        PreparedStatement relatedReferencesStatement = null;
+        ResultSet relatedReferencesResultSet = null;
+        String relatedReferencesQuery = "select * from quotations where quoted_by = ?";
+
+        ArrayList<BibliographicReference> references = new ArrayList<>();
+        HashMap<Integer, BibliographicReference> idToReference = new HashMap<>();
+        HashMap<BibliographicReference, Collection<Integer>> referenceToRelatedID = new HashMap<>();
+
         try {
-            Article article = new Article("Articolo 1");
-            ArrayList<Category> categories = new ArrayList<>(1);
-            categories.add(new Category("AAA", 1));
+            connection = DatabaseController.getConnection();
 
-            article.setCategories(categories);
-            article.setDescription("Breve descrizione dell'articolo");
+            referenceStatement = connection.prepareStatement(referenceQuery);
+            relatedReferencesStatement = connection.prepareStatement(relatedReferencesQuery);
 
-            Website website = new Website("Sito web 1", "www.sitoweb.com");
-            ArrayList<Tag> tags = new ArrayList<>(2);
-            tags.add(new Tag("tag1"));
-            tags.add(new Tag("oo"));
+            referenceStatement = connection.createStatement();
+            referenceResultSet = referenceStatement.executeQuery(referenceQuery);
 
-            ArrayList<BibliographicReference> related = new ArrayList<>(1);
-            related.add(article);
+            while (referenceResultSet.next()) {
+                Website website = new Website(referenceResultSet.getString("title"), referenceResultSet.getString("url"));
+                website.setID(referenceResultSet.getInt("id"));
+                website.setDOI(referenceResultSet.getString("doi"));
+                website.setPubblicationDate(referenceResultSet.getDate("pubblication_date"));
+                website.setDescription(referenceResultSet.getString("description"));
+                website.setLanguage(ReferenceLanguage.getFromString(referenceResultSet.getString("language")));
 
-            website.setTags(tags);
-            website.setRelatedReferences(related);
+                // FIXME: categorie
 
-            ArrayList<BibliographicReference> references = new ArrayList<>(2);
-            references.add(article);
-            references.add(website);
+                // FIXME: autori
+                // AuthorDAO authorDAO = new AuthorDAO();
+                // website.setAuthors(authorDAO.getAuthorsOf(website));
+
+                // FIXME: tag
+                // tagsStatement.setInt(1, website.getID());
+                // tagsResultSet = tagsStatement.executeQuery();
+                // ArrayList<Tag> tags = new ArrayList<>();
+                // while (tagsResultSet.next())
+                // tags.add(new Tag(tagsResultSet.getString("name")));
+                // tags.trimToSize();
+                // website.setTags(tags);
+
+                relatedReferencesStatement.setInt(1, website.getID());
+                relatedReferencesResultSet = relatedReferencesStatement.executeQuery();
+
+                ArrayList<Integer> relatedReferencesID = new ArrayList<>();
+
+                while (relatedReferencesResultSet.next())
+                    relatedReferencesID.add(relatedReferencesResultSet.getInt("has_quoted"));
+
+                relatedReferencesID.trimToSize();
+
+                referenceToRelatedID.put(website, relatedReferencesID);
+                idToReference.put(website.getID(), website);
+
+                references.add(website);
+            }
+
+            for (BibliographicReference reference : references) {
+                ArrayList<BibliographicReference> relatedReferences = new ArrayList<>();
+
+                for (Integer referenceID : referenceToRelatedID.get(reference)) {
+                    relatedReferences.add(idToReference.get(referenceID));
+                }
+
+                relatedReferences.trimToSize();
+
+                reference.setRelatedReferences(relatedReferences);
+            }
 
             return references;
         } catch (Exception e) {
-            throw new ReferenceDatabaseException();
+            e.printStackTrace();
+            throw new ReferenceDatabaseException("Impossibile recuperare i riferimenti dell'utente.");
+        } finally {
+            try {
+                if (referenceResultSet != null)
+                    referenceResultSet.close();
+
+                if (referenceStatement != null)
+                    referenceStatement.close();
+
+                if (connection != null)
+                    connection.close();
+            } catch (Exception e) {
+                // non fare niente
+            }
         }
 
-        // Connection connection = null;
-
-        // PreparedStatement referenceStatement = null;
-        // ResultSet referenceResultSet = null;
-        // String referenceQuery = "select * from bibliographic_reference natural join ? where user = " + getUser().getName();
-
-        // PreparedStatement tagsStatement = null;
-        // ResultSet tagsResultSet = null;
-        // String tagsQuery = "select * from tags natural join reference_tag where id = ?";
-
-        // PreparedStatement relatedReferencesStatement = null;
-        // ResultSet relatedReferencesResultSet = null;
-        // String relatedReferencesQuery = "select * from quotations where id = ?";
-
-        // ArrayList<BibliographicReference> references = new ArrayList<>();
-
-        // HashMap<Integer, BibliographicReference> idToReference = new HashMap<>();
-        // HashMap<BibliographicReference, Collection<Integer>> referenceToRelatedID = new HashMap<>();
-
-        // try {
-        // connection = DatabaseController.getConnection();
-
-        // referenceStatement = connection.prepareStatement(referenceQuery);
-        // tagsStatement = connection.prepareStatement(tagsQuery);
-        // relatedReferencesStatement = connection.prepareStatement(relatedReferencesQuery);
-
-        // referenceStatement.setString(1, "article");
-        // referenceResultSet = referenceStatement.executeQuery();
-        // while (referenceResultSet.next()) {
-        // Article article = new Article(referenceResultSet.getString("name"));
-        // article.setID(referenceResultSet.getInt("id"));
-        // article.setDOI(referenceResultSet.getString("doi"));
-        // article.setPubblicationDate(referenceResultSet.getDate("pubblicationDate"));
-        // article.setDescription(referenceResultSet.getString("description"));
-        // article.setLanguage(ReferenceLanguage.valueOf(referenceResultSet.getString("language")));
-
-        // article.setISSN(referenceResultSet.getString("issn"));
-
-        // // TODO: tag, autori, categorie
-
-        // tagsStatement.setString(1, article.getID().toString());
-        // tagsResultSet = tagsStatement.executeQuery();
-
-        // ArrayList<Tag> tags = new ArrayList<>();
-
-        // while (tagsResultSet.next())
-        // tags.add(new Tag(tagsResultSet.getString("name")));
-
-        // tags.trimToSize();
-        // article.setTags(tags);
-
-        // relatedReferencesStatement.setString(1, article.getID().toString());
-        // relatedReferencesResultSet = relatedReferencesStatement.executeQuery();
-
-        // ArrayList<Integer> relatedReferencesID = new ArrayList<>();
-
-        // while (relatedReferencesResultSet.next())
-        // relatedReferencesID.add(relatedReferencesResultSet.getInt("aaa"));
-
-        // relatedReferencesID.trimToSize();
-
-        // referenceToRelatedID.put(article, relatedReferencesID);
-        // idToReference.put(article.getID(), article);
-
-        // references.add(article);
-        // }
-
-        // for (BibliographicReference reference : references) {
-        // ArrayList<BibliographicReference> relatedReferences = new ArrayList<>();
-
-        // for (Integer referenceID : referenceToRelatedID.get(reference)) {
-        // relatedReferences.add(idToReference.get(referenceID));
-        // }
-
-        // reference.setRelatedReferences(relatedReferences);
-        // }
-
-        // return references;
-        // } catch (Exception e) {
-        // throw new ReferenceDatabaseException("Impossibile recuperare i riferimenti dell'utente.");
-        // } finally {
-        // try {
-        // if (tagsResultSet != null)
-        // tagsResultSet.close();
-
-        // if (tagsStatement != null)
-        // tagsStatement.close();
-
-        // if (referenceResultSet != null)
-        // referenceResultSet.close();
-
-        // if (referenceStatement != null)
-        // referenceStatement.close();
-
-        // if (connection != null)
-        // connection.close();
-        // } catch (Exception e) {
-        // // non fare niente
-        // }
-        // }
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @throws IllegalArgumentException
+     *             se {@code reference == null}
+     */
     @Override
-    public void removeReference(BibliographicReference reference) throws ReferenceDatabaseException {
+    public void remove(BibliographicReference reference) throws ReferenceDatabaseException {
+        if (reference == null)
+            throw new IllegalArgumentException("reference can't be null");
+
         Connection connection = null;
         Statement statement = null;
-        String query = "delete from bibliographicReference where id = ";
+        String query = "delete from bibliographic_reference where id = " + reference.getID();
 
         try {
             connection = DatabaseController.getConnection();
             statement = connection.createStatement();
             statement.executeUpdate(query);
         } catch (Exception e) {
-            throw new ReferenceDatabaseException("Impossibile recuperare i riferimenti dell'utente.");
+            throw new ReferenceDatabaseException("Impossibile rimuovere il riferimento.");
         } finally {
             try {
                 if (statement != null)
@@ -201,62 +191,143 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
                 if (connection != null)
                     connection.close();
             } catch (Exception e) {
-                // non fare niente
+                e.printStackTrace();
             }
         }
     }
 
     // https://stackoverflow.com/a/63970374
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws IllegalArgumentException
-     *             se {@code article == null}
-     */
     @Override
-    public void saveReference(Article article) throws ReferenceDatabaseException {
+    public void save(Article article) throws ReferenceDatabaseException {
         if (article == null)
-            throw new IllegalArgumentException("article non può essere null");
+            return;
+
+        int pageCount = article.getPageCount();
+        String url = format(article.getURL());
+        String publisher = format(article.getPublisher());
+        String issn = format(article.getISSN());
+
+        String query = "insert into article(id, page_count, url, publisher, issn) values("
+                + article.getID() + "," + pageCount + "," + url + "," + publisher + "," + issn
+                + ") on conflict (id) do update set page_count = " + pageCount + ", url = " + url + ", publisher = " + publisher + ", issn = " + issn;
+
+        save(article, query);
+    }
+
+    @Override
+    public void save(Book book) throws ReferenceDatabaseException {
+        if (book == null)
+            return;
+
+        int pageCount = book.getPageCount();
+        String url = format(book.getURL());
+        String publisher = format(book.getPublisher());
+        String isbn = format(book.getISBN());
+
+        String query = "insert into article(id, page_count, url, publisher, isbn) values("
+                + book.getID() + "," + pageCount + "," + url + "," + publisher + "," + isbn
+                + ") on conflict (id) do update set page_count = " + pageCount + ", url = " + url + ", publisher = " + publisher + ", isbn = " + isbn;
+
+        save(book, query);
+    }
+
+    @Override
+    public void save(Thesis thesis) throws ReferenceDatabaseException {
+        if (thesis == null)
+            return;
+
+        int pageCount = thesis.getPageCount();
+        String url = format(thesis.getURL());
+        String publisher = format(thesis.getPublisher());
+        String university = format(thesis.getUniversity());
+        String faculty = format(thesis.getFaculty());
+
+        String query = "insert into article(id, page_count, url, publisher, university, faculty) values("
+                + thesis.getID() + "," + pageCount + "," + url + "," + publisher + "," + university + "," + faculty
+                + ") on conflict (id) do update set page_count = " + pageCount + ", url = " + url + ", publisher = " + publisher + ", university = " + university + ", faculty = " + faculty;
+
+        save(thesis, query);
+    }
+
+    @Override
+    public void save(Image image) throws ReferenceDatabaseException {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void save(SourceCode sourceCode) throws ReferenceDatabaseException {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void save(Video video) throws ReferenceDatabaseException {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void save(Website website) throws ReferenceDatabaseException {
+        if (website == null)
+            return;
+
+        String url = format(website.getURL());
+
+        String query = "insert into website(id, url) values(" + website.getID() + "," + url + ") on conflict (id) do update set url = " + url;
+
+        save(website, query);
+    }
+
+    private void save(BibliographicReference reference, String query) throws ReferenceDatabaseException {
+        if (reference == null)
+            return;
 
         Connection connection = null;
-        Statement statement = null;
-        ResultSet set = null;
+        PreparedStatement referenceStatement = null;
+        Statement subStatement = null;
+        ResultSet resultSet = null;
 
         try {
             connection = DatabaseController.getConnection();
             connection.setAutoCommit(false);
 
-            statement = connection.createStatement();
+            String sql = null;
 
-            String query = "insert into category(title, pubblicationDate, DOI, description, language) values("
-                    + article.getTitle() + ", "
-                    + article.getPubblicationDate() + ","
-                    + article.getDOI() + ","
-                    + article.getDescription() + ","
-                    + article.getLanguage()
-                    + ")";
+            if (reference.getID() == null)
+                sql = "insert into bibliographic_reference(owner, title, doi, description, language, pubblication_date) values(?,?,?,?,?,?) on conflict";
+            else
+                sql = "update bibliographic_reference set owner = ?, title = ?, doi = ?, description = ?, language = ?, pubblication_date = ? where id = " + reference.getID();
 
-            statement.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
+            referenceStatement = connection.prepareStatement(sql);
 
-            set = statement.getGeneratedKeys();
+            referenceStatement.setString(1, getUser().getName());
+            referenceStatement.setString(2, format(reference.getTitle()));
+            referenceStatement.setString(3, format(reference.getDOI()));
+            referenceStatement.setString(4, format(reference.getDescription()));
 
-            if (set.first()) {
-                article.setID(set.getInt(1));
+            String language = reference.getLanguage() == ReferenceLanguage.NOTSPECIFIED ? null : reference.getLanguage().name();
+            referenceStatement.setString(5, reference.getLanguage() == ReferenceLanguage.NOTSPECIFIED ? null : language);
+
+            Date date = reference.getPubblicationDate() == null ? null : new Date(reference.getPubblicationDate().getTime());
+            referenceStatement.setDate(6, date);
+
+            referenceStatement.executeUpdate();
+
+            if (reference.getID() == null) {
+                resultSet = referenceStatement.getGeneratedKeys();
+
+                if (resultSet.next())
+                    reference.setID(resultSet.getInt(1));
             }
 
-            query = "insert into article(id, pageCount, url, publisher, issn) values("
-                    + article.getID() + ", "
-                    + article.getPageCount() + ","
-                    + article.getURL() + ","
-                    + article.getPublisher() + ","
-                    + article.getISSN()
-                    + ")";
+            subStatement = connection.createStatement();
 
-            statement.executeUpdate(query);
+            subStatement.executeUpdate(query);
 
             connection.commit();
-        } catch (Exception e) {
+        } catch (SQLException | DatabaseConnectionException e) {
             try {
                 connection.rollback();
             } catch (Exception r) {
@@ -266,11 +337,14 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
             throw new ReferenceDatabaseException("Impossibile aggiungere nuovo riferimento.");
         } finally {
             try {
-                if (set != null)
-                    set.close();
+                if (resultSet != null)
+                    resultSet.close();
 
-                if (statement != null)
-                    statement.close();
+                if (subStatement != null)
+                    subStatement.close();
+
+                if (referenceStatement != null)
+                    referenceStatement.close();
 
                 if (connection != null)
                     connection.close();
@@ -280,76 +354,11 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws IllegalArgumentException
-     *             se {@code book == null}
-     */
-    @Override
-    public void saveReference(Book book) throws ReferenceDatabaseException {
-        // TODO Auto-generated method stub
+    private String format(String input) {
+        if (input == null || input.isBlank())
+            return null;
 
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws IllegalArgumentException
-     *             se {@code thesis == null}
-     */
-    @Override
-    public void saveReference(Thesis thesis) throws ReferenceDatabaseException {
-        // TODO Auto-generated method stub
-
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws IllegalArgumentException
-     *             se {@code image == null}
-     */
-    @Override
-    public void saveReference(Image image) throws ReferenceDatabaseException {
-        // TODO Auto-generated method stub
-
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws IllegalArgumentException
-     *             se {@code sourceCode == null}
-     */
-    @Override
-    public void saveReference(SourceCode sourceCode) throws ReferenceDatabaseException {
-        // TODO Auto-generated method stub
-
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws IllegalArgumentException
-     *             se {@code video == null}
-     */
-    @Override
-    public void saveReference(Video video) throws ReferenceDatabaseException {
-        // TODO Auto-generated method stub
-
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws IllegalArgumentException
-     *             se {@code website == null}
-     */
-    @Override
-    public void saveReference(Website website) throws ReferenceDatabaseException {
-        // TODO Auto-generated method stub
-
+        return "'" + input + "'";
     }
 
 }

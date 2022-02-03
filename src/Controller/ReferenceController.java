@@ -50,7 +50,7 @@ public class ReferenceController {
 
         this.referenceDAO = referenceDAO;
 
-        references = getReferenceDAO().getReferences();
+        references = getReferenceDAO().getAll();
     }
 
     /**
@@ -125,7 +125,7 @@ public class ReferenceController {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
-        // getReferenceDAO().removeReference(reference);
+        getReferenceDAO().remove(reference);
 
         getReferences().remove(reference);
 
@@ -148,12 +148,11 @@ public class ReferenceController {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
-        // getReferenceDAO().saveReference(reference);
-
-        if (!getReferences().contains(reference))
+        if (!getReferences().contains(reference)) {
             getReferences().add(reference);
-
-        addToQuotationCount(reference);
+            getReferenceDAO().save(reference);
+            addToQuotationCount(reference);
+        }
     }
 
     /**
@@ -270,10 +269,11 @@ public class ReferenceController {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
-        if (!getReferences().contains(reference))
+        if (!getReferences().contains(reference)) {
+            getReferenceDAO().save(reference);
             getReferences().add(reference);
-
-        addToQuotationCount(reference);
+            addToQuotationCount(reference);
+        }
     }
 
     private void removeReferenceFromRelated(BibliographicReference reference) {

@@ -25,7 +25,7 @@ public interface BibliographicReferenceDAO {
      * @throws ReferenceDatabaseException
      *             se il recupero non va a buon fine
      */
-    public List<BibliographicReference> getReferences() throws ReferenceDatabaseException;
+    public List<BibliographicReference> getAll() throws ReferenceDatabaseException;
 
     /**
      * Rimuove un riferimento dal database.
@@ -35,7 +35,7 @@ public interface BibliographicReferenceDAO {
      * @throws ReferenceDatabaseException
      *             se la rimozione non va a buon fine
      */
-    public void removeReference(BibliographicReference reference) throws ReferenceDatabaseException;
+    public void remove(BibliographicReference reference) throws ReferenceDatabaseException;
 
     /**
      * Salva un articolo nel database (modificandolo se già esiste un riferimento con lo stesso id).
@@ -45,7 +45,7 @@ public interface BibliographicReferenceDAO {
      * @throws ReferenceDatabaseException
      *             se il salvataggio non va a buon fine
      */
-    public void saveReference(Article article) throws ReferenceDatabaseException;
+    public void save(Article article) throws ReferenceDatabaseException;
 
     /**
      * Salva un libro nel database (modificandolo se già esiste un riferimento con lo stesso id).
@@ -55,7 +55,7 @@ public interface BibliographicReferenceDAO {
      * @throws ReferenceDatabaseException
      *             se il salvataggio non va a buon fine
      */
-    public void saveReference(Book book) throws ReferenceDatabaseException;
+    public void save(Book book) throws ReferenceDatabaseException;
 
     /**
      * Salva una tesi nel database (modificandola se già esiste un riferimento con lo stesso id).
@@ -65,7 +65,7 @@ public interface BibliographicReferenceDAO {
      * @throws ReferenceDatabaseException
      *             se il salvataggio non va a buon fine
      */
-    public void saveReference(Thesis thesis) throws ReferenceDatabaseException;
+    public void save(Thesis thesis) throws ReferenceDatabaseException;
 
     /**
      * Salva un'immagine nel database (modificandola se già esiste un riferimento con lo stesso id).
@@ -75,7 +75,7 @@ public interface BibliographicReferenceDAO {
      * @throws ReferenceDatabaseException
      *             se il salvataggio non va a buon fine
      */
-    public void saveReference(Image image) throws ReferenceDatabaseException;
+    public void save(Image image) throws ReferenceDatabaseException;
 
     /**
      * Salva un articolo nel database (modificandolo se già esiste un riferimento con lo stesso id).
@@ -85,7 +85,7 @@ public interface BibliographicReferenceDAO {
      * @throws ReferenceDatabaseException
      *             se il salvataggio non va a buon fine
      */
-    public void saveReference(SourceCode sourceCode) throws ReferenceDatabaseException;
+    public void save(SourceCode sourceCode) throws ReferenceDatabaseException;
 
     /**
      * Salva un video nel database (modificandolo se già esiste un riferimento con lo stesso id).
@@ -95,7 +95,7 @@ public interface BibliographicReferenceDAO {
      * @throws ReferenceDatabaseException
      *             se il salvataggio non va a buon fine
      */
-    public void saveReference(Video video) throws ReferenceDatabaseException;
+    public void save(Video video) throws ReferenceDatabaseException;
 
     /**
      * Salva un sito web nel database (modificandolo se già esiste un riferimento con lo stesso id).
@@ -105,6 +105,6 @@ public interface BibliographicReferenceDAO {
      * @throws ReferenceDatabaseException
      *             se il salvataggio non va a buon fine
      */
-    public void saveReference(Website website) throws ReferenceDatabaseException;
+    public void save(Website website) throws ReferenceDatabaseException;
 
 }
