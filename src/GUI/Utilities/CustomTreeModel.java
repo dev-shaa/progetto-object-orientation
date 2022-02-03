@@ -21,7 +21,9 @@ public class CustomTreeModel<T extends Object> extends DefaultTreeModel {
      */
     public CustomTreeModel(CustomTreeNode<T> root) {
         super(root);
+
         itemToNode = new HashMap<>();
+        itemToNode.put(root.getUserObject(), root);
     }
 
     @Override
@@ -73,11 +75,11 @@ public class CustomTreeModel<T extends Object> extends DefaultTreeModel {
     }
 
     /**
-     * Trova il nodo a cui è associato l'elemento.
-     * TODO: commenta
+     * Trova il nodo a cui è associato l'elemento, se presente.
      * 
      * @param item
-     * @return
+     *            elemento del nodo da cercare
+     * @return nodo con l'elemento passato, {@code null} se non è presente
      */
     public CustomTreeNode<T> findNode(T item) {
         return itemToNode.get(item);

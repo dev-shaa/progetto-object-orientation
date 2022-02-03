@@ -5,6 +5,7 @@ import Entities.References.*;
 import GUI.References.Editor.*;
 import GUI.References.Editor.Reference.Picker.*;
 import GUI.Utilities.*;
+import Exceptions.CategoryDatabaseException;
 import Exceptions.RequiredFieldMissingException;
 
 import java.awt.*;
@@ -44,7 +45,6 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     private ReferenceController referenceController;
 
     private T openReference;
-    // private ArrayList<SaveListener<T>> listeners;
 
     private final String separator = ",";
     private final Dimension maximumSize = new Dimension(Integer.MAX_VALUE, 24);
@@ -71,7 +71,8 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         setSize(500, 700);
         setResizable(false);
 
-        setCategoryController(categoryController);
+        // FIXME:
+        // setCategoryController(categoryController);
         setReferenceController(referenceController);
 
         setupComponents();
@@ -323,16 +324,16 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      * @throws IllegalArgumentException
      *             se {@code categoryController == null}
      */
-    public void setCategoryController(CategoryController categoryController) {
+    public void setCategoryController(CategoryController categoryController) throws CategoryDatabaseException {
         if (categoryController == null)
             throw new IllegalArgumentException("categoryController can't be null");
 
         this.categoryController = categoryController;
 
         if (categories == null) {
-            categories = new PopupCheckboxTree<Category>(categoryController.get());
+            categories = new PopupCheckboxTree<Category>(categoryController.getTree());
         } else {
-            categories.setTreeModel(categoryController.get());
+            categories.setTreeModel(categoryController.getTree());
         }
     }
 
@@ -369,24 +370,6 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     public ReferenceController getReferenceController() {
         return referenceController;
     }
-
-    // TODO:
-    // public void addListener(SaveListener<T> listener) {
-    // if (listener == null)
-    // return;
-
-    // if (listeners == null)
-    // listeners = new ArrayList<>(2);
-
-    // listeners.add(listener);
-    // }
-
-    // public void removeListener(SaveListener<T> listener) {
-    // if (listener == null || listeners == null)
-    // return;
-
-    // listeners.remove(listener);
-    // }
 
     private void setTitleValue(String text) {
         title.setText(text);

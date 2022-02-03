@@ -5,12 +5,12 @@ import Entities.References.BibliographicReference;
 import Entities.References.OnlineResources.*;
 import Entities.References.OnlineResources.Image;
 import Entities.References.PhysicalResources.*;
+import Exceptions.CategoryDatabaseException;
 import GUI.Categories.*;
 import GUI.References.*;
 import GUI.Search.*;
 import GUI.Utilities.PopupButton;
 import Controller.Controller;
-import DAO.CategoryDAOPostgreSQL;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -46,7 +46,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
      * @param controller
      *            controller della GUI
      */
-    public Homepage(Controller controller) {
+    public Homepage(Controller controller) throws CategoryDatabaseException {
         setController(controller);
 
         setTitle("Pagina principale");
@@ -68,7 +68,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
 
         contentPane.add(setupUserInfoPanel(), BorderLayout.NORTH);
 
-        referenceSearchPanel = new SearchPanel(getController().getCategoryController().get());
+        referenceSearchPanel = new SearchPanel(getController().getCategoryController().getTree());
         referenceSearchPanel.addReferenceSearchListener(this);
 
         JSplitPane subSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, setupCategoriesPanel(), setupReferencePanel());
@@ -89,10 +89,15 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
     }
 
     private void reset() {
-        updateUserLabel();
+        updateUserLabelText();
 
-        categoriesTreePanel.setCategoriesTree(getController().getCategoryController().get());
-        referenceSearchPanel.setTreeModel(getController().getCategoryController().get());
+        try {
+            categoriesTreePanel.setCategoriesTree(getController().getCategoryController().getTree());
+            referenceSearchPanel.setCategoriesTree(getController().getCategoryController().getTree());
+        } catch (Exception e) {
+            // TODO:
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -117,12 +122,12 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         return controller;
     }
 
-    // CATEGORIES
+    // #region CATEGORIES
 
     private JPanel setupCategoriesPanel() {
         JPanel categoriesPanel = new JPanel();
 
-        categoriesTreePanel = new CategoriesTreePanel(getController().getCategoryController().get());
+        categoriesTreePanel = new CategoriesTreePanel();
         categoriesTreePanel.addSelectionListener(this);
 
         categoriesPanel.setLayout(new BorderLayout(5, 5));
@@ -189,9 +194,10 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
             String newCategoryName = getCategoryNameFromUser("Nuova categoria");
 
             if (newCategoryName != null) {
-                getController().getCategoryController().save(newCategoryName, categoriesTreePanel.getSelectedNode());
+                getController().getCategoryController().save(newCategoryName, categoriesTreePanel.getSelectedNode().getUserObject());
             }
         } catch (Exception e) {
+            e.printStackTrace();
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }
@@ -201,7 +207,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
             String newName = getCategoryNameFromUser(categoriesTreePanel.getSelectedNode().getUserObject().getName());
 
             if (newName != null) {
-                getController().getCategoryController().update(categoriesTreePanel.getSelectedNode(), newName);
+                getController().getCategoryController().update(categoriesTreePanel.getSelectedNode().getUserObject(), newName);
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
@@ -213,7 +219,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
             int confirmDialogBoxOption = JOptionPane.showConfirmDialog(null, "Sicuro di voler eliminare questa categoria?", "Elimina categoria", JOptionPane.YES_NO_OPTION);
 
             if (confirmDialogBoxOption == JOptionPane.YES_OPTION) {
-                getController().getCategoryController().remove(categoriesTreePanel.getSelectedNode());
+                getController().getCategoryController().remove(categoriesTreePanel.getSelectedNode().getUserObject());
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
@@ -224,7 +230,9 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         return (String) JOptionPane.showInputDialog(this, "Inserisci il nuovo nome della categoria", "Nuova categoria", JOptionPane.PLAIN_MESSAGE, null, null, defaultName);
     }
 
-    // REFERENCES
+    // #endregion
+
+    // #region REFERENCES
 
     private JPanel setupReferencePanel() {
         JPanel referencePanel = new JPanel();
@@ -375,7 +383,9 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         }
     }
 
-    // SEARCH
+    // #endregion
+
+    // #region SEARCH
 
     @Override
     public void search(Search search) {
@@ -383,7 +393,9 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         referenceListPanel.setReferences(getController().getReferenceController().getReferences(search));
     }
 
-    // USER
+    // #endregion
+
+    // #region USER
 
     private JPanel setupUserInfoPanel() {
         JPanel userInfoPanel = new JPanel();
@@ -394,7 +406,11 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         userInfoPanel.setBorder(new EmptyBorder(15, 15, 15, 15));
         userInfoPanel.setBackground(darkGray);
 
-        updateUserLabel();
+        userLabel = new JLabel();
+        userLabel.setForeground(Color.WHITE);
+        userLabel.setIcon(new ImageIcon("images/bookmark_light.png"));
+
+        updateUserLabelText();
 
         logoutButton = new JButton(new ImageIcon("images/logout_white.png"));
         logoutButton.setToolTipText("Esci");
@@ -413,15 +429,14 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         return userInfoPanel;
     }
 
-    private void updateUserLabel() {
-        if (userLabel == null)
-            userLabel = new JLabel();
-
-        userLabel.setText("Benvenuto, " + getController().getUser());
+    private void updateUserLabelText() {
+        userLabel.setText("<html>Benvenuto, <b>" + getController().getUser() + "</b></html>");
     }
 
     private void logout() {
         controller.openLoginPage();
     }
+
+    // #endregion
 
 }

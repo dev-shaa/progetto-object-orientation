@@ -212,10 +212,10 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
 
     private void initializeCategoriesPanel() throws CategoryDatabaseException {
         if (categoriesPanel == null) {
-            categoriesPanel = new CategoriesTreePanel(categoryController.get());
+            categoriesPanel = new CategoriesTreePanel(categoryController.getTree());
             categoriesPanel.addSelectionListener(this);
         } else {
-            categoriesPanel.setCategoriesTree(categoryController.get());
+            categoriesPanel.setCategoriesTree(categoryController.getTree());
         }
     }
 
