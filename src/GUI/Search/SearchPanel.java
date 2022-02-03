@@ -41,11 +41,9 @@ public class SearchPanel extends JPanel {
      * 
      * @param treeModel
      *            albero delle categorie selezionabili
-     * @throws IllegalArgumentException
-     *             se {@code treeModel == null}
      */
     public SearchPanel(CustomTreeModel<Category> treeModel) {
-        setTreeModel(treeModel);
+        setCategoriesTree(treeModel);
 
         setLayout(new BorderLayout(5, 5));
         setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -131,13 +129,8 @@ public class SearchPanel extends JPanel {
      * Imposta l'albero delle categorie selezionabili.
      * 
      * @param treeModel
-     * @throws IllegalArgumentException
-     *             se {@code treeModel == null}
      */
-    public void setTreeModel(CustomTreeModel<Category> treeModel) {
-        if (treeModel == null)
-            throw new IllegalArgumentException("treeModel can't be null");
-
+    public void setCategoriesTree(CustomTreeModel<Category> treeModel) {
         if (categories == null)
             categories = new PopupCheckboxTree<Category>(treeModel);
         else

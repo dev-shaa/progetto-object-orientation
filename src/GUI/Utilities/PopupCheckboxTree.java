@@ -2,7 +2,6 @@ package GUI.Utilities;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
-import java.util.Enumeration;
 
 import javax.swing.tree.TreePath;
 import com.jidesoft.swing.CheckBoxTree;
@@ -98,34 +97,12 @@ public class PopupCheckboxTree<T> extends PopupButton {
      *             se {@code item == null}
      */
     public void selectItem(T item) {
-        if (item == null)
-            throw new IllegalArgumentException("item can't be null");
+        CustomTreeNode<T> node = categoriesTree.findNode(item);
 
-        selectItem(item, categoriesTree.getRoot());
-    }
+        if (node == null)
+            return;
 
-    private boolean selectItem(T item, CustomTreeNode<T> startNode) {
-        if (item == null)
-            throw new IllegalArgumentException("category can't be null");
-
-        if (startNode == null)
-            return false;
-
-        T nodeCategory = startNode.getUserObject();
-
-        if (nodeCategory != null && nodeCategory.equals(item)) {
-            checkboxTree.getCheckBoxTreeSelectionModel().addSelectionPath(new TreePath(categoriesTree.getPathToRoot(startNode)));
-            return true;
-        }
-
-        boolean found = false;
-        Enumeration<CustomTreeNode<T>> children = startNode.children();
-
-        while (children.hasMoreElements() && !found) {
-            found = selectItem(item, children.nextElement());
-        }
-
-        return found;
+        checkboxTree.getCheckBoxTreeSelectionModel().addSelectionPath(new TreePath(categoriesTree.getPathToRoot(node)));
     }
 
 }

@@ -1,5 +1,7 @@
 package GUI.Utilities;
 
+import java.util.HashMap;
+
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
@@ -9,6 +11,8 @@ import javax.swing.tree.TreeNode;
  */
 public class CustomTreeModel<T extends Object> extends DefaultTreeModel {
 
+    private HashMap<T, CustomTreeNode<T>> itemToNode;
+
     /**
      * Crea un nuovo albero con la radice indicata.
      * 
@@ -17,6 +21,7 @@ public class CustomTreeModel<T extends Object> extends DefaultTreeModel {
      */
     public CustomTreeModel(CustomTreeNode<T> root) {
         super(root);
+        itemToNode = new HashMap<>();
     }
 
     @Override
@@ -45,7 +50,11 @@ public class CustomTreeModel<T extends Object> extends DefaultTreeModel {
     @SuppressWarnings("unchecked")
     public void insertNodeInto(MutableTreeNode newChild, MutableTreeNode parent, int index) throws IllegalArgumentException {
         try {
-            super.insertNodeInto((CustomTreeNode<T>) newChild, (CustomTreeNode<T>) parent, index);
+            CustomTreeNode<T> _child = (CustomTreeNode<T>) newChild;
+            CustomTreeNode<T> _parent = (CustomTreeNode<T>) parent;
+            super.insertNodeInto(_child, _parent, index);
+
+            itemToNode.put(_child.getUserObject(), _child);
         } catch (ClassCastException e) {
             throw new IllegalArgumentException("newChild or parent are not a valid type of node for this tree");
         }
@@ -61,6 +70,17 @@ public class CustomTreeModel<T extends Object> extends DefaultTreeModel {
      */
     public void addNode(CustomTreeNode<T> newChild, CustomTreeNode<T> parent) {
         insertNodeInto(newChild, parent, parent.getChildCount());
+    }
+
+    /**
+     * Trova il nodo a cui è associato l'elemento.
+     * TODO: commenta
+     * 
+     * @param item
+     * @return
+     */
+    public CustomTreeNode<T> findNode(T item) {
+        return itemToNode.get(item);
     }
 
 }
