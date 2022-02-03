@@ -68,7 +68,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     public ReferenceEditor(Frame owner, String title, CategoryController categoryController, ReferenceController referenceController) {
         super(owner, title, true);
 
-        setSize(500, 500);
+        setSize(500, 700);
         setResizable(false);
 
         setCategoryController(categoryController);
@@ -97,7 +97,9 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         relatedReferencesDialog.addReferencePickerListener(this);
 
         relatedReferencesPopupButton = new PopupButton("Premi per vedere i rimandi");
-        JButton addRelatedReference = new JButton("+");
+        JButton addRelatedReference = new JButton(new ImageIcon("images/button_add.png"));
+        addRelatedReference.setBorderPainted(false);
+        addRelatedReference.setBackground(new Color(0, 0, 0, 0));
         addRelatedReference.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -139,11 +141,20 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
 
         JButton confirmButton = new JButton("Salva riferimento");
         confirmButton.setAlignmentX(alignment);
+
+        // non possiamo usare "this" all'interno del corpo dell'action listener,
+        // quindi ci serve un puntatore a se stesso
+        ReferenceEditor<T> selfPointer = this;
+
         confirmButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                saveReference();
-                // setVisible(false);
+                try {
+                    saveReference();
+                    setVisible(false);
+                } catch (RequiredFieldMissingException ex) {
+                    JOptionPane.showMessageDialog(selfPointer, ex.getMessage(), "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 
@@ -270,13 +281,9 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         return openReference;
     }
 
-    private void saveReference() {
-        try {
-            T reference = getOpenReference() == null ? getNewInstance() : getOpenReference();
-            fillReferenceValues(reference);
-        } catch (RequiredFieldMissingException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
-        }
+    private void saveReference() throws RequiredFieldMissingException {
+        T reference = getOpenReference() == null ? getNewInstance() : getOpenReference();
+        fillReferenceValues(reference);
     }
 
     @Override
@@ -493,7 +500,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         panel.setBorder(new EmptyBorder(0, 20, 0, 5));
         panel.setBackground(new Color(0, 0, 0, 0));
 
-        JButton removeButton = new JButton(new ImageIcon("images/delete_icon.png"));
+        JButton removeButton = new JButton(new ImageIcon("images/button_remove.png"));
         removeButton.setBorderPainted(false);
         removeButton.setFocusPainted(false);
         removeButton.addActionListener(new ActionListener() {
