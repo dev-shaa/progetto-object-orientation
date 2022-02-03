@@ -1,4 +1,4 @@
-package GUI.Editor;
+package GUI.References.Editor;
 
 import java.util.ArrayList;
 

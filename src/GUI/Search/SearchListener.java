@@ -1,4 +1,4 @@
-package GUI.Homepage.Search;
+package GUI.Search;
 
 import java.util.EventListener;
 import Entities.Search;

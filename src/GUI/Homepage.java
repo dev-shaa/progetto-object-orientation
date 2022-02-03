@@ -1,17 +1,16 @@
-package GUI.Homepage;
+package GUI;
 
 import Entities.*;
 import Entities.References.BibliographicReference;
 import Entities.References.OnlineResources.*;
 import Entities.References.OnlineResources.Image;
 import Entities.References.PhysicalResources.*;
-import GUI.Homepage.Categories.*;
-import GUI.Homepage.References.*;
-import GUI.Homepage.Search.*;
-import GUI.Homepage.UserInfo.LogoutListener;
-import GUI.Homepage.UserInfo.UserInfoPanel;
+import GUI.Categories.*;
+import GUI.References.*;
+import GUI.Search.*;
 import GUI.Utilities.PopupButton;
 import Controller.Controller;
+import DAO.CategoryDAOPostgreSQL;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -22,20 +21,21 @@ import javax.swing.border.EmptyBorder;
 /**
  * Classe che si occupa di impostare le componenti base della pagina principale, che mostra tutti i riferimenti e le categorie.
  */
-public class Homepage extends JFrame implements CategorySelectionListener, ReferenceSelectionListener, SearchListener, LogoutListener {
+public class Homepage extends JFrame implements CategorySelectionListener, ReferenceSelectionListener, SearchListener {
 
     private Controller controller;
 
-    private UserInfoPanel userInfoPanel;
+    private JLabel userLabel;
+    private JButton logoutButton;
 
     private CategoriesTreePanel categoriesTreePanel;
     private JButton createCategoryButton;
-    private JButton changeCategoryButton;
+    private JButton updateCategoryButton;
     private JButton removeCategoryButton;
 
     private ReferenceListPanel referenceListPanel;
     private ReferenceInfoPanel referenceInfoPanel;
-    private JButton changeReferenceButton;
+    private JButton updateReferenceButton;
     private JButton removeReferenceButton;
 
     private SearchPanel referenceSearchPanel;
@@ -66,12 +66,9 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         contentPane.setLayout(new BorderLayout(5, 5));
         setContentPane(contentPane);
 
-        userInfoPanel = new UserInfoPanel(getController().getUser());
-        userInfoPanel.addLogoutListener(this);
+        contentPane.add(setupUserInfoPanel(), BorderLayout.NORTH);
 
-        contentPane.add(userInfoPanel, BorderLayout.NORTH);
-
-        referenceSearchPanel = new SearchPanel(getController().getCategoryController().getCategoriesTree());
+        referenceSearchPanel = new SearchPanel(getController().getCategoryController().get());
         referenceSearchPanel.addReferenceSearchListener(this);
 
         JSplitPane subSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, setupCategoriesPanel(), setupReferencePanel());
@@ -92,9 +89,10 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
     }
 
     private void reset() {
-        userInfoPanel.setUser(getController().getUser());
-        categoriesTreePanel.setCategoriesTree(getController().getCategoryController().getCategoriesTree());
-        referenceSearchPanel.setTreeModel(getController().getCategoryController().getCategoriesTree());
+        updateUserLabel();
+
+        categoriesTreePanel.setCategoriesTree(getController().getCategoryController().get());
+        referenceSearchPanel.setTreeModel(getController().getCategoryController().get());
     }
 
     /**
@@ -124,7 +122,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
     private JPanel setupCategoriesPanel() {
         JPanel categoriesPanel = new JPanel();
 
-        categoriesTreePanel = new CategoriesTreePanel(getController().getCategoryController().getCategoriesTree());
+        categoriesTreePanel = new CategoriesTreePanel(getController().getCategoryController().get());
         categoriesTreePanel.addSelectionListener(this);
 
         categoriesPanel.setLayout(new BorderLayout(5, 5));
@@ -142,10 +140,10 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
             }
         });
 
-        changeCategoryButton = new JButton(new ImageIcon("images/folder_edit.png"));
-        changeCategoryButton.setToolTipText("Modifica categoria selezionata");
-        changeCategoryButton.setEnabled(false);
-        changeCategoryButton.addActionListener(new ActionListener() {
+        updateCategoryButton = new JButton(new ImageIcon("images/folder_edit.png"));
+        updateCategoryButton.setToolTipText("Modifica categoria selezionata");
+        updateCategoryButton.setEnabled(false);
+        updateCategoryButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 changeCategory();
             }
@@ -161,7 +159,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         });
 
         toolbar.add(createCategoryButton);
-        toolbar.add(changeCategoryButton);
+        toolbar.add(updateCategoryButton);
         toolbar.add(removeCategoryButton);
 
         categoriesPanel.add(toolbar, BorderLayout.NORTH);
@@ -173,7 +171,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
     @Override
     public void onCategorySelection(Category selectedCategory) {
         createCategoryButton.setEnabled(true);
-        changeCategoryButton.setEnabled(selectedCategory != null);
+        updateCategoryButton.setEnabled(selectedCategory != null);
         removeCategoryButton.setEnabled(selectedCategory != null);
 
         referenceListPanel.setReferences(getController().getReferenceController().getReferences(selectedCategory));
@@ -182,7 +180,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
     @Override
     public void onCategoryClearSelection() {
         createCategoryButton.setEnabled(false);
-        changeCategoryButton.setEnabled(false);
+        updateCategoryButton.setEnabled(false);
         removeCategoryButton.setEnabled(false);
     }
 
@@ -191,7 +189,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
             String newCategoryName = getCategoryNameFromUser("Nuova categoria");
 
             if (newCategoryName != null) {
-                getController().getCategoryController().addCategory(newCategoryName, categoriesTreePanel.getSelectedNode());
+                getController().getCategoryController().save(newCategoryName, categoriesTreePanel.getSelectedNode());
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
@@ -203,7 +201,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
             String newName = getCategoryNameFromUser(categoriesTreePanel.getSelectedNode().getUserObject().getName());
 
             if (newName != null) {
-                getController().getCategoryController().changeCategory(categoriesTreePanel.getSelectedNode(), newName);
+                getController().getCategoryController().update(categoriesTreePanel.getSelectedNode(), newName);
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
@@ -215,7 +213,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
             int confirmDialogBoxOption = JOptionPane.showConfirmDialog(null, "Sicuro di voler eliminare questa categoria?", "Elimina categoria", JOptionPane.YES_NO_OPTION);
 
             if (confirmDialogBoxOption == JOptionPane.YES_OPTION) {
-                getController().getCategoryController().removeCategory(categoriesTreePanel.getSelectedNode());
+                getController().getCategoryController().remove(categoriesTreePanel.getSelectedNode());
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
@@ -298,10 +296,10 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         createReferenceButton.addToPopupMenu(imageOption);
         createReferenceButton.addToPopupMenu(videoOption);
 
-        changeReferenceButton = new JButton(new ImageIcon("images/file_edit.png"));
-        changeReferenceButton.setToolTipText("Modifica riferimento");
-        changeReferenceButton.setEnabled(false);
-        changeReferenceButton.addActionListener(new ActionListener() {
+        updateReferenceButton = new JButton(new ImageIcon("images/file_edit.png"));
+        updateReferenceButton.setToolTipText("Modifica riferimento");
+        updateReferenceButton.setEnabled(false);
+        updateReferenceButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 changeSelectedReference();
             }
@@ -317,7 +315,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         });
 
         toolbar.add(createReferenceButton);
-        toolbar.add(changeReferenceButton);
+        toolbar.add(updateReferenceButton);
         toolbar.add(removeReferenceButton);
 
         referenceInfoPanel = new ReferenceInfoPanel();
@@ -337,7 +335,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
     @Override
     public void onReferenceSelection(BibliographicReference reference) {
         referenceInfoPanel.setReference(reference);
-        changeReferenceButton.setEnabled(reference != null);
+        updateReferenceButton.setEnabled(reference != null);
         removeReferenceButton.setEnabled(reference != null);
     }
 
@@ -387,8 +385,42 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
 
     // USER
 
-    @Override
-    public void logout() {
+    private JPanel setupUserInfoPanel() {
+        JPanel userInfoPanel = new JPanel();
+
+        Color darkGray = Color.decode("#24292f");
+
+        userInfoPanel.setLayout(new BorderLayout(5, 0));
+        userInfoPanel.setBorder(new EmptyBorder(15, 15, 15, 15));
+        userInfoPanel.setBackground(darkGray);
+
+        updateUserLabel();
+
+        logoutButton = new JButton(new ImageIcon("images/logout_white.png"));
+        logoutButton.setToolTipText("Esci");
+        logoutButton.setHorizontalAlignment(SwingConstants.RIGHT);
+        logoutButton.setBackground(darkGray);
+        logoutButton.setBorderPainted(false);
+        logoutButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                logout();
+            }
+        });
+
+        userInfoPanel.add(userLabel, BorderLayout.WEST);
+        userInfoPanel.add(logoutButton, BorderLayout.EAST);
+
+        return userInfoPanel;
+    }
+
+    private void updateUserLabel() {
+        if (userLabel == null)
+            userLabel = new JLabel();
+
+        userLabel.setText("Benvenuto, " + getController().getUser());
+    }
+
+    private void logout() {
         controller.openLoginPage();
     }
 

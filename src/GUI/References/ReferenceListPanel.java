@@ -1,4 +1,4 @@
-package GUI.Homepage.References;
+package GUI.References;
 
 import Entities.References.*;
 
@@ -31,16 +31,11 @@ public class ReferenceListPanel extends JScrollPane {
     private ArrayList<BibliographicReference> displayedReferences;
     private ArrayList<ReferenceSelectionListener> selectionListeners;
 
-    private final String titleLabel = "Titolo";
-    private final String authorsLabel = "Autori";
-    private final String pubblicationDateLabel = "Data di pubblicazione";
-    private final String quotationCountLabel = "Citazione ricevute";
-
     /**
      * Crea un {@code ReferenceListPanel} vuoto.
      */
     public ReferenceListPanel() {
-        String[] tableColumns = { titleLabel, authorsLabel, pubblicationDateLabel, quotationCountLabel };
+        String[] tableColumns = { "Titolo", "Autori", "Data di pubblicazione", "Citazione ricevute" };
         this.referencesTableModel = new DefaultTableModel(tableColumns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {

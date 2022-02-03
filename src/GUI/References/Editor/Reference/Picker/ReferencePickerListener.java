@@ -1,4 +1,4 @@
-package GUI.Editor.Reference.Picker;
+package GUI.References.Editor.Reference.Picker;
 
 import java.util.EventListener;
 import Entities.References.BibliographicReference;

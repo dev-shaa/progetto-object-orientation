@@ -1,4 +1,4 @@
-package GUI.Homepage.Categories;
+package GUI.Categories;
 
 import java.util.EventListener;
 import Entities.Category;

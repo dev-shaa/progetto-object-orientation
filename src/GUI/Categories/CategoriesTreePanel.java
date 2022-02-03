@@ -1,4 +1,4 @@
-package GUI.Homepage.Categories;
+package GUI.Categories;
 
 import java.util.ArrayList;
 
@@ -25,8 +25,6 @@ public class CategoriesTreePanel extends JScrollPane {
      * 
      * @param categoriesTree
      *            albero delle categorie
-     * @throws IllegalArgumentException
-     *             se {@code categoriesTree} è nullo
      */
     public CategoriesTreePanel(CustomTreeModel<Category> categoriesTree) {
         super();
@@ -39,13 +37,8 @@ public class CategoriesTreePanel extends JScrollPane {
      * 
      * @param categoriesTree
      *            albero delle categorie
-     * @throws IllegalArgumentException
-     *             se {@code categoriesTree == null}
      */
     public void setCategoriesTree(CustomTreeModel<Category> categoriesTree) {
-        if (categoriesTree == null)
-            throw new IllegalArgumentException("categoriesTree non può essere null");
-
         if (tree == null) {
             tree = new JTree();
 

@@ -1,4 +1,4 @@
-package GUI.Homepage.References;
+package GUI.References;
 
 import java.util.EventListener;
 

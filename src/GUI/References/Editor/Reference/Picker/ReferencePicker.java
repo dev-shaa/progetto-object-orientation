@@ -1,4 +1,4 @@
-package GUI.Editor.Reference.Picker;
+package GUI.References.Editor.Reference.Picker;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.border.EmptyBorder;
@@ -14,10 +15,11 @@ import Controller.CategoryController;
 import Controller.ReferenceController;
 import Entities.Category;
 import Entities.References.BibliographicReference;
-import GUI.Homepage.Categories.CategorySelectionListener;
-import GUI.Homepage.Categories.CategoriesTreePanel;
-import GUI.Homepage.References.ReferenceListPanel;
-import GUI.Homepage.References.ReferenceSelectionListener;
+import Exceptions.CategoryDatabaseException;
+import GUI.Categories.CategoriesTreePanel;
+import GUI.Categories.CategorySelectionListener;
+import GUI.References.ReferenceListPanel;
+import GUI.References.ReferenceSelectionListener;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -28,6 +30,7 @@ import java.awt.event.ActionListener;
  */
 public class ReferencePicker extends JDialog implements CategorySelectionListener, ReferenceSelectionListener {
 
+    private CategoryController categoryController;
     private ReferenceController referenceController;
 
     private CategoriesTreePanel categoriesPanel;
@@ -101,12 +104,27 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
      *            riferimenti da escludere
      */
     public void setVisible(boolean b, Collection<? extends BibliographicReference> referencesToExclude) {
+        boolean showErrorMessage = false;
+        String errorMessage = null;
+
         if (b) {
             this.referencesToExclude = referencesToExclude;
             categoriesPanel.clearSelection();
+
+            try {
+                initializeCategoriesPanel();
+                initializeReferencesPanel();
+            } catch (CategoryDatabaseException e) {
+                showErrorMessage = true;
+                errorMessage = e.getMessage();
+            }
         }
 
         super.setVisible(b);
+
+        if (showErrorMessage) {
+            JOptionPane.showMessageDialog(this, errorMessage, "Errore", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /**
@@ -120,10 +138,9 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
      */
     public void setCategoryController(CategoryController categoryController) {
         if (categoryController == null)
-            throw new IllegalArgumentException("categoryManager can't be null");
+            throw new IllegalArgumentException("categoryController can't be null");
 
-        initializeCategoriesPanel(categoryController);
-        initializeReferencesPanel();
+        this.categoryController = categoryController;
     }
 
     /**
@@ -193,12 +210,12 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
             pickerListeners.remove(listener);
     }
 
-    private void initializeCategoriesPanel(CategoryController categoryController) {
+    private void initializeCategoriesPanel() throws CategoryDatabaseException {
         if (categoriesPanel == null) {
-            categoriesPanel = new CategoriesTreePanel(categoryController.getCategoriesTree());
+            categoriesPanel = new CategoriesTreePanel(categoryController.get());
             categoriesPanel.addSelectionListener(this);
         } else {
-            categoriesPanel.setCategoriesTree(categoryController.getCategoriesTree());
+            categoriesPanel.setCategoriesTree(categoryController.get());
         }
     }
 

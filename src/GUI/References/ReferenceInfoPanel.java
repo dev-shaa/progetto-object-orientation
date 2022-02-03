@@ -1,4 +1,4 @@
-package GUI.Homepage.References;
+package GUI.References;
 
 import Entities.References.*;
 import java.util.List;

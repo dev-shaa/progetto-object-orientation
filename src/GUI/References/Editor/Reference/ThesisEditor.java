@@ -1,4 +1,4 @@
-package GUI.Editor.Reference;
+package GUI.References.Editor.Reference;
 
 import Entities.References.PhysicalResources.Thesis;
 import Exceptions.RequiredFieldMissingException;

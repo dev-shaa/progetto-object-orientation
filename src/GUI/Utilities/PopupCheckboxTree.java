@@ -7,11 +7,20 @@ import java.util.Enumeration;
 import javax.swing.tree.TreePath;
 import com.jidesoft.swing.CheckBoxTree;
 
+/**
+ * Un {@code PopupButton} al cui interno è presente un {@code CheckBoxTree}.
+ */
 public class PopupCheckboxTree<T> extends PopupButton {
 
     private CheckBoxTree checkboxTree;
     private CustomTreeModel<T> categoriesTree;
 
+    /**
+     * Crea un nuovo {@code PopupCheckboxTree} con l'albero indicato.
+     * 
+     * @param treeModel
+     *            albero da mostrare
+     */
     public PopupCheckboxTree(CustomTreeModel<T> treeModel) {
         super("Premi per selezionare");
 
@@ -28,6 +37,12 @@ public class PopupCheckboxTree<T> extends PopupButton {
         super.onPopupOpen();
     }
 
+    /**
+     * Imposta l'albero da mostrare
+     * 
+     * @param treeModel
+     *            modello dell'albero da mostrare
+     */
     public void setTreeModel(CustomTreeModel<T> treeModel) {
         this.categoriesTree = treeModel;
 
@@ -46,6 +61,11 @@ public class PopupCheckboxTree<T> extends PopupButton {
         }
     }
 
+    /**
+     * Restituisce gli elementi selezionati dall'albero.
+     * 
+     * @return lista con gli elementi selezionati, {@code null} se non è selezionato niente
+     */
     @SuppressWarnings("unchecked")
     public ArrayList<T> getSelectedItems() {
         TreePath[] selectedPaths = checkboxTree.getCheckBoxTreeSelectionModel().getSelectionPaths();
@@ -69,9 +89,17 @@ public class PopupCheckboxTree<T> extends PopupButton {
         checkboxTree.getCheckBoxTreeSelectionModel().clearSelection();
     }
 
+    /**
+     * Seleziona l'elemento indicato, se presente nell'albero.
+     * 
+     * @param item
+     *            elemento da selezionare
+     * @throws IllegalArgumentException
+     *             se {@code item == null}
+     */
     public void selectItem(T item) {
         if (item == null)
-            throw new IllegalArgumentException("category can't be null");
+            throw new IllegalArgumentException("item can't be null");
 
         selectItem(item, categoriesTree.getRoot());
     }

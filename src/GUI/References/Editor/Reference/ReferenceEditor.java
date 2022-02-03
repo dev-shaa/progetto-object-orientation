@@ -1,10 +1,10 @@
-package GUI.Editor.Reference;
+package GUI.References.Editor.Reference;
 
 import Entities.*;
 import Entities.References.*;
+import GUI.References.Editor.*;
+import GUI.References.Editor.Reference.Picker.*;
 import GUI.Utilities.*;
-import GUI.Editor.*;
-import GUI.Editor.Reference.Picker.*;
 import Exceptions.RequiredFieldMissingException;
 
 import java.awt.*;
@@ -330,9 +330,9 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         this.categoryController = categoryController;
 
         if (categories == null) {
-            categories = new PopupCheckboxTree<Category>(categoryController.getCategoriesTree());
+            categories = new PopupCheckboxTree<Category>(categoryController.get());
         } else {
-            categories.setTreeModel(categoryController.getCategoriesTree());
+            categories.setTreeModel(categoryController.get());
         }
     }
 

@@ -1,32 +1,19 @@
 package GUI;
 
 import Entities.*;
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import Controller.Controller;
-import DAO.AuthorDAO;
-
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
-import javax.swing.JTextArea;
 import javax.swing.JButton;
-import javax.swing.JTextPane;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-
-import javax.swing.DropMode;
-import javax.swing.JFormattedTextField;
 
 public class LoginFrame extends JFrame {
 
@@ -37,9 +24,8 @@ public class LoginFrame extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-
 	public LoginFrame(Controller c) {
-		
+
 		Login login = new Login();
 
 		setTitle("Login");
@@ -47,8 +33,8 @@ public class LoginFrame extends JFrame {
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		setContentPane(contentPane);
 
 		userName_TF = new JTextField();
 		userName_TF.setBounds(140, 64, 163, 19);
@@ -66,11 +52,12 @@ public class LoginFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				String username = userName_TF.getText();
 				String pwd = new String(passwordField.getPassword());
-				
+
 				// FIXME: DEBUG:
-				if (login.CheckLogin(new User(username, pwd))) {
 				c.openHomePage(new User(username, pwd));
-				}
+				// if (login.CheckLogin(new User(username, pwd))) {
+				// c.openHomePage(new User(username, pwd));
+				// }
 			}
 		});
 
@@ -93,10 +80,9 @@ public class LoginFrame extends JFrame {
 				String username = userName_TF.getText();
 				String pwd = new String(passwordField.getPassword());
 				if (login.Register(username, pwd)) {
-				c.openHomePage(new User(username, pwd));
+					c.openHomePage(new User(username, pwd));
 				}
 			}
 		});
 	}
 }
-

@@ -21,7 +21,7 @@ public class Login {
 				userDao.SaveUser(user);
 				result = true;
 			} else {
-				String message = "Utente già registrato";
+				String message = "Utente giï¿½ registrato";
 				JOptionPane.showMessageDialog(new JFrame(), message, "Errore", JOptionPane.ERROR_MESSAGE);
 				result = false;
 			}
@@ -42,18 +42,17 @@ public class Login {
 			JOptionPane.showMessageDialog(new JFrame(), message, "Errore", JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
-		
+
 		UserDAO userDao = new UserDAO();
 		User userDB = userDao.GetUserLogin(user);
-		if(userDB == null) {
+		if (userDB == null) {
 			System.out.println("Utente null");
 			return false;
 		}
 		if (user.getName().equals(userDB.getName()) && user.getPassword().equals(userDB.getPassword())) {
 			System.out.println("Utente loggato");
 			return true;
-		}
-		else {
+		} else {
 			String message = "Nome Utente o Password sbagliati";
 			JOptionPane.showMessageDialog(new JFrame(), message, "Errore", JOptionPane.ERROR_MESSAGE);
 			return false;
