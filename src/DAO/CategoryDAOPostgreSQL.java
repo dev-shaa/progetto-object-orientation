@@ -1,15 +1,14 @@
 package DAO;
 
+import Controller.DatabaseController;
+
 import Entities.*;
+import Entities.References.BibliographicReference;
 import Exceptions.*;
-import GUI.Utilities.CustomTreeModel;
-import GUI.Utilities.CustomTreeNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import Controller.DatabaseController;
-
+import java.util.List;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -60,16 +59,10 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
         return this.user;
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws IllegalArgumentException
-     *             se {@code category == null}
-     */
     @Override
-    public void addCategory(Category category) throws CategoryDatabaseException {
+    public void save(Category category) throws CategoryDatabaseException {
         if (category == null)
-            throw new IllegalArgumentException("category non può essere null");
+            return;
 
         Connection connection = null;
         Statement statement = null;
@@ -105,7 +98,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
             try {
                 connection.rollback();
             } catch (Exception r) {
-                throw new CategoryDatabaseException("Impossibile aggiungere nuova categoria.");
+                // non fare niente
             }
 
             e.printStackTrace();
@@ -124,16 +117,10 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws IllegalArgumentException
-     *             se {@code category == null}
-     */
     @Override
-    public void updateCategoryName(Category category) throws CategoryDatabaseException {
+    public void update(Category category) throws CategoryDatabaseException {
         if (category == null)
-            throw new IllegalArgumentException("category non può essere null");
+            return;
 
         Connection connection = null;
         Statement statement = null;
@@ -162,16 +149,10 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws IllegalArgumentException
-     *             se {@code category == null}
-     */
     @Override
-    public void removeCategory(Category category) throws CategoryDatabaseException {
+    public void remove(Category category) throws CategoryDatabaseException {
         if (category == null)
-            throw new IllegalArgumentException("category non può essere null");
+            return;
 
         Connection connection = null;
         Statement statement = null;
@@ -200,15 +181,10 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
     }
 
     @Override
-    public CustomTreeModel<Category> getUserCategories() throws CategoryDatabaseException {
+    public List<Category> getAll() throws CategoryDatabaseException {
         Connection connection = null;
         Statement statement = null;
         ResultSet resultSet = null;
-
-        CustomTreeNode<Category> root = new CustomTreeNode<Category>(null);
-        root.setLabel("I miei riferimenti");
-
-        CustomTreeModel<Category> tree = new CustomTreeModel<>(root);
 
         try {
             connection = DatabaseController.getConnection();
@@ -216,31 +192,68 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
             String query = "select * from category where owner = '" + user.getName() + "'";
             resultSet = statement.executeQuery(query);
 
-            ArrayList<CustomTreeNode<Category>> categories = new ArrayList<>();
-            HashMap<Integer, CustomTreeNode<Category>> idToNode = new HashMap<>();
-            HashMap<CustomTreeNode<Category>, Integer> nodeToParentID = new HashMap<>();
+            HashMap<Integer, Category> idToCategory = new HashMap<>();
+            HashMap<Category, Integer> nodeToParentID = new HashMap<>();
 
-            idToNode.put(0, root);
-
-            // occupiamoci prima di recuperare e creare tutte le categorie
             while (resultSet.next()) {
                 Category category = new Category(resultSet.getString("name"), resultSet.getInt("id"));
-                CustomTreeNode<Category> node = new CustomTreeNode<Category>(category);
-
-                categories.add(node);
-                idToNode.put(category.getId(), node);
-                nodeToParentID.put(node, resultSet.getInt("parent"));
+                idToCategory.put(category.getId(), category);
+                nodeToParentID.put(category, resultSet.getInt("parent"));
             }
 
-            // occupiamoci di assegnare i genitori giusti
-            for (CustomTreeNode<Category> node : categories) {
-                CustomTreeNode<Category> parent = idToNode.get(nodeToParentID.get(node));
+            for (Category category : idToCategory.values()) {
+                Integer parentID = nodeToParentID.get(category);
 
-                node.getUserObject().setParent(parent.getUserObject());
-                tree.addNode(node, parent);
+                if (parentID != null)
+                    category.setParent(idToCategory.get(parentID));
             }
 
-            return tree;
+            ArrayList<Category> categories = new ArrayList<>();
+            categories.addAll(idToCategory.values());
+
+            categories.trimToSize();
+
+            return categories;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new CategoryDatabaseException("Impossibile recuperare le categorie dell'utente.");
+        } finally {
+            try {
+                if (resultSet != null)
+                    resultSet.close();
+
+                if (statement != null)
+                    statement.close();
+
+                if (connection != null)
+                    connection.close();
+            } catch (Exception e) {
+                // non fare niente
+            }
+        }
+    }
+
+    @Override
+    public List<Integer> getID(BibliographicReference reference) throws CategoryDatabaseException {
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = DatabaseController.getConnection();
+            statement = connection.createStatement();
+            String query = "select category from category_reference_association where reference = " + reference.getID();
+            resultSet = statement.executeQuery(query);
+
+            ArrayList<Integer> ids = new ArrayList<>();
+
+            while (resultSet.next()) {
+                ids.add(resultSet.getInt("category"));
+            }
+
+            ids.trimToSize();
+
+            return ids;
         } catch (Exception e) {
             e.printStackTrace();
             throw new CategoryDatabaseException("Impossibile recuperare le categorie dell'utente.");

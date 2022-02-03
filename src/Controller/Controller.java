@@ -3,12 +3,9 @@ package Controller;
 import javax.swing.*;
 import com.formdev.flatlaf.*;
 
-import DAO.CategoryDAOPostgreSQL;
-import DAO.BibliographicReferenceDAOPostgreSQL;
-
+import DAO.*;
 import GUI.*;
-import GUI.Editor.Reference.*;
-import GUI.Homepage.*;
+import GUI.References.Editor.Reference.*;
 
 import Entities.*;
 import Entities.References.OnlineResources.*;

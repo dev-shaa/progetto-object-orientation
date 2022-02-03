@@ -1,8 +1,9 @@
 package DAO;
 
+import java.util.List;
 import Entities.*;
+import Entities.References.BibliographicReference;
 import Exceptions.*;
-import GUI.Utilities.CustomTreeModel;
 
 /**
  * Interfaccia che deve essere implementata per gestire la parte di database relativo alle categorie.
@@ -17,7 +18,7 @@ public interface CategoryDAO {
      * @throws CategoryDatabaseException
      *             se l'aggiunta della categoria al database non va a buon fine
      */
-    public void addCategory(Category category) throws CategoryDatabaseException;
+    public void save(Category category) throws CategoryDatabaseException;
 
     /**
      * Modifica una categoria nel database.
@@ -27,7 +28,7 @@ public interface CategoryDAO {
      * @throws CategoryDatabaseException
      *             se la modifica della categoria nel database non va a buon fine
      */
-    public void updateCategoryName(Category category) throws CategoryDatabaseException;
+    public void update(Category category) throws CategoryDatabaseException;
 
     /**
      * Elimina una categoria nel database.
@@ -37,15 +38,26 @@ public interface CategoryDAO {
      * @throws CategoryDatabaseException
      *             se la rimozione della categoria dal database non va a buon fine
      */
-    public void removeCategory(Category category) throws CategoryDatabaseException;
+    public void remove(Category category) throws CategoryDatabaseException;
 
     /**
      * Ottiene tutte le categorie appartenenti a un utente nel database.
      * 
-     * @return albero contenente tutte le categorie dell'utente.
+     * @return lista contenente tutte le categorie dell'utente
      * @throws CategoryDatabaseException
      *             se il recupero delle categorie dal database non va a buon fine
      */
-    public CustomTreeModel<Category> getUserCategories() throws CategoryDatabaseException;
+    public List<Category> getAll() throws CategoryDatabaseException;
+
+    /**
+     * Ottiene gli ID di tutte le categorie a cui è associato un riferimento.
+     * 
+     * @param reference
+     *            riferimento associato di cui trovare le categorie
+     * @return lista contenente gli ID delle categorie associate
+     * @throws CategoryDatabaseException
+     *             se il recupero degli ID dal database non va a buon fine
+     */
+    public List<Integer> getID(BibliographicReference reference) throws CategoryDatabaseException;
 
 }

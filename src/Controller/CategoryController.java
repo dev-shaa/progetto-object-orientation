@@ -1,71 +1,61 @@
 package Controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import DAO.CategoryDAO;
 import Entities.Category;
+import Entities.References.BibliographicReference;
 import Exceptions.CategoryDatabaseException;
 import GUI.Utilities.CustomTreeModel;
 import GUI.Utilities.CustomTreeNode;
 
 /**
  * Controller per gestire il recupero, l'inserimento, la rimozione e la modifica di categorie.
- * Serve per non doversi sempre interfacciarsi col database e un modo più "sicuro" di passare le categorie tra classi.
  */
 public class CategoryController {
     private CategoryDAO categoryDAO;
-    private CustomTreeModel<Category> categoryTree;
+
+    private List<Category> categories;
+    private CustomTreeModel<Category> treeModel;
+
+    private boolean needToRetrieveFromDatabase;
+    private boolean treeNeedsUpdate;
+
+    private HashMap<Integer, Category> idToCategory;
+    private HashMap<Category, Integer> categoryToID;
 
     /**
-     * Crea un nuovo controller delle categorie.
+     * Crea un nuovo controller delle categorie con il DAO indicato.
      * 
      * @param categoryDAO
      *            DAO per interfacciarsi col database
      * @throws IllegalArgumentException
      *             se {@code categoryDAO == null}
-     * @throws CategoryDatabaseException
-     *             se il recupero iniziale delle categorie non va a buon fine
      */
-    public CategoryController(CategoryDAO categoryDAO) throws CategoryDatabaseException {
+    public CategoryController(CategoryDAO categoryDAO) {
         setCategoryDAO(categoryDAO);
+
+        idToCategory = new HashMap<>();
+        categoryToID = new HashMap<>();
     }
 
     /**
-     * Restituisce il DAO delle categorie.
-     * 
-     * @return
-     *         DAO delle categorie
-     */
-    public CategoryDAO getCategoryDAO() {
-        return categoryDAO;
-    }
-
-    /**
-     * Imposta il DAO delle categorie. Questo funziona anche da "reset", in quanto verranno recuperate di nuovo
-     * dal database le categorie con il DAO assegnato.
+     * Imposta la classe DAO per recuperare le categorie dal database.
      * 
      * @param categoryDAO
-     *            DAO delle categorie
+     *            classe DAO per il database
      * @throws IllegalArgumentException
      *             se {@code categoryDAO == null}
-     * @throws CategoryDatabaseException
-     *             se non è possibile recuperare le categorie dal database
      */
-    public void setCategoryDAO(CategoryDAO categoryDAO) throws CategoryDatabaseException {
+    public void setCategoryDAO(CategoryDAO categoryDAO) {
         if (categoryDAO == null)
             throw new IllegalArgumentException("categoryDAO can't be null");
 
         this.categoryDAO = categoryDAO;
 
-        this.categoryTree = getCategoryDAO().getUserCategories();
-    }
-
-    /**
-     * Restituisce l'albero delle categorie.
-     * 
-     * @return
-     *         albero delle categorie dell'utente
-     */
-    public CustomTreeModel<Category> getCategoriesTree() {
-        return categoryTree;
+        forceRetrievalFromDatabase();
     }
 
     /**
@@ -80,18 +70,23 @@ public class CategoryController {
      * @throws CategoryDatabaseException
      *             se il salvataggio non va a buon fine
      */
-    public void addCategory(String name, CustomTreeNode<Category> parent) throws CategoryDatabaseException {
+    public void save(String name, Category parent) throws CategoryDatabaseException {
         Category category = new Category(name);
 
         if (parent != null)
-            category.setParent(parent.getUserObject());
+            category.setParent(parent);
 
-        categoryDAO.addCategory(category);
-        categoryTree.addNode(new CustomTreeNode<Category>(category), parent);
+        categoryDAO.save(category);
+
+        addToHashMap(category);
+
+        CustomTreeNode<Category> foo = treeModel.findNode(parent);
+
+        treeModel.addNode(new CustomTreeNode<Category>(category), foo);
     }
 
     /**
-     * @param categoryNode
+     * @param category
      *            nodo di cui modificare la categoria
      * @param newName
      *            nuovo nome della categoria
@@ -100,14 +95,9 @@ public class CategoryController {
      * @throws CategoryDatabaseException
      *             se la modifica non va a buon fine
      */
-    public void changeCategory(CustomTreeNode<Category> categoryNode, String newName) throws CategoryDatabaseException {
-        if (categoryNode == null)
-            throw new IllegalArgumentException("category node can't be null");
-
-        Category category = categoryNode.getUserObject();
-
+    public void update(Category category, String newName) throws CategoryDatabaseException {
         if (category == null)
-            throw new IllegalArgumentException("can't change name to null category");
+            throw new IllegalArgumentException("category can't be null");
 
         if (category.getName().equals(newName))
             return;
@@ -116,7 +106,7 @@ public class CategoryController {
         category.setName(newName);
 
         try {
-            categoryDAO.updateCategoryName(category);
+            categoryDAO.update(category);
         } catch (CategoryDatabaseException e) {
             category.setName(oldName);
             throw e;
@@ -126,24 +116,145 @@ public class CategoryController {
     /**
      * Rimuove una categoria dal database.
      * 
-     * @param categoryNode
+     * @param category
      *            nodo della categoria da rimuovere
      * @throws IllegalArgumentException
      *             se {@code categoryNode == null} o se la categoria associata al nodo è nulla
      * @throws CategoryDatabaseException
      *             se la rimozione non va a buon fine
      */
-    public void removeCategory(CustomTreeNode<Category> categoryNode) throws CategoryDatabaseException {
-        if (categoryNode == null)
-            throw new IllegalArgumentException("categoryNode can't be null");
-
-        Category category = categoryNode.getUserObject();
-
+    public void remove(Category category) throws CategoryDatabaseException {
         if (category == null)
-            throw new IllegalArgumentException("can't delete null category");
+            throw new IllegalArgumentException("category can't be null");
 
-        categoryDAO.removeCategory(category);
-        categoryTree.removeNodeFromParent(categoryNode);
+        categoryDAO.remove(category);
+
+        removeFromHashMap(category);
+
+        treeModel.removeNodeFromParent(treeModel.findNode(category));
+    }
+
+    /**
+     * Recupera tutte le categorie dell'utente.
+     * <p>
+     * Dopo essere state recuperate una prima volta, le categorie rimangono in memoria
+     * in modo da evitare di dover creare nuove connessioni col database.
+     * <p>
+     * Il recupero dal database viene eseguito la prima volta dopo aver cambiato il DAO usato con {@link #setCategoryDAO(CategoryDAO)}, ma
+     * è possibile forzarlo chiamando prima {@link #forceRetrievalFromDatabase()}.
+     * 
+     * @return lista con le categorie dell'utente.
+     * @throws CategoryDatabaseException
+     *             se il recupero delle categorie dal database non va a buon fine
+     * 
+     * @see #forceRetrievalFromDatabase()
+     */
+    public List<Category> getAll() throws CategoryDatabaseException {
+        if (needToRetrieveFromDatabase) {
+            retrieveFromDatabase();
+            needToRetrieveFromDatabase = false;
+        }
+
+        return categories;
+    }
+
+    /**
+     * Recupera tutte le categorie associate al riferimento bibliografico.
+     * 
+     * @param reference
+     *            riferimento di cui recuperare le categorie
+     * @return lista con le categorie associate al riferimento
+     * @throws CategoryDatabaseException
+     *             se il recupero delle categorie dal database non va a buon fine
+     */
+    public List<Category> get(BibliographicReference reference) throws CategoryDatabaseException {
+
+        // ci serve perchè dobbiamo prima assicurarci che idToCategory sia pieno
+        if (needToRetrieveFromDatabase) {
+            retrieveFromDatabase();
+            needToRetrieveFromDatabase = false;
+        }
+
+        List<Integer> ids = categoryDAO.getID(reference);
+        ArrayList<Category> categories = new ArrayList<>();
+
+        for (Integer id : ids) {
+            categories.add(idToCategory.get(id));
+        }
+
+        categories.trimToSize();
+        return categories;
+    }
+
+    /**
+     * Restituisce l'albero delle categorie.
+     * 
+     * @return
+     *         albero delle categorie dell'utente
+     * @throws CategoryDatabaseException
+     *             se il recupero non va a buon fine
+     */
+    public CustomTreeModel<Category> getTree() throws CategoryDatabaseException {
+        if (treeNeedsUpdate) {
+            CustomTreeNode<Category> root = new CustomTreeNode<Category>(null);
+            root.setLabel("I miei riferimenti");
+
+            treeModel = new CustomTreeModel<>(root);
+
+            HashMap<Category, CustomTreeNode<Category>> categoryToNode = new HashMap<>();
+            categoryToNode.put(null, root);
+
+            for (Category category : getAll()) {
+                categoryToNode.put(category, new CustomTreeNode<Category>(category));
+            }
+
+            for (Category category : getAll()) {
+                CustomTreeNode<Category> node = categoryToNode.get(category);
+                CustomTreeNode<Category> parent = categoryToNode.get(category.getParent());
+
+                treeModel.addNode(node, parent);
+            }
+
+            treeNeedsUpdate = false;
+        }
+
+        return treeModel;
+    }
+
+    /**
+     * Impone che, al prossimo recupero, le categorie vengano recuperate di nuovo
+     * direttamente dal database.
+     */
+    public void forceRetrievalFromDatabase() {
+        needToRetrieveFromDatabase = true;
+        treeNeedsUpdate = true;
+    }
+
+    private void retrieveFromDatabase() throws CategoryDatabaseException {
+        idToCategory.clear();
+        categoryToID.clear();
+
+        categories = categoryDAO.getAll();
+
+        for (Category category : categories) {
+            addToHashMap(category);
+        }
+    }
+
+    private void addToHashMap(Category category) {
+        if (category == null)
+            return;
+
+        idToCategory.put(category.getId(), category);
+        categoryToID.put(category, category.getId());
+    }
+
+    private void removeFromHashMap(Category category) {
+        if (category == null)
+            return;
+
+        idToCategory.remove(category.getId());
+        categoryToID.remove(category);
     }
 
 }
