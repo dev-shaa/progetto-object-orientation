@@ -23,8 +23,6 @@ public abstract class Publication extends BibliographicReference {
      */
     public Publication(String title) throws IllegalArgumentException {
         super(title);
-
-        setPageCount(1);
     }
 
     /**
@@ -46,7 +44,7 @@ public abstract class Publication extends BibliographicReference {
      * Restituisce il numero di pagine della pubblicazione.
      * 
      * @return
-     *         numero di pagine della pubblicazione ({@code null} se non è indicato)
+     *         numero di pagine della pubblicazione
      */
     public int getPageCount() {
         return this.pageCount;

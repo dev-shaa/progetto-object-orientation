@@ -1,9 +1,11 @@
 package DAO;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import Controller.DatabaseController;
@@ -16,7 +18,7 @@ public class TagDAOPostgreSQL implements TagDAO {
     @Override
     public void save(Tag tag) throws TagDatabaseException {
         if (tag == null)
-            throw new IllegalArgumentException("category can't be null");
+            return;
 
         Connection connection = null;
         Statement statement = null;
@@ -44,6 +46,49 @@ public class TagDAOPostgreSQL implements TagDAO {
     }
 
     @Override
+    public void save(Collection<? extends Tag> tags) throws TagDatabaseException {
+        if (tags == null || tags.isEmpty())
+            return;
+
+        Connection connection = null;
+        PreparedStatement statement = null;
+        String command = "insert into tag values(?) on conflict do nothing";
+
+        try {
+            connection = DatabaseController.getConnection();
+            connection.setAutoCommit(false);
+
+            statement = connection.prepareStatement(command);
+
+            for (Tag tag : tags) {
+                statement.setString(1, tag.getName());
+                statement.executeUpdate(command);
+            }
+
+            connection.commit();
+        } catch (Exception e) {
+            throw new TagDatabaseException("Impossibile salvare parole chiave");
+        } finally {
+            try {
+                if (statement != null)
+                    statement.close();
+
+                if (connection != null)
+                    connection.close();
+            } catch (Exception e) {
+                // non fare niente
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @throws IllegalArgumentException
+     *             se {@code reference == null}
+     */
+    @Override
     public List<Tag> get(BibliographicReference reference) throws TagDatabaseException {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
@@ -66,7 +111,7 @@ public class TagDAOPostgreSQL implements TagDAO {
             tags.trimToSize();
             return tags;
         } catch (Exception e) {
-            throw new TagDatabaseException("Impossibile salvare parola chiave");
+            throw new TagDatabaseException("Impossibile recuperare parole chiave");
         } finally {
             try {
                 if (statement != null)
