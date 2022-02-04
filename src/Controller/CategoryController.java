@@ -59,6 +59,15 @@ public class CategoryController {
     }
 
     /**
+     * Restituisce la classe DAO usata per recuperare le categorie.
+     * 
+     * @return classe DAO per le categorie
+     */
+    public CategoryDAO getCategoryDAO() {
+        return categoryDAO;
+    }
+
+    /**
      * Salva una categoria nel database.
      * 
      * @param name
@@ -74,7 +83,7 @@ public class CategoryController {
         if (category == null)
             throw new IllegalArgumentException("category can't be null");
 
-        categoryDAO.save(category);
+        getCategoryDAO().save(category);
 
         addToHashMap(category);
 
@@ -105,7 +114,7 @@ public class CategoryController {
         category.setName(newName);
 
         try {
-            categoryDAO.update(category);
+            getCategoryDAO().update(category);
         } catch (CategoryDatabaseException e) {
             category.setName(oldName);
             throw e;
@@ -126,7 +135,7 @@ public class CategoryController {
         if (category == null)
             throw new IllegalArgumentException("category can't be null");
 
-        categoryDAO.remove(category);
+        getCategoryDAO().remove(category);
 
         removeFromHashMap(category);
 
@@ -172,7 +181,7 @@ public class CategoryController {
             retrieveFromDatabase();
         }
 
-        List<Integer> ids = categoryDAO.getID(reference);
+        List<Integer> ids = getCategoryDAO().getID(reference);
         ArrayList<Category> categories = new ArrayList<>();
 
         for (Integer id : ids) {
@@ -230,7 +239,7 @@ public class CategoryController {
         idToCategory.clear();
         categoryToID.clear();
 
-        categories = categoryDAO.getAll();
+        categories = getCategoryDAO().getAll();
 
         for (Category category : categories) {
             addToHashMap(category);

@@ -38,11 +38,20 @@ public class SearchPanel extends JPanel {
 
     /**
      * Crea un pannello per la ricerca di riferimenti.
+     */
+    public SearchPanel() {
+        this(null);
+    }
+
+    /**
+     * Crea un pannello per la ricerca di riferimenti.
      * 
      * @param treeModel
      *            albero delle categorie selezionabili
      */
     public SearchPanel(CustomTreeModel<Category> treeModel) {
+        super();
+
         setCategoriesTree(treeModel);
 
         setLayout(new BorderLayout(5, 5));
