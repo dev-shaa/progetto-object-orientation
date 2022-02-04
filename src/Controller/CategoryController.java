@@ -70,19 +70,18 @@ public class CategoryController {
      * @throws CategoryDatabaseException
      *             se il salvataggio non va a buon fine
      */
-    public void save(String name, Category parent) throws CategoryDatabaseException {
-        Category category = new Category(name);
-
-        if (parent != null)
-            category.setParent(parent);
+    public void save(Category category) throws CategoryDatabaseException {
+        if (category == null)
+            throw new IllegalArgumentException("category can't be null");
 
         categoryDAO.save(category);
 
         addToHashMap(category);
 
-        CustomTreeNode<Category> foo = treeModel.findNode(parent);
+        CustomTreeNode<Category> node = new CustomTreeNode<Category>(category);
+        CustomTreeNode<Category> parentNode = treeModel.findNode(category.getParent());
 
-        treeModel.addNode(new CustomTreeNode<Category>(category), foo);
+        treeModel.addNode(node, parentNode);
     }
 
     /**

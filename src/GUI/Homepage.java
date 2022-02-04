@@ -194,7 +194,8 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
             String newCategoryName = getCategoryNameFromUser("Nuova categoria");
 
             if (newCategoryName != null) {
-                getController().getCategoryController().save(newCategoryName, categoriesTreePanel.getSelectedNode().getUserObject());
+                Category category = new Category(newCategoryName, categoriesTreePanel.getSelectedNode().getUserObject());
+                getController().getCategoryController().save(category);
             }
         } catch (Exception e) {
             e.printStackTrace();
