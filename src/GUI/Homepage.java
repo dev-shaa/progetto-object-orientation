@@ -47,7 +47,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
      * @param controller
      *            controller della GUI
      */
-    public Homepage(Controller controller) throws CategoryDatabaseException {
+    public Homepage(Controller controller) {
         super();
 
         setController(controller);
@@ -71,7 +71,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
 
         contentPane.add(setupUserInfoPanel(), BorderLayout.NORTH);
 
-        referenceSearchPanel = new SearchPanel(getController().getCategoryController().getTree());
+        referenceSearchPanel = new SearchPanel();
         referenceSearchPanel.addReferenceSearchListener(this);
 
         JSplitPane subSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, setupCategoriesPanel(), setupReferencePanel());
@@ -85,21 +85,31 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
 
     @Override
     public void setVisible(boolean b) {
-        if (b)
-            reset();
+        boolean failedToLoad = false;
+
+        if (b) {
+            try {
+                updateUserLabelText();
+                categoriesTreePanel.setCategoriesTree(getController().getCategoryController().getTree());
+                referenceSearchPanel.setCategoriesTree(getController().getCategoryController().getTree());
+            } catch (CategoryDatabaseException e) {
+                categoriesTreePanel.setCategoriesTree(null);
+                referenceSearchPanel.setCategoriesTree(null);
+                failedToLoad = true;
+            }
+        }
 
         super.setVisible(b);
-    }
 
-    private void reset() {
-        updateUserLabelText();
+        if (failedToLoad) {
+            String[] choices = { "Riprova", "Esci" };
+            int option = JOptionPane.showOptionDialog(this, "Si è verificato un errore durante il recupero dei dati dell'utente.", "Errore recupero", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null, choices, 0);
 
-        try {
-            categoriesTreePanel.setCategoriesTree(getController().getCategoryController().getTree());
-            referenceSearchPanel.setCategoriesTree(getController().getCategoryController().getTree());
-        } catch (Exception e) {
-            // TODO:
-            e.printStackTrace();
+            if (option == JOptionPane.YES_OPTION) {
+                setVisible(true);
+            } else {
+                getController().openLoginPage();
+            }
         }
     }
 

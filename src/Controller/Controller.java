@@ -87,20 +87,15 @@ public class Controller {
      *            utente che ha eseguito l'accesso
      */
     public void openHomePage(User user) {
-        try {
-            this.user = user;
-            categoryController = new CategoryController(new CategoryDAOPostgreSQL(user));
-            referenceController = new ReferenceController(new BibliographicReferenceDAOPostgreSQL(user), categoryController);
+        this.user = user;
+        categoryController = new CategoryController(new CategoryDAOPostgreSQL(user));
+        referenceController = new ReferenceController(new BibliographicReferenceDAOPostgreSQL(user), categoryController);
 
-            if (homepage == null)
-                homepage = new Homepage(this);
+        if (homepage == null)
+            homepage = new Homepage(this);
 
-            homepage.setVisible(true);
-            loginFrame.setVisible(false);
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(null, e.getMessage());
-        }
+        loginFrame.setVisible(false);
+        homepage.setVisible(true);
     }
 
     /**
