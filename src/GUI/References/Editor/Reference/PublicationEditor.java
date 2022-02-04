@@ -42,7 +42,7 @@ public abstract class PublicationEditor<T extends Publication> extends Reference
     protected void initializeFields() {
         super.initializeFields();
 
-        pageCount = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
+        pageCount = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
         URL = new JTextField();
         publisher = new JTextField();
 

@@ -11,7 +11,7 @@ public class Video extends OnlineResource {
     private int width;
     private int height;
     private int frameRate;
-    private float duration;
+    private int duration;
 
     /**
      * Crea un nuovo riferimento a video con il titolo e l'url indicati.
@@ -34,8 +34,13 @@ public class Video extends OnlineResource {
      * 
      * @param width
      *            larghezza del video
+     * @throws IllegalArgumentException
+     *             se {@code width < 0}
      */
-    public void setWidth(Integer width) {
+    public void setWidth(int width) {
+        if (width < 0)
+            throw new IllegalArgumentException("width can't be less than 1");
+
         this.width = width;
     }
 
@@ -54,8 +59,13 @@ public class Video extends OnlineResource {
      * 
      * @param height
      *            altezza del video
+     * @throws IllegalArgumentException
+     *             se {@code height < 0}
      */
-    public void setHeight(Integer height) {
+    public void setHeight(int height) {
+        if (height < 0)
+            throw new IllegalArgumentException("height can't be less than 0");
+
         this.height = height;
     }
 
@@ -74,8 +84,10 @@ public class Video extends OnlineResource {
      * 
      * @param frameRate
      *            frequenza del video
+     * @throws IllegalArgumentException
+     *             se {@code frameRate < 0}
      */
-    public void setFrameRate(Integer frameRate) {
+    public void setFrameRate(int frameRate) {
         this.frameRate = frameRate;
     }
 
@@ -95,11 +107,11 @@ public class Video extends OnlineResource {
      * @param duration
      *            durata del video (in secondi)
      * @throws IllegalArgumentException
-     *             se {@code duration <= 0}
+     *             se {@code duration < 0}
      */
-    public void setDuration(float duration) {
-        if (duration <= 0)
-            throw new IllegalArgumentException("duration can't be 0 or less");
+    public void setDuration(int duration) {
+        if (duration < 0)
+            throw new IllegalArgumentException("duration can't be less than 0");
 
         this.duration = duration;
     }
@@ -110,7 +122,7 @@ public class Video extends OnlineResource {
      * @return
      *         durata del video (in secondi)
      */
-    public float getDuration() {
+    public int getDuration() {
         return this.duration;
     }
 

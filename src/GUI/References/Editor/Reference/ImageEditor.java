@@ -39,8 +39,8 @@ public class ImageEditor extends OnlineResourceEditor<Image> {
     protected void initializeFields() {
         super.initializeFields();
 
-        width = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
-        height = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
+        width = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
+        height = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
 
         addFieldComponent(width, "Larghezza", "Larghezza dell'immagine.");
         addFieldComponent(height, "Altezza", "Altezza dell'immagine.");

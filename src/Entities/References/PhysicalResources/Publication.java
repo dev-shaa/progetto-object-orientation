@@ -33,11 +33,11 @@ public abstract class Publication extends BibliographicReference {
      * @param pageCount
      *            numero di pagine della pubblicazione
      * @throws IllegalArgumentException
-     *             se {@code pageCount <= 0}
+     *             se {@code pageCount < 0}
      */
     public void setPageCount(int pageCount) throws IllegalArgumentException {
-        if (pageCount < 1)
-            throw new IllegalArgumentException("Il numero di pagine del libro non può essere inferiore a 1");
+        if (pageCount < 0)
+            throw new IllegalArgumentException("Il numero di pagine del libro non può essere inferiore a 0");
 
         this.pageCount = pageCount;
     }

@@ -75,10 +75,11 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         // FIXME:
         try {
             setCategoryController(categoryController);
-            setReferenceController(referenceController);
         } catch (Exception e) {
             // TODO: handle exception
         }
+
+        setReferenceController(referenceController);
 
         setupComponents();
     }

@@ -58,10 +58,10 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
     protected void initializeFields() {
         super.initializeFields();
 
-        width = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
-        height = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
-        frameRate = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
-        duration = new JSpinner(new SpinnerNumberModel(1.0, 1.0, null, 1));
+        width = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
+        height = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
+        frameRate = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
+        duration = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
 
         addFieldComponent(width, "Larghezza", "Largezza del video.");
         addFieldComponent(height, "Altezza", "Altezza del video.");
@@ -113,12 +113,12 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
         return (int) frameRate.getValue();
     }
 
-    private void setDurationValue(float duration) {
+    private void setDurationValue(int duration) {
         this.duration.setValue(duration);
     }
 
-    private float getDurationValue() {
-        return (float) duration.getValue();
+    private int getDurationValue() {
+        return (int) duration.getValue();
     }
 
 }
