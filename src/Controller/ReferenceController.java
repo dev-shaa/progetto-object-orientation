@@ -12,6 +12,7 @@ import Entities.References.OnlineResources.*;
 import Entities.References.PhysicalResources.*;
 import Exceptions.CategoryDatabaseException;
 import Exceptions.ReferenceDatabaseException;
+import Exceptions.TagDatabaseException;
 
 /**
  * Controller per gestire il recupero, l'inserimento, la rimozione e la modifica di riferimenti.
@@ -23,6 +24,7 @@ public class ReferenceController {
 
     private BibliographicReferenceDAO referenceDAO;
     private CategoryController categoryController;
+    private TagController tagController;
 
     private List<BibliographicReference> references;
 
@@ -41,6 +43,31 @@ public class ReferenceController {
     public ReferenceController(BibliographicReferenceDAO referenceDAO, CategoryController categoryController) {
         setReferenceDAO(referenceDAO);
         setCategoryController(categoryController);
+    }
+
+    /**
+     * Imposta la classe DAO per la gestione dei riferimenti nel database e recupera i riferimenti dal database.
+     * 
+     * @param referenceDAO
+     *            DAO dei riferimenti
+     * @throws IllegalArgumentException
+     *             se {@code referenceDAO == null}
+     */
+    public void setReferenceDAO(BibliographicReferenceDAO referenceDAO) {
+        if (referenceDAO == null)
+            throw new IllegalArgumentException("referenceDAO can't be null");
+
+        this.referenceDAO = referenceDAO;
+        forceNextRetrievalFromDatabase();
+    }
+
+    /**
+     * Restituisce il DAO usato per recuperare i riferimenti.
+     * 
+     * @return DAO dei riferimenti
+     */
+    public BibliographicReferenceDAO getReferenceDAO() {
+        return referenceDAO;
     }
 
     /**
@@ -67,28 +94,21 @@ public class ReferenceController {
     }
 
     /**
-     * Imposta la classe DAO per la gestione dei riferimenti nel database e recupera i riferimenti dal database.
+     * TODO: commenta
      * 
-     * @param referenceDAO
-     *            DAO dei riferimenti
-     * @throws IllegalArgumentException
-     *             se {@code referenceDAO == null}
+     * @return
      */
-    public void setReferenceDAO(BibliographicReferenceDAO referenceDAO) {
-        if (referenceDAO == null)
-            throw new IllegalArgumentException("referenceDAO can't be null");
-
-        this.referenceDAO = referenceDAO;
-        forceNextRetrievalFromDatabase();
+    public TagController getTagController() {
+        return tagController;
     }
 
     /**
-     * Restituisce il DAO usato per recuperare i riferimenti.
+     * TODO: commenta
      * 
-     * @return DAO dei riferimenti
+     * @param tagController
      */
-    public BibliographicReferenceDAO getReferenceDAO() {
-        return referenceDAO;
+    public void setTagController(TagController tagController) {
+        this.tagController = tagController;
     }
 
     /**
@@ -156,10 +176,13 @@ public class ReferenceController {
 
             for (BibliographicReference reference : references) {
                 reference.setCategories(getCategoryController().get(reference));
+                reference.setTags(getTagController().get(reference));
+
+                // TODO: autori
             }
 
             needToRetrieveFromDatabase = false;
-        } catch (ReferenceDatabaseException | CategoryDatabaseException e) {
+        } catch (ReferenceDatabaseException | CategoryDatabaseException | TagDatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
         }
     }
@@ -174,7 +197,7 @@ public class ReferenceController {
      * @throws ReferenceDatabaseException
      *             se la rimozione non è andata a buon fine
      */
-    public void removeReference(BibliographicReference reference) throws ReferenceDatabaseException {
+    public void remove(BibliographicReference reference) throws ReferenceDatabaseException {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
@@ -194,7 +217,7 @@ public class ReferenceController {
      * @throws ReferenceDatabaseException
      *             se il salvataggio non è andato a buon fine
      */
-    public void saveReference(Article reference) throws ReferenceDatabaseException {
+    public void save(Article reference) throws ReferenceDatabaseException {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
@@ -213,7 +236,7 @@ public class ReferenceController {
      * @throws ReferenceDatabaseException
      *             se il salvataggio non è andato a buon fine
      */
-    public void saveReference(Book reference) throws ReferenceDatabaseException {
+    public void save(Book reference) throws ReferenceDatabaseException {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
@@ -232,7 +255,7 @@ public class ReferenceController {
      * @throws ReferenceDatabaseException
      *             se il salvataggio non è andato a buon fine
      */
-    public void saveReference(Thesis reference) throws ReferenceDatabaseException {
+    public void save(Thesis reference) throws ReferenceDatabaseException {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
@@ -251,7 +274,7 @@ public class ReferenceController {
      * @throws ReferenceDatabaseException
      *             se il salvataggio non è andato a buon fine
      */
-    public void saveReference(Image reference) throws ReferenceDatabaseException {
+    public void save(Image reference) throws ReferenceDatabaseException {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
@@ -270,7 +293,7 @@ public class ReferenceController {
      * @throws ReferenceDatabaseException
      *             se il salvataggio non è andato a buon fine
      */
-    public void saveReference(SourceCode reference) throws ReferenceDatabaseException {
+    public void save(SourceCode reference) throws ReferenceDatabaseException {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
@@ -289,7 +312,7 @@ public class ReferenceController {
      * @throws ReferenceDatabaseException
      *             se il salvataggio non è andato a buon fine
      */
-    public void saveReference(Video reference) throws ReferenceDatabaseException {
+    public void save(Video reference) throws ReferenceDatabaseException {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
@@ -308,7 +331,7 @@ public class ReferenceController {
      * @throws ReferenceDatabaseException
      *             se il salvataggio non è andato a buon fine
      */
-    public void saveReference(Website reference) throws ReferenceDatabaseException {
+    public void save(Website reference) throws ReferenceDatabaseException {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 

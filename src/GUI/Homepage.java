@@ -399,7 +399,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
             int result = JOptionPane.showConfirmDialog(this, "Vuoi eliminare questo riferimento?", "Elimina riferimento", JOptionPane.YES_NO_OPTION);
 
             if (result == JOptionPane.YES_OPTION) {
-                getController().getReferenceController().removeReference(referenceListPanel.getSelectedReference());
+                getController().getReferenceController().remove(referenceListPanel.getSelectedReference());
                 referenceListPanel.removeSelectedReference();
             }
         } catch (ReferenceDatabaseException e) {

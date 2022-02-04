@@ -55,7 +55,7 @@ public class BookEditor extends PublicationEditor<Book> {
 
     @Override
     protected void saveToDatabase(Book reference) throws ReferenceDatabaseException {
-        getReferenceController().saveReference(reference);
+        getReferenceController().save(reference);
     }
 
     @Override

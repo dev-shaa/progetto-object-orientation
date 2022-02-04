@@ -76,7 +76,7 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
 
     @Override
     protected void saveToDatabase(Video reference) throws ReferenceDatabaseException {
-        getReferenceController().saveReference(reference);
+        getReferenceController().save(reference);
     }
 
     @Override

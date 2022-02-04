@@ -47,7 +47,7 @@ public class WebsiteEditor extends OnlineResourceEditor<Website> {
 
     @Override
     protected void saveToDatabase(Website reference) throws ReferenceDatabaseException {
-        getReferenceController().saveReference(reference);
+        getReferenceController().save(reference);
     }
 
     @Override
