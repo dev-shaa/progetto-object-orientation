@@ -16,6 +16,7 @@ import Controller.ReferenceController;
 import Entities.Category;
 import Entities.References.BibliographicReference;
 import Exceptions.CategoryDatabaseException;
+import Exceptions.ReferenceDatabaseException;
 import GUI.Categories.CategoriesTreePanel;
 import GUI.Categories.CategorySelectionListener;
 import GUI.References.ReferenceListPanel;
@@ -61,6 +62,12 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
 
         JPanel contentPane = new JPanel(new BorderLayout(10, 10));
         setContentPane(contentPane);
+
+        categoriesPanel = new CategoriesTreePanel();
+        categoriesPanel.addSelectionListener(this);
+
+        referencesPanel = new ReferenceListPanel();
+        referencesPanel.addReferenceSelectionListener(this);
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, categoriesPanel, referencesPanel);
         splitPane.setResizeWeight(0.3);
@@ -109,11 +116,12 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
 
         if (b) {
             this.referencesToExclude = referencesToExclude;
-            categoriesPanel.clearSelection();
 
             try {
-                initializeCategoriesPanel();
-                initializeReferencesPanel();
+                categoriesPanel.setCategoriesTree(categoryController.getTree());
+                categoriesPanel.clearSelection();
+
+                referencesPanel.setReferences(null);
             } catch (CategoryDatabaseException e) {
                 showErrorMessage = true;
                 errorMessage = e.getMessage();
@@ -160,12 +168,17 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
 
     @Override
     public void onCategorySelection(Category selectedCategory) {
-        List<BibliographicReference> referencesToShow = referenceController.getReferences(selectedCategory);
+        try {
+            List<BibliographicReference> referencesToShow = referenceController.get(selectedCategory);
 
-        if (referencesToExclude != null)
-            referencesToShow.removeAll(referencesToExclude);
+            if (referencesToExclude != null)
+                referencesToShow.removeAll(referencesToExclude);
 
-        referencesPanel.setReferences(referencesToShow);
+            referencesPanel.setReferences(referencesToShow);
+        } catch (ReferenceDatabaseException e) {
+            referencesPanel.setReferences(null);
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Errore recupero riferimenti", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     @Override
@@ -208,24 +221,6 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
     public void removeReferencePickerListener(ReferencePickerListener listener) {
         if (listener != null && pickerListeners != null)
             pickerListeners.remove(listener);
-    }
-
-    private void initializeCategoriesPanel() throws CategoryDatabaseException {
-        if (categoriesPanel == null) {
-            categoriesPanel = new CategoriesTreePanel(categoryController.getTree());
-            categoriesPanel.addSelectionListener(this);
-        } else {
-            categoriesPanel.setCategoriesTree(categoryController.getTree());
-        }
-    }
-
-    private void initializeReferencesPanel() {
-        if (referencesPanel == null) {
-            referencesPanel = new ReferenceListPanel();
-            referencesPanel.addReferenceSelectionListener(this);
-        } else {
-            referencesPanel.setReferences(null);
-        }
     }
 
 }
