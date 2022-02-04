@@ -92,7 +92,8 @@ public class Controller {
             categoryController = new CategoryController(new CategoryDAOPostgreSQL(user));
             referenceController = new ReferenceController(new BibliographicReferenceDAOPostgreSQL(user), categoryController);
 
-            homepage = new Homepage(this);
+            if (homepage == null)
+                homepage = new Homepage(this);
 
             homepage.setVisible(true);
             loginFrame.setVisible(false);
@@ -110,7 +111,7 @@ public class Controller {
      */
     public void openArticleEditor(Article article) {
         if (articleEditor == null)
-            articleEditor = new ArticleEditor(homepage, categoryController, referenceController);
+            articleEditor = new ArticleEditor(homepage, getCategoryController(), getReferenceController());
 
         articleEditor.setVisible(true, article);
     }
@@ -123,7 +124,7 @@ public class Controller {
      */
     public void openBookEditor(Book book) {
         if (bookEditor == null)
-            bookEditor = new BookEditor(homepage, categoryController, referenceController);
+            bookEditor = new BookEditor(homepage, getCategoryController(), getReferenceController());
 
         bookEditor.setVisible(true, book);
     }
@@ -136,7 +137,7 @@ public class Controller {
      */
     public void openThesisEditor(Thesis thesis) {
         if (thesisEditor == null)
-            thesisEditor = new ThesisEditor(homepage, categoryController, referenceController);
+            thesisEditor = new ThesisEditor(homepage, getCategoryController(), getReferenceController());
 
         thesisEditor.setVisible(true, thesis);
     }
@@ -149,7 +150,7 @@ public class Controller {
      */
     public void openSourceCodeEditor(SourceCode sourceCode) {
         if (sourceCodeEditor == null)
-            sourceCodeEditor = new SourceCodeEditor(homepage, categoryController, referenceController);
+            sourceCodeEditor = new SourceCodeEditor(homepage, getCategoryController(), getReferenceController());
 
         sourceCodeEditor.setVisible(true, sourceCode);
     }
@@ -162,7 +163,7 @@ public class Controller {
      */
     public void openImageEditor(Image image) {
         if (imageEditor == null)
-            imageEditor = new ImageEditor(homepage, categoryController, referenceController);
+            imageEditor = new ImageEditor(homepage, getCategoryController(), getReferenceController());
 
         imageEditor.setVisible(true, image);
     }
@@ -175,7 +176,7 @@ public class Controller {
      */
     public void openVideoEditor(Video video) {
         if (videoEditor == null)
-            videoEditor = new VideoEditor(homepage, categoryController, referenceController);
+            videoEditor = new VideoEditor(homepage, getCategoryController(), getReferenceController());
 
         videoEditor.setVisible(true, video);
     }
@@ -188,7 +189,7 @@ public class Controller {
      */
     public void openWebsiteEditor(Website website) {
         if (websiteEditor == null)
-            websiteEditor = new WebsiteEditor(homepage, categoryController, referenceController);
+            websiteEditor = new WebsiteEditor(homepage, getCategoryController(), getReferenceController());
 
         websiteEditor.setVisible(true, website);
     }

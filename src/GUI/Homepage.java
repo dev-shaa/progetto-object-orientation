@@ -48,6 +48,8 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
      *            controller della GUI
      */
     public Homepage(Controller controller) throws CategoryDatabaseException {
+        super();
+
         setController(controller);
 
         setTitle("Pagina principale");
