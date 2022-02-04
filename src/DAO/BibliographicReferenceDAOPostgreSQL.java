@@ -98,8 +98,6 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
                 website.setDescription(referenceResultSet.getString("description"));
                 website.setLanguage(ReferenceLanguage.getFromString(referenceResultSet.getString("language")));
 
-                // FIXME: categorie
-
                 // FIXME: autori
                 // AuthorDAO authorDAO = new AuthorDAO();
                 // website.setAuthors(authorDAO.getAuthorsOf(website));
@@ -208,8 +206,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         String publisher = format(article.getPublisher());
         String issn = format(article.getISSN());
 
-        String query = "insert into article(id, page_count, url, publisher, issn) values("
-                + article.getID() + "," + pageCount + "," + url + "," + publisher + "," + issn
+        String query = "insert into article(id, page_count, url, publisher, issn) values(?," + pageCount + "," + url + "," + publisher + "," + issn
                 + ") on conflict (id) do update set page_count = " + pageCount + ", url = " + url + ", publisher = " + publisher + ", issn = " + issn;
 
         save(article, query);
@@ -274,44 +271,51 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
             return;
 
         String url = format(website.getURL());
+        String command = "insert into website(id, url) values(? ," + url + ") on conflict (id) do update set url = " + url;
 
-        String query = "insert into website(id, url) values(" + website.getID() + "," + url + ") on conflict (id) do update set url = " + url;
-
-        save(website, query);
+        save(website, command);
     }
 
-    private void save(BibliographicReference reference, String query) throws ReferenceDatabaseException {
+    private void save(BibliographicReference reference, String subReferenceCommand) throws ReferenceDatabaseException {
         if (reference == null)
             return;
 
         Connection connection = null;
         PreparedStatement referenceStatement = null;
-        Statement subStatement = null;
+        PreparedStatement subReferenceStatement = null;
+        PreparedStatement relatedReferenceRemoveStatement = null;
+        PreparedStatement relatedReferenceInsertStatement = null;
+        PreparedStatement categoriesInsertStatement = null;
         ResultSet resultSet = null;
+
+        String referenceInsertCommand = null;
+        String relatedReferenceRemoveCommand = "delete from quotations where quoted_by = ?";
+        String relatedReferenceInsertCommand = "insert into quotations values(?, ?)";
+        String categoriesInsertCommand = "insert into category_reference_association values(?, ?)";
+
+        String language = format(reference.getLanguage() == ReferenceLanguage.NOTSPECIFIED ? null : reference.getLanguage().name());
+        if (reference.getID() == null)
+            referenceInsertCommand = "insert into bibliographic_reference(owner, title, doi, description, language, pubblication_date) values(?,?,?,?," + language + ",?)";
+        else
+            referenceInsertCommand = "update bibliographic_reference set owner = ?, title = ?, doi = ?, description = ?, language = " + language + ", pubblication_date = ? where id = " + reference.getID();
 
         try {
             connection = DatabaseController.getConnection();
             connection.setAutoCommit(false);
 
-            String sql = null;
-
-            if (reference.getID() == null)
-                sql = "insert into bibliographic_reference(owner, title, doi, description, language, pubblication_date) values(?,?,?,?,?,?) on conflict";
-            else
-                sql = "update bibliographic_reference set owner = ?, title = ?, doi = ?, description = ?, language = ?, pubblication_date = ? where id = " + reference.getID();
-
-            referenceStatement = connection.prepareStatement(sql);
+            referenceStatement = connection.prepareStatement(referenceInsertCommand, Statement.RETURN_GENERATED_KEYS);
+            subReferenceStatement = connection.prepareStatement(subReferenceCommand);
+            relatedReferenceRemoveStatement = connection.prepareStatement(relatedReferenceRemoveCommand);
+            relatedReferenceInsertStatement = connection.prepareStatement(relatedReferenceInsertCommand);
+            categoriesInsertStatement = connection.prepareStatement(categoriesInsertCommand);
 
             referenceStatement.setString(1, getUser().getName());
-            referenceStatement.setString(2, format(reference.getTitle()));
-            referenceStatement.setString(3, format(reference.getDOI()));
+            referenceStatement.setString(2, reference.getTitle());
+            referenceStatement.setString(3, reference.getDOI());
             referenceStatement.setString(4, format(reference.getDescription()));
 
-            String language = reference.getLanguage() == ReferenceLanguage.NOTSPECIFIED ? null : reference.getLanguage().name();
-            referenceStatement.setString(5, reference.getLanguage() == ReferenceLanguage.NOTSPECIFIED ? null : language);
-
             Date date = reference.getPubblicationDate() == null ? null : new Date(reference.getPubblicationDate().getTime());
-            referenceStatement.setDate(6, date);
+            referenceStatement.setDate(5, date);
 
             referenceStatement.executeUpdate();
 
@@ -322,9 +326,23 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
                     reference.setID(resultSet.getInt(1));
             }
 
-            subStatement = connection.createStatement();
+            subReferenceStatement.setInt(1, reference.getID());
+            subReferenceStatement.executeUpdate();
 
-            subStatement.executeUpdate(query);
+            relatedReferenceRemoveStatement.setInt(1, reference.getID());
+            relatedReferenceRemoveStatement.executeUpdate();
+
+            for (BibliographicReference relatedReference : reference.getRelatedReferences()) {
+                relatedReferenceInsertStatement.setInt(1, reference.getID());
+                relatedReferenceInsertStatement.setInt(2, relatedReference.getID());
+                relatedReferenceInsertStatement.executeUpdate();
+            }
+
+            for (Category category : reference.getCategories()) {
+                categoriesInsertStatement.setInt(1, category.getID());
+                categoriesInsertStatement.setInt(2, reference.getID());
+                categoriesInsertStatement.executeUpdate();
+            }
 
             connection.commit();
         } catch (SQLException | DatabaseConnectionException e) {
@@ -334,14 +352,21 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
                 // non fare niente
             }
 
+            e.printStackTrace();
             throw new ReferenceDatabaseException("Impossibile aggiungere nuovo riferimento.");
         } finally {
             try {
                 if (resultSet != null)
                     resultSet.close();
 
-                if (subStatement != null)
-                    subStatement.close();
+                if (relatedReferenceInsertStatement != null)
+                    relatedReferenceInsertStatement.close();
+
+                if (relatedReferenceRemoveStatement != null)
+                    relatedReferenceRemoveStatement.close();
+
+                if (subReferenceStatement != null)
+                    subReferenceStatement.close();
 
                 if (referenceStatement != null)
                     referenceStatement.close();

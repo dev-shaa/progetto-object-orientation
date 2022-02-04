@@ -10,6 +10,7 @@ import Entities.Search;
 import Entities.References.*;
 import Entities.References.OnlineResources.*;
 import Entities.References.PhysicalResources.*;
+import Exceptions.CategoryDatabaseException;
 import Exceptions.ReferenceDatabaseException;
 
 /**
@@ -17,21 +18,52 @@ import Exceptions.ReferenceDatabaseException;
  * Serve per non doversi sempre interfacciarsi col database per recuperare le categorie.
  */
 public class ReferenceController {
+
+    // FIXME: quando viene eliminata una categoria dovrebbe essere rimossa dai riferimenti
+
     private BibliographicReferenceDAO referenceDAO;
+    private CategoryController categoryController;
+
     private List<BibliographicReference> references;
+
+    private boolean needToRetrieveFromDatabase;
 
     /**
      * Crea un nuovo controller dei riferimenti, caricando dal database i riferimenti.
      * 
      * @param referenceDAO
      *            DAO per interfacciarsi col database
+     * @param categoryController
+     *            controller per recuperare le categorie associate ai riferimenti
      * @throws IllegalArgumentException
      *             se {@code referenceDAO == null}
-     * @throws ReferenceDatabaseException
-     *             se il recupero dei riferimenti dal database non va a buon fine
      */
-    public ReferenceController(BibliographicReferenceDAO referenceDAO) throws ReferenceDatabaseException {
-        this.setReferenceDAO(referenceDAO);
+    public ReferenceController(BibliographicReferenceDAO referenceDAO, CategoryController categoryController) {
+        setReferenceDAO(referenceDAO);
+        setCategoryController(categoryController);
+    }
+
+    /**
+     * Imposta il controller per recuperare le categorie associate ai riferimenti.
+     * 
+     * @param categoryController
+     *            controller delle categorie
+     */
+    public void setCategoryController(CategoryController categoryController) {
+        if (categoryController == null)
+            throw new IllegalArgumentException("categoryController can't be null");
+
+        this.categoryController = categoryController;
+        forceNextRetrievalFromDatabase();
+    }
+
+    /**
+     * Restituisce il controller usato per recuperare le categorie dei riferimenti.
+     * 
+     * @return controller delle categorie
+     */
+    public CategoryController getCategoryController() {
+        return categoryController;
     }
 
     /**
@@ -41,23 +73,19 @@ public class ReferenceController {
      *            DAO dei riferimenti
      * @throws IllegalArgumentException
      *             se {@code referenceDAO == null}
-     * @throws ReferenceDatabaseException
-     *             se il recupero dei riferimenti dal database non va a buon fine
      */
-    public void setReferenceDAO(BibliographicReferenceDAO referenceDAO) throws ReferenceDatabaseException {
+    public void setReferenceDAO(BibliographicReferenceDAO referenceDAO) {
         if (referenceDAO == null)
             throw new IllegalArgumentException("referenceDAO can't be null");
 
         this.referenceDAO = referenceDAO;
-
-        references = getReferenceDAO().getAll();
+        forceNextRetrievalFromDatabase();
     }
 
     /**
-     * Restituisce la classe DAO per la gestione dei riferimenti nel database
+     * Restituisce il DAO usato per recuperare i riferimenti.
      * 
-     * @return
-     *         DAO dei riferimenti
+     * @return DAO dei riferimenti
      */
     public BibliographicReferenceDAO getReferenceDAO() {
         return referenceDAO;
@@ -69,7 +97,11 @@ public class ReferenceController {
      * @return
      *         lista dei riferimenti
      */
-    public List<BibliographicReference> getReferences() {
+    public List<BibliographicReference> getAll() throws ReferenceDatabaseException {
+        if (needToRetrieveFromDatabase) {
+            retrieveFromDatabase();
+        }
+
         return references;
     }
 
@@ -81,9 +113,9 @@ public class ReferenceController {
      *            categoria in cui cercare i riferimenti
      * @return lista dei riferimenti presenti in una categoria
      */
-    public List<BibliographicReference> getReferences(Category category) {
+    public List<BibliographicReference> get(Category category) throws ReferenceDatabaseException {
         Predicate<BibliographicReference> categoryFilter = e -> e.isContainedIn(category);
-        return getReferences(categoryFilter);
+        return get(categoryFilter);
     }
 
     /**
@@ -95,7 +127,7 @@ public class ReferenceController {
      * @throws IllegalArgumentException
      *             se {@code search == null}
      */
-    public List<BibliographicReference> getReferences(Search search) {
+    public List<BibliographicReference> get(Search search) throws ReferenceDatabaseException {
         if (search == null)
             throw new IllegalArgumentException("search can't be null");
 
@@ -104,11 +136,32 @@ public class ReferenceController {
                 && e.isTaggedWith(search.getTags())
                 && e.isContainedIn(search.getCategories());
 
-        return getReferences(searchFilter);
+        return get(searchFilter);
     }
 
-    private List<BibliographicReference> getReferences(Predicate<BibliographicReference> filter) {
-        return getReferences().stream().filter(filter).collect(Collectors.toList());
+    private List<BibliographicReference> get(Predicate<BibliographicReference> filter) throws ReferenceDatabaseException {
+        return getAll().stream().filter(filter).collect(Collectors.toList());
+    }
+
+    /**
+     * Impone che, al prossimo recupero, i riferimenti vengano recuperati di nuovo direttamente dal database.
+     */
+    public void forceNextRetrievalFromDatabase() {
+        needToRetrieveFromDatabase = true;
+    }
+
+    private void retrieveFromDatabase() throws ReferenceDatabaseException {
+        try {
+            references = referenceDAO.getAll();
+
+            for (BibliographicReference reference : references) {
+                reference.setCategories(getCategoryController().get(reference));
+            }
+
+            needToRetrieveFromDatabase = false;
+        } catch (ReferenceDatabaseException | CategoryDatabaseException e) {
+            throw new ReferenceDatabaseException(e.getMessage());
+        }
     }
 
     /**
@@ -126,11 +179,8 @@ public class ReferenceController {
             throw new IllegalArgumentException("reference can't be null");
 
         getReferenceDAO().remove(reference);
-
-        getReferences().remove(reference);
-
+        getAll().remove(reference);
         removeReferenceFromRelated(reference);
-
         removeFromQuotationCount(reference);
     }
 
@@ -148,11 +198,9 @@ public class ReferenceController {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
-        if (!getReferences().contains(reference)) {
-            getReferences().add(reference);
-            getReferenceDAO().save(reference);
-            addToQuotationCount(reference);
-        }
+        getReferenceDAO().save(reference);
+
+        addToLocal(reference);
     }
 
     /**
@@ -169,10 +217,9 @@ public class ReferenceController {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
-        if (!getReferences().contains(reference))
-            getReferences().add(reference);
+        getReferenceDAO().save(reference);
 
-        addToQuotationCount(reference);
+        addToLocal(reference);
     }
 
     /**
@@ -189,10 +236,9 @@ public class ReferenceController {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
-        if (!getReferences().contains(reference))
-            getReferences().add(reference);
+        getReferenceDAO().save(reference);
 
-        addToQuotationCount(reference);
+        addToLocal(reference);
     }
 
     /**
@@ -209,10 +255,9 @@ public class ReferenceController {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
-        if (!getReferences().contains(reference))
-            getReferences().add(reference);
+        getReferenceDAO().save(reference);
 
-        addToQuotationCount(reference);
+        addToLocal(reference);
     }
 
     /**
@@ -229,10 +274,9 @@ public class ReferenceController {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
-        if (!getReferences().contains(reference))
-            getReferences().add(reference);
+        getReferenceDAO().save(reference);
 
-        addToQuotationCount(reference);
+        addToLocal(reference);
     }
 
     /**
@@ -249,10 +293,9 @@ public class ReferenceController {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
-        if (!getReferences().contains(reference))
-            getReferences().add(reference);
+        getReferenceDAO().save(reference);
 
-        addToQuotationCount(reference);
+        addToLocal(reference);
     }
 
     /**
@@ -269,37 +312,48 @@ public class ReferenceController {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
-        if (!getReferences().contains(reference)) {
-            getReferenceDAO().save(reference);
-            getReferences().add(reference);
-            addToQuotationCount(reference);
-        }
+        getReferenceDAO().save(reference);
+
+        addToLocal(reference);
     }
 
-    private void removeReferenceFromRelated(BibliographicReference reference) {
-        if (reference == null)
-            throw new IllegalArgumentException("reference can't be null");
+    private void addToLocal(BibliographicReference reference) throws ReferenceDatabaseException {
+        if (getAll().contains(reference)) {
+            // se è già contenuta nell'elenco vuol dire che stiamo aggiornando il riferimento
+            // conviene prima rimuoverlo dal conteggio delle citazioni ricevute e poi aggiornarlo di nuovo
 
-        for (BibliographicReference bibliographicReference : getReferences()) {
-            bibliographicReference.getRelatedReferences().remove(reference);
+            removeFromQuotationCount(reference);
+        } else {
+            getAll().add(reference);
+        }
+
+        addToQuotationCount(reference);
+    }
+
+    private void removeReferenceFromRelated(BibliographicReference referenceToRemove) throws ReferenceDatabaseException {
+        if (referenceToRemove == null)
+            return;
+
+        for (BibliographicReference reference : getAll()) {
+            reference.getRelatedReferences().remove(referenceToRemove);
         }
     }
 
     private void addToQuotationCount(BibliographicReference reference) {
         if (reference == null)
-            throw new IllegalArgumentException("reference can't be null");
+            return;
 
         for (BibliographicReference bibliographicReference : reference.getRelatedReferences()) {
             bibliographicReference.setQuotationCount(bibliographicReference.getQuotationCount() + 1);
         }
     }
 
-    private void removeFromQuotationCount(BibliographicReference reference) {
-        if (reference == null)
-            throw new IllegalArgumentException("reference can't be null");
+    private void removeFromQuotationCount(BibliographicReference referenceToRemove) {
+        if (referenceToRemove == null)
+            return;
 
-        for (BibliographicReference bibliographicReference : reference.getRelatedReferences()) {
-            bibliographicReference.setQuotationCount(bibliographicReference.getQuotationCount() - 1);
+        for (BibliographicReference reference : referenceToRemove.getRelatedReferences()) {
+            reference.setQuotationCount(reference.getQuotationCount() - 1);
         }
     }
 
