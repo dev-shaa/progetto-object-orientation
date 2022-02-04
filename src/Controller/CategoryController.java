@@ -151,7 +151,6 @@ public class CategoryController {
     public List<Category> getAll() throws CategoryDatabaseException {
         if (needToRetrieveFromDatabase) {
             retrieveFromDatabase();
-            needToRetrieveFromDatabase = false;
         }
 
         return categories;
@@ -171,7 +170,6 @@ public class CategoryController {
         // ci serve perchè dobbiamo prima assicurarci che idToCategory sia pieno
         if (needToRetrieveFromDatabase) {
             retrieveFromDatabase();
-            needToRetrieveFromDatabase = false;
         }
 
         List<Integer> ids = categoryDAO.getID(reference);
@@ -221,8 +219,7 @@ public class CategoryController {
     }
 
     /**
-     * Impone che, al prossimo recupero, le categorie vengano recuperate di nuovo
-     * direttamente dal database.
+     * Impone che, al prossimo recupero, le categorie vengano recuperate di nuovo direttamente dal database.
      */
     public void forceRetrievalFromDatabase() {
         needToRetrieveFromDatabase = true;
@@ -238,6 +235,8 @@ public class CategoryController {
         for (Category category : categories) {
             addToHashMap(category);
         }
+
+        needToRetrieveFromDatabase = false;
     }
 
     private void addToHashMap(Category category) {

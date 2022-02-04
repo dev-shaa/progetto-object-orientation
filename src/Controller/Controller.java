@@ -89,8 +89,8 @@ public class Controller {
     public void openHomePage(User user) {
         try {
             this.user = user;
-            this.categoryController = new CategoryController(new CategoryDAOPostgreSQL(user));
-            this.referenceController = new ReferenceController(new BibliographicReferenceDAOPostgreSQL(user));
+            categoryController = new CategoryController(new CategoryDAOPostgreSQL(user));
+            referenceController = new ReferenceController(new BibliographicReferenceDAOPostgreSQL(user), categoryController);
 
             homepage = new Homepage(this);
 

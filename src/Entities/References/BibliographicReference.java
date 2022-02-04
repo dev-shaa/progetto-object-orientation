@@ -42,6 +42,9 @@ public abstract class BibliographicReference {
         return getTitle();
     }
 
+    /**
+     * @return {@code true} se l'identificativo è uguale
+     */
     @Override
     public boolean equals(Object obj) {
         // due riferimenti sono uguali se hanno lo stesso id
