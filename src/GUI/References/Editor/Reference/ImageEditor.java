@@ -1,6 +1,7 @@
 package GUI.References.Editor.Reference;
 
 import Entities.References.OnlineResources.Image;
+import Exceptions.ReferenceDatabaseException;
 import Exceptions.RequiredFieldMissingException;
 
 import Controller.CategoryController;
@@ -61,6 +62,11 @@ public class ImageEditor extends OnlineResourceEditor<Image> {
     @Override
     protected Image getNewInstance() {
         return new Image("title", "URL");
+    }
+
+    @Override
+    protected void saveToDatabase(Image reference) throws ReferenceDatabaseException {
+        getReferenceController().saveReference(reference);
     }
 
     @Override

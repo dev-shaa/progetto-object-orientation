@@ -2,6 +2,7 @@ package GUI.References.Editor.Reference;
 
 import Entities.References.OnlineResources.SourceCode;
 import Entities.References.OnlineResources.ProgrammingLanguage;
+import Exceptions.ReferenceDatabaseException;
 import Exceptions.RequiredFieldMissingException;
 
 import Controller.CategoryController;
@@ -51,6 +52,11 @@ public class SourceCodeEditor extends OnlineResourceEditor<SourceCode> {
     @Override
     protected SourceCode getNewInstance() {
         return new SourceCode("title", "URL");
+    }
+
+    @Override
+    protected void saveToDatabase(SourceCode reference) throws ReferenceDatabaseException {
+        getReferenceController().saveReference(reference);
     }
 
     @Override

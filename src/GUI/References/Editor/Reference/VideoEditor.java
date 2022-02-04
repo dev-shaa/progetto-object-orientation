@@ -1,6 +1,7 @@
 package GUI.References.Editor.Reference;
 
 import Entities.References.OnlineResources.Video;
+import Exceptions.ReferenceDatabaseException;
 import Exceptions.RequiredFieldMissingException;
 
 import Controller.CategoryController;
@@ -71,6 +72,11 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
     @Override
     protected Video getNewInstance() {
         return new Video("title", "URL");
+    }
+
+    @Override
+    protected void saveToDatabase(Video reference) throws ReferenceDatabaseException {
+        getReferenceController().saveReference(reference);
     }
 
     @Override

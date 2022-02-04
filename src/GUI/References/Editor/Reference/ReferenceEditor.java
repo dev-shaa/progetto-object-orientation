@@ -6,6 +6,7 @@ import GUI.References.Editor.*;
 import GUI.References.Editor.Reference.Picker.*;
 import GUI.Utilities.*;
 import Exceptions.CategoryDatabaseException;
+import Exceptions.ReferenceDatabaseException;
 import Exceptions.RequiredFieldMissingException;
 
 import java.awt.*;
@@ -72,8 +73,12 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         setResizable(false);
 
         // FIXME:
-        // setCategoryController(categoryController);
-        setReferenceController(referenceController);
+        try {
+            setCategoryController(categoryController);
+            setReferenceController(referenceController);
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
 
         setupComponents();
     }
@@ -154,7 +159,11 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
                     saveReference();
                     setVisible(false);
                 } catch (RequiredFieldMissingException ex) {
+                    ex.printStackTrace();
                     JOptionPane.showMessageDialog(selfPointer, ex.getMessage(), "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
+                } catch (ReferenceDatabaseException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(selfPointer, ex.getMessage(), "Salvataggio non riuscito", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -250,7 +259,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
             setDOIValue(null);
             setDescriptionValue(null);
             setTagValues(null);
-            setLanguageValue(ReferenceLanguage.ENGLISH);
+            setLanguageValue(ReferenceLanguage.NOTSPECIFIED);
             setRelatedReferences(null);
             setAuthorValues(null);
             setCategoryValues(null);
@@ -274,6 +283,8 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      */
     protected abstract T getNewInstance();
 
+    protected abstract void saveToDatabase(T reference) throws ReferenceDatabaseException;
+
     private void setOpenReference(T reference) {
         this.openReference = reference;
     }
@@ -282,9 +293,10 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         return openReference;
     }
 
-    private void saveReference() throws RequiredFieldMissingException {
+    private void saveReference() throws RequiredFieldMissingException, ReferenceDatabaseException {
         T reference = getOpenReference() == null ? getNewInstance() : getOpenReference();
         fillReferenceValues(reference);
+        saveToDatabase(reference);
     }
 
     @Override
@@ -355,7 +367,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      *             se {@code referenceController == null}
      */
     public void setReferenceController(ReferenceController referenceController) {
-        if (categoryController == null)
+        if (referenceController == null)
             throw new IllegalArgumentException("referenceController can't be null");
 
         this.referenceController = referenceController;

@@ -1,6 +1,7 @@
 package GUI.References.Editor.Reference;
 
 import Entities.References.OnlineResources.Website;
+import Exceptions.ReferenceDatabaseException;
 import Exceptions.RequiredFieldMissingException;
 
 import Controller.CategoryController;
@@ -42,6 +43,11 @@ public class WebsiteEditor extends OnlineResourceEditor<Website> {
     @Override
     protected Website getNewInstance() {
         return new Website("title", "URL");
+    }
+
+    @Override
+    protected void saveToDatabase(Website reference) throws ReferenceDatabaseException {
+        getReferenceController().saveReference(reference);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package GUI.References.Editor.Reference;
 
 import Entities.References.PhysicalResources.Article;
+import Exceptions.ReferenceDatabaseException;
 import Exceptions.RequiredFieldMissingException;
 
 import Controller.CategoryController;
@@ -50,6 +51,11 @@ public class ArticleEditor extends PublicationEditor<Article> {
     @Override
     protected Article getNewInstance() {
         return new Article("temp");
+    }
+
+    @Override
+    protected void saveToDatabase(Article reference) throws ReferenceDatabaseException {
+        getReferenceController().saveReference(reference);
     }
 
     @Override

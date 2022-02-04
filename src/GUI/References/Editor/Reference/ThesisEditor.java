@@ -1,6 +1,7 @@
 package GUI.References.Editor.Reference;
 
 import Entities.References.PhysicalResources.Thesis;
+import Exceptions.ReferenceDatabaseException;
 import Exceptions.RequiredFieldMissingException;
 
 import Controller.CategoryController;
@@ -60,6 +61,11 @@ public class ThesisEditor extends PublicationEditor<Thesis> {
     @Override
     protected Thesis getNewInstance() {
         return new Thesis("title");
+    }
+
+    @Override
+    protected void saveToDatabase(Thesis reference) throws ReferenceDatabaseException {
+        getReferenceController().saveReference(reference);
     }
 
     @Override

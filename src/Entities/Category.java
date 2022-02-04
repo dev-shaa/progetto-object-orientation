@@ -18,7 +18,7 @@ public class Category {
      *             se il nome non è valido
      * @see #isNameValid(String)
      */
-    public Category(String name) throws IllegalArgumentException {
+    public Category(String name) {
         setName(name);
         setParent(null);
     }
@@ -34,10 +34,10 @@ public class Category {
      *             se il nome non è valido
      * @see #isNameValid(String)
      */
-    public Category(String name, int id) throws IllegalArgumentException {
+    public Category(String name, int id) {
         setName(name);
         setParent(null);
-        setId(id);
+        setID(id);
     }
 
     /**
@@ -52,7 +52,7 @@ public class Category {
      *             se il nome non è valido
      * @see #isNameValid(String)
      */
-    public Category(String name, Category parent) throws IllegalArgumentException {
+    public Category(String name, Category parent) {
         setName(name);
         setParent(parent);
     }
@@ -72,7 +72,7 @@ public class Category {
         if (!(obj instanceof Category))
             return false;
 
-        return String.valueOf(getId()).equals(String.valueOf(((Category) obj).getId()));
+        return String.valueOf(getID()).equals(String.valueOf(((Category) obj).getID()));
     }
 
     /**
@@ -83,7 +83,7 @@ public class Category {
      * @param id
      *            identificativo della categoria
      */
-    public void setId(Integer id) {
+    public void setID(Integer id) {
         this.id = id;
     }
 
@@ -93,7 +93,7 @@ public class Category {
      * @return
      *         identificativo della categoria
      */
-    public Integer getId() {
+    public Integer getID() {
         return id;
     }
 

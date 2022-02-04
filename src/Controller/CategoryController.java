@@ -243,15 +243,15 @@ public class CategoryController {
         if (category == null)
             return;
 
-        idToCategory.put(category.getId(), category);
-        categoryToID.put(category, category.getId());
+        idToCategory.put(category.getID(), category);
+        categoryToID.put(category, category.getID());
     }
 
     private void removeFromHashMap(Category category) {
         if (category == null)
             return;
 
-        idToCategory.remove(category.getId());
+        idToCategory.remove(category.getID());
         categoryToID.remove(category);
     }
 

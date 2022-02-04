@@ -76,7 +76,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
 
             statement = connection.createStatement();
 
-            String parentID = category.getParent() == null ? "null" : String.valueOf(category.getParent().getId());
+            String parentID = category.getParent() == null ? "null" : String.valueOf(category.getParent().getID());
 
             String query = "insert into category(name, parent, owner) values('"
                     + category.getName() + "', "
@@ -90,7 +90,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
             ResultSet set = statement.getGeneratedKeys();
 
             if (set.next()) {
-                category.setId(set.getInt(1));
+                category.setID(set.getInt(1));
             }
 
             connection.commit();
@@ -129,7 +129,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
             connection = DatabaseController.getConnection();
             statement = connection.createStatement();
 
-            String query = "update category set name = '" + category.getName() + "' where id = " + category.getId();
+            String query = "update category set name = '" + category.getName() + "' where id = " + category.getID();
 
             statement.executeUpdate(query);
         } catch (Exception e) {
@@ -161,7 +161,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
             connection = DatabaseController.getConnection();
             statement = connection.createStatement();
 
-            String query = "delete from category where id = " + category.getId();
+            String query = "delete from category where id = " + category.getID();
 
             statement.executeUpdate(query);
         } catch (Exception e) {
@@ -197,7 +197,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
 
             while (resultSet.next()) {
                 Category category = new Category(resultSet.getString("name"), resultSet.getInt("id"));
-                idToCategory.put(category.getId(), category);
+                idToCategory.put(category.getID(), category);
                 nodeToParentID.put(category, resultSet.getInt("parent"));
             }
 
