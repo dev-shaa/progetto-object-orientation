@@ -1,6 +1,9 @@
 package Entities.References;
 
 import Entities.*;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -22,6 +25,8 @@ public abstract class BibliographicReference {
     private List<Category> categories;
     private List<BibliographicReference> relatedReferences;
     private int quotationCount;
+
+    private final static DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd");
 
     /**
      * Crea un nuovo riferimento con il titolo indicato.
@@ -292,12 +297,12 @@ public abstract class BibliographicReference {
 
         fields.add(new BibliographicReferenceField("Titolo", getTitle()));
         fields.add(new BibliographicReferenceField("Autori", getAuthorsAsString()));
-        fields.add(new BibliographicReferenceField("Data di pubblicazione", getPubblicationDate()));
         fields.add(new BibliographicReferenceField("DOI", getDOI()));
         fields.add(new BibliographicReferenceField("Descrizione", getDescription()));
         fields.add(new BibliographicReferenceField("Lingua", getLanguage()));
         fields.add(new BibliographicReferenceField("Parole chiave", getTagsAsString()));
         fields.add(new BibliographicReferenceField("Rimandi", getRelatedReferencesAsString()));
+        fields.add(new BibliographicReferenceField("Data di pubblicazione", getFormattedDate()));
 
         return fields;
     }
@@ -357,6 +362,15 @@ public abstract class BibliographicReference {
      */
     public String getRelatedReferencesAsString() {
         return getRelatedReferences().toString().substring(1, getRelatedReferences().toString().lastIndexOf(']'));
+    }
+
+    /**
+     * Restituisce la data di pubblicazione del riferimento formattata come {@code yyyy/MM/dd}.
+     * 
+     * @return {@code null} se non è indicata la data di pubblicazione, la data formattata altrimenti
+     */
+    public String getFormattedDate() {
+        return getPubblicationDate() == null ? null : DATE_FORMAT.format(getPubblicationDate());
     }
 
     /**

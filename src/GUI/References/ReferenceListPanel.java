@@ -1,7 +1,6 @@
 package GUI.References;
 
 import Entities.References.*;
-
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -66,7 +65,7 @@ public class ReferenceListPanel extends JScrollPane {
      * Imposta i riferimenti da mostrare nell'elenco.
      * 
      * @param references
-     *            i riferimenti da mostrare (se {@code references == null} non viene mostrato nulla)
+     *            i riferimenti da mostrare (se {@code null} non viene mostrato nulla)
      */
     public void setReferences(Collection<? extends BibliographicReference> references) {
         removeAllReferences();
@@ -89,7 +88,7 @@ public class ReferenceListPanel extends JScrollPane {
             displayedReferences = new ArrayList<>();
 
         displayedReferences.add(reference);
-        referencesTableModel.addRow(new Object[] { reference.getTitle(), reference.getAuthorsAsString(), reference.getPubblicationDate(), reference.getQuotationCount() });
+        referencesTableModel.addRow(new Object[] { reference.getTitle(), reference.getAuthorsAsString(), reference.getFormattedDate(), reference.getQuotationCount() });
     }
 
     /**
