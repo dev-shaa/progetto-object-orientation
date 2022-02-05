@@ -61,21 +61,21 @@ public class CategoriesTreePanel extends JScrollPane implements TreeSelectionLis
     }
 
     /**
-     * Restituisce l'ultimo nodo selezionato.
-     * 
-     * @return
-     *         nodo selezionato, {@code null se non è selezionato niente}
-     */
-    @SuppressWarnings("unchecked")
-    public CustomTreeNode<Category> getSelectedNode() {
-        return (CustomTreeNode<Category>) tree.getLastSelectedPathComponent();
-    }
-
-    /**
      * Deseleziona tutto
      */
     public void clearSelection() {
         tree.clearSelection();
+    }
+
+    /**
+     * Restituisce l'ultima categoria selezionata.
+     * 
+     * @return ultima categoria selezionata
+     */
+    public Category getSelectedCategory() {
+        CustomTreeNode<Category> selectedNode = getSelectedNode();
+
+        return selectedNode == null ? null : selectedNode.getUserObject();
     }
 
     /**
@@ -121,8 +121,13 @@ public class CategoriesTreePanel extends JScrollPane implements TreeSelectionLis
                 categorySelectionListener.onCategoryClearSelection();
         } else {
             for (CategorySelectionListener categorySelectionListener : selectionListeners)
-                categorySelectionListener.onCategorySelection(getSelectedNode().getUserObject());
+                categorySelectionListener.onCategorySelection(getSelectedCategory());
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private CustomTreeNode<Category> getSelectedNode() {
+        return (CustomTreeNode<Category>) tree.getLastSelectedPathComponent();
     }
 
 }

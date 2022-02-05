@@ -217,7 +217,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
             String newCategoryName = getCategoryNameFromUser("Nuova categoria");
 
             if (newCategoryName != null) {
-                Category category = new Category(newCategoryName, categoriesTreePanel.getSelectedNode().getUserObject());
+                Category category = new Category(newCategoryName, categoriesTreePanel.getSelectedCategory());
                 getController().getCategoryController().save(category);
             }
         } catch (CategoryDatabaseException e) {
@@ -228,10 +228,10 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
 
     private void changeCategory() {
         try {
-            String newName = getCategoryNameFromUser(categoriesTreePanel.getSelectedNode().getUserObject().getName());
+            String newName = getCategoryNameFromUser(categoriesTreePanel.getSelectedCategory().getName());
 
             if (newName != null) {
-                getController().getCategoryController().update(categoriesTreePanel.getSelectedNode().getUserObject(), newName);
+                getController().getCategoryController().update(categoriesTreePanel.getSelectedCategory(), newName);
             }
         } catch (CategoryDatabaseException e) {
             e.printStackTrace();
@@ -244,7 +244,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
             int confirmDialogBoxOption = JOptionPane.showConfirmDialog(null, "Sicuro di voler eliminare questa categoria?", "Elimina categoria", JOptionPane.YES_NO_OPTION);
 
             if (confirmDialogBoxOption == JOptionPane.YES_OPTION) {
-                getController().getCategoryController().remove(categoriesTreePanel.getSelectedNode().getUserObject());
+                getController().getCategoryController().remove(categoriesTreePanel.getSelectedCategory());
             }
         } catch (CategoryDatabaseException e) {
             e.printStackTrace();

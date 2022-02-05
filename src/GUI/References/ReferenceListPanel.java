@@ -73,8 +73,8 @@ public class ReferenceListPanel extends JScrollPane {
         if (references == null)
             return;
 
-        for (BibliographicReference riferimento : references)
-            addReference(riferimento);
+        for (BibliographicReference reference : references)
+            addReference(reference);
     }
 
     /**
