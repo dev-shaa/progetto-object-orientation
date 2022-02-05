@@ -207,14 +207,15 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
             return;
 
         String pageCount = article.getPageCount() == 0 ? "null" : String.valueOf(article.getPageCount());
-        String url = format(article.getURL());
-        String publisher = format(article.getPublisher());
-        String issn = format(article.getISSN());
 
-        String query = "insert into article(id, page_count, url, publisher, issn) values(?," + pageCount + "," + url + "," + publisher + "," + issn
-                + ") on conflict (id) do update set page_count = " + pageCount + ", url = " + url + ", publisher = " + publisher + ", issn = " + issn;
+        String command = null;
 
-        save(article, query);
+        if (article.getID() == null)
+            command = "insert into article(id, page_count, url, publisher, issn) values(?," + pageCount + "," + article.getURL() + "," + article.getPublisher() + "," + article.getISSN() + ")";
+        else
+            command = "update article set page_count = " + pageCount + ", url = " + article.getURL() + ", publisher = " + article.getPublisher() + ", issn = " + article.getISSN() + " where id = ?";
+
+        save(article, command);
     }
 
     @Override
@@ -273,8 +274,12 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         if (website == null)
             return;
 
-        String url = format(website.getURL());
-        String command = "insert into website(id, url) values(? ," + url + ") on conflict (id) do update set url = " + url;
+        String command = null;
+
+        if (website.getID() == null)
+            command = "insert into website(id, url) values(? ," + website.getURL() + ")";
+        else
+            command = "update website set url = " + website.getURL() + " where id = ?";
 
         save(website, command);
     }
@@ -307,6 +312,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         String authorsInsertCommand = "insert into author_reference_association values(?, ?)";
 
         String language = format(reference.getLanguage() == ReferenceLanguage.NOTSPECIFIED ? null : reference.getLanguage().name());
+
         if (reference.getID() == null)
             referenceInsertCommand = "insert into bibliographic_reference(owner, title, doi, description, language, pubblication_date) values(?,?,?,?," + language + ",?)";
         else
