@@ -92,9 +92,11 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
                 updateUserLabelText();
                 categoriesTreePanel.setCategoriesTree(getController().getCategoryController().getTree());
                 referenceSearchPanel.setCategoriesTree(getController().getCategoryController().getTree());
+                referenceSearchPanel.reset();
             } catch (CategoryDatabaseException e) {
                 categoriesTreePanel.setCategoriesTree(null);
                 referenceSearchPanel.setCategoriesTree(null);
+                referenceSearchPanel.reset();
                 failedToLoad = true;
             }
         }

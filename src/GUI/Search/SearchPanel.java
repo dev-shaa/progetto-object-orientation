@@ -52,7 +52,7 @@ public class SearchPanel extends JPanel {
     public SearchPanel(CustomTreeModel<Category> treeModel) {
         super();
 
-        setCategoriesTree(treeModel);
+        categories = new PopupCheckboxTree<>(treeModel);
 
         setLayout(new BorderLayout(5, 5));
         setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -69,8 +69,8 @@ public class SearchPanel extends JPanel {
         addFieldComponent("Parole chiave", tags, "Inserisci le parole chiave da ricercare nel riferimento, delimitate da '" + searchFieldSeparator + "'");
         addFieldComponent("Autori", authors, "Inserisci gli autori da ricercare, delimitati da '" + searchFieldSeparator + "'");
         addFieldComponent("Categorie", categories, "Seleziona le categorie in cui cercare il riferimento");
-        addFieldComponent("Da", dateFrom);
-        addFieldComponent("A", dateTo);
+        addFieldComponent("Da", dateFrom, "Data di inizio dell'intervallo di ricerca");
+        addFieldComponent("A", dateTo, "Data di fine dell'intervallo di ricerca");
 
         Component spacing = Box.createVerticalGlue();
         spacing.setMaximumSize(new Dimension(100, 32));
@@ -89,36 +89,18 @@ public class SearchPanel extends JPanel {
 
         add(new JLabel("<html><b>Ricerca riferimenti</b></html>"), BorderLayout.NORTH);
         add(searchPanel, BorderLayout.CENTER);
-
-        reset();
-    }
-
-    private void addFieldComponent(JComponent component) {
-        component.setMaximumSize(maximumSize);
-        component.setAlignmentX(alignment);
-        searchPanel.add(component);
-    }
-
-    private void addFieldComponent(String label, JComponent component) {
-        JLabel labelField = new JLabel(label);
-        labelField.setMaximumSize(maximumSize);
-        labelField.setAlignmentX(alignment);
-
-        addFieldComponent(labelField);
-        addFieldComponent(component);
     }
 
     private void addFieldComponent(String label, JComponent component, String tooltip) {
-        component.setToolTipText(tooltip);
-        addFieldComponent(label, component);
-    }
+        JLabel labelField = new JLabel(label);
+        labelField.setMaximumSize(maximumSize);
+        labelField.setAlignmentX(alignment);
+        searchPanel.add(labelField);
 
-    private void reset() {
-        tags.setText(null);
-        authors.setText(null);
-        categories.clearSelection();
-        dateFrom.setDate(null);
-        dateTo.setDate(null);
+        component.setMaximumSize(maximumSize);
+        component.setAlignmentX(alignment);
+        component.setToolTipText(tooltip);
+        searchPanel.add(component);
     }
 
     private void search() {
@@ -140,14 +122,12 @@ public class SearchPanel extends JPanel {
      * @param treeModel
      */
     public void setCategoriesTree(CustomTreeModel<Category> treeModel) {
-        if (categories == null)
-            categories = new PopupCheckboxTree<Category>(treeModel);
-        else
-            categories.setTreeModel(treeModel);
+        categories.setTreeModel(treeModel);
     }
 
     /**
      * Aggiunge un listener all'evento di ricerca.
+     * Se {@code listener == null} o se è già registrato, non viene aggiunto.
      * 
      * @param listener
      *            listener da aggiungere
@@ -159,11 +139,13 @@ public class SearchPanel extends JPanel {
         if (searchListeners == null)
             searchListeners = new ArrayList<>(1);
 
-        searchListeners.add(listener);
+        if (!searchListeners.contains(listener))
+            searchListeners.add(listener);
     }
 
     /**
      * Rimuove un listener dall'evento di ricerca.
+     * Se {@code listener == null} o se non è registrato, non esegue nulla.
      * 
      * @param listener
      *            listener da rimuovere
@@ -173,6 +155,17 @@ public class SearchPanel extends JPanel {
             return;
 
         searchListeners.remove(listener);
+    }
+
+    /**
+     * Resetta i campi di ricerca.
+     */
+    public void reset() {
+        tags.setText(null);
+        authors.setText(null);
+        categories.clearSelection();
+        dateFrom.setDate(null);
+        dateTo.setDate(null);
     }
 
 }
