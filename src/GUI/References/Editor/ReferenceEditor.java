@@ -73,13 +73,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         setSize(500, 700);
         setResizable(false);
 
-        // FIXME:
-        try {
-            setCategoryController(categoryController);
-        } catch (Exception e) {
-            // TODO: handle exception
-        }
-
+        setCategoryController(categoryController);
         setReferenceController(referenceController);
 
         setupBaseFields();
@@ -93,17 +87,11 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      * @throws IllegalArgumentException
      *             se {@code categoryController == null}
      */
-    public void setCategoryController(CategoryController categoryController) throws CategoryDatabaseException {
+    public void setCategoryController(CategoryController categoryController) {
         if (categoryController == null)
             throw new IllegalArgumentException("categoryController can't be null");
 
         this.categoryController = categoryController;
-
-        if (categories == null) {
-            categories = new PopupCheckboxTree<Category>(categoryController.getTree());
-        } else {
-            categories.setTreeModel(categoryController.getTree());
-        }
     }
 
     /**
@@ -158,6 +146,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         title = new JTextField();
         tags = new TagInputField(separator);
         authors = new AuthorInputField(separator);
+        categories = new PopupCheckboxTree<>();
         DOI = new JTextField();
         pubblicationDate = new JDateChooser();
         language = new JComboBox<>(ReferenceLanguage.values());
@@ -358,12 +347,32 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      *            riferimento da mostrare (eventualmente)
      */
     public void setVisible(boolean b, T reference) {
+        boolean failedToLoad = false;
+
         if (b) {
             setReferenceToChange(reference);
             setFieldsValues(reference);
+
+            try {
+                categories.setTreeModel(categoryController.getTree());
+            } catch (CategoryDatabaseException e) {
+                categories.setTreeModel(null);
+                failedToLoad = true;
+            }
         }
 
         super.setVisible(b);
+
+        if (failedToLoad) {
+            String[] choices = { "Riprova", "Chiudi" };
+            int option = JOptionPane.showOptionDialog(this, "Si è verificato un errore durante il recupero delle categorie dell'utente.", "Errore recupero", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null, choices, 0);
+
+            if (option == JOptionPane.YES_OPTION) {
+                setVisible(true);
+            } else {
+                setVisible(false);
+            }
+        }
     }
 
     // #region VALUES GETTER/SETTER

@@ -15,6 +15,13 @@ public class PopupCheckboxTree<T> extends PopupButton {
     private CustomTreeModel<T> categoriesTree;
 
     /**
+     * Crea un nuovo {@code PopupCheckboxTree}.
+     */
+    public PopupCheckboxTree() {
+        this(null);
+    }
+
+    /**
      * Crea un nuovo {@code PopupCheckboxTree} con l'albero indicato.
      * 
      * @param treeModel
