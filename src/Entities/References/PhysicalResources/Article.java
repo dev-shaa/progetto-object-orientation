@@ -30,7 +30,10 @@ public class Article extends Publication {
      *            codice identificativo ISSN
      */
     public void setISSN(String ISSN) {
-        this.ISSN = ISSN;
+        if (isStringNullOrEmpty(ISSN))
+            this.ISSN = null;
+        else
+            this.ISSN = ISSN;
     }
 
     /**

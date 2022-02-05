@@ -53,7 +53,9 @@ public abstract class OnlineResource extends BibliographicReference {
     }
 
     private boolean isURLValid(String URL) {
-        return URL != null && !URL.isBlank();
+        // si potrebbe chiamare direttamente la funzione sotto, ma metti caso che un giorno decidessimo di cambiare
+        // qual è un url valido
+        return !isStringNullOrEmpty(URL);
     }
 
     @Override

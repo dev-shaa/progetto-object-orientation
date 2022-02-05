@@ -1,7 +1,6 @@
 package GUI.References;
 
 import java.util.EventListener;
-
 import Entities.References.BibliographicReference;
 
 /**

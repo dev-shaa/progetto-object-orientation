@@ -15,10 +15,8 @@ import Controller.CategoryController;
 import Controller.ReferenceController;
 import Entities.Category;
 import Entities.References.BibliographicReference;
-import Exceptions.CategoryDatabaseException;
-import Exceptions.ReferenceDatabaseException;
-import GUI.Categories.CategoriesTreePanel;
-import GUI.Categories.CategorySelectionListener;
+import Exceptions.*;
+import GUI.Categories.*;
 import GUI.References.ReferenceListPanel;
 import GUI.References.ReferenceSelectionListener;
 
@@ -80,13 +78,7 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
         confirmButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (pickerListeners == null)
-                    return;
-
-                for (ReferencePickerListener listener : pickerListeners) {
-                    setVisible(false);
-                    listener.onReferencePick(referencesPanel.getSelectedReference());
-                }
+                onConfirmButton();
             }
         });
 
@@ -221,6 +213,18 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
     public void removeReferencePickerListener(ReferencePickerListener listener) {
         if (listener != null && pickerListeners != null)
             pickerListeners.remove(listener);
+    }
+
+    private void onConfirmButton() {
+        if (pickerListeners == null)
+            return;
+
+        for (ReferencePickerListener listener : pickerListeners) {
+            setVisible(false);
+            listener.onReferencePick(referencesPanel.getSelectedReference());
+        }
+
+        setVisible(false);
     }
 
 }

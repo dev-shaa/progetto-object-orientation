@@ -81,7 +81,7 @@ public class ThesisEditor extends PublicationEditor<Thesis> {
     }
 
     private String getUniversityValue() {
-        return convertEmptyStringToNull(university.getText().trim());
+        return university.getText().trim();
     }
 
     private void setFacultyValue(String faculty) {
@@ -89,7 +89,7 @@ public class ThesisEditor extends PublicationEditor<Thesis> {
     }
 
     private String getFacultyValue() {
-        return convertEmptyStringToNull(faculty.getText().trim());
+        return faculty.getText().trim();
     }
 
 }

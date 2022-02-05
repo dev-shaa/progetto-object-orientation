@@ -57,7 +57,10 @@ public abstract class Publication extends BibliographicReference {
      *            URL del riferimento
      */
     public void setURL(String URL) {
-        this.URL = URL;
+        if (isStringNullOrEmpty(URL))
+            this.URL = null;
+        else
+            this.URL = URL;
     }
 
     /**
@@ -77,7 +80,10 @@ public abstract class Publication extends BibliographicReference {
      *            editore della pubblicazione
      */
     public void setPublisher(String publisher) {
-        this.publisher = publisher;
+        if (isStringNullOrEmpty(publisher))
+            this.publisher = null;
+        else
+            this.publisher = publisher;
     }
 
     /**

@@ -69,7 +69,7 @@ public class BookEditor extends PublicationEditor<Book> {
     }
 
     private String getISBNValue() {
-        return convertEmptyStringToNull(ISBN.getText().trim());
+        return ISBN.getText().trim();
     }
 
 }

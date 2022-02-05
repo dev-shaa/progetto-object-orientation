@@ -184,54 +184,6 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     }
 
     /**
-     * Aggiunge un componente nel pannello dove sono presenti i campi di input.
-     * Le dimensioni e l'allineamento sono impostate automaticamente.
-     * 
-     * @param component
-     *            componente da aggiungere
-     */
-    protected void addFieldComponent(JComponent component) {
-        addFieldComponent(component, true);
-    }
-
-    /**
-     * Aggiunge un componente nel pannello dove sono presenti i campi di input.
-     * Le dimensioni e l'allineamento sono impostate automaticamente.
-     * È possibile aggiungere spazio dopo il componente.
-     * 
-     * @param component
-     *            componente da aggiungere
-     * @param addSpacing
-     *            {@code true} se deve aggiungere un po' di spazio dopo l'elemento
-     */
-    protected void addFieldComponent(JComponent component, boolean addSpacing) {
-        component.setMaximumSize(maximumSize);
-        component.setAlignmentX(alignment);
-        fieldPanel.add(component);
-
-        if (addSpacing)
-            fieldPanel.add(Box.createRigidArea(spacingSize));
-    }
-
-    /**
-     * Aggiunge un componente e un'etichetta nel pannello dove sono presenti i campi di input.
-     * Le dimensioni e l'allineamento sono impostate automaticamente.
-     * 
-     * @param component
-     *            componente da aggiungere
-     * @param label
-     *            etichetta del componente
-     */
-    protected void addFieldComponent(JComponent component, String label) {
-        JLabel labelField = new JLabel(label);
-        labelField.setMaximumSize(maximumSize);
-        labelField.setAlignmentX(alignment);
-
-        addFieldComponent(labelField, false);
-        addFieldComponent(component);
-    }
-
-    /**
      * Aggiunge un componente, un'etichetta e un tooltip nel pannello dove sono presenti i campi di input.
      * Le dimensioni e l'allineamento sono impostate automaticamente.
      * 
@@ -243,8 +195,17 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      *            tooltip del componente
      */
     protected void addFieldComponent(JComponent component, String label, String tooltip) {
+        JLabel labelField = new JLabel(label);
+        labelField.setMaximumSize(maximumSize);
+        labelField.setAlignmentX(alignment);
+
+        component.setMaximumSize(maximumSize);
+        component.setAlignmentX(alignment);
         component.setToolTipText(tooltip);
-        addFieldComponent(component, label);
+
+        fieldPanel.add(labelField);
+        fieldPanel.add(Box.createRigidArea(spacingSize));
+        fieldPanel.add(component);
     }
 
     /**
@@ -281,7 +242,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     /**
      * Restituisce un nuovo riferimento da riempire.
      * 
-     * @return
+     * @return istanza vuota da riempire
      */
     protected abstract T getNewInstance();
 
@@ -296,9 +257,38 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     }
 
     private void saveReference() throws RequiredFieldMissingException, ReferenceDatabaseException {
-        T reference = getOpenReference() == null ? getNewInstance() : getOpenReference();
+        T reference = getNewInstance();
+
+        if (getOpenReference() != null)
+            reference.setID(getOpenReference().getID());
+
         fillReferenceValues(reference);
         saveToDatabase(reference);
+    }
+
+    /**
+     * Riempie i campi del riferimento passato con i valori inseriti dall'utente.
+     * 
+     * @param reference
+     *            riferimento da riempire
+     * @throws IllegalArgumentException
+     *             se {@code reference == null}
+     * @throws RequiredFieldMissingException
+     *             se i campi obbligatori non sono stati riempiti
+     */
+    protected void fillReferenceValues(T reference) throws IllegalArgumentException, RequiredFieldMissingException {
+        if (reference == null)
+            throw new IllegalArgumentException("reference non può essere null");
+
+        reference.setTitle(getTitleValue());
+        reference.setAuthors(getAuthorValues());
+        reference.setDOI(getDOIValue());
+        reference.setDescription(getDescriptionValue());
+        reference.setLanguage(getLanguageValue());
+        reference.setPubblicationDate(getPubblicationDateValue());
+        reference.setTags(getTagValues());
+        reference.setRelatedReferences(getRelatedReferenceValues());
+        reference.setCategories(getCategoryValues());
     }
 
     @Override
@@ -390,7 +380,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     }
 
     private String getTitleValue() throws RequiredFieldMissingException {
-        String referenceTitle = convertEmptyStringToNull(title.getText().trim());
+        String referenceTitle = title.getText().trim();
 
         if (referenceTitle == null)
             throw new RequiredFieldMissingException("Il titolo del riferimento non può essere nullo.");
@@ -411,7 +401,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     }
 
     private String getDOIValue() {
-        return convertEmptyStringToNull(DOI.getText().trim());
+        return DOI.getText().trim();
     }
 
     private void setDescriptionValue(String description) {
@@ -419,7 +409,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     }
 
     private String getDescriptionValue() {
-        return convertEmptyStringToNull(description.getText().trim());
+        return description.getText().trim();
     }
 
     private void setTagValues(List<Tag> tags) {
@@ -522,46 +512,6 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
             return null;
 
         return relatedReferences;
-    }
-
-    /**
-     * Converte una stringa vuota in {@code null}.
-     * 
-     * @param string
-     *            stringa da convertire
-     * @return
-     *         {@code null} se la stringa è già nulla o vuota, la stringa invariata altrimenti
-     */
-    protected String convertEmptyStringToNull(String string) {
-        if (string == null || string.isBlank())
-            return null;
-
-        return string;
-    }
-
-    /**
-     * Riempie i campi del riferimento passato con i valori inseriti dall'utente.
-     * 
-     * @param reference
-     *            riferimento da riempire
-     * @throws IllegalArgumentException
-     *             se {@code reference == null}
-     * @throws RequiredFieldMissingException
-     *             se i campi obbligatori non sono stati riempiti
-     */
-    protected void fillReferenceValues(T reference) throws IllegalArgumentException, RequiredFieldMissingException {
-        if (reference == null)
-            throw new IllegalArgumentException("reference non può essere null");
-
-        reference.setTitle(getTitleValue());
-        reference.setAuthors(getAuthorValues());
-        reference.setDOI(getDOIValue());
-        reference.setDescription(getDescriptionValue());
-        reference.setLanguage(getLanguageValue());
-        reference.setPubblicationDate(getPubblicationDateValue());
-        reference.setTags(getTagValues());
-        reference.setRelatedReferences(getRelatedReferenceValues());
-        reference.setCategories(getCategoryValues());
     }
 
 }

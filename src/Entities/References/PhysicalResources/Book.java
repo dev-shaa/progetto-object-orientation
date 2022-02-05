@@ -30,7 +30,10 @@ public class Book extends Publication {
      *            codice ISBN del libro
      */
     public void setISBN(String ISBN) {
-        this.ISBN = ISBN;
+        if (isStringNullOrEmpty(ISBN))
+            this.ISBN = null;
+        else
+            this.ISBN = ISBN;
     }
 
     /**

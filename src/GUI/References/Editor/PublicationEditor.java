@@ -88,7 +88,7 @@ public abstract class PublicationEditor<T extends Publication> extends Reference
     }
 
     private String getURLValue() {
-        return convertEmptyStringToNull(URL.getText().trim());
+        return URL.getText().trim();
     }
 
     private void setPublisherValue(String publisher) {
@@ -96,7 +96,7 @@ public abstract class PublicationEditor<T extends Publication> extends Reference
     }
 
     private String getPublisherValue() {
-        return convertEmptyStringToNull(publisher.getText().trim());
+        return publisher.getText().trim();
     }
 
 }

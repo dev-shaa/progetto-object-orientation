@@ -70,7 +70,7 @@ public class ArticleEditor extends PublicationEditor<Article> {
     }
 
     private String getISSNValue() {
-        return convertEmptyStringToNull(ISSN.getText().trim());
+        return ISSN.getText().trim();
     }
 
 }

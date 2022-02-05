@@ -95,7 +95,7 @@ public abstract class BibliographicReference {
      *            titolo del riferimento
      * @throws IllegalArgumentException
      *             se il titolo non è una stringa valida
-     * @see #isTitleValid(String)
+     * @see #isStringNullOrEmpty(String)
      */
     public void setTitle(String title) {
         if (!isTitleValid(title))
@@ -142,7 +142,10 @@ public abstract class BibliographicReference {
      *            codice DOI del riferimento
      */
     public void setDOI(String DOI) {
-        this.DOI = DOI;
+        if (isStringNullOrEmpty(DOI))
+            this.DOI = null;
+        else
+            this.DOI = DOI;
     }
 
     /**
@@ -162,7 +165,10 @@ public abstract class BibliographicReference {
      *            descrizione del riferimento
      */
     public void setDescription(String description) {
-        this.description = description;
+        if (isStringNullOrEmpty(description))
+            this.description = null;
+        else
+            this.description = description;
     }
 
     /**
@@ -482,8 +488,21 @@ public abstract class BibliographicReference {
         return getCategories().containsAll(categories);
     }
 
+    /**
+     * Controlla se la stringa è nulla o vuota
+     * 
+     * @param string
+     *            stringa da controllare
+     * @return {@code true} se {@code string == null} o {@code string.isBlank()}
+     */
+    protected boolean isStringNullOrEmpty(String string) {
+        return string == null || string.isBlank();
+    }
+
     private boolean isTitleValid(String title) {
-        return title != null && !title.isBlank();
+        // si potrebbe chiamare direttamente la funzione sotto, ma metti caso che un giorno decidessimo di cambiare
+        // qual è il titolo valido
+        return !isStringNullOrEmpty(title);
     }
 
 }

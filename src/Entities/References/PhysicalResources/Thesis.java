@@ -31,7 +31,10 @@ public class Thesis extends Publication {
      *            università della tesi
      */
     public void setUniversity(String university) {
-        this.university = university;
+        if (isStringNullOrEmpty(university))
+            this.university = null;
+        else
+            this.university = university;
     }
 
     /**
@@ -51,7 +54,10 @@ public class Thesis extends Publication {
      *            facoltà della tesi
      */
     public void setFaculty(String faculty) {
-        this.faculty = faculty;
+        if (isStringNullOrEmpty(faculty))
+            this.faculty = null;
+        else
+            this.faculty = faculty;
     }
 
     /**
