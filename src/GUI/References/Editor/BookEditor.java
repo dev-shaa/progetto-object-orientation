@@ -34,8 +34,8 @@ public class BookEditor extends PublicationEditor<Book> {
     }
 
     @Override
-    protected void initializeFields() {
-        super.initializeFields();
+    protected void setupSecondaryFields() {
+        super.setupSecondaryFields();
 
         ISBN = new JTextField();
         addFieldComponent(ISBN, "ISBN", "Codice identificativo ISBN dell'articolo.");
@@ -59,9 +59,12 @@ public class BookEditor extends PublicationEditor<Book> {
     }
 
     @Override
-    protected void fillReferenceValues(Book reference) throws IllegalArgumentException, RequiredFieldMissingException {
-        super.fillReferenceValues(reference);
+    protected Book createNewReference() throws RequiredFieldMissingException {
+        Book reference = super.createNewReference();
+
         reference.setISBN(getISBNValue());
+
+        return reference;
     }
 
     private void setISBNValue(String ISBN) {

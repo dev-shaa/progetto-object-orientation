@@ -35,8 +35,8 @@ public class SourceCodeEditor extends OnlineResourceEditor<SourceCode> {
     }
 
     @Override
-    protected void initializeFields() {
-        super.initializeFields();
+    protected void setupSecondaryFields() {
+        super.setupSecondaryFields();
 
         programmingLanguage = new JComboBox<>(ProgrammingLanguage.values());
         addFieldComponent(programmingLanguage, "Linguaggio", "Linguaggio di programmazione del codice.");
@@ -60,10 +60,12 @@ public class SourceCodeEditor extends OnlineResourceEditor<SourceCode> {
     }
 
     @Override
-    protected void fillReferenceValues(SourceCode reference) throws IllegalArgumentException, RequiredFieldMissingException {
-        super.fillReferenceValues(reference);
+    protected SourceCode createNewReference() throws RequiredFieldMissingException {
+        SourceCode reference = super.createNewReference();
 
         reference.setProgrammingLanguage(getProgrammingLanguageValue());
+
+        return reference;
     }
 
     private void setProgrammingLanguageValue(ProgrammingLanguage programmingLanguage) {

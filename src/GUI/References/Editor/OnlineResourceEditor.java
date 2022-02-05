@@ -35,8 +35,8 @@ public abstract class OnlineResourceEditor<T extends OnlineResource> extends Ref
     }
 
     @Override
-    protected void initializeFields() {
-        super.initializeFields();
+    protected void setupSecondaryFields() {
+        super.setupSecondaryFields();
 
         URL = new JTextField();
 
@@ -51,10 +51,12 @@ public abstract class OnlineResourceEditor<T extends OnlineResource> extends Ref
     }
 
     @Override
-    protected void fillReferenceValues(T reference) throws IllegalArgumentException, RequiredFieldMissingException {
-        super.fillReferenceValues(reference);
+    protected T createNewReference() throws RequiredFieldMissingException {
+        T reference = super.createNewReference();
 
         reference.setURL(getURLValue());
+
+        return reference;
     }
 
     private void setURLValue(String URL) {

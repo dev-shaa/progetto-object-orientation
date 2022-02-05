@@ -34,8 +34,8 @@ public class ArticleEditor extends PublicationEditor<Article> {
     }
 
     @Override
-    protected void initializeFields() {
-        super.initializeFields();
+    protected void setupSecondaryFields() {
+        super.setupSecondaryFields();
 
         ISSN = new JTextField();
         addFieldComponent(ISSN, "ISSN", "Codice identificativo ISSN dell'articolo.");
@@ -59,10 +59,12 @@ public class ArticleEditor extends PublicationEditor<Article> {
     }
 
     @Override
-    protected void fillReferenceValues(Article reference) throws IllegalArgumentException, RequiredFieldMissingException {
-        super.fillReferenceValues(reference);
+    protected Article createNewReference() throws RequiredFieldMissingException {
+        Article reference = super.createNewReference();
 
         reference.setISSN(getISSNValue());
+
+        return reference;
     }
 
     private void setISSNValue(String ISSN) {

@@ -55,8 +55,8 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
     }
 
     @Override
-    protected void initializeFields() {
-        super.initializeFields();
+    protected void setupSecondaryFields() {
+        super.setupSecondaryFields();
 
         width = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
         height = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
@@ -80,13 +80,15 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
     }
 
     @Override
-    protected void fillReferenceValues(Video reference) throws IllegalArgumentException, RequiredFieldMissingException {
-        super.fillReferenceValues(reference);
+    protected Video createNewReference() throws RequiredFieldMissingException {
+        Video reference = super.createNewReference();
 
         reference.setWidth(getWidthValue());
         reference.setHeight(getHeightValue());
         reference.setFrameRate(getFrameRateValue());
         reference.setDuration(getDurationValue());
+
+        return reference;
     }
 
     private void setWidthValue(int width) {

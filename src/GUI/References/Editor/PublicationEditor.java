@@ -39,8 +39,8 @@ public abstract class PublicationEditor<T extends Publication> extends Reference
     }
 
     @Override
-    protected void initializeFields() {
-        super.initializeFields();
+    protected void setupSecondaryFields() {
+        super.setupSecondaryFields();
 
         pageCount = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
         URL = new JTextField();
@@ -67,12 +67,14 @@ public abstract class PublicationEditor<T extends Publication> extends Reference
     }
 
     @Override
-    protected void fillReferenceValues(T reference) throws IllegalArgumentException, RequiredFieldMissingException {
-        super.fillReferenceValues(reference);
+    protected T createNewReference() throws RequiredFieldMissingException {
+        T reference = super.createNewReference();
 
         reference.setPageCount(getPageCountValue());
         reference.setURL(getURLValue());
         reference.setPublisher(getPublisherValue());
+
+        return reference;
     }
 
     private void setPageCountValue(int pageCount) {

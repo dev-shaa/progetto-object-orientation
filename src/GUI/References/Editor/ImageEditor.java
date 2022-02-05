@@ -36,8 +36,8 @@ public class ImageEditor extends OnlineResourceEditor<Image> {
     }
 
     @Override
-    protected void initializeFields() {
-        super.initializeFields();
+    protected void setupSecondaryFields() {
+        super.setupSecondaryFields();
 
         width = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
         height = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
@@ -70,11 +70,13 @@ public class ImageEditor extends OnlineResourceEditor<Image> {
     }
 
     @Override
-    protected void fillReferenceValues(Image reference) throws IllegalArgumentException, RequiredFieldMissingException {
-        super.fillReferenceValues(reference);
+    protected Image createNewReference() throws RequiredFieldMissingException {
+        Image reference = super.createNewReference();
 
         reference.setWidth(getWidthValue());
         reference.setHeight(getHeightValue());
+
+        return reference;
     }
 
     private void setWidthValue(int width) {

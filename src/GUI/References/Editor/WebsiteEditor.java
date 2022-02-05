@@ -31,8 +31,8 @@ public class WebsiteEditor extends OnlineResourceEditor<Website> {
     }
 
     @Override
-    protected void initializeFields() {
-        super.initializeFields();
+    protected void setupSecondaryFields() {
+        super.setupSecondaryFields();
     }
 
     @Override
@@ -51,8 +51,8 @@ public class WebsiteEditor extends OnlineResourceEditor<Website> {
     }
 
     @Override
-    protected void fillReferenceValues(Website reference) throws IllegalArgumentException, RequiredFieldMissingException {
-        super.fillReferenceValues(reference);
+    protected Website createNewReference() throws RequiredFieldMissingException {
+        return super.createNewReference();
     }
 
 }

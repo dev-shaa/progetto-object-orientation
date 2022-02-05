@@ -82,10 +82,10 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
 
         setReferenceController(referenceController);
 
-        setupComponents();
+        setupBaseFields();
     }
 
-    private void setupComponents() {
+    private void setupBaseFields() {
         fieldPanel = new JPanel();
 
         fieldPanel.setLayout(new BoxLayout(fieldPanel, BoxLayout.PAGE_AXIS));
@@ -136,7 +136,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         addFieldComponent(authors, "Autori", "Autori del riferimento.");
         addFieldComponent(relatedReferencesPanel, "Rimandi", "Riferimenti menzionati all'interno del testo.");
 
-        initializeFields();
+        setupSecondaryFields();
 
         // la descrizione e il tasto di conferma vogliamo che siano sempre alla fine
 
@@ -179,7 +179,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     /**
      * Prepara i campi necessari per la creazione di un riferimento.
      */
-    protected void initializeFields() {
+    protected void setupSecondaryFields() {
         // serve solo come funzione per override e aggiungere altri componenti
     }
 
@@ -257,28 +257,21 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     }
 
     private void saveReference() throws RequiredFieldMissingException, ReferenceDatabaseException {
+        saveToDatabase(createNewReference());
+    }
+
+    /**
+     * Crea un nuovo riferimenti con i valori inseriti dall'utente.
+     * 
+     * @return riferimento con i dati inseriti dall'utente
+     * @throws RequiredFieldMissingException
+     *             se i campi obbligatori non sono stati riempiti
+     */
+    protected T createNewReference() throws RequiredFieldMissingException {
         T reference = getNewInstance();
 
         if (getOpenReference() != null)
             reference.setID(getOpenReference().getID());
-
-        fillReferenceValues(reference);
-        saveToDatabase(reference);
-    }
-
-    /**
-     * Riempie i campi del riferimento passato con i valori inseriti dall'utente.
-     * 
-     * @param reference
-     *            riferimento da riempire
-     * @throws IllegalArgumentException
-     *             se {@code reference == null}
-     * @throws RequiredFieldMissingException
-     *             se i campi obbligatori non sono stati riempiti
-     */
-    protected void fillReferenceValues(T reference) throws IllegalArgumentException, RequiredFieldMissingException {
-        if (reference == null)
-            throw new IllegalArgumentException("reference non può essere null");
 
         reference.setTitle(getTitleValue());
         reference.setAuthors(getAuthorValues());
@@ -289,6 +282,8 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         reference.setTags(getTagValues());
         reference.setRelatedReferences(getRelatedReferenceValues());
         reference.setCategories(getCategoryValues());
+
+        return reference;
     }
 
     @Override
