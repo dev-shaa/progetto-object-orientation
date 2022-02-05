@@ -11,8 +11,8 @@ import com.toedter.calendar.JDateChooser;
 import Entities.Category;
 import Entities.Search;
 import Exceptions.EmptySearchException;
-import GUI.References.Editor.AuthorInputField;
-import GUI.References.Editor.TagInputField;
+import GUI.Authors.AuthorInputField;
+import GUI.Tags.TagInputField;
 import GUI.Utilities.CustomTreeModel;
 import GUI.Utilities.PopupCheckboxTree;
 

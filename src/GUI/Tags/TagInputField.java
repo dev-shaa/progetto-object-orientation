@@ -1,14 +1,14 @@
-package GUI.References.Editor;
+package GUI.Tags;
 
 import java.util.ArrayList;
 
 import Entities.Tag;
-import GUI.Utilities.JTermsField;
+import GUI.Utilities.TermsField;
 
 /**
  * Un {@code JTermsField} che restituisce dei tag a partire dai termini inseriti dall'utente.
  */
-public class TagInputField extends JTermsField {
+public class TagInputField extends TermsField {
 
     /**
      * Crea un nuovo {@code TagInputField} con il separatore indicato.

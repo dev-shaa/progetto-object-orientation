@@ -5,8 +5,7 @@ import com.formdev.flatlaf.*;
 
 import DAO.*;
 import GUI.*;
-import GUI.References.Editor.Reference.*;
-
+import GUI.References.Editor.*;
 import Entities.*;
 import Entities.References.OnlineResources.*;
 import Entities.References.OnlineResources.Image;

@@ -6,7 +6,7 @@ import javax.swing.JTextField;
 /**
  * Un JTextField adattato come campo di ricerca, che restituisce i termini inseriti delimitati da un separatore.
  */
-public class JTermsField extends JTextField {
+public class TermsField extends JTextField {
     private String separator;
 
     /**
@@ -15,7 +15,7 @@ public class JTermsField extends JTextField {
      * @param separator
      *            separatore dei termini
      */
-    public JTermsField(String separator) {
+    public TermsField(String separator) {
         this.separator = separator;
     }
 

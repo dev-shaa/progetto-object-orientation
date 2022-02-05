@@ -1,9 +1,10 @@
-package GUI.References.Editor.Reference;
+package GUI.References.Editor;
 
 import Entities.*;
 import Entities.References.*;
-import GUI.References.Editor.*;
-import GUI.References.Editor.Reference.Picker.*;
+import GUI.Authors.AuthorInputField;
+import GUI.References.Picker.*;
+import GUI.Tags.TagInputField;
 import GUI.Utilities.*;
 import Exceptions.CategoryDatabaseException;
 import Exceptions.ReferenceDatabaseException;

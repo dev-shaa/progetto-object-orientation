@@ -1,4 +1,4 @@
-package GUI.References.Editor.Reference.Picker;
+package GUI.References.Picker;
 
 import java.util.ArrayList;
 import java.util.Collection;

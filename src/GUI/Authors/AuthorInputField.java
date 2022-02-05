@@ -1,14 +1,14 @@
-package GUI.References.Editor;
+package GUI.Authors;
 
 import java.util.ArrayList;
 
 import Entities.Author;
-import GUI.Utilities.JTermsField;
+import GUI.Utilities.TermsField;
 
 /**
  * Un {@code JTermsField} che restituisce degli autori a partire dai termini inseriti dall'utente.
  */
-public class AuthorInputField extends JTermsField {
+public class AuthorInputField extends TermsField {
 
     /**
      * Crea un nuovo {@code AuthorInputField} con il separatore indicato.
