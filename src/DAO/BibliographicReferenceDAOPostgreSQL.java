@@ -73,9 +73,13 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         ResultSet referenceResultSet = null;
         String referenceQuery = "select * from bibliographic_reference natural join website where owner = '" + getUser().getName() + "'";
 
+        PreparedStatement tagsStatement = null;
+        ResultSet tagsResultSet = null;
+        String tagsCommand = "select name from tag where reference = ?";
+
         PreparedStatement relatedReferencesStatement = null;
         ResultSet relatedReferencesResultSet = null;
-        String relatedReferencesQuery = "select * from quotations where quoted_by = ?";
+        String relatedReferencesQuery = "select * from related_references where quoted_by = ?";
 
         ArrayList<BibliographicReference> references = new ArrayList<>();
         HashMap<Integer, BibliographicReference> idToReference = new HashMap<>();
@@ -84,7 +88,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         try {
             connection = DatabaseController.getConnection();
 
-            referenceStatement = connection.prepareStatement(referenceQuery);
+            tagsStatement = connection.prepareStatement(tagsCommand);
             relatedReferencesStatement = connection.prepareStatement(relatedReferencesQuery);
 
             referenceStatement = connection.createStatement();
@@ -98,44 +102,45 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
                 website.setDescription(referenceResultSet.getString("description"));
                 website.setLanguage(ReferenceLanguage.getFromString(referenceResultSet.getString("language")));
 
-                // FIXME: autori
+                // TODO: recupero autori
                 // AuthorDAO authorDAO = new AuthorDAO();
                 // website.setAuthors(authorDAO.getAuthorsOf(website));
 
-                // FIXME: tag
-                // tagsStatement.setInt(1, website.getID());
-                // tagsResultSet = tagsStatement.executeQuery();
-                // ArrayList<Tag> tags = new ArrayList<>();
-                // while (tagsResultSet.next())
-                // tags.add(new Tag(tagsResultSet.getString("name")));
-                // tags.trimToSize();
-                // website.setTags(tags);
+                // RECUPERO TAG
+                tagsStatement.setInt(1, website.getID());
+                tagsResultSet = tagsStatement.executeQuery();
+                ArrayList<Tag> tags = new ArrayList<>();
 
+                while (tagsResultSet.next())
+                    tags.add(new Tag(tagsResultSet.getString("name")));
+
+                tags.trimToSize();
+                website.setTags(tags);
+
+                // RECUPERO ID RIMANDI
                 relatedReferencesStatement.setInt(1, website.getID());
                 relatedReferencesResultSet = relatedReferencesStatement.executeQuery();
 
                 ArrayList<Integer> relatedReferencesID = new ArrayList<>();
 
                 while (relatedReferencesResultSet.next())
-                    relatedReferencesID.add(relatedReferencesResultSet.getInt("has_quoted"));
+                    relatedReferencesID.add(relatedReferencesResultSet.getInt("quotes"));
 
                 relatedReferencesID.trimToSize();
-
                 referenceToRelatedID.put(website, relatedReferencesID);
                 idToReference.put(website.getID(), website);
 
                 references.add(website);
             }
 
+            // ASSEGNAZIONE RIMANDI
             for (BibliographicReference reference : references) {
                 ArrayList<BibliographicReference> relatedReferences = new ArrayList<>();
 
-                for (Integer referenceID : referenceToRelatedID.get(reference)) {
+                for (Integer referenceID : referenceToRelatedID.get(reference))
                     relatedReferences.add(idToReference.get(referenceID));
-                }
 
                 relatedReferences.trimToSize();
-
                 reference.setRelatedReferences(relatedReferences);
             }
 
@@ -201,7 +206,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         if (article == null)
             return;
 
-        int pageCount = article.getPageCount();
+        String pageCount = article.getPageCount() == 0 ? "null" : String.valueOf(article.getPageCount());
         String url = format(article.getURL());
         String publisher = format(article.getPublisher());
         String issn = format(article.getISSN());
@@ -222,8 +227,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         String publisher = format(book.getPublisher());
         String isbn = format(book.getISBN());
 
-        String query = "insert into article(id, page_count, url, publisher, isbn) values("
-                + book.getID() + "," + pageCount + "," + url + "," + publisher + "," + isbn
+        String query = "insert into book(id, page_count, url, publisher, isbn) values(?," + pageCount + "," + url + "," + publisher + "," + isbn
                 + ") on conflict (id) do update set page_count = " + pageCount + ", url = " + url + ", publisher = " + publisher + ", isbn = " + isbn;
 
         save(book, query);
@@ -240,8 +244,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         String university = format(thesis.getUniversity());
         String faculty = format(thesis.getFaculty());
 
-        String query = "insert into article(id, page_count, url, publisher, university, faculty) values("
-                + thesis.getID() + "," + pageCount + "," + url + "," + publisher + "," + university + "," + faculty
+        String query = "insert into thesis(id, page_count, url, publisher, university, faculty) values(?," + pageCount + "," + url + "," + publisher + "," + university + "," + faculty
                 + ") on conflict (id) do update set page_count = " + pageCount + ", url = " + url + ", publisher = " + publisher + ", university = " + university + ", faculty = " + faculty;
 
         save(thesis, query);
@@ -285,13 +288,23 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         PreparedStatement subReferenceStatement = null;
         PreparedStatement relatedReferenceRemoveStatement = null;
         PreparedStatement relatedReferenceInsertStatement = null;
+        PreparedStatement categoriesRemoveStatement = null;
         PreparedStatement categoriesInsertStatement = null;
+        PreparedStatement tagRemoveStatement = null;
+        PreparedStatement tagInsertStatement = null;
+        PreparedStatement authorsRemoveStatement = null;
+        PreparedStatement authorsInsertStatement = null;
         ResultSet resultSet = null;
 
         String referenceInsertCommand = null;
-        String relatedReferenceRemoveCommand = "delete from quotations where quoted_by = ?";
-        String relatedReferenceInsertCommand = "insert into quotations values(?, ?)";
+        String relatedReferenceRemoveCommand = "delete from related_references where quoted_by = ?";
+        String relatedReferenceInsertCommand = "insert into related_references values(?, ?)";
+        String categoriesRemoveCommand = "delete from category_reference_association where reference = ?";
         String categoriesInsertCommand = "insert into category_reference_association values(?, ?)";
+        String tagRemoveCommand = "delete from tag where reference = ?";
+        String tagInsertCommand = "insert into tag values(?, ?)";
+        String authorsRemoveCommand = "delete from author_reference_association where reference = ?";
+        String authorsInsertCommand = "insert into author_reference_association values(?, ?)";
 
         String language = format(reference.getLanguage() == ReferenceLanguage.NOTSPECIFIED ? null : reference.getLanguage().name());
         if (reference.getID() == null)
@@ -307,7 +320,12 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
             subReferenceStatement = connection.prepareStatement(subReferenceCommand);
             relatedReferenceRemoveStatement = connection.prepareStatement(relatedReferenceRemoveCommand);
             relatedReferenceInsertStatement = connection.prepareStatement(relatedReferenceInsertCommand);
+            categoriesRemoveStatement = connection.prepareStatement(categoriesRemoveCommand);
             categoriesInsertStatement = connection.prepareStatement(categoriesInsertCommand);
+            tagRemoveStatement = connection.prepareStatement(tagRemoveCommand);
+            tagInsertStatement = connection.prepareStatement(tagInsertCommand);
+            authorsRemoveStatement = connection.prepareStatement(authorsRemoveCommand);
+            authorsInsertStatement = connection.prepareStatement(authorsInsertCommand);
 
             referenceStatement.setString(1, getUser().getName());
             referenceStatement.setString(2, reference.getTitle());
@@ -338,11 +356,30 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
                 relatedReferenceInsertStatement.executeUpdate();
             }
 
+            categoriesRemoveStatement.setInt(1, reference.getID());
+            categoriesRemoveStatement.executeUpdate();
+
             for (Category category : reference.getCategories()) {
                 categoriesInsertStatement.setInt(1, category.getID());
                 categoriesInsertStatement.setInt(2, reference.getID());
                 categoriesInsertStatement.executeUpdate();
             }
+
+            tagRemoveStatement.setInt(1, reference.getID());
+            tagRemoveStatement.executeUpdate();
+
+            for (Tag tag : reference.getTags()) {
+                tagInsertStatement.setString(1, tag.getName());
+                tagInsertStatement.setInt(2, reference.getID());
+                tagInsertStatement.executeUpdate();
+            }
+
+            // TODO: autori
+            // authorsRemoveStatement.setInt(1, reference.getID());
+
+            // for (Author author : reference.getAuthors()) {
+
+            // }
 
             connection.commit();
         } catch (SQLException | DatabaseConnectionException e) {
