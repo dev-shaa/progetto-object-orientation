@@ -46,7 +46,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     private CategoryController categoryController;
     private ReferenceController referenceController;
 
-    private T openReference;
+    private T referenceToChange;
 
     private final String separator = ",";
     private final Dimension maximumSize = new Dimension(Integer.MAX_VALUE, 24);
@@ -85,9 +85,71 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         setupBaseFields();
     }
 
+    /**
+     * Imposta il controller delle categorie da usare per recuperare le categorie da scegliere.
+     * 
+     * @param categoryController
+     *            nuovo controller delle categorie
+     * @throws IllegalArgumentException
+     *             se {@code categoryController == null}
+     */
+    public void setCategoryController(CategoryController categoryController) throws CategoryDatabaseException {
+        if (categoryController == null)
+            throw new IllegalArgumentException("categoryController can't be null");
+
+        this.categoryController = categoryController;
+
+        if (categories == null) {
+            categories = new PopupCheckboxTree<Category>(categoryController.getTree());
+        } else {
+            categories.setTreeModel(categoryController.getTree());
+        }
+    }
+
+    /**
+     * Restituisce il controller delle categorie.
+     * 
+     * @return controller delle categorie
+     */
+    public CategoryController getCategoryController() {
+        return categoryController;
+    }
+
+    /**
+     * Imposta il controller dei riferimenti da usare per salvare i riferimenti creati.
+     * 
+     * @param referenceController
+     *            nuovo controller dei riferimenti
+     * @throws IllegalArgumentException
+     *             se {@code referenceController == null}
+     */
+    public void setReferenceController(ReferenceController referenceController) {
+        if (referenceController == null)
+            throw new IllegalArgumentException("referenceController can't be null");
+
+        this.referenceController = referenceController;
+    }
+
+    /**
+     * Restituisce il controller dei riferimenti.
+     * 
+     * @return
+     *         controller dei riferimenti
+     */
+    public ReferenceController getReferenceController() {
+        return referenceController;
+    }
+
+    private void setReferenceToChange(T reference) {
+        this.referenceToChange = reference;
+    }
+
+    private T getReferenceToChange() {
+        return referenceToChange;
+    }
+
     private void setupBaseFields() {
         fieldPanel = new JPanel();
-
         fieldPanel.setLayout(new BoxLayout(fieldPanel, BoxLayout.PAGE_AXIS));
         fieldPanel.setBorder(new EmptyBorder(50, 30, 50, 30));
 
@@ -116,8 +178,8 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
                 if (getRelatedReferenceValues() != null)
                     referencesToExclude.addAll(getRelatedReferenceValues());
 
-                if (getOpenReference() != null)
-                    referencesToExclude.add(getOpenReference());
+                if (getReferenceToChange() != null)
+                    referencesToExclude.add(getReferenceToChange());
 
                 relatedReferencesDialog.setVisible(true, referencesToExclude);
             }
@@ -248,14 +310,6 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
 
     protected abstract void saveToDatabase(T reference) throws ReferenceDatabaseException;
 
-    private void setOpenReference(T reference) {
-        this.openReference = reference;
-    }
-
-    private T getOpenReference() {
-        return openReference;
-    }
-
     private void saveReference() throws RequiredFieldMissingException, ReferenceDatabaseException {
         saveToDatabase(createNewReference());
     }
@@ -270,8 +324,8 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     protected T createNewReference() throws RequiredFieldMissingException {
         T reference = getNewInstance();
 
-        if (getOpenReference() != null)
-            reference.setID(getOpenReference().getID());
+        if (getReferenceToChange() != null)
+            reference.setID(getReferenceToChange().getID());
 
         reference.setTitle(getTitleValue());
         reference.setAuthors(getAuthorValues());
@@ -308,67 +362,14 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      */
     public void setVisible(boolean b, T reference) {
         if (b) {
-            setOpenReference(reference);
+            setReferenceToChange(reference);
             setFieldsValues(reference);
         }
 
         super.setVisible(b);
     }
 
-    /**
-     * Imposta il controller delle categorie da usare per recuperare le categorie da scegliere.
-     * 
-     * @param categoryController
-     *            nuovo controller delle categorie
-     * @throws IllegalArgumentException
-     *             se {@code categoryController == null}
-     */
-    public void setCategoryController(CategoryController categoryController) throws CategoryDatabaseException {
-        if (categoryController == null)
-            throw new IllegalArgumentException("categoryController can't be null");
-
-        this.categoryController = categoryController;
-
-        if (categories == null) {
-            categories = new PopupCheckboxTree<Category>(categoryController.getTree());
-        } else {
-            categories.setTreeModel(categoryController.getTree());
-        }
-    }
-
-    /**
-     * Restituisce il controller delle categorie.
-     * 
-     * @return controller delle categorie
-     */
-    public CategoryController getCategoryController() {
-        return categoryController;
-    }
-
-    /**
-     * Imposta il controller dei riferimenti da usare per salvare i riferimenti creati.
-     * 
-     * @param referenceController
-     *            nuovo controller dei riferimenti
-     * @throws IllegalArgumentException
-     *             se {@code referenceController == null}
-     */
-    public void setReferenceController(ReferenceController referenceController) {
-        if (referenceController == null)
-            throw new IllegalArgumentException("referenceController can't be null");
-
-        this.referenceController = referenceController;
-    }
-
-    /**
-     * Restituisce il controller dei riferimenti.
-     * 
-     * @return
-     *         controller dei riferimenti
-     */
-    public ReferenceController getReferenceController() {
-        return referenceController;
-    }
+    // #region VALUES GETTER/SETTER
 
     private void setTitleValue(String text) {
         title.setText(text);
@@ -469,7 +470,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     }
 
     private void addRelatedReference(BibliographicReference reference) {
-        if (reference == null || reference.equals(getOpenReference()))
+        if (reference == null || reference.equals(getReferenceToChange()))
             return;
 
         if (relatedReferences == null)
@@ -508,5 +509,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
 
         return relatedReferences;
     }
+
+    // #endregion
 
 }
