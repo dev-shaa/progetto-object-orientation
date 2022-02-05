@@ -323,9 +323,9 @@ public abstract class BibliographicReference {
      */
     public void setQuotationCount(int quotationCount) {
         if (quotationCount < 0)
-            throw new IllegalArgumentException("quotationCount can't be less than 0");
-
-        this.quotationCount = quotationCount;
+            this.quotationCount = 0;
+        else
+            this.quotationCount = quotationCount;
     }
 
     /**

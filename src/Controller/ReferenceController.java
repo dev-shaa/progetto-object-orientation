@@ -12,7 +12,6 @@ import Entities.References.OnlineResources.*;
 import Entities.References.PhysicalResources.*;
 import Exceptions.CategoryDatabaseException;
 import Exceptions.ReferenceDatabaseException;
-import Exceptions.TagDatabaseException;
 
 /**
  * Controller per gestire il recupero, l'inserimento, la rimozione e la modifica di riferimenti.
@@ -24,7 +23,6 @@ public class ReferenceController {
 
     private BibliographicReferenceDAO referenceDAO;
     private CategoryController categoryController;
-    private TagController tagController;
 
     private List<BibliographicReference> references;
 
@@ -94,24 +92,6 @@ public class ReferenceController {
     }
 
     /**
-     * TODO: commenta
-     * 
-     * @return
-     */
-    public TagController getTagController() {
-        return tagController;
-    }
-
-    /**
-     * TODO: commenta
-     * 
-     * @param tagController
-     */
-    public void setTagController(TagController tagController) {
-        this.tagController = tagController;
-    }
-
-    /**
      * Restituisce tutti i riferimenti associati all'utente che sta usando l'applicazione.
      * 
      * @return
@@ -176,13 +156,12 @@ public class ReferenceController {
 
             for (BibliographicReference reference : references) {
                 reference.setCategories(getCategoryController().get(reference));
-                reference.setTags(getTagController().get(reference));
 
                 // TODO: autori
             }
 
             needToRetrieveFromDatabase = false;
-        } catch (ReferenceDatabaseException | CategoryDatabaseException | TagDatabaseException e) {
+        } catch (ReferenceDatabaseException | CategoryDatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
         }
     }
@@ -202,9 +181,7 @@ public class ReferenceController {
             throw new IllegalArgumentException("reference can't be null");
 
         getReferenceDAO().remove(reference);
-        getAll().remove(reference);
-        removeReferenceFromRelated(reference);
-        removeFromQuotationCount(reference);
+        removeFromLocal(reference);
     }
 
     /**
@@ -353,13 +330,14 @@ public class ReferenceController {
         addToQuotationCount(reference);
     }
 
-    private void removeReferenceFromRelated(BibliographicReference referenceToRemove) throws ReferenceDatabaseException {
-        if (referenceToRemove == null)
-            return;
+    private void removeFromLocal(BibliographicReference referenceToRemove) throws ReferenceDatabaseException {
+        getAll().remove(referenceToRemove);
 
-        for (BibliographicReference reference : getAll()) {
+        for (BibliographicReference reference : references) {
             reference.getRelatedReferences().remove(referenceToRemove);
         }
+
+        removeFromQuotationCount(referenceToRemove);
     }
 
     private void addToQuotationCount(BibliographicReference reference) {

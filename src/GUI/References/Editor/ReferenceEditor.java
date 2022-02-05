@@ -212,23 +212,10 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         JButton confirmButton = new JButton("Salva riferimento");
         confirmButton.setAlignmentX(alignment);
 
-        // non possiamo usare "this" all'interno del corpo dell'action listener,
-        // quindi ci serve un puntatore a se stesso
-        ReferenceEditor<T> selfPointer = this;
-
         confirmButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    saveReference();
-                    setVisible(false);
-                } catch (RequiredFieldMissingException ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(selfPointer, ex.getMessage(), "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
-                } catch (ReferenceDatabaseException ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(selfPointer, ex.getMessage(), "Salvataggio non riuscito", JOptionPane.ERROR_MESSAGE);
-                }
+                save();
             }
         });
 
@@ -266,8 +253,8 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         component.setToolTipText(tooltip);
 
         fieldPanel.add(labelField);
-        fieldPanel.add(Box.createRigidArea(spacingSize));
         fieldPanel.add(component);
+        fieldPanel.add(Box.createRigidArea(spacingSize));
     }
 
     /**
@@ -310,8 +297,18 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
 
     protected abstract void saveToDatabase(T reference) throws ReferenceDatabaseException;
 
-    private void saveReference() throws RequiredFieldMissingException, ReferenceDatabaseException {
-        saveToDatabase(createNewReference());
+    private void save() {
+        try {
+            T reference = createNewReference();
+            saveToDatabase(reference);
+            setVisible(false);
+        } catch (RequiredFieldMissingException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
+        } catch (ReferenceDatabaseException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Salvataggio non riuscito", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /**
@@ -378,7 +375,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     private String getTitleValue() throws RequiredFieldMissingException {
         String referenceTitle = title.getText().trim();
 
-        if (referenceTitle == null)
+        if (referenceTitle == null || referenceTitle.isBlank())
             throw new RequiredFieldMissingException("Il titolo del riferimento non può essere nullo.");
 
         return referenceTitle;
