@@ -54,7 +54,8 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
 
         setTitle("Pagina principale");
         setMinimumSize(new Dimension(400, 400));
-        setBounds(100, 100, 800, 600);
+        setSize(800, 600);
+
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -99,6 +100,8 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
                 referenceSearchPanel.reset();
                 failedToLoad = true;
             }
+
+            setLocationRelativeTo(null);
         }
 
         super.setVisible(b);

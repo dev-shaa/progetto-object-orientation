@@ -118,6 +118,8 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
                 showErrorMessage = true;
                 errorMessage = e.getMessage();
             }
+
+            setLocationRelativeTo(null);
         }
 
         super.setVisible(b);

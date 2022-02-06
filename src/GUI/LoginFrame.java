@@ -31,6 +31,8 @@ public class LoginFrame extends JFrame {
 		setTitle("Login");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
+		setLocationRelativeTo(null);
+
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(null);
@@ -50,11 +52,11 @@ public class LoginFrame extends JFrame {
 		contentPane.add(btnAccedi);
 		btnAccedi.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String username = userName_TF.getText();
-				String pwd = new String(passwordField.getPassword());
+				// String username = userName_TF.getText();
+				// String pwd = new String(passwordField.getPassword());
 
 				// FIXME: DEBUG:
-				c.openHomePage(new User(username, pwd));
+				c.openHomePage(new User("admin", "password"));
 				// if (login.CheckLogin(new User(username, pwd))) {
 				// c.openHomePage(new User(username, pwd));
 				// }

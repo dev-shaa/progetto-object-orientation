@@ -367,6 +367,8 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
                 categories.setTreeModel(null);
                 failedToLoad = true;
             }
+
+            setLocationRelativeTo(null);
         }
 
         super.setVisible(b);
