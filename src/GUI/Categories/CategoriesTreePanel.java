@@ -14,7 +14,7 @@ import GUI.Utilities.CustomTreeNode;
 /**
  * Pannello che mostra l'albero delle categorie che l'utente può selezionare.
  */
-public class CategoriesTreePanel extends JScrollPane implements TreeSelectionListener {
+public class CategoriesTreePanel extends JScrollPane {
 
     private JTree tree;
     private ArrayList<CategorySelectionListener> selectionListeners;
@@ -51,7 +51,22 @@ public class CategoriesTreePanel extends JScrollPane implements TreeSelectionLis
 
             tree.setEditable(false);
             tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-            tree.addTreeSelectionListener(this);
+            tree.addTreeSelectionListener(new TreeSelectionListener() {
+
+                @Override
+                public void valueChanged(TreeSelectionEvent e) {
+                    if (selectionListeners == null)
+                        return;
+
+                    if (getSelectedNode() == null) {
+                        for (CategorySelectionListener categorySelectionListener : selectionListeners)
+                            categorySelectionListener.onCategoryClearSelection();
+                    } else {
+                        for (CategorySelectionListener categorySelectionListener : selectionListeners)
+                            categorySelectionListener.onCategorySelection(getSelectedCategory());
+                    }
+                }
+            });
         }
 
         tree.setModel(categoriesTree);
@@ -109,20 +124,6 @@ public class CategoriesTreePanel extends JScrollPane implements TreeSelectionLis
             return;
 
         selectionListeners.remove(listener);
-    }
-
-    @Override
-    public void valueChanged(TreeSelectionEvent e) {
-        if (selectionListeners == null)
-            return;
-
-        if (getSelectedNode() == null) {
-            for (CategorySelectionListener categorySelectionListener : selectionListeners)
-                categorySelectionListener.onCategoryClearSelection();
-        } else {
-            for (CategorySelectionListener categorySelectionListener : selectionListeners)
-                categorySelectionListener.onCategorySelection(getSelectedCategory());
-        }
     }
 
     @SuppressWarnings("unchecked")

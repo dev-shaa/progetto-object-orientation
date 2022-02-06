@@ -47,7 +47,7 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
      * @param referenceController
      *            controller dei riferimenti
      * @throws IllegalArgumentException
-     *             se {@code categoryManager} o {@code referenceManager} sono nulli.
+     *             se {@code categoryManager == null} o {@code referenceManager == null}
      */
     public ReferencePicker(CategoryController categoryController, ReferenceController referenceController) {
         setCategoryController(categoryController);
@@ -95,7 +95,7 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
     }
 
     /**
-     * Chiama la funzione {@code setVisible(b)} e imposta i riferimenti da escludere quando viene selezionata una categoria.
+     * Chiama la funzione {@link #setVisible(boolean)} e imposta i riferimenti da escludere quando viene selezionata una categoria.
      * 
      * @param b
      *            se {@code true}, viene mostrato il pannello
