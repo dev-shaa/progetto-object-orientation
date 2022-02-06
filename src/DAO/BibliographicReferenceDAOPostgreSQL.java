@@ -30,7 +30,7 @@ import Exceptions.ReferenceDatabaseException;
  */
 public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferenceDAO {
 
-    private User user;
+    private User user; 
 
     /**
      * 
@@ -101,6 +101,27 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
                 website.setPubblicationDate(referenceResultSet.getDate("pubblication_date"));
                 website.setDescription(referenceResultSet.getString("description"));
                 website.setLanguage(ReferenceLanguage.getFromString(referenceResultSet.getString("language")));
+                
+//                Article article = new Article(referenceResultSet.getString("title"));
+//                article.setID(referenceResultSet.getInt("id"));
+//                article.setDOI(referenceResultSet.getString("doi"));
+//                article.setPubblicationDate(referenceResultSet.getDate("pubblication_date"));
+//                article.setDescription(referenceResultSet.getString("description"));
+//                article.setLanguage(ReferenceLanguage.getFromString(referenceResultSet.getString("language")));
+//                
+//                Book book = new Book(referenceResultSet.getString("title"));
+//                book.setID(referenceResultSet.getInt("id"));
+//                book.setDOI(referenceResultSet.getString("doi"));
+//                book.setPubblicationDate(referenceResultSet.getDate("pubblication_date"));
+//                book.setDescription(referenceResultSet.getString("description"));
+//                book.setLanguage(ReferenceLanguage.getFromString(referenceResultSet.getString("language")));
+//                
+//                Thesis thesis = new Thesis(referenceResultSet.getString("title"));
+//                thesis.setID(referenceResultSet.getInt("id"));
+//                thesis.setDOI(referenceResultSet.getString("doi"));
+//                thesis.setPubblicationDate(referenceResultSet.getDate("pubblication_date"));
+//                thesis.setDescription(referenceResultSet.getString("description"));
+//                thesis.setLanguage(ReferenceLanguage.getFromString(referenceResultSet.getString("language")));
 
                 // TODO: recupero autori
                 // AuthorDAO authorDAO = new AuthorDAO();
