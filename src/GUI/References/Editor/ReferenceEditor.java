@@ -284,6 +284,14 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      */
     protected abstract T getNewInstance();
 
+    /**
+     * Salva il riferimento.
+     * 
+     * @param reference
+     *            riferimento da salvare
+     * @throws ReferenceDatabaseException
+     *             se il salvataggio non va a buon fine
+     */
     protected abstract void saveToDatabase(T reference) throws ReferenceDatabaseException;
 
     private void save() {

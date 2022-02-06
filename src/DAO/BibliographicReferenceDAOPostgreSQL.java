@@ -102,10 +102,6 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
                 website.setDescription(referenceResultSet.getString("description"));
                 website.setLanguage(ReferenceLanguage.getFromString(referenceResultSet.getString("language")));
 
-                // TODO: recupero autori
-                // AuthorDAO authorDAO = new AuthorDAO();
-                // website.setAuthors(authorDAO.getAuthorsOf(website));
-
                 // RECUPERO TAG
                 tagsStatement.setInt(1, website.getID());
                 tagsResultSet = tagsStatement.executeQuery();
@@ -198,8 +194,6 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
             }
         }
     }
-
-    // https://stackoverflow.com/a/63970374
 
     @Override
     public void save(Article article) throws ReferenceDatabaseException {
@@ -380,12 +374,13 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
                 tagInsertStatement.executeUpdate();
             }
 
-            // TODO: autori
-            // authorsRemoveStatement.setInt(1, reference.getID());
+            authorsRemoveStatement.setInt(1, reference.getID());
 
-            // for (Author author : reference.getAuthors()) {
-
-            // }
+            for (Author author : reference.getAuthors()) {
+                authorsInsertStatement.setInt(1, reference.getID());
+                authorsInsertStatement.setInt(2, author.getId());
+                authorsInsertStatement.executeUpdate();
+            }
 
             connection.commit();
         } catch (SQLException | DatabaseConnectionException e) {

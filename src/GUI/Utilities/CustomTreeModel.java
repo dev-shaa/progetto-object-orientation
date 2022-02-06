@@ -57,6 +57,7 @@ public class CustomTreeModel<T extends Object> extends DefaultTreeModel {
             super.insertNodeInto(_child, _parent, index);
 
             itemToNode.put(_child.getUserObject(), _child);
+            reload(_parent);
         } catch (ClassCastException e) {
             throw new IllegalArgumentException("newChild or parent are not a valid type of node for this tree");
         }
