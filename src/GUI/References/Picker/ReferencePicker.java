@@ -112,7 +112,6 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
             try {
                 categoriesPanel.setCategoriesTree(categoryController.getTree());
                 categoriesPanel.clearSelection();
-
                 referencesPanel.setReferences(null);
             } catch (CategoryDatabaseException e) {
                 showErrorMessage = true;

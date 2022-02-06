@@ -179,12 +179,15 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         relatedReferencesPanel.add(addRelatedReference, BorderLayout.EAST);
 
         addFieldComponent(title, "Titolo (obbligatorio)", "Titolo univoco del riferimento.");
-        addFieldComponent(tags, "Parole chiave", "Parole chiave associate al riferimento, separate da una virgola.");
+        addFieldComponent(tags, "Parole chiave", "Parole chiave associate al riferimento, separate da una virgola.\n"
+                + "Esempio: \"Programmazione, Object Orientation\"");
         addFieldComponent(DOI, "DOI", "Codice identificativo DOI del riferimento.");
         addFieldComponent(pubblicationDate, "Data di pubblicazione", "Data di pubblicazione del riferimento.");
         addFieldComponent(language, "Lingua", "Lingua del riferimento.");
         addFieldComponent(categories, "Categorie", "Categorie a cui deve essere associato questo riferimento.");
-        addFieldComponent(authors, "Autori", "Autori del riferimento.");
+        addFieldComponent(authors, "Autori", "Autori del riferimento, separati da una virgola.\n"
+                + "È possibile specificare l'ORCID mettendolo tra parentesi quadre.\n"
+                + "Esempio: \"Mario Rossi [0000-0000-0000-0000], Luigi Bianchi.\"");
         addFieldComponent(relatedReferencesPanel, "Rimandi", "Riferimenti menzionati all'interno del testo.");
 
         setupSecondaryFields();

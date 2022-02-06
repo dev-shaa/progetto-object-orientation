@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
@@ -78,10 +79,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
 
             String parentID = category.getParent() == null ? "null" : String.valueOf(category.getParent().getID());
 
-            String query = "insert into category(name, parent, owner) values('"
-                    + category.getName() + "', "
-                    + parentID + ", '"
-                    + user.getName() + "')";
+            String query = "insert into category(name, parent, owner) values('" + category.getName() + "', " + parentID + ", '" + user.getName() + "')";
 
             // il database genera un ID per ogni categoria, quindi vogliamo aggiornare la
             // classe category prima di concludere ogni operazione
@@ -94,7 +92,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
             }
 
             connection.commit();
-        } catch (Exception e) {
+        } catch (SQLException | DatabaseConnectionException e) {
             try {
                 connection.rollback();
             } catch (Exception r) {

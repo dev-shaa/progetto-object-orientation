@@ -24,7 +24,6 @@ public class CategoryController {
     private boolean treeNeedsUpdate;
 
     private HashMap<Integer, Category> idToCategory;
-    private HashMap<Category, Integer> categoryToID;
 
     /**
      * Crea un nuovo controller delle categorie con il DAO indicato.
@@ -38,7 +37,6 @@ public class CategoryController {
         setCategoryDAO(categoryDAO);
 
         idToCategory = new HashMap<>();
-        categoryToID = new HashMap<>();
     }
 
     /**
@@ -237,7 +235,6 @@ public class CategoryController {
 
     private void retrieveFromDatabase() throws CategoryDatabaseException {
         idToCategory.clear();
-        categoryToID.clear();
 
         categories = getCategoryDAO().getAll();
 
@@ -253,7 +250,6 @@ public class CategoryController {
             return;
 
         idToCategory.put(category.getID(), category);
-        categoryToID.put(category, category.getID());
     }
 
     private void removeFromHashMap(Category category) {
@@ -261,7 +257,6 @@ public class CategoryController {
             return;
 
         idToCategory.remove(category.getID());
-        categoryToID.remove(category);
     }
 
 }
