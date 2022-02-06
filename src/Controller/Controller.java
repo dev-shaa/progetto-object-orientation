@@ -30,6 +30,7 @@ public class Controller {
     private User user;
     private CategoryController categoryController;
     private ReferenceController referenceController;
+    private AuthorController authorController;
 
     /**
      * Crea un nuovo controller.
@@ -87,8 +88,14 @@ public class Controller {
      */
     public void openHomePage(User user) {
         this.user = user;
-        categoryController = new CategoryController(new CategoryDAOPostgreSQL(user));
-        referenceController = new ReferenceController(new BibliographicReferenceDAOPostgreSQL(user), categoryController);
+
+        AuthorDAO authorDAO = new AuthorDAOPostgreSQL();
+        CategoryDAO categoryDAO = new CategoryDAOPostgreSQL(user);
+        BibliographicReferenceDAO referenceDAO = new BibliographicReferenceDAOPostgreSQL(user);
+
+        authorController = new AuthorController(authorDAO);
+        categoryController = new CategoryController(categoryDAO);
+        referenceController = new ReferenceController(referenceDAO, categoryController, authorController);
 
         if (homepage == null)
             homepage = new Homepage(this);

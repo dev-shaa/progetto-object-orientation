@@ -6,6 +6,8 @@ import java.util.regex.Pattern;
  * Classe che rappresenta l'autore di un riferimento bibliografico.
  */
 public class Author {
+
+    private Integer id;
     private String name;
     private String ORCID;
 
@@ -24,6 +26,25 @@ public class Author {
      * @see #setORCID(String)
      */
     public Author(String name, String ORCID) {
+        this(name, ORCID, null);
+    }
+
+    /**
+     * Crea un nuovo autore con il nome e l'ORCID dati.
+     * 
+     * @param name
+     *            nome dell'autore
+     * @param ORCID
+     *            identificativo ORCID dell'autore
+     * @param id
+     *            identificativo dell'autore
+     * @throws IllegalArgumentException
+     *             se {@code name} o {@code ORCID} non sono validi
+     * @see #setName(String)
+     * @see #setORCID(String)
+     */
+    public Author(String name, String ORCID, Integer id) {
+        setId(id);
         setName(name);
         setORCID(ORCID);
     }
@@ -49,6 +70,25 @@ public class Author {
         Author author = (Author) obj;
 
         return getName().equals(author.getName()) && ((getORCID() == null && author.getORCID() == null) || (getORCID() != null && getORCID().equals(author.getORCID())));
+    }
+
+    /**
+     * Imposta l'identificativo dell'autore.
+     * 
+     * @param id
+     *            identificativo dell'autore
+     */
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    /**
+     * Restituisce l'identificativo dell'autore.
+     * 
+     * @return identificativo dell'autore
+     */
+    public Integer getId() {
+        return id;
     }
 
     /**

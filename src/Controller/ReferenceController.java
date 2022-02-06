@@ -10,6 +10,7 @@ import Entities.Search;
 import Entities.References.*;
 import Entities.References.OnlineResources.*;
 import Entities.References.PhysicalResources.*;
+import Exceptions.AuthorDatabaseException;
 import Exceptions.CategoryDatabaseException;
 import Exceptions.ReferenceDatabaseException;
 
@@ -23,6 +24,7 @@ public class ReferenceController {
 
     private BibliographicReferenceDAO referenceDAO;
     private CategoryController categoryController;
+    private AuthorController authorController;
 
     private List<BibliographicReference> references;
 
@@ -35,12 +37,15 @@ public class ReferenceController {
      *            DAO per interfacciarsi col database
      * @param categoryController
      *            controller per recuperare le categorie associate ai riferimenti
+     * @param authorController
+     *            controller per recuperare gli autori associati ai riferimenti
      * @throws IllegalArgumentException
-     *             se {@code referenceDAO == null}
+     *             se {@code referenceDAO == null}, {@code categoryController == null} o {@code authorController == null}
      */
-    public ReferenceController(BibliographicReferenceDAO referenceDAO, CategoryController categoryController) {
+    public ReferenceController(BibliographicReferenceDAO referenceDAO, CategoryController categoryController, AuthorController authorController) {
         setReferenceDAO(referenceDAO);
         setCategoryController(categoryController);
+        setAuthorController(authorController);
     }
 
     /**
@@ -73,6 +78,8 @@ public class ReferenceController {
      * 
      * @param categoryController
      *            controller delle categorie
+     * @throws IllegalArgumentException
+     *             se {@code categoryController == null}
      */
     public void setCategoryController(CategoryController categoryController) {
         if (categoryController == null)
@@ -89,6 +96,30 @@ public class ReferenceController {
      */
     public CategoryController getCategoryController() {
         return categoryController;
+    }
+
+    /**
+     * Imposta il controller per recuperare gli autori dei riferimenti.
+     * 
+     * @param authorController
+     *            controller degli autori
+     * @throws IllegalArgumentException
+     *             se {@code authorController == null}
+     */
+    public void setAuthorController(AuthorController authorController) {
+        if (authorController == null)
+            throw new IllegalArgumentException("authorController can't be null");
+
+        this.authorController = authorController;
+    }
+
+    /**
+     * Restituisce il controller usato per recuperare gli autori dei riferimenti.
+     * 
+     * @return controller degli autori
+     */
+    public AuthorController getAuthorController() {
+        return authorController;
     }
 
     /**
@@ -144,29 +175,6 @@ public class ReferenceController {
     }
 
     /**
-     * Impone che, al prossimo recupero, i riferimenti vengano recuperati di nuovo direttamente dal database.
-     */
-    public void forceNextRetrievalFromDatabase() {
-        needToRetrieveFromDatabase = true;
-    }
-
-    private void retrieveFromDatabase() throws ReferenceDatabaseException {
-        try {
-            references = referenceDAO.getAll();
-
-            for (BibliographicReference reference : references) {
-                reference.setCategories(getCategoryController().get(reference));
-
-                // TODO: autori
-            }
-
-            needToRetrieveFromDatabase = false;
-        } catch (ReferenceDatabaseException | CategoryDatabaseException e) {
-            throw new ReferenceDatabaseException(e.getMessage());
-        }
-    }
-
-    /**
      * Rimuove un riferimento dal database.
      * 
      * @param reference
@@ -198,9 +206,13 @@ public class ReferenceController {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
-        getReferenceDAO().save(reference);
-
-        addToLocal(reference);
+        try {
+            getAuthorController().save(reference.getAuthors());
+            getReferenceDAO().save(reference);
+            addToLocal(reference);
+        } catch (AuthorDatabaseException e) {
+            throw new ReferenceDatabaseException(e.getMessage());
+        }
     }
 
     /**
@@ -315,6 +327,28 @@ public class ReferenceController {
         getReferenceDAO().save(reference);
 
         addToLocal(reference);
+    }
+
+    /**
+     * Impone che, al prossimo recupero, i riferimenti vengano recuperati di nuovo direttamente dal database.
+     */
+    public void forceNextRetrievalFromDatabase() {
+        needToRetrieveFromDatabase = true;
+    }
+
+    private void retrieveFromDatabase() throws ReferenceDatabaseException {
+        try {
+            references = referenceDAO.getAll();
+
+            for (BibliographicReference reference : references) {
+                reference.setCategories(getCategoryController().get(reference));
+                reference.setAuthors(getAuthorController().get(reference));
+            }
+
+            needToRetrieveFromDatabase = false;
+        } catch (ReferenceDatabaseException | CategoryDatabaseException | AuthorDatabaseException e) {
+            throw new ReferenceDatabaseException(e.getMessage());
+        }
     }
 
     private void addToLocal(BibliographicReference reference) throws ReferenceDatabaseException {
