@@ -196,13 +196,16 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
             return;
 
         String pageCount = article.getPageCount() == 0 ? "null" : String.valueOf(article.getPageCount());
+        String url = getFormattedStringForQuery(article.getURL());
+        String publisher = getFormattedStringForQuery(article.getPublisher());
+        String issn = getFormattedStringForQuery(article.getISSN());
 
         String command = null;
 
         if (article.getID() == null)
-            command = "insert into article(id, page_count, url, publisher, issn) values(?," + pageCount + "," + article.getURL() + "," + article.getPublisher() + "," + article.getISSN() + ")";
+            command = "insert into article(id, page_count, url, publisher, issn) values(?," + pageCount + "," + url + "," + publisher + "," + issn + ")";
         else
-            command = "update article set page_count = " + pageCount + ", url = " + article.getURL() + ", publisher = " + article.getPublisher() + ", issn = " + article.getISSN() + " where id = ?";
+            command = "update article set page_count = " + pageCount + ", url = " + url + ", publisher = " + publisher + ", issn = " + issn + " where id = ?";
 
         save(article, command);
     }
@@ -212,15 +215,19 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         if (book == null)
             return;
 
-        int pageCount = book.getPageCount();
-        String url = book.getURL();
-        String publisher = book.getPublisher();
-        String isbn = book.getISBN();
+        String pageCount = getFormattedStringForQuery(book.getPageCount() == 0 ? null : String.valueOf(book.getPageCount()));
+        String url = getFormattedStringForQuery(book.getURL());
+        String publisher = getFormattedStringForQuery(book.getPublisher());
+        String isbn = getFormattedStringForQuery(book.getISBN());
 
-        String query = "insert into book(id, page_count, url, publisher, isbn) values(?," + pageCount + "," + url + "," + publisher + "," + isbn
-                + ") on conflict (id) do update set page_count = " + pageCount + ", url = " + url + ", publisher = " + publisher + ", isbn = " + isbn;
+        String command = null;
 
-        save(book, query);
+        if (book.getID() == null)
+            command = "insert into book(id, page_count, url, publisher, isbn) values(?," + pageCount + "," + url + "," + publisher + "," + isbn + ")";
+        else
+            command = "update book set page_count = " + pageCount + ", url = " + url + ", publisher = " + publisher + ", isbn = " + isbn + " where id = ?";
+
+        save(book, command);
     }
 
     @Override
@@ -228,16 +235,20 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         if (thesis == null)
             return;
 
-        int pageCount = thesis.getPageCount();
-        String url = thesis.getURL();
-        String publisher = thesis.getPublisher();
-        String university = thesis.getUniversity();
-        String faculty = thesis.getFaculty();
+        String pageCount = getFormattedStringForQuery(thesis.getPageCount() == 0 ? null : String.valueOf(thesis.getPageCount()));
+        String url = getFormattedStringForQuery(thesis.getURL());
+        String publisher = getFormattedStringForQuery(thesis.getPublisher());
+        String university = getFormattedStringForQuery(thesis.getUniversity());
+        String faculty = getFormattedStringForQuery(thesis.getFaculty());
 
-        String query = "insert into thesis(id, page_count, url, publisher, university, faculty) values(?," + pageCount + "," + url + "," + publisher + "," + university + "," + faculty
-                + ") on conflict (id) do update set page_count = " + pageCount + ", url = " + url + ", publisher = " + publisher + ", university = " + university + ", faculty = " + faculty;
+        String command = null;
 
-        save(thesis, query);
+        if (thesis.getID() == null)
+            command = "insert into thesis(id, page_count, url, publisher, university, faculty) values(?," + pageCount + "," + url + "," + publisher + "," + university + "," + faculty + ")";
+        else
+            command = "update thesis set page_count = " + pageCount + ", url = " + url + ", publisher = " + publisher + ", university = " + university + ", faculty = " + faculty + " where id = ?";
+
+        save(thesis, command);
     }
 
     @Override
@@ -303,9 +314,9 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         String language = reference.getLanguage() == ReferenceLanguage.NOTSPECIFIED ? null : reference.getLanguage().name();
 
         if (reference.getID() == null)
-            referenceInsertCommand = "insert into bibliographic_reference(owner, title, doi, description, language, pubblication_date) values(?,?,?,?," + language + ",?)";
+            referenceInsertCommand = "insert into bibliographic_reference(owner, title, doi, description, language, pubblication_date) values(?,?,?,?,'" + language + "',?)";
         else
-            referenceInsertCommand = "update bibliographic_reference set owner = ?, title = ?, doi = ?, description = ?, language = " + language + ", pubblication_date = ? where id = " + reference.getID();
+            referenceInsertCommand = "update bibliographic_reference set owner = ?, title = ?, doi = ?, description = ?, language = '" + language + "', pubblication_date = ? where id = " + reference.getID();
 
         try {
             connection = DatabaseController.getConnection();
@@ -313,12 +324,16 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
 
             referenceStatement = connection.prepareStatement(referenceInsertCommand, Statement.RETURN_GENERATED_KEYS);
             subReferenceStatement = connection.prepareStatement(subReferenceCommand);
+
             relatedReferenceRemoveStatement = connection.prepareStatement(relatedReferenceRemoveCommand);
             relatedReferenceInsertStatement = connection.prepareStatement(relatedReferenceInsertCommand);
+
             categoriesRemoveStatement = connection.prepareStatement(categoriesRemoveCommand);
             categoriesInsertStatement = connection.prepareStatement(categoriesInsertCommand);
+
             tagRemoveStatement = connection.prepareStatement(tagRemoveCommand);
             tagInsertStatement = connection.prepareStatement(tagInsertCommand);
+
             authorsRemoveStatement = connection.prepareStatement(authorsRemoveCommand);
             authorsInsertStatement = connection.prepareStatement(authorsInsertCommand);
 
@@ -446,9 +461,13 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
     private List<Book> getBooks(Connection connection) throws SQLException {
         // TODO: implementa
 
-        return null;
+        return new ArrayList<>(0);
     }
 
     // TODO: getThesis, getWebsite, ecc.
+
+    private String getFormattedStringForQuery(String input) {
+        return (input == null || input.isBlank()) ? null : "'" + input + "'";
+    }
 
 }

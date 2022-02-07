@@ -223,7 +223,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
                 Category category = new Category(newCategoryName, categoriesTreePanel.getSelectedCategory());
                 getController().getCategoryController().save(category);
             }
-        } catch (CategoryDatabaseException e) {
+        } catch (CategoryDatabaseException | IllegalArgumentException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, e.getMessage(), "Errore salvataggio categoria", JOptionPane.ERROR_MESSAGE);
         }
@@ -236,7 +236,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
             if (newName != null) {
                 getController().getCategoryController().update(categoriesTreePanel.getSelectedCategory(), newName);
             }
-        } catch (CategoryDatabaseException e) {
+        } catch (CategoryDatabaseException | IllegalArgumentException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, e.getMessage(), "Errore modifica categoria", JOptionPane.ERROR_MESSAGE);
         }

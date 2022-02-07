@@ -30,6 +30,9 @@ public class AuthorDAOPostgreSQL implements AuthorDAO {
 
     @Override
     public void save(Collection<? extends Author> authors) throws AuthorDatabaseException {
+        if (authors == null || authors.isEmpty())
+            return;
+
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
