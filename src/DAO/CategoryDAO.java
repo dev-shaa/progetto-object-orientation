@@ -58,6 +58,6 @@ public interface CategoryDAO {
      * @throws CategoryDatabaseException
      *             se il recupero degli ID dal database non va a buon fine
      */
-    public List<Integer> getID(BibliographicReference reference) throws CategoryDatabaseException;
+    public List<Integer> getIDs(BibliographicReference reference) throws CategoryDatabaseException;
 
 }

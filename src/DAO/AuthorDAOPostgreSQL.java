@@ -28,31 +28,32 @@ public class AuthorDAOPostgreSQL implements AuthorDAO {
             return;
 
         Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
+        PreparedStatement insertStatement = null;
+        PreparedStatement retrieveIDStatement = null;
+        ResultSet idResultSet = null;
 
-        // TODO: command
-        String command = "insert into author(name, orcid) values (?, ?) on conflict do nothing returning id";
+        String insertCommand = "insert into author(name, orcid) values (?, ?) on conflict do nothing";
+        String retrieveIDCommand = "select id from author where name = ? and orcid is not distinct from ?";
 
         try {
             connection = DatabaseController.getConnection();
-            connection.setAutoCommit(false);
-
-            statement = connection.prepareStatement(command, Statement.RETURN_GENERATED_KEYS);
+            insertStatement = connection.prepareStatement(insertCommand);
+            retrieveIDStatement = connection.prepareStatement(retrieveIDCommand);
 
             for (Author author : authors) {
-                statement.setString(1, author.getName());
-                statement.setString(2, author.getORCID());
-                statement.executeUpdate();
+                insertStatement.setString(1, author.getName());
+                insertStatement.setString(2, author.getORCID());
+                insertStatement.executeUpdate();
 
-                resultSet = statement.getGeneratedKeys();
+                retrieveIDStatement.setString(1, author.getName());
+                retrieveIDStatement.setString(2, author.getORCID());
+                idResultSet = retrieveIDStatement.executeQuery();
 
-                if (resultSet.next()) {
-                    author.setId(resultSet.getInt("id"));
+                if (idResultSet.next()) {
+                    int id = idResultSet.getInt("id");
+                    author.setId(id);
                 }
             }
-
-            connection.commit();
         } catch (SQLException | DatabaseConnectionException e) {
             try {
                 connection.rollback();
@@ -60,14 +61,16 @@ public class AuthorDAOPostgreSQL implements AuthorDAO {
                 // non fare niente
             }
 
+            e.printStackTrace();
+
             throw new AuthorDatabaseException("Impossibile salvare l'autore");
         } finally {
             try {
-                if (resultSet != null)
-                    resultSet.close();
+                if (idResultSet != null)
+                    idResultSet.close();
 
-                if (statement != null)
-                    statement.close();
+                if (insertStatement != null)
+                    insertStatement.close();
 
                 if (connection != null)
                     connection.close();

@@ -22,7 +22,7 @@ public enum ProgrammingLanguage {
      * 
      * @param value
      *            nome dell'enum
-     * @return l'enum corrispondente al nome di input, {@code NOTSPECIFIED} se la stringa di input non corrisponde a nessun enum valido.
+     * @return l'enum corrispondente al nome di input, {@code OTHER} se la stringa di input non corrisponde a nessun enum valido.
      */
     public static ProgrammingLanguage getFromString(String value) {
         try {

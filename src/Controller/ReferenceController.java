@@ -240,9 +240,13 @@ public class ReferenceController {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
-        getReferenceDAO().save(reference);
-
-        saveToLocal(reference);
+        try {
+            getAuthorController().save(reference.getAuthors());
+            getReferenceDAO().save(reference);
+            saveToLocal(reference);
+        } catch (AuthorDatabaseException e) {
+            throw new ReferenceDatabaseException(e.getMessage());
+        }
     }
 
     /**
@@ -259,9 +263,13 @@ public class ReferenceController {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
-        getReferenceDAO().save(reference);
-
-        saveToLocal(reference);
+        try {
+            getAuthorController().save(reference.getAuthors());
+            getReferenceDAO().save(reference);
+            saveToLocal(reference);
+        } catch (AuthorDatabaseException e) {
+            throw new ReferenceDatabaseException(e.getMessage());
+        }
     }
 
     /**
@@ -278,9 +286,13 @@ public class ReferenceController {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
-        getReferenceDAO().save(reference);
-
-        saveToLocal(reference);
+        try {
+            getAuthorController().save(reference.getAuthors());
+            getReferenceDAO().save(reference);
+            saveToLocal(reference);
+        } catch (AuthorDatabaseException e) {
+            throw new ReferenceDatabaseException(e.getMessage());
+        }
     }
 
     /**
@@ -297,9 +309,13 @@ public class ReferenceController {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
-        getReferenceDAO().save(reference);
-
-        saveToLocal(reference);
+        try {
+            getAuthorController().save(reference.getAuthors());
+            getReferenceDAO().save(reference);
+            saveToLocal(reference);
+        } catch (AuthorDatabaseException e) {
+            throw new ReferenceDatabaseException(e.getMessage());
+        }
     }
 
     /**
@@ -316,9 +332,13 @@ public class ReferenceController {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
-        getReferenceDAO().save(reference);
-
-        saveToLocal(reference);
+        try {
+            getAuthorController().save(reference.getAuthors());
+            getReferenceDAO().save(reference);
+            saveToLocal(reference);
+        } catch (AuthorDatabaseException e) {
+            throw new ReferenceDatabaseException(e.getMessage());
+        }
     }
 
     /**
@@ -335,9 +355,13 @@ public class ReferenceController {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
-        getReferenceDAO().save(reference);
-
-        saveToLocal(reference);
+        try {
+            getAuthorController().save(reference.getAuthors());
+            getReferenceDAO().save(reference);
+            saveToLocal(reference);
+        } catch (AuthorDatabaseException e) {
+            throw new ReferenceDatabaseException(e.getMessage());
+        }
     }
 
     /**

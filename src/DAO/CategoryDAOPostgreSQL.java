@@ -232,7 +232,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
     }
 
     @Override
-    public List<Integer> getID(BibliographicReference reference) throws CategoryDatabaseException {
+    public List<Integer> getIDs(BibliographicReference reference) throws CategoryDatabaseException {
         Connection connection = null;
         Statement statement = null;
         ResultSet resultSet = null;
