@@ -6,14 +6,30 @@ import Entities.Author;
 import Entities.References.BibliographicReference;
 import Exceptions.AuthorDatabaseException;
 
+/**
+ * Interfaccia che deve essere implementata per gestire la parte di database relativo agli autori.
+ */
 public interface AuthorDAO {
 
-	public void save(Author author) throws AuthorDatabaseException;
-
+	/**
+	 * Salva una collezione di autori nel database.
+	 * 
+	 * @param authors
+	 *            autori da salvare
+	 * @throws AuthorDatabaseException
+	 *             se il salvataggio non va a buon fine
+	 */
 	public void save(Collection<? extends Author> authors) throws AuthorDatabaseException;
 
-	public List<Author> getAll() throws AuthorDatabaseException;
-
+	/**
+	 * Restituisce gli autori di un riferimento.
+	 * 
+	 * @param reference
+	 *            riferimenti di cui trovare gli autori
+	 * @return lista con gli autori del riferimento
+	 * @throws AuthorDatabaseException
+	 *             se il recupero non va a buon fine
+	 */
 	public List<Author> get(BibliographicReference reference) throws AuthorDatabaseException;
 
 }

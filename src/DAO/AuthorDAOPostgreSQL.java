@@ -15,18 +15,12 @@ import Entities.References.BibliographicReference;
 import Exceptions.AuthorDatabaseException;
 import Exceptions.DatabaseConnectionException;
 
+/**
+ * Implementazione dell'interfaccia AuthorDAO per database relazionali PostgreSQL.
+ * 
+ * @see AuthorDAO
+ */
 public class AuthorDAOPostgreSQL implements AuthorDAO {
-
-    @Override
-    public void save(Author author) throws AuthorDatabaseException {
-
-        // FIXME:
-
-        ArrayList<Author> authors = new ArrayList<>();
-        authors.add(author);
-
-        save(authors);
-    }
 
     @Override
     public void save(Collection<? extends Author> authors) throws AuthorDatabaseException {
@@ -81,39 +75,6 @@ public class AuthorDAOPostgreSQL implements AuthorDAO {
                 // non fare niente
             }
         }
-    }
-
-    @Override
-    public List<Author> getAll() {
-        return null;
-        // try {
-        // String query = "select * from \"AutoriApp\" aa";
-        // con = DatabaseController.getConnection();
-        // if (con == null) {
-        // System.out.println("Non c'� connesione al db");
-        // return null;
-        // }
-        // stmt = con.createStatement();
-        // rs = stmt.executeQuery(query);
-        // Author authorDB = null;
-
-        // ArrayList<Author> authorList = new ArrayList<Author>();
-
-        // while (rs.next()) {
-        // String firstName = rs.getString("Nome");
-        // String ORCID = rs.getString("ORCID");
-        // authorDB = new Author(firstName, ORCID);
-        // authorList.add(authorDB);
-        // }
-
-        // // for ( int i = 0; i < authorList.size(); i++) {
-        // // System.out.println(authorList.get(i));
-        // // }
-        // return authorList;
-        // } catch (SQLException e) {
-        // e.printStackTrace();
-        // return null;
-        // }
     }
 
     @Override

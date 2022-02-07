@@ -3,13 +3,8 @@ package DAO;
 import java.util.List;
 
 import Entities.References.*;
-import Entities.References.OnlineResources.Image;
-import Entities.References.OnlineResources.SourceCode;
-import Entities.References.OnlineResources.Video;
-import Entities.References.OnlineResources.Website;
-import Entities.References.PhysicalResources.Article;
-import Entities.References.PhysicalResources.Book;
-import Entities.References.PhysicalResources.Thesis;
+import Entities.References.OnlineResources.*;
+import Entities.References.PhysicalResources.*;
 import Exceptions.ReferenceDatabaseException;
 
 /**
