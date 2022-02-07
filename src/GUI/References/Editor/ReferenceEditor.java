@@ -365,7 +365,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
             setFieldsValues(reference);
 
             try {
-                categories.setTreeModel(categoryController.getTree());
+                categories.setTreeModel(getCategoryController().getTree());
             } catch (CategoryDatabaseException e) {
                 categories.setTreeModel(null);
                 failedToLoad = true;

@@ -53,7 +53,7 @@ public class CategoryController {
 
         this.categoryDAO = categoryDAO;
 
-        forceRetrievalFromDatabase();
+        forceNextRetrievalFromDatabase();
     }
 
     /**
@@ -147,13 +147,13 @@ public class CategoryController {
      * in modo da evitare di dover creare nuove connessioni col database.
      * <p>
      * Il recupero dal database viene eseguito la prima volta dopo aver cambiato il DAO usato con {@link #setCategoryDAO(CategoryDAO)}, ma
-     * è possibile forzarlo chiamando prima {@link #forceRetrievalFromDatabase()}.
+     * è possibile forzarlo chiamando prima {@link #forceNextRetrievalFromDatabase()}.
      * 
      * @return lista con le categorie dell'utente.
      * @throws CategoryDatabaseException
      *             se il recupero delle categorie dal database non va a buon fine
      * 
-     * @see #forceRetrievalFromDatabase()
+     * @see #forceNextRetrievalFromDatabase()
      */
     public List<Category> getAll() throws CategoryDatabaseException {
         if (needToRetrieveFromDatabase) {
@@ -179,7 +179,7 @@ public class CategoryController {
             retrieveFromDatabase();
         }
 
-        List<Integer> ids = getCategoryDAO().getID(reference);
+        List<Integer> ids = getCategoryDAO().getIDs(reference);
         ArrayList<Category> categories = new ArrayList<>();
 
         for (Integer id : ids) {
@@ -228,7 +228,7 @@ public class CategoryController {
     /**
      * Impone che, al prossimo recupero, le categorie vengano recuperate di nuovo direttamente dal database.
      */
-    public void forceRetrievalFromDatabase() {
+    public void forceNextRetrievalFromDatabase() {
         needToRetrieveFromDatabase = true;
         treeNeedsUpdate = true;
     }

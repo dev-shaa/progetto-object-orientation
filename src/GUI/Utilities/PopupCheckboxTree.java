@@ -2,6 +2,7 @@ package GUI.Utilities;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.tree.TreePath;
 import com.jidesoft.swing.CheckBoxTree;
@@ -73,7 +74,7 @@ public class PopupCheckboxTree<T> extends PopupButton {
      * @return lista con gli elementi selezionati, {@code null} se non è selezionato niente
      */
     @SuppressWarnings("unchecked")
-    public ArrayList<T> getSelectedItems() {
+    public List<T> getSelectedItems() {
         TreePath[] selectedPaths = checkboxTree.getCheckBoxTreeSelectionModel().getSelectionPaths();
 
         if (selectedPaths == null)
