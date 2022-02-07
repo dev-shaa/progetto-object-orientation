@@ -362,7 +362,6 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
 
         if (b) {
             setReferenceToChange(reference);
-            setFieldsValues(reference);
 
             try {
                 categories.setTreeModel(getCategoryController().getTree());
@@ -370,6 +369,8 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
                 categories.setTreeModel(null);
                 failedToLoad = true;
             }
+
+            setFieldsValues(reference);
 
             setLocationRelativeTo(null);
         }

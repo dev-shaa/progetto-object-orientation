@@ -107,8 +107,11 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
             for (BibliographicReference reference : references) {
                 ArrayList<BibliographicReference> relatedReferences = new ArrayList<>();
 
-                for (Integer referenceID : referenceToRelatedID.get(reference))
-                    relatedReferences.add(idToReference.get(referenceID));
+                for (Integer referenceID : referenceToRelatedID.get(reference)) {
+                    BibliographicReference relatedReference = idToReference.get(referenceID);
+                    relatedReferences.add(relatedReference);
+                    relatedReference.setQuotationCount(relatedReference.getQuotationCount() + 1);
+                }
 
                 relatedReferences.trimToSize();
                 reference.setRelatedReferences(relatedReferences);
