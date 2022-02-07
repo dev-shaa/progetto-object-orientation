@@ -44,15 +44,6 @@ public class AuthorController {
 
     /**
      * 
-     * @param author
-     * @throws AuthorDatabaseException
-     */
-    public void save(Author author) throws AuthorDatabaseException {
-        getAuthorDAO().save(author);
-    }
-
-    /**
-     * 
      * @param authors
      * @throws AuthorDatabaseException
      */
