@@ -33,7 +33,7 @@ public class TermsField extends JTextField {
      * Imposta l'espressione da usare come separatore.
      * 
      * @param separator
-     *            esprresione separatore
+     *            espressione separatore
      */
     public void setSeparator(String separator) {
         this.separator = separator;
