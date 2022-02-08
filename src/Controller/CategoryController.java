@@ -8,8 +8,8 @@ import DAO.CategoryDAO;
 import Entities.Category;
 import Entities.References.BibliographicReference;
 import Exceptions.CategoryDatabaseException;
-import GUI.Utilities.CustomTreeModel;
-import GUI.Utilities.CustomTreeNode;
+import GUI.Utilities.Tree.CustomTreeModel;
+import GUI.Utilities.Tree.CustomTreeNode;
 
 /**
  * Controller per gestire il recupero, l'inserimento, la rimozione e la modifica di categorie.

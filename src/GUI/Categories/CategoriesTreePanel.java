@@ -8,8 +8,8 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreeSelectionModel;
 
 import Entities.Category;
-import GUI.Utilities.CustomTreeModel;
-import GUI.Utilities.CustomTreeNode;
+import GUI.Utilities.Tree.CustomTreeModel;
+import GUI.Utilities.Tree.CustomTreeNode;
 
 /**
  * Pannello che mostra l'albero delle categorie che l'utente può selezionare.

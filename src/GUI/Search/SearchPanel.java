@@ -13,8 +13,8 @@ import Entities.Search;
 import Exceptions.EmptySearchException;
 import GUI.Authors.AuthorInputField;
 import GUI.Tags.TagInputField;
-import GUI.Utilities.CustomTreeModel;
 import GUI.Utilities.PopupCheckboxTree;
+import GUI.Utilities.Tree.CustomTreeModel;
 
 /**
  * Pannello per la ricerca dei riferimenti per parole chiave, autori, categorie e data.
@@ -108,7 +108,7 @@ public class SearchPanel extends JPanel {
 
     private void search() {
         try {
-            Search search = new Search(dateFrom.getDate(), dateTo.getDate(), tags.getTags(), categories.getSelectedItems(), authors.getAuthors());
+            Search search = new Search(dateFrom.getDate(), dateTo.getDate(), tags.getTags(), categories.getCheckboxTree().getSelectedItems(), authors.getAuthors());
 
             for (SearchListener listener : searchListeners)
                 listener.search(search);
@@ -166,7 +166,7 @@ public class SearchPanel extends JPanel {
     public void reset() {
         tags.setText(null);
         authors.setText(null);
-        categories.clearSelection();
+        categories.getCheckboxTree().clearSelection();
         dateFrom.setDate(null);
         dateTo.setDate(null);
     }

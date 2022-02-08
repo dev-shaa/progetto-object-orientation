@@ -1,4 +1,4 @@
-package GUI.Utilities;
+package GUI.Utilities.Tree;
 
 import java.util.HashMap;
 

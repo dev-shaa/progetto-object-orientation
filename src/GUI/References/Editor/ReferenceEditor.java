@@ -469,11 +469,11 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
             return;
 
         for (Category category : categories)
-            this.categories.selectItem(category);
+            this.categories.getCheckboxTree().selectItem(category);
     }
 
     private List<Category> getCategoryValues() {
-        return categories.getSelectedItems();
+        return categories.getCheckboxTree().getSelectedItems();
     }
 
     private void setRelatedReferences(List<BibliographicReference> references) {
