@@ -440,7 +440,7 @@ public abstract class BibliographicReference {
      * @return {@code true} se il riferimento è stato scritto da tutti gli autori indicati
      */
     public boolean wasWrittenBy(Collection<? extends Author> authors) {
-        if (authors == null)
+        if (authors == null || authors.isEmpty())
             return true;
 
         return getAuthors().containsAll(authors);
@@ -454,7 +454,7 @@ public abstract class BibliographicReference {
      * @return {@code true} se contiene tutte le parole chiave
      */
     public boolean isTaggedWith(Collection<? extends Tag> tags) {
-        if (tags == null)
+        if (tags == null || tags.isEmpty())
             return true;
 
         return getTags().containsAll(tags);

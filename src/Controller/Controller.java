@@ -30,7 +30,6 @@ public class Controller {
     private User user;
     private CategoryController categoryController;
     private ReferenceController referenceController;
-    private AuthorController authorController;
     private UserController loginController;
 
     /**
@@ -105,10 +104,10 @@ public class Controller {
         AuthorDAO authorDAO = new AuthorDAOPostgreSQL();
         CategoryDAO categoryDAO = new CategoryDAOPostgreSQL(getUser());
         BibliographicReferenceDAO referenceDAO = new BibliographicReferenceDAOPostgreSQL(getUser());
+        TagDAO tagDAO = new TagDAOPostgreSQL();
 
-        authorController = new AuthorController(authorDAO);
         categoryController = new CategoryController(categoryDAO);
-        referenceController = new ReferenceController(referenceDAO, categoryController, authorController);
+        referenceController = new ReferenceController(referenceDAO, authorDAO, tagDAO, categoryController);
 
         if (homepage == null)
             homepage = new Homepage(this);

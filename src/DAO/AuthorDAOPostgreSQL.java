@@ -95,7 +95,9 @@ public class AuthorDAOPostgreSQL implements AuthorDAO {
             ArrayList<Author> authors = new ArrayList<>();
 
             while (resultSet.next()) {
-                authors.add(new Author(resultSet.getString("name"), resultSet.getString("orcid")));
+                String name = resultSet.getString("name").trim();
+                String orcid = resultSet.getString("orcid").trim();
+                authors.add(new Author(name, orcid));
             }
 
             authors.trimToSize();

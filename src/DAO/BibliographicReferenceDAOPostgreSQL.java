@@ -59,13 +59,8 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
     @Override
     public List<BibliographicReference> getAll() throws ReferenceDatabaseException {
         Connection connection = null;
-
-        Statement referenceStatement = null;
-        ResultSet referenceResultSet = null;
-
-        PreparedStatement tagsStatement = null;
-        ResultSet tagsResultSet = null;
-        String tagsCommand = "select name from tag where reference = ?";
+        Statement statement = null;
+        ResultSet resultSet = null;
 
         ArrayList<BibliographicReference> references = new ArrayList<>();
         HashMap<Integer, BibliographicReference> idToReference = new HashMap<>();
@@ -74,32 +69,18 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         try {
             connection = DatabaseController.getConnection();
 
-            referenceStatement = connection.createStatement();
-            tagsStatement = connection.prepareStatement(tagsCommand);
+            statement = connection.createStatement();
 
-            references.addAll(getArticles(referenceStatement, referenceResultSet));
-            references.addAll(getBooks(referenceStatement, referenceResultSet));
-            references.addAll(getThesis(referenceStatement, referenceResultSet));
-            references.addAll(getImages(referenceStatement, referenceResultSet));
-            references.addAll(getWebsites(referenceStatement, referenceResultSet));
-            references.addAll(getVideos(referenceStatement, referenceResultSet));
-            references.addAll(getSourceCodes(referenceStatement, referenceResultSet));
+            references.addAll(getArticles(statement, resultSet));
+            references.addAll(getBooks(statement, resultSet));
+            references.addAll(getThesis(statement, resultSet));
+            references.addAll(getImages(statement, resultSet));
+            references.addAll(getWebsites(statement, resultSet));
+            references.addAll(getVideos(statement, resultSet));
+            references.addAll(getSourceCodes(statement, resultSet));
 
             for (BibliographicReference reference : references) {
                 idToReference.put(reference.getID(), reference);
-
-                // RECUPERO TAG
-                tagsStatement.setInt(1, reference.getID());
-                tagsResultSet = tagsStatement.executeQuery();
-
-                ArrayList<Tag> tags = new ArrayList<>();
-
-                while (tagsResultSet.next())
-                    tags.add(new Tag(tagsResultSet.getString("name")));
-
-                tags.trimToSize();
-                reference.setTags(tags);
-
                 referenceToRelatedID.put(reference, getRelatedReferencesID(connection, reference));
             }
 
@@ -123,11 +104,11 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
             throw new ReferenceDatabaseException("Impossibile recuperare i riferimenti dell'utente.");
         } finally {
             try {
-                if (referenceResultSet != null)
-                    referenceResultSet.close();
+                if (resultSet != null)
+                    resultSet.close();
 
-                if (referenceStatement != null)
-                    referenceStatement.close();
+                if (statement != null)
+                    statement.close();
 
                 if (connection != null)
                     connection.close();
@@ -177,7 +158,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         if (article == null)
             return;
 
-        String pageCount = article.getPageCount() == 0 ? "null" : String.valueOf(article.getPageCount());
+        String pageCount = article.getPageCount() == 0 ? null : String.valueOf(article.getPageCount());
         String url = getFormattedStringForQuery(article.getURL());
         String publisher = getFormattedStringForQuery(article.getPublisher());
         String issn = getFormattedStringForQuery(article.getISSN());
@@ -247,7 +228,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         if (image.getID() == null)
             command = "insert into image(id, url, width, height) values(?," + url + "," + width + "," + height + ")";
         else
-            command = "update thesis set url = " + url + ", width = " + width + ", height = " + height + " where id = ?";
+            command = "update image set url = " + url + ", width = " + width + ", height = " + height + " where id = ?";
 
         save(image, command);
     }
@@ -268,7 +249,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         if (video.getID() == null)
             command = "insert into video(id, url, width, height, framerate, duration) values(?," + url + "," + width + "," + height + "," + framerate + "," + duration + ")";
         else
-            command = "update thesis set url = " + url + ", width = " + width + ", height = " + height + ", framerate = " + framerate + ", duration = " + duration + " where id = ?";
+            command = "update video set url = " + url + ", width = " + width + ", height = " + height + ", framerate = " + framerate + ", duration = " + duration + " where id = ?";
 
         save(video, command);
     }
@@ -286,7 +267,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         if (sourceCode.getID() == null)
             command = "insert into source_code(id, url, programming_language) values(?," + url + "," + programmingLanguage + ")";
         else
-            command = "update thesis set url = " + url + ", programming_language = " + programmingLanguage + " where id = ?";
+            command = "update source_code set url = " + url + ", programming_language = " + programmingLanguage + " where id = ?";
 
         save(sourceCode, command);
     }

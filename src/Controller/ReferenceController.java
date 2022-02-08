@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import DAO.AuthorDAO;
 import DAO.BibliographicReferenceDAO;
+import DAO.TagDAO;
 import Entities.Category;
 import Entities.Search;
 import Entities.References.*;
@@ -13,6 +15,7 @@ import Entities.References.PhysicalResources.*;
 import Exceptions.AuthorDatabaseException;
 import Exceptions.CategoryDatabaseException;
 import Exceptions.ReferenceDatabaseException;
+import Exceptions.TagDatabaseException;
 
 /**
  * Controller per gestire il recupero, l'inserimento, la rimozione e la modifica di riferimenti.
@@ -23,8 +26,9 @@ public class ReferenceController {
     // FIXME: quando viene eliminata una categoria dovrebbe essere rimossa dai riferimenti
 
     private BibliographicReferenceDAO referenceDAO;
+    private AuthorDAO authorDAO;
+    private TagDAO tagDAO;
     private CategoryController categoryController;
-    private AuthorController authorController;
 
     private List<BibliographicReference> references;
 
@@ -35,17 +39,34 @@ public class ReferenceController {
      * 
      * @param referenceDAO
      *            DAO per interfacciarsi col database
+     * @param authorDAO
+     *            DAO per recuperare gli autori dei riferimenti dal database
      * @param categoryController
      *            controller per recuperare le categorie associate ai riferimenti
-     * @param authorController
-     *            controller per recuperare gli autori associati ai riferimenti
      * @throws IllegalArgumentException
-     *             se {@code referenceDAO == null}, {@code categoryController == null} o {@code authorController == null}
+     *             se {@code referenceDAO == null}, {@code authorDAO == null} o {@code categoryController == null}
+     * @see #setReferenceDAO(BibliographicReferenceDAO)
+     * @see #setAuthorDAO(AuthorDAO)
+     * @see #setCategoryController(CategoryController)
      */
-    public ReferenceController(BibliographicReferenceDAO referenceDAO, CategoryController categoryController, AuthorController authorController) {
+    public ReferenceController(BibliographicReferenceDAO referenceDAO, AuthorDAO authorDAO, TagDAO tagDAO, CategoryController categoryController) {
         setReferenceDAO(referenceDAO);
         setCategoryController(categoryController);
-        setAuthorController(authorController);
+        setAuthorDAO(authorDAO);
+        setTagDAO(tagDAO);
+    }
+
+    /**
+     * TODO: commenta
+     * 
+     * @return
+     */
+    public TagDAO getTagDAO() {
+        return tagDAO;
+    }
+
+    public void setTagDAO(TagDAO tagDAO) {
+        this.tagDAO = tagDAO;
     }
 
     /**
@@ -74,6 +95,30 @@ public class ReferenceController {
     }
 
     /**
+     * Imposta la classe DAO per recuperare gli autori dei riferimenti.
+     * 
+     * @param authorDAO
+     *            DAO degli autori
+     * @throws IllegalArgumentException
+     *             se {@code authorDAO == null}
+     */
+    public void setAuthorDAO(AuthorDAO authorDAO) {
+        if (authorDAO == null)
+            throw new IllegalArgumentException("authorDAO can't be null");
+
+        this.authorDAO = authorDAO;
+    }
+
+    /**
+     * Restituisce il DAO usato per recuperare gli autori dei riferimenti.
+     * 
+     * @return DAO degli autori
+     */
+    public AuthorDAO getAuthorDAO() {
+        return authorDAO;
+    }
+
+    /**
      * Imposta il controller per recuperare le categorie associate ai riferimenti.
      * 
      * @param categoryController
@@ -99,30 +144,6 @@ public class ReferenceController {
     }
 
     /**
-     * Imposta il controller per recuperare gli autori dei riferimenti.
-     * 
-     * @param authorController
-     *            controller degli autori
-     * @throws IllegalArgumentException
-     *             se {@code authorController == null}
-     */
-    public void setAuthorController(AuthorController authorController) {
-        if (authorController == null)
-            throw new IllegalArgumentException("authorController can't be null");
-
-        this.authorController = authorController;
-    }
-
-    /**
-     * Restituisce il controller usato per recuperare gli autori dei riferimenti.
-     * 
-     * @return controller degli autori
-     */
-    public AuthorController getAuthorController() {
-        return authorController;
-    }
-
-    /**
      * Restituisce tutti i riferimenti associati all'utente che sta usando l'applicazione.
      * 
      * @return
@@ -135,11 +156,12 @@ public class ReferenceController {
 
                 for (BibliographicReference reference : references) {
                     reference.setCategories(getCategoryController().get(reference));
-                    reference.setAuthors(getAuthorController().get(reference));
+                    reference.setAuthors(getAuthorDAO().get(reference));
+                    reference.setTags(getTagDAO().get(reference));
                 }
 
                 needToRetrieveFromDatabase = false;
-            } catch (ReferenceDatabaseException | CategoryDatabaseException | AuthorDatabaseException e) {
+            } catch (ReferenceDatabaseException | CategoryDatabaseException | AuthorDatabaseException | TagDatabaseException e) {
                 throw new ReferenceDatabaseException(e.getMessage());
             }
         }
@@ -218,10 +240,11 @@ public class ReferenceController {
             throw new IllegalArgumentException("reference can't be null");
 
         try {
-            getAuthorController().save(reference.getAuthors());
+            getAuthorDAO().save(reference.getAuthors());
             getReferenceDAO().save(reference);
+            getTagDAO().save(reference.getTags(), reference);
             saveLocally(reference);
-        } catch (AuthorDatabaseException e) {
+        } catch (AuthorDatabaseException | TagDatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
         }
     }
@@ -241,10 +264,11 @@ public class ReferenceController {
             throw new IllegalArgumentException("reference can't be null");
 
         try {
-            getAuthorController().save(reference.getAuthors());
+            getAuthorDAO().save(reference.getAuthors());
             getReferenceDAO().save(reference);
+            getTagDAO().save(reference.getTags(), reference);
             saveLocally(reference);
-        } catch (AuthorDatabaseException e) {
+        } catch (AuthorDatabaseException | TagDatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
         }
     }
@@ -264,10 +288,11 @@ public class ReferenceController {
             throw new IllegalArgumentException("reference can't be null");
 
         try {
-            getAuthorController().save(reference.getAuthors());
+            getAuthorDAO().save(reference.getAuthors());
             getReferenceDAO().save(reference);
+            getTagDAO().save(reference.getTags(), reference);
             saveLocally(reference);
-        } catch (AuthorDatabaseException e) {
+        } catch (AuthorDatabaseException | TagDatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
         }
     }
@@ -287,10 +312,11 @@ public class ReferenceController {
             throw new IllegalArgumentException("reference can't be null");
 
         try {
-            getAuthorController().save(reference.getAuthors());
+            getAuthorDAO().save(reference.getAuthors());
             getReferenceDAO().save(reference);
+            getTagDAO().save(reference.getTags(), reference);
             saveLocally(reference);
-        } catch (AuthorDatabaseException e) {
+        } catch (AuthorDatabaseException | TagDatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
         }
     }
@@ -310,10 +336,11 @@ public class ReferenceController {
             throw new IllegalArgumentException("reference can't be null");
 
         try {
-            getAuthorController().save(reference.getAuthors());
+            getAuthorDAO().save(reference.getAuthors());
             getReferenceDAO().save(reference);
+            getTagDAO().save(reference.getTags(), reference);
             saveLocally(reference);
-        } catch (AuthorDatabaseException e) {
+        } catch (AuthorDatabaseException | TagDatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
         }
     }
@@ -333,10 +360,11 @@ public class ReferenceController {
             throw new IllegalArgumentException("reference can't be null");
 
         try {
-            getAuthorController().save(reference.getAuthors());
+            getAuthorDAO().save(reference.getAuthors());
             getReferenceDAO().save(reference);
+            getTagDAO().save(reference.getTags(), reference);
             saveLocally(reference);
-        } catch (AuthorDatabaseException e) {
+        } catch (AuthorDatabaseException | TagDatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
         }
     }
@@ -356,10 +384,11 @@ public class ReferenceController {
             throw new IllegalArgumentException("reference can't be null");
 
         try {
-            getAuthorController().save(reference.getAuthors());
+            getAuthorDAO().save(reference.getAuthors());
             getReferenceDAO().save(reference);
+            getTagDAO().save(reference.getTags(), reference);
             saveLocally(reference);
-        } catch (AuthorDatabaseException e) {
+        } catch (AuthorDatabaseException | TagDatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
         }
     }
@@ -373,15 +402,19 @@ public class ReferenceController {
 
     private void saveLocally(BibliographicReference reference) throws ReferenceDatabaseException {
 
-        // TODO: in caso di update
+        // TODO: è possibile pulirlo un po'
 
-        if (getAll().contains(reference)) {
+        int index = getAll().indexOf(reference);
+
+        if (index == -1) {
+            getAll().add(reference);
+        } else {
             // se è già contenuta nell'elenco vuol dire che stiamo aggiornando il riferimento
             // conviene prima rimuoverlo dal conteggio delle citazioni ricevute e poi aggiornarlo di nuovo
 
+            getAll().set(index, reference);
+            replaceFromRelatedReferences(reference);
             removeFromQuotationCount(reference);
-        } else {
-            getAll().add(reference);
         }
 
         addToQuotationCount(reference);
@@ -412,6 +445,15 @@ public class ReferenceController {
 
         for (BibliographicReference reference : referenceToRemove.getRelatedReferences()) {
             reference.setQuotationCount(reference.getQuotationCount() - 1);
+        }
+    }
+
+    private void replaceFromRelatedReferences(BibliographicReference newReference) throws ReferenceDatabaseException {
+        for (BibliographicReference reference : getAll()) {
+            int index = reference.getRelatedReferences().indexOf(newReference);
+
+            if (index != -1)
+                reference.getRelatedReferences().set(index, newReference);
         }
     }
 
