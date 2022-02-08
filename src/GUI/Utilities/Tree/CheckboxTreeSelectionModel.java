@@ -15,6 +15,9 @@ public class CheckboxTreeSelectionModel extends DefaultTreeSelectionModel {
 
     private ArrayList<TreePath> selectedPaths;
 
+    /**
+     * TODO: commenta
+     */
     public CheckboxTreeSelectionModel() {
         super();
         selectedPaths = new ArrayList<>();

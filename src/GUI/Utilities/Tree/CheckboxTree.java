@@ -7,21 +7,25 @@ import javax.swing.JTree;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-public class CustomCheckboxTree<T extends Object> extends JTree {
+/**
+ * Un'estensione di {@code JTree} con nodi di tipo checkbox, con la possibilità di selezionare e recuperare gli elementi selezionati.
+ */
+public class CheckboxTree<T extends Object> extends JTree {
 
     private CustomTreeModel<T> treeModel;
 
     /**
-     * TODO: commenta
+     * Crea un nuovo {@code CheckboxTree} con il modello indicato.
      * 
      * @param newModel
+     *            modello dell'albero da mostrare
      */
-    public CustomCheckboxTree(CustomTreeModel<T> newModel) {
+    public CheckboxTree(CustomTreeModel<T> newModel) {
         super(newModel);
 
         treeModel = newModel;
 
-        super.setCellRenderer(new CustomCheckboxTreeRenderer());
+        super.setCellRenderer(new CheckboxTreeRenderer());
         super.setSelectionModel(new CheckboxTreeSelectionModel());
     }
 

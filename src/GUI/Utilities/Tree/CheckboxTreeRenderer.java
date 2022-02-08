@@ -7,11 +7,17 @@ import javax.swing.JPanel;
 import javax.swing.JCheckBox;
 import javax.swing.tree.TreeCellRenderer;
 
-public class CustomCheckboxTreeRenderer extends JPanel implements TreeCellRenderer {
+/**
+ * Renderer di un CheckboxTree, che quando selezionato mostra una spunta.
+ */
+public class CheckboxTreeRenderer extends JPanel implements TreeCellRenderer {
 
     private JCheckBox checkBox;
 
-    public CustomCheckboxTreeRenderer() {
+    /**
+     * Crea un nuovo renderer.
+     */
+    public CheckboxTreeRenderer() {
         super();
 
         checkBox = new JCheckBox();

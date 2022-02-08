@@ -2,7 +2,7 @@ package GUI.Utilities;
 
 import java.awt.Dimension;
 
-import GUI.Utilities.Tree.CustomCheckboxTree;
+import GUI.Utilities.Tree.CheckboxTree;
 import GUI.Utilities.Tree.CustomTreeModel;
 
 /**
@@ -10,7 +10,7 @@ import GUI.Utilities.Tree.CustomTreeModel;
  */
 public class PopupCheckboxTree<T extends Object> extends PopupButton {
 
-    private CustomCheckboxTree<T> checkboxTree;
+    private CheckboxTree<T> checkboxTree;
 
     /**
      * Crea un nuovo {@code PopupCheckboxTree}.
@@ -49,7 +49,7 @@ public class PopupCheckboxTree<T extends Object> extends PopupButton {
      */
     public void setTreeModel(CustomTreeModel<T> treeModel) {
         if (checkboxTree == null) {
-            checkboxTree = new CustomCheckboxTree<T>(treeModel);
+            checkboxTree = new CheckboxTree<T>(treeModel);
 
             checkboxTree.setToggleClickCount(0);
             checkboxTree.setEditable(false);
@@ -60,7 +60,12 @@ public class PopupCheckboxTree<T extends Object> extends PopupButton {
         }
     }
 
-    public CustomCheckboxTree<T> getCheckboxTree() {
+    /**
+     * Restituisce il {@code CheckboxTree} utilizzato.
+     * 
+     * @return albero di checkbox usato
+     */
+    public CheckboxTree<T> getCheckboxTree() {
         return checkboxTree;
     }
 
