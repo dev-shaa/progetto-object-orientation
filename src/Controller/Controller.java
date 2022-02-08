@@ -59,11 +59,11 @@ public class Controller {
     }
 
     /**
-     * TODO: commenta
+     * Restituisce il controller degli utenti.
      * 
-     * @return
+     * @return controller delle categoria
      */
-    public UserController getLoginController() {
+    public UserController getUserController() {
         if (loginController == null)
             loginController = new UserController(new UserDAOPostgreSQL());
 

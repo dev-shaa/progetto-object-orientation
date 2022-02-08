@@ -41,10 +41,12 @@ public class ReferenceController {
      *            DAO per interfacciarsi col database
      * @param authorDAO
      *            DAO per recuperare gli autori dei riferimenti dal database
+     * @param tagDAO
+     *            DAO per recuperare le parole chiave dei riferimenti dal database
      * @param categoryController
      *            controller per recuperare le categorie associate ai riferimenti
      * @throws IllegalArgumentException
-     *             se {@code referenceDAO == null}, {@code authorDAO == null} o {@code categoryController == null}
+     *             se {@code referenceDAO == null}, {@code authorDAO == null}, {@code tagDAO == null} o {@code categoryController == null}
      * @see #setReferenceDAO(BibliographicReferenceDAO)
      * @see #setAuthorDAO(AuthorDAO)
      * @see #setCategoryController(CategoryController)
@@ -54,19 +56,6 @@ public class ReferenceController {
         setCategoryController(categoryController);
         setAuthorDAO(authorDAO);
         setTagDAO(tagDAO);
-    }
-
-    /**
-     * TODO: commenta
-     * 
-     * @return
-     */
-    public TagDAO getTagDAO() {
-        return tagDAO;
-    }
-
-    public void setTagDAO(TagDAO tagDAO) {
-        this.tagDAO = tagDAO;
     }
 
     /**
@@ -116,6 +105,30 @@ public class ReferenceController {
      */
     public AuthorDAO getAuthorDAO() {
         return authorDAO;
+    }
+
+    /**
+     * Imposta la classe DAO per recuperare le parole chiave dei riferimenti.
+     * 
+     * @param tagDAO
+     *            DAO delle parole chiave
+     * @throws IllegalArgumentException
+     *             se {@code tagDAO == null}
+     */
+    public void setTagDAO(TagDAO tagDAO) {
+        if (tagDAO == null)
+            throw new IllegalArgumentException("tagDAO can't be null");
+
+        this.tagDAO = tagDAO;
+    }
+
+    /**
+     * Restituisce il DAO usato per recuperare le parole chiave dei riferimenti.
+     * 
+     * @return DAO delle parole chiave
+     */
+    public TagDAO getTagDAO() {
+        return tagDAO;
     }
 
     /**

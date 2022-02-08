@@ -74,6 +74,12 @@ public class TagDAOPostgreSQL implements TagDAO {
                 if (resultSet != null)
                     resultSet.close();
 
+                if (tagInsertStatement != null)
+                    tagInsertStatement.close();
+
+                if (tagRemoveStatement != null)
+                    tagRemoveStatement.close();
+
                 if (connection != null)
                     connection.close();
             } catch (Exception e) {

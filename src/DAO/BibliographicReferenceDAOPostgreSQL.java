@@ -52,7 +52,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
      * 
      * @return utente assegnato al DAO
      */
-    public User getUser() {
+    private User getUser() {
         return user;
     }
 
@@ -153,10 +153,16 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @throws IllegalArgumentException
+     *             se {@code article == null}
+     */
     @Override
     public void save(Article article) throws ReferenceDatabaseException {
         if (article == null)
-            return;
+            throw new IllegalArgumentException("article can't be null");
 
         String pageCount = article.getPageCount() == 0 ? null : String.valueOf(article.getPageCount());
         String url = getFormattedStringForQuery(article.getURL());
@@ -173,10 +179,16 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         save(article, command);
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @throws IllegalArgumentException
+     *             se {@code book == null}
+     */
     @Override
     public void save(Book book) throws ReferenceDatabaseException {
         if (book == null)
-            return;
+            throw new IllegalArgumentException("book can't be null");
 
         String pageCount = getFormattedStringForQuery(book.getPageCount() == 0 ? null : String.valueOf(book.getPageCount()));
         String url = getFormattedStringForQuery(book.getURL());
@@ -193,10 +205,16 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         save(book, command);
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @throws IllegalArgumentException
+     *             se {@code thesis == null}
+     */
     @Override
     public void save(Thesis thesis) throws ReferenceDatabaseException {
         if (thesis == null)
-            return;
+            throw new IllegalArgumentException("thesis can't be null");
 
         String pageCount = getFormattedStringForQuery(thesis.getPageCount() == 0 ? null : String.valueOf(thesis.getPageCount()));
         String url = getFormattedStringForQuery(thesis.getURL());
@@ -214,10 +232,16 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         save(thesis, command);
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @throws IllegalArgumentException
+     *             se {@code image == null}
+     */
     @Override
     public void save(Image image) throws ReferenceDatabaseException {
         if (image == null)
-            return;
+            throw new IllegalArgumentException("image can't be null");
 
         String url = getFormattedStringForQuery(image.getURL());
         String width = getFormattedStringForQuery(image.getWidth() == 0 ? null : String.valueOf(image.getWidth()));
@@ -233,10 +257,16 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         save(image, command);
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @throws IllegalArgumentException
+     *             se {@code video == null}
+     */
     @Override
     public void save(Video video) throws ReferenceDatabaseException {
         if (video == null)
-            return;
+            throw new IllegalArgumentException("video can't be null");
 
         String url = getFormattedStringForQuery(video.getURL());
         String width = getFormattedStringForQuery(video.getWidth() == 0 ? null : String.valueOf(video.getWidth()));
@@ -254,10 +284,16 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         save(video, command);
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @throws IllegalArgumentException
+     *             se {@code sourceCode == null}
+     */
     @Override
     public void save(SourceCode sourceCode) throws ReferenceDatabaseException {
         if (sourceCode == null)
-            return;
+            throw new IllegalArgumentException("sourceCode can't be null");
 
         String url = getFormattedStringForQuery(sourceCode.getURL());
         String programmingLanguage = getFormattedStringForQuery(sourceCode.getProgrammingLanguage().name());
@@ -272,10 +308,16 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         save(sourceCode, command);
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @throws IllegalArgumentException
+     *             se {@code website == null}
+     */
     @Override
     public void save(Website website) throws ReferenceDatabaseException {
         if (website == null)
-            return;
+            throw new IllegalArgumentException("website can't be null");
 
         String url = getFormattedStringForQuery(website.getURL());
 

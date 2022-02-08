@@ -111,7 +111,7 @@ public class LoginPage extends JFrame {
 		try {
 			User user = new User(username, password);
 
-			getController().getLoginController().register(user);
+			getController().getUserController().register(user);
 			getController().openHomePage(user);
 		} catch (IllegalArgumentException | UserDatabaseException ex) {
 			JOptionPane.showMessageDialog(this, ex.getMessage(), "Errore registrazione utente", JOptionPane.ERROR_MESSAGE);
@@ -125,7 +125,7 @@ public class LoginPage extends JFrame {
 		try {
 			User user = new User(username, password);
 
-			if (getController().getLoginController().login(user))
+			if (getController().getUserController().login(user))
 				getController().openHomePage(user);
 			else
 				JOptionPane.showMessageDialog(this, "Impossibile accedere: nome o password errati.", "Errore accesso utente", JOptionPane.ERROR_MESSAGE);

@@ -17,8 +17,17 @@ import Exceptions.UserDatabaseException;
  */
 public class UserDAOPostgreSQL implements UserDAO {
 
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @throws IllegalArgumentException
+	 *             se {@code user == null}
+	 */
 	@Override
 	public void register(User user) throws UserDatabaseException {
+		if (user == null)
+			throw new IllegalArgumentException("user can't be null");
+
 		Connection connection = null;
 		Statement statement = null;
 		String command = "insert into user_app(name, password) values('" + user.getName() + "','" + user.getPassword() + "')";
@@ -43,8 +52,17 @@ public class UserDAOPostgreSQL implements UserDAO {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @throws IllegalArgumentException
+	 *             se {@code user == null}
+	 */
 	@Override
 	public boolean doesUserExist(User user) throws UserDatabaseException {
+		if (user == null)
+			throw new IllegalArgumentException("user can't be null");
+
 		Connection connection = null;
 		Statement statement = null;
 		ResultSet resultSet = null;
