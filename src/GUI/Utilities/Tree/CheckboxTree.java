@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JTree;
+import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
@@ -27,6 +28,16 @@ public class CheckboxTree<T extends Object> extends JTree {
 
         super.setCellRenderer(new CheckboxTreeRenderer());
         super.setSelectionModel(new CheckboxTreeSelectionModel());
+    }
+
+    @Override
+    public void setModel(TreeModel newModel) {
+
+    }
+
+    public void setModel(CustomTreeModel<T> newModel) {
+        super.setModel(newModel);
+        this.treeModel = newModel;
     }
 
     @Override
@@ -62,6 +73,9 @@ public class CheckboxTree<T extends Object> extends JTree {
      *            elemento da selezionare
      */
     public void selectItem(T item) {
+        if (treeModel == null)
+            return;
+
         CustomTreeNode<T> node = treeModel.findNode(item);
 
         if (node == null)

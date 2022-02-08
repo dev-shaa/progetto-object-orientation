@@ -269,10 +269,10 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
             throw new IllegalArgumentException("video can't be null");
 
         String url = getFormattedStringForQuery(video.getURL());
-        String width = getFormattedStringForQuery(video.getWidth() == 0 ? null : String.valueOf(video.getWidth()));
-        String height = getFormattedStringForQuery(video.getHeight() == 0 ? null : String.valueOf(video.getHeight()));
-        String framerate = getFormattedStringForQuery(video.getFrameRate() == 0 ? null : String.valueOf(video.getFrameRate()));
-        String duration = getFormattedStringForQuery(video.getDuration() == 0 ? null : String.valueOf(video.getDuration()));
+        String width = video.getWidth() == 0 ? null : String.valueOf(video.getWidth());
+        String height = video.getHeight() == 0 ? null : String.valueOf(video.getHeight());
+        String framerate = video.getFrameRate() == 0 ? null : String.valueOf(video.getFrameRate());
+        String duration = video.getDuration() == 0 ? null : String.valueOf(video.getDuration());
 
         String command = null;
 
@@ -407,8 +407,8 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
             relatedReferenceRemoveStatement.setInt(1, reference.getID());
             relatedReferenceRemoveStatement.executeUpdate();
 
+            relatedReferenceInsertStatement.setInt(1, reference.getID());
             for (BibliographicReference relatedReference : reference.getRelatedReferences()) {
-                relatedReferenceInsertStatement.setInt(1, reference.getID());
                 relatedReferenceInsertStatement.setInt(2, relatedReference.getID());
                 relatedReferenceInsertStatement.executeUpdate();
             }
@@ -416,9 +416,9 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
             categoriesRemoveStatement.setInt(1, reference.getID());
             categoriesRemoveStatement.executeUpdate();
 
+            categoriesInsertStatement.setInt(2, reference.getID());
             for (Category category : reference.getCategories()) {
                 categoriesInsertStatement.setInt(1, category.getID());
-                categoriesInsertStatement.setInt(2, reference.getID());
                 categoriesInsertStatement.executeUpdate();
             }
 

@@ -19,6 +19,7 @@ import Exceptions.TagDatabaseException;
 
 /**
  * Controller per gestire il recupero, l'inserimento, la rimozione e la modifica di riferimenti.
+ * <p>
  * Serve per non doversi sempre interfacciarsi col database per recuperare le categorie.
  */
 public class ReferenceController {
@@ -414,9 +415,6 @@ public class ReferenceController {
     }
 
     private void saveLocally(BibliographicReference reference) throws ReferenceDatabaseException {
-
-        // TODO: è possibile pulirlo un po'
-
         int index = getAll().indexOf(reference);
 
         if (index == -1) {
@@ -426,7 +424,7 @@ public class ReferenceController {
             // conviene prima rimuoverlo dal conteggio delle citazioni ricevute e poi aggiornarlo di nuovo
 
             getAll().set(index, reference);
-            replaceFromRelatedReferences(reference);
+            replaceInRelatedReferences(reference);
             removeFromQuotationCount(reference);
         }
 
@@ -461,7 +459,7 @@ public class ReferenceController {
         }
     }
 
-    private void replaceFromRelatedReferences(BibliographicReference newReference) throws ReferenceDatabaseException {
+    private void replaceInRelatedReferences(BibliographicReference newReference) throws ReferenceDatabaseException {
         for (BibliographicReference reference : getAll()) {
             int index = reference.getRelatedReferences().indexOf(newReference);
 
