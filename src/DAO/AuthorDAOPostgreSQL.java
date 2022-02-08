@@ -22,6 +22,11 @@ import Exceptions.DatabaseConnectionException;
  */
 public class AuthorDAOPostgreSQL implements AuthorDAO {
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @implNote se {@code authors == null || authors.isEmpty()} non esegue nulla
+     */
     @Override
     public void save(Collection<? extends Author> authors) throws AuthorDatabaseException {
         if (authors == null || authors.isEmpty())
@@ -49,10 +54,8 @@ public class AuthorDAOPostgreSQL implements AuthorDAO {
                 retrieveIDStatement.setString(2, author.getORCID());
                 idResultSet = retrieveIDStatement.executeQuery();
 
-                if (idResultSet.next()) {
-                    int id = idResultSet.getInt("id");
-                    author.setId(id);
-                }
+                if (idResultSet.next())
+                    author.setId(idResultSet.getInt("id"));
             }
         } catch (SQLException | DatabaseConnectionException e) {
             try {
@@ -80,8 +83,17 @@ public class AuthorDAOPostgreSQL implements AuthorDAO {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @throws IllegalArgumentException
+     *             se {@code reference == null}
+     */
     @Override
     public List<Author> get(BibliographicReference reference) throws AuthorDatabaseException {
+        if (reference == null)
+            throw new IllegalArgumentException("reference can't be null");
+
         Connection connection = null;
         Statement statement = null;
         ResultSet resultSet = null;

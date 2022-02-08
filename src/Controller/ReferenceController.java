@@ -242,7 +242,7 @@ public class ReferenceController {
         try {
             getAuthorDAO().save(reference.getAuthors());
             getReferenceDAO().save(reference);
-            getTagDAO().save(reference.getTags(), reference);
+            getTagDAO().save(reference);
             saveLocally(reference);
         } catch (AuthorDatabaseException | TagDatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
@@ -266,7 +266,7 @@ public class ReferenceController {
         try {
             getAuthorDAO().save(reference.getAuthors());
             getReferenceDAO().save(reference);
-            getTagDAO().save(reference.getTags(), reference);
+            getTagDAO().save(reference);
             saveLocally(reference);
         } catch (AuthorDatabaseException | TagDatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
@@ -290,7 +290,7 @@ public class ReferenceController {
         try {
             getAuthorDAO().save(reference.getAuthors());
             getReferenceDAO().save(reference);
-            getTagDAO().save(reference.getTags(), reference);
+            getTagDAO().save(reference);
             saveLocally(reference);
         } catch (AuthorDatabaseException | TagDatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
@@ -314,7 +314,7 @@ public class ReferenceController {
         try {
             getAuthorDAO().save(reference.getAuthors());
             getReferenceDAO().save(reference);
-            getTagDAO().save(reference.getTags(), reference);
+            getTagDAO().save(reference);
             saveLocally(reference);
         } catch (AuthorDatabaseException | TagDatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
@@ -338,7 +338,7 @@ public class ReferenceController {
         try {
             getAuthorDAO().save(reference.getAuthors());
             getReferenceDAO().save(reference);
-            getTagDAO().save(reference.getTags(), reference);
+            getTagDAO().save(reference);
             saveLocally(reference);
         } catch (AuthorDatabaseException | TagDatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
@@ -362,7 +362,7 @@ public class ReferenceController {
         try {
             getAuthorDAO().save(reference.getAuthors());
             getReferenceDAO().save(reference);
-            getTagDAO().save(reference.getTags(), reference);
+            getTagDAO().save(reference);
             saveLocally(reference);
         } catch (AuthorDatabaseException | TagDatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
@@ -386,7 +386,7 @@ public class ReferenceController {
         try {
             getAuthorDAO().save(reference.getAuthors());
             getReferenceDAO().save(reference);
-            getTagDAO().save(reference.getTags(), reference);
+            getTagDAO().save(reference);
             saveLocally(reference);
         } catch (AuthorDatabaseException | TagDatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
