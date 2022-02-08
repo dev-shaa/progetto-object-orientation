@@ -20,7 +20,9 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 /**
- * Classe che si occupa di impostare le componenti base della pagina principale, che mostra tutti i riferimenti e le categorie.
+ * Pagina principale dell'applicativo.
+ * <p>
+ * Mostra e offre opzioni per gestire le categorie e i riferimenti dell'utente.
  */
 public class Homepage extends JFrame implements CategorySelectionListener, ReferenceSelectionListener, SearchListener {
 
