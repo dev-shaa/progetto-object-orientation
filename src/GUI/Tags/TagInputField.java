@@ -18,6 +18,9 @@ public class TagInputField extends TermsField {
      */
     public TagInputField(String separator) {
         super(separator);
+
+        super.setToolTipText("Parole chiave associate al riferimento, separate da una virgola.\n"
+                + "Esempio: \"Programmazione, Object Orientation\"");
     }
 
     /**

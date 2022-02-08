@@ -66,8 +66,8 @@ public class SearchPanel extends JPanel {
         dateFrom = new JDateChooser();
         dateTo = new JDateChooser();
 
-        addFieldComponent("Parole chiave", tags, "Inserisci le parole chiave da ricercare nel riferimento, delimitate da '" + searchFieldSeparator + "'");
-        addFieldComponent("Autori", authors, "Inserisci gli autori da ricercare, delimitati da '" + searchFieldSeparator + "'");
+        addFieldComponent("Parole chiave", tags, null);
+        addFieldComponent("Autori", authors, null);
         addFieldComponent("Categorie", categories, "Seleziona le categorie in cui cercare il riferimento");
         addFieldComponent("Da", dateFrom, "Data di inizio dell'intervallo di ricerca");
         addFieldComponent("A", dateTo, "Data di fine dell'intervallo di ricerca");
@@ -99,7 +99,10 @@ public class SearchPanel extends JPanel {
 
         component.setMaximumSize(maximumSize);
         component.setAlignmentX(alignment);
-        component.setToolTipText(tooltip);
+
+        if (tooltip != null)
+            component.setToolTipText(tooltip);
+
         searchPanel.add(component);
     }
 

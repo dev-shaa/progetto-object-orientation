@@ -103,7 +103,7 @@ public class Author {
         if (name == null || name.isBlank())
             throw new IllegalArgumentException("name can't be null");
 
-        this.name = name;
+        this.name = name.trim();
     }
 
     /**

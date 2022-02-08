@@ -110,7 +110,7 @@ public class Category {
         if (!isNameValid(name))
             throw new IllegalArgumentException("Il nome della categoria non può essere nullo.");
 
-        this.name = name;
+        this.name = name.trim();
     }
 
     /**

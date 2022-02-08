@@ -101,7 +101,7 @@ public abstract class BibliographicReference {
         if (!isTitleValid(title))
             throw new IllegalArgumentException("title can't be null or empty");
 
-        this.title = title;
+        this.title = title.trim();
     }
 
     /**

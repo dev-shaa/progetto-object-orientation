@@ -41,7 +41,7 @@ public class Tag {
         if (value == null || value.isBlank())
             throw new IllegalArgumentException("value non può essere null");
 
-        this.value = value;
+        this.value = value.trim();
     }
 
     @Override

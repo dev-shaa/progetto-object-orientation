@@ -18,6 +18,10 @@ public class AuthorInputField extends TermsField {
      */
     public AuthorInputField(String separator) {
         super(separator);
+
+        super.setToolTipText("Autori del riferimento, separati da una virgola.\n"
+                + "È possibile specificare l'ORCID mettendolo tra parentesi quadre.\n"
+                + "Esempio: \"Mario Rossi [0000-0000-0000-0000], Luigi Bianchi\"");
     }
 
     /**
