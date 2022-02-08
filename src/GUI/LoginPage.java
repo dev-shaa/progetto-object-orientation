@@ -18,7 +18,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * TODO: commenta
+ * Pagina di accesso dell'applicativo.
+ * <p>
+ * Offre la possibilità di registrarsi o accedere.
  */
 public class LoginPage extends JFrame {
 
@@ -28,9 +30,10 @@ public class LoginPage extends JFrame {
 	private JPasswordField passwordField;
 
 	/**
-	 * TODO: commenta
+	 * Crea una nuova pagina di accesso.
 	 * 
 	 * @param controller
+	 *            controller della GUI
 	 */
 	public LoginPage(Controller controller) {
 		setController(controller);
@@ -82,9 +85,10 @@ public class LoginPage extends JFrame {
 	}
 
 	/**
-	 * TODO: commenta
+	 * Imposta il controller della GUI.
 	 * 
 	 * @param controller
+	 *            controller della GUI
 	 * @throws IllegalArgumentException
 	 *             se {@code controller == null}
 	 */
@@ -95,12 +99,7 @@ public class LoginPage extends JFrame {
 		this.controller = controller;
 	}
 
-	/**
-	 * TODO: commenta
-	 * 
-	 * @return
-	 */
-	public Controller getController() {
+	private Controller getController() {
 		return controller;
 	}
 
