@@ -220,7 +220,7 @@ public class ReferenceController {
         try {
             getAuthorController().save(reference.getAuthors());
             getReferenceDAO().save(reference);
-            saveToLocal(reference);
+            saveLocally(reference);
         } catch (AuthorDatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
         }
@@ -243,7 +243,7 @@ public class ReferenceController {
         try {
             getAuthorController().save(reference.getAuthors());
             getReferenceDAO().save(reference);
-            saveToLocal(reference);
+            saveLocally(reference);
         } catch (AuthorDatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
         }
@@ -266,7 +266,7 @@ public class ReferenceController {
         try {
             getAuthorController().save(reference.getAuthors());
             getReferenceDAO().save(reference);
-            saveToLocal(reference);
+            saveLocally(reference);
         } catch (AuthorDatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
         }
@@ -289,7 +289,7 @@ public class ReferenceController {
         try {
             getAuthorController().save(reference.getAuthors());
             getReferenceDAO().save(reference);
-            saveToLocal(reference);
+            saveLocally(reference);
         } catch (AuthorDatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
         }
@@ -312,7 +312,7 @@ public class ReferenceController {
         try {
             getAuthorController().save(reference.getAuthors());
             getReferenceDAO().save(reference);
-            saveToLocal(reference);
+            saveLocally(reference);
         } catch (AuthorDatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
         }
@@ -335,7 +335,7 @@ public class ReferenceController {
         try {
             getAuthorController().save(reference.getAuthors());
             getReferenceDAO().save(reference);
-            saveToLocal(reference);
+            saveLocally(reference);
         } catch (AuthorDatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
         }
@@ -358,7 +358,7 @@ public class ReferenceController {
         try {
             getAuthorController().save(reference.getAuthors());
             getReferenceDAO().save(reference);
-            saveToLocal(reference);
+            saveLocally(reference);
         } catch (AuthorDatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
         }
@@ -371,7 +371,10 @@ public class ReferenceController {
         needToRetrieveFromDatabase = true;
     }
 
-    private void saveToLocal(BibliographicReference reference) throws ReferenceDatabaseException {
+    private void saveLocally(BibliographicReference reference) throws ReferenceDatabaseException {
+
+        // TODO: in caso di update
+
         if (getAll().contains(reference)) {
             // se è già contenuta nell'elenco vuol dire che stiamo aggiornando il riferimento
             // conviene prima rimuoverlo dal conteggio delle citazioni ricevute e poi aggiornarlo di nuovo
