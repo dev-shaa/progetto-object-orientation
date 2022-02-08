@@ -1,10 +1,6 @@
 package Controller;
 
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-
 import DAO.UserDAO;
-import DAO.UserDAOPostgreSQL;
 import Entities.User;
 import Exceptions.UserDatabaseException;
 
@@ -60,28 +56,28 @@ public class UserController {
 	// return result;
 	// }
 
-	public boolean CheckLogin(User user) {
-		if (user.getName().isEmpty() || user.getPassword().isEmpty()) {
-			String message = "Nome Utente o Password sbagliati";
-			JOptionPane.showMessageDialog(new JFrame(), message, "Errore", JOptionPane.ERROR_MESSAGE);
-			return false;
-		}
+	// public boolean CheckLogin(User user) {
+	// if (user.getName().isEmpty() || user.getPassword().isEmpty()) {
+	// String message = "Nome Utente o Password sbagliati";
+	// JOptionPane.showMessageDialog(new JFrame(), message, "Errore", JOptionPane.ERROR_MESSAGE);
+	// return false;
+	// }
 
-		UserDAOPostgreSQL userDao = new UserDAOPostgreSQL();
-		User userDB = userDao.GetUserLogin(user);
-		if (userDB == null) {
-			System.out.println("Utente null");
-			return false;
-		}
-		if (user.getName().equals(userDB.getName()) && user.getPassword().equals(userDB.getPassword())) {
-			System.out.println("Utente loggato");
-			return true;
-		} else {
-			String message = "Nome Utente o Password sbagliati";
-			JOptionPane.showMessageDialog(new JFrame(), message, "Errore", JOptionPane.ERROR_MESSAGE);
-			return false;
-		}
+	// UserDAOPostgreSQL userDao = new UserDAOPostgreSQL();
+	// User userDB = userDao.GetUserLogin(user);
+	// if (userDB == null) {
+	// System.out.println("Utente null");
+	// return false;
+	// }
+	// if (user.getName().equals(userDB.getName()) && user.getPassword().equals(userDB.getPassword())) {
+	// System.out.println("Utente loggato");
+	// return true;
+	// } else {
+	// String message = "Nome Utente o Password sbagliati";
+	// JOptionPane.showMessageDialog(new JFrame(), message, "Errore", JOptionPane.ERROR_MESSAGE);
+	// return false;
+	// }
 
-	}
+	// }
 
 }

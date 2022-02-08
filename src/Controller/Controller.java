@@ -16,7 +16,7 @@ import Entities.References.PhysicalResources.*;
  */
 public class Controller {
 
-    private LoginFrame loginFrame;
+    private LoginPage loginFrame;
     private Homepage homepage;
 
     private ArticleEditor articleEditor;
@@ -31,15 +31,13 @@ public class Controller {
     private CategoryController categoryController;
     private ReferenceController referenceController;
     private AuthorController authorController;
+    private UserController loginController;
 
     /**
      * Crea un nuovo controller.
      */
     public Controller() {
         setupLookAndFeel();
-
-        loginFrame = new LoginFrame(this);
-
         openLoginPage();
     }
 
@@ -62,6 +60,18 @@ public class Controller {
     }
 
     /**
+     * TODO: commenta
+     * 
+     * @return
+     */
+    public UserController getLoginController() {
+        if (loginController == null)
+            loginController = new UserController(new UserDAOPostgreSQL());
+
+        return loginController;
+    }
+
+    /**
      * Restituisce l'utente che ha eseguito l'accesso.
      * 
      * @return utente che ha eseguito l'accesso
@@ -74,6 +84,9 @@ public class Controller {
      * Apre la pagina di login.
      */
     public void openLoginPage() {
+        if (loginFrame == null)
+            loginFrame = new LoginPage(this);
+
         loginFrame.setVisible(true);
 
         if (homepage != null)
@@ -90,8 +103,8 @@ public class Controller {
         this.user = user;
 
         AuthorDAO authorDAO = new AuthorDAOPostgreSQL();
-        CategoryDAO categoryDAO = new CategoryDAOPostgreSQL(user);
-        BibliographicReferenceDAO referenceDAO = new BibliographicReferenceDAOPostgreSQL(user);
+        CategoryDAO categoryDAO = new CategoryDAOPostgreSQL(getUser());
+        BibliographicReferenceDAO referenceDAO = new BibliographicReferenceDAOPostgreSQL(getUser());
 
         authorController = new AuthorController(authorDAO);
         categoryController = new CategoryController(categoryDAO);
