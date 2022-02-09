@@ -23,8 +23,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
     private User user;
 
     /**
-     * Crea {@code CategoryDAOPostgreSQL} per interfacciarsi al database PostgreSQL
-     * relativo alle categorie dell'utente.
+     * Crea una nuova classe DAO per interfacciarsi al database PostgreSQL relativo alle categorie dell'utente.
      * 
      * @param user
      *            l'utente che accede al database

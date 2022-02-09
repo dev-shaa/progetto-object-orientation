@@ -3,6 +3,7 @@ package DAO;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -24,9 +25,12 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
     private User user;
 
     /**
+     * Crea una nuova classe DAO per interfacciarsi al database PostgreSQL relativo ai riferimenti dell'utente.
      * 
      * @param user
+     *            l'utente che accede al database
      * @throws IllegalArgumentException
+     *             se l'utente di input è {@code null}
      */
     public BibliographicReferenceDAOPostgreSQL(User user) throws IllegalArgumentException {
         setUser(user);
@@ -52,7 +56,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
      * 
      * @return utente assegnato al DAO
      */
-    private User getUser() {
+    public User getUser() {
         return user;
     }
 
@@ -68,7 +72,6 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
 
         try {
             connection = DatabaseController.getConnection();
-
             statement = connection.createStatement();
 
             references.addAll(getArticles(statement, resultSet));
@@ -81,7 +84,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
 
             for (BibliographicReference reference : references) {
                 idToReference.put(reference.getID(), reference);
-                referenceToRelatedID.put(reference, getRelatedReferencesID(connection, reference));
+                referenceToRelatedID.put(reference, getRelatedReferencesID(statement, reference));
             }
 
             // ASSEGNAZIONE RIMANDI
@@ -99,8 +102,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
             }
 
             return references;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException | DatabaseConnectionException e) {
             throw new ReferenceDatabaseException("Impossibile recuperare i riferimenti dell'utente.");
         } finally {
             try {
@@ -148,7 +150,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
                 if (connection != null)
                     connection.close();
             } catch (Exception e) {
-                e.printStackTrace();
+                // non fare niente
             }
         }
     }
@@ -342,8 +344,6 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         PreparedStatement relatedReferenceInsertStatement = null;
         PreparedStatement categoriesRemoveStatement = null;
         PreparedStatement categoriesInsertStatement = null;
-        PreparedStatement tagRemoveStatement = null;
-        PreparedStatement tagInsertStatement = null;
         PreparedStatement authorsRemoveStatement = null;
         PreparedStatement authorsInsertStatement = null;
         ResultSet resultSet = null;
@@ -353,12 +353,12 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         String relatedReferenceInsertCommand = "insert into related_references values(?, ?)";
         String categoriesRemoveCommand = "delete from category_reference_association where reference = ?";
         String categoriesInsertCommand = "insert into category_reference_association values(?, ?)";
-        String tagRemoveCommand = "delete from tag where reference = ?";
-        String tagInsertCommand = "insert into tag values(?, ?)";
         String authorsRemoveCommand = "delete from author_reference_association where reference = ?";
         String authorsInsertCommand = "insert into author_reference_association values(?, ?)";
 
-        String language = getFormattedStringForQuery(reference.getLanguage() == ReferenceLanguage.NOTSPECIFIED ? null : reference.getLanguage().name());
+        // nota: non c'è una funzione per impostare un enum in una preparedStatement e setString() non va bene
+        // quindi dobbiamo inserirlo nella query dall'inizio
+        String language = getFormattedLanguageForQuery(reference.getLanguage());
 
         if (reference.getID() == null)
             referenceInsertCommand = "insert into bibliographic_reference(owner, title, doi, description, language, pubblication_date) values(?,?,?,?," + language + ",?)";
@@ -367,30 +367,17 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
 
         try {
             connection = DatabaseController.getConnection();
+
+            // vogliamo che sia una transazione per evitare che il programma non sia coordinato con il database
             connection.setAutoCommit(false);
 
             referenceStatement = connection.prepareStatement(referenceInsertCommand, Statement.RETURN_GENERATED_KEYS);
-            subReferenceStatement = connection.prepareStatement(subReferenceCommand);
-
-            relatedReferenceRemoveStatement = connection.prepareStatement(relatedReferenceRemoveCommand);
-            relatedReferenceInsertStatement = connection.prepareStatement(relatedReferenceInsertCommand);
-
-            categoriesRemoveStatement = connection.prepareStatement(categoriesRemoveCommand);
-            categoriesInsertStatement = connection.prepareStatement(categoriesInsertCommand);
-
-            tagRemoveStatement = connection.prepareStatement(tagRemoveCommand);
-            tagInsertStatement = connection.prepareStatement(tagInsertCommand);
-
-            authorsRemoveStatement = connection.prepareStatement(authorsRemoveCommand);
-            authorsInsertStatement = connection.prepareStatement(authorsInsertCommand);
 
             referenceStatement.setString(1, getUser().getName());
             referenceStatement.setString(2, reference.getTitle());
             referenceStatement.setString(3, reference.getDOI());
             referenceStatement.setString(4, reference.getDescription());
-
-            Date date = reference.getPubblicationDate() == null ? null : new Date(reference.getPubblicationDate().getTime());
-            referenceStatement.setDate(5, date);
+            referenceStatement.setDate(5, convertToSQLDate(reference.getPubblicationDate()));
 
             referenceStatement.executeUpdate();
 
@@ -401,39 +388,44 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
                     reference.setID(resultSet.getInt(1));
             }
 
+            subReferenceStatement = connection.prepareStatement(subReferenceCommand);
             subReferenceStatement.setInt(1, reference.getID());
             subReferenceStatement.executeUpdate();
 
+            // per inserire i rimandi è meglio rimuovere prima tutte le associazioni e aggiungere quelle nuove
+
+            relatedReferenceRemoveStatement = connection.prepareStatement(relatedReferenceRemoveCommand);
             relatedReferenceRemoveStatement.setInt(1, reference.getID());
             relatedReferenceRemoveStatement.executeUpdate();
 
+            relatedReferenceInsertStatement = connection.prepareStatement(relatedReferenceInsertCommand);
             relatedReferenceInsertStatement.setInt(1, reference.getID());
             for (BibliographicReference relatedReference : reference.getRelatedReferences()) {
                 relatedReferenceInsertStatement.setInt(2, relatedReference.getID());
                 relatedReferenceInsertStatement.executeUpdate();
             }
 
+            // idem per le categorie
+
+            categoriesRemoveStatement = connection.prepareStatement(categoriesRemoveCommand);
             categoriesRemoveStatement.setInt(1, reference.getID());
             categoriesRemoveStatement.executeUpdate();
 
+            categoriesInsertStatement = connection.prepareStatement(categoriesInsertCommand);
             categoriesInsertStatement.setInt(2, reference.getID());
+
             for (Category category : reference.getCategories()) {
                 categoriesInsertStatement.setInt(1, category.getID());
                 categoriesInsertStatement.executeUpdate();
             }
 
-            tagRemoveStatement.setInt(1, reference.getID());
-            tagRemoveStatement.executeUpdate();
+            // idem per gli autori
 
-            for (Tag tag : reference.getTags()) {
-                tagInsertStatement.setString(1, tag.getName());
-                tagInsertStatement.setInt(2, reference.getID());
-                tagInsertStatement.executeUpdate();
-            }
-
+            authorsRemoveStatement = connection.prepareStatement(authorsRemoveCommand);
             authorsRemoveStatement.setInt(1, reference.getID());
             authorsRemoveStatement.executeUpdate();
 
+            authorsInsertStatement = connection.prepareStatement(authorsInsertCommand);
             for (Author author : reference.getAuthors()) {
                 authorsInsertStatement.setInt(1, reference.getID());
                 authorsInsertStatement.setInt(2, author.getId());
@@ -454,6 +446,18 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
             try {
                 if (resultSet != null)
                     resultSet.close();
+
+                if (authorsInsertStatement != null)
+                    authorsInsertStatement.close();
+
+                if (authorsRemoveStatement != null)
+                    authorsInsertStatement.close();
+
+                if (categoriesInsertStatement != null)
+                    categoriesInsertStatement.close();
+
+                if (categoriesRemoveStatement != null)
+                    categoriesRemoveStatement.close();
 
                 if (relatedReferenceInsertStatement != null)
                     relatedReferenceInsertStatement.close();
@@ -656,36 +660,44 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         return sourceCodes;
     }
 
-    private List<Integer> getRelatedReferencesID(Connection connection, BibliographicReference reference) throws SQLException {
-        Statement relatedReferencesStatement = null;
+    private List<Integer> getRelatedReferencesID(Statement statement, BibliographicReference reference) throws SQLException {
+        if (statement == null || statement.isClosed() || reference == null)
+            throw new IllegalArgumentException();
+
         ResultSet relatedReferencesResultSet = null;
         String relatedReferencesQuery = "select * from related_references where quoted_by = " + reference.getID();
 
         try {
-            relatedReferencesStatement = connection.createStatement();
-            relatedReferencesResultSet = relatedReferencesStatement.executeQuery(relatedReferencesQuery);
+            relatedReferencesResultSet = statement.executeQuery(relatedReferencesQuery);
 
             ArrayList<Integer> relatedReferencesID = new ArrayList<>();
 
-            while (relatedReferencesResultSet.next())
+            while (relatedReferencesResultSet.next()) {
                 relatedReferencesID.add(relatedReferencesResultSet.getInt("quotes"));
+            }
 
             relatedReferencesID.trimToSize();
 
             return relatedReferencesID;
-        } catch (Exception e) {
-            throw e;
         } finally {
             if (relatedReferencesResultSet != null)
                 relatedReferencesResultSet.close();
 
-            if (relatedReferencesStatement != null)
-                relatedReferencesStatement.close();
+            if (statement != null)
+                statement.close();
         }
     }
 
     private String getFormattedStringForQuery(String input) {
         return (input == null || input.isBlank()) ? null : "'" + input + "'";
+    }
+
+    private java.sql.Date convertToSQLDate(Date date) {
+        return date == null ? null : new java.sql.Date(date.getTime());
+    }
+
+    private String getFormattedLanguageForQuery(ReferenceLanguage language) {
+        return getFormattedStringForQuery(language == ReferenceLanguage.NOTSPECIFIED ? null : language.name());
     }
 
 }
