@@ -1,13 +1,7 @@
 package DAO;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.sql.*;
+import java.util.*;
 
 import Controller.DatabaseController;
 import Entities.Author;
@@ -37,6 +31,10 @@ public class AuthorDAOPostgreSQL implements AuthorDAO {
         PreparedStatement retrieveIDStatement = null;
         ResultSet idResultSet = null;
 
+        // nota: non è possibile usare la clausola "returning" perchè ci sono più vincoli nell'inserimento
+        // con "on conflict" ne è possibile specificare solo uno al massimo
+        // non specificandolo non è possibile usare "returning"
+        // essendo la combinazione di nome e orcid univoca, almeno possiamo eseguire una query per recuperare l'id dell'autore
         String insertCommand = "insert into author(name, orcid) values (?, ?) on conflict do nothing";
         String retrieveIDCommand = "select id from author where name = ? and orcid is not distinct from ?";
 
@@ -64,13 +62,14 @@ public class AuthorDAOPostgreSQL implements AuthorDAO {
                 // non fare niente
             }
 
-            e.printStackTrace();
-
             throw new AuthorDatabaseException("Impossibile salvare l'autore");
         } finally {
             try {
                 if (idResultSet != null)
                     idResultSet.close();
+
+                if (retrieveIDStatement != null)
+                    retrieveIDStatement.close();
 
                 if (insertStatement != null)
                     insertStatement.close();
@@ -107,15 +106,12 @@ public class AuthorDAOPostgreSQL implements AuthorDAO {
             ArrayList<Author> authors = new ArrayList<>();
 
             while (resultSet.next()) {
-                String name = resultSet.getString("name").trim();
-                String orcid = resultSet.getString("orcid").trim();
-                authors.add(new Author(name, orcid));
+                authors.add(new Author(resultSet.getString("name"), resultSet.getString("orcid")));
             }
 
             authors.trimToSize();
             return authors;
         } catch (SQLException | DatabaseConnectionException e) {
-            e.printStackTrace();
             throw new AuthorDatabaseException("Impossibile salvare l'autore");
         } finally {
             try {

@@ -73,7 +73,7 @@ public class UserDAOPostgreSQL implements UserDAO {
 			statement = connection.createStatement();
 			resultSet = statement.executeQuery(query);
 
-			return resultSet.next();
+			return resultSet.next(); // next() restituisce vero se c'è il prossimo elemento
 		} catch (SQLException | DatabaseConnectionException e) {
 			e.printStackTrace();
 

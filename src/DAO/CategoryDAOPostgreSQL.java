@@ -1,11 +1,5 @@
 package DAO;
 
-import Controller.DatabaseController;
-
-import Entities.*;
-import Entities.References.BibliographicReference;
-import Exceptions.*;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +7,11 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import Controller.DatabaseController;
+import Entities.References.BibliographicReference;
+import Entities.*;
+import Exceptions.*;
 
 /**
  * Implementazione dell'interfaccia CategoryDAO per database relazionali PostgreSQL.
@@ -60,10 +59,16 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
         return this.user;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @throws IllegalArgumentException
+     *             se {@code category == null}
+     */
     @Override
     public void save(Category category) throws CategoryDatabaseException {
         if (category == null)
-            return;
+            throw new IllegalArgumentException("category can't be null");
 
         Connection connection = null;
         Statement statement = null;
@@ -79,7 +84,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
 
             String parentID = category.getParent() == null ? "null" : String.valueOf(category.getParent().getID());
 
-            String query = "insert into category(name, parent, owner) values('" + category.getName() + "', " + parentID + ", '" + user.getName() + "')";
+            String query = "insert into category(name, parent, owner) values('" + category.getName() + "', " + parentID + ", '" + getUser().getName() + "')";
 
             // il database genera un ID per ogni categoria, quindi vogliamo aggiornare la
             // classe category prima di concludere ogni operazione
@@ -99,7 +104,6 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
                 // non fare niente
             }
 
-            e.printStackTrace();
             throw new CategoryDatabaseException("Impossibile aggiungere nuova categoria.");
         } finally {
             try {
@@ -110,15 +114,20 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
                     connection.close();
             } catch (Exception e) {
                 // non fare niente
-                e.printStackTrace();
             }
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @throws IllegalArgumentException
+     *             se {@code category == null}
+     */
     @Override
     public void update(Category category) throws CategoryDatabaseException {
         if (category == null)
-            return;
+            throw new IllegalArgumentException("category can't be null");
 
         Connection connection = null;
         Statement statement = null;
@@ -130,8 +139,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
             String query = "update category set name = '" + category.getName() + "' where id = " + category.getID();
 
             statement.executeUpdate(query);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException | DatabaseConnectionException e) {
             throw new CategoryDatabaseException("Impossibile modificare questa categoria.");
         } finally {
             try {
@@ -140,17 +148,22 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
 
                 if (connection != null)
                     connection.close();
-            } catch (Exception e) {
+            } catch (SQLException e) {
                 // non fare niente
-                e.printStackTrace();
             }
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @throws IllegalArgumentException
+     *             se {@code category == null}
+     */
     @Override
     public void remove(Category category) throws CategoryDatabaseException {
         if (category == null)
-            return;
+            throw new IllegalArgumentException("category can't be null");
 
         Connection connection = null;
         Statement statement = null;
@@ -162,7 +175,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
             String query = "delete from category where id = " + category.getID();
 
             statement.executeUpdate(query);
-        } catch (Exception e) {
+        } catch (SQLException | DatabaseConnectionException e) {
             throw new CategoryDatabaseException("Impossibile rimuovere questa categoria.");
         } finally {
             try {
@@ -171,9 +184,8 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
 
                 if (connection != null)
                     connection.close();
-            } catch (Exception e) {
+            } catch (SQLException e) {
                 // non fare niente
-                e.printStackTrace();
             }
         }
     }
@@ -183,11 +195,11 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
         Connection connection = null;
         Statement statement = null;
         ResultSet resultSet = null;
+        String query = "select * from category where owner = '" + getUser().getName() + "'";
 
         try {
             connection = DatabaseController.getConnection();
             statement = connection.createStatement();
-            String query = "select * from category where owner = '" + user.getName() + "'";
             resultSet = statement.executeQuery(query);
 
             HashMap<Integer, Category> idToCategory = new HashMap<>();
@@ -212,8 +224,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
             categories.trimToSize();
 
             return categories;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException | DatabaseConnectionException e) {
             throw new CategoryDatabaseException("Impossibile recuperare le categorie dell'utente.");
         } finally {
             try {
@@ -225,14 +236,23 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
 
                 if (connection != null)
                     connection.close();
-            } catch (Exception e) {
+            } catch (SQLException e) {
                 // non fare niente
             }
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @throws IllegalArgumentException
+     *             se {@code reference == null}
+     */
     @Override
     public List<Integer> getIDs(BibliographicReference reference) throws CategoryDatabaseException {
+        if (reference == null)
+            throw new IllegalArgumentException("reference can't be null");
+
         Connection connection = null;
         Statement statement = null;
         ResultSet resultSet = null;
@@ -252,8 +272,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
             ids.trimToSize();
 
             return ids;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException | DatabaseConnectionException e) {
             throw new CategoryDatabaseException("Impossibile recuperare le categorie dell'utente.");
         } finally {
             try {
@@ -265,7 +284,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
 
                 if (connection != null)
                     connection.close();
-            } catch (Exception e) {
+            } catch (SQLException e) {
                 // non fare niente
             }
         }

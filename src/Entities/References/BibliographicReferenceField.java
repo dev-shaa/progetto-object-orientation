@@ -26,9 +26,14 @@ public class BibliographicReferenceField {
      * 
      * @param name
      *            nome dell'informazione
+     * @throws IllegalArgumentException
+     *             se {@code name == null} o {@code name.isBlank()}
      */
     public void setName(String name) {
-        this.name = name;
+        if (name == null || name.isBlank())
+            throw new IllegalArgumentException("name can't be null");
+
+        this.name = name.trim();
     }
 
     /**

@@ -54,9 +54,9 @@ public class TagDAOPostgreSQL implements TagDAO {
             tagRemoveStatement.setInt(1, reference.getID());
             tagRemoveStatement.executeUpdate();
 
+            tagInsertStatement.setInt(2, reference.getID());
             for (Tag tag : reference.getTags()) {
                 tagInsertStatement.setString(1, tag.getName());
-                tagInsertStatement.setInt(2, reference.getID());
                 tagInsertStatement.executeUpdate();
             }
 

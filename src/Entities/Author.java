@@ -11,7 +11,7 @@ public class Author {
     private String name;
     private String ORCID;
 
-    private static final Pattern orcidPattern = Pattern.compile("^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9xX]$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern orcidPattern = Pattern.compile("^ *[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9xX] *$", Pattern.CASE_INSENSITIVE);
 
     /**
      * Crea un nuovo autore con il nome e l'ORCID dati.
@@ -68,6 +68,8 @@ public class Author {
             return false;
 
         Author author = (Author) obj;
+
+        // due autori sono uguali se hanno lo stesso nome e lo stesso orcid
 
         return getName().equals(author.getName()) && ((getORCID() == null && author.getORCID() == null) || (getORCID() != null && getORCID().equals(author.getORCID())));
     }
@@ -128,7 +130,10 @@ public class Author {
         if (!isORCIDValid(ORCID))
             throw new IllegalArgumentException("Codice ORCID non valido");
 
-        this.ORCID = ORCID;
+        // l'espressione regex lascia libertà sullo spazio all'inizio e alla fine della stringa, perchè è più comodo per lavorarci
+        // quindi è meglio toglierli
+
+        this.ORCID = ORCID.trim();
     }
 
     /**
