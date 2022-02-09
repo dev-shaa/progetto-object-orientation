@@ -46,8 +46,8 @@ public class ThesisEditor extends PublicationEditor<Thesis> {
     }
 
     @Override
-    protected void setFieldsValues(Thesis reference) {
-        super.setFieldsValues(reference);
+    protected void setFieldsInitialValues(Thesis reference) {
+        super.setFieldsInitialValues(reference);
 
         if (reference == null) {
             setUniversityValue(null);

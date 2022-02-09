@@ -42,8 +42,8 @@ public class BookEditor extends PublicationEditor<Book> {
     }
 
     @Override
-    protected void setFieldsValues(Book reference) {
-        super.setFieldsValues(reference);
+    protected void setFieldsInitialValues(Book reference) {
+        super.setFieldsInitialValues(reference);
 
         setISBNValue(reference == null ? null : reference.getISBN());
     }

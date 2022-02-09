@@ -104,7 +104,7 @@ public class CategoriesTreePanel extends JScrollPane {
             return;
 
         if (selectionListeners == null)
-            selectionListeners = new ArrayList<>(2);
+            selectionListeners = new ArrayList<>();
 
         if (selectionListeners.contains(listener))
             return;

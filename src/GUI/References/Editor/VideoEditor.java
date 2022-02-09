@@ -38,8 +38,8 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
     }
 
     @Override
-    protected void setFieldsValues(Video reference) {
-        super.setFieldsValues(reference);
+    protected void setFieldsInitialValues(Video reference) {
+        super.setFieldsInitialValues(reference);
 
         if (reference == null) {
             setWidthValue(1);

@@ -41,6 +41,7 @@ public class CategoryController {
 
     /**
      * Imposta la classe DAO per recuperare le categorie dal database.
+     * Il recupero successivo a questa funzione sarà dal database.
      * 
      * @param categoryDAO
      *            classe DAO per il database
@@ -66,7 +67,9 @@ public class CategoryController {
     }
 
     /**
-     * Salva una categoria nel database.
+     * Salva una categoria.
+     * <p>
+     * Il modello dell'albero delle categorie verrà aggiornato.
      * 
      * @param name
      *            nome della nuova categoria
@@ -83,7 +86,7 @@ public class CategoryController {
 
         getCategoryDAO().save(category);
 
-        addToHashMap(category);
+        idToCategory.put(category.getID(), category);
 
         CustomTreeNode<Category> node = new CustomTreeNode<Category>(category);
         CustomTreeNode<Category> parentNode = treeModel.findNode(category.getParent());
@@ -92,12 +95,16 @@ public class CategoryController {
     }
 
     /**
+     * Aggiorna il nome della categoria.
+     * <p>
+     * Se il nuovo nome è uguale al precedente, non verrà effettuato alcun cambiamento.
+     * 
      * @param category
      *            nodo di cui modificare la categoria
      * @param newName
      *            nuovo nome della categoria
      * @throws IllegalArgumentException
-     *             se {@code categoryNode == null}, la categoria associata al nodo è nulla o il nuovo nome non è valido
+     *             se {@code category == null} o il nuovo nome non è valido
      * @throws CategoryDatabaseException
      *             se la modifica non va a buon fine
      */
@@ -105,10 +112,11 @@ public class CategoryController {
         if (category == null)
             throw new IllegalArgumentException("category can't be null");
 
-        if (category.getName().equals(newName))
+        String oldName = category.getName();
+
+        if (oldName.equals(newName))
             return;
 
-        String oldName = category.getName();
         category.setName(newName);
 
         try {
@@ -135,7 +143,7 @@ public class CategoryController {
 
         getCategoryDAO().remove(category);
 
-        removeFromHashMap(category);
+        idToCategory.remove(category.getID());
 
         treeModel.removeNodeFromParent(treeModel.findNode(category));
     }
@@ -200,6 +208,8 @@ public class CategoryController {
      */
     public CustomTreeModel<Category> getTree() throws CategoryDatabaseException {
         if (treeNeedsUpdate) {
+            List<Category> categories = getAll();
+
             CustomTreeNode<Category> root = new CustomTreeNode<Category>(null);
             root.setLabel("I miei riferimenti");
 
@@ -208,11 +218,11 @@ public class CategoryController {
             HashMap<Category, CustomTreeNode<Category>> categoryToNode = new HashMap<>();
             categoryToNode.put(null, root);
 
-            for (Category category : getAll()) {
+            for (Category category : categories) {
                 categoryToNode.put(category, new CustomTreeNode<Category>(category));
             }
 
-            for (Category category : getAll()) {
+            for (Category category : categories) {
                 CustomTreeNode<Category> node = categoryToNode.get(category);
                 CustomTreeNode<Category> parent = categoryToNode.get(category.getParent());
 
@@ -239,24 +249,9 @@ public class CategoryController {
         categories = getCategoryDAO().getAll();
 
         for (Category category : categories) {
-            addToHashMap(category);
+            idToCategory.put(category.getID(), category);
         }
 
         needToRetrieveFromDatabase = false;
     }
-
-    private void addToHashMap(Category category) {
-        if (category == null)
-            return;
-
-        idToCategory.put(category.getID(), category);
-    }
-
-    private void removeFromHashMap(Category category) {
-        if (category == null)
-            return;
-
-        idToCategory.remove(category.getID());
-    }
-
 }

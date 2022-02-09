@@ -42,8 +42,8 @@ public class ArticleEditor extends PublicationEditor<Article> {
     }
 
     @Override
-    protected void setFieldsValues(Article reference) {
-        super.setFieldsValues(reference);
+    protected void setFieldsInitialValues(Article reference) {
+        super.setFieldsInitialValues(reference);
 
         setISSNValue(reference == null ? null : reference.getISSN());
     }

@@ -381,25 +381,31 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
 
             referenceStatement.executeUpdate();
 
+            // se l'id è nullo, abbiamo inserito un nuovo riferimento, quindi dobbiamo recuperare la chiave appena generata
+            // però non lo impostiamo subito, perchè se le istruzioni successive falliscono viene eseguito il rollback
+            // quindi avremo un id che nel database non corrisponde a niente
+            int id = reference.getID();
+
             if (reference.getID() == null) {
                 resultSet = referenceStatement.getGeneratedKeys();
 
-                if (resultSet.next())
-                    reference.setID(resultSet.getInt(1));
+                if (resultSet.next()) {
+                    id = resultSet.getInt(1);
+                }
             }
 
             subReferenceStatement = connection.prepareStatement(subReferenceCommand);
-            subReferenceStatement.setInt(1, reference.getID());
+            subReferenceStatement.setInt(1, id);
             subReferenceStatement.executeUpdate();
 
             // per inserire i rimandi è meglio rimuovere prima tutte le associazioni e aggiungere quelle nuove
 
             relatedReferenceRemoveStatement = connection.prepareStatement(relatedReferenceRemoveCommand);
-            relatedReferenceRemoveStatement.setInt(1, reference.getID());
+            relatedReferenceRemoveStatement.setInt(1, id);
             relatedReferenceRemoveStatement.executeUpdate();
 
             relatedReferenceInsertStatement = connection.prepareStatement(relatedReferenceInsertCommand);
-            relatedReferenceInsertStatement.setInt(1, reference.getID());
+            relatedReferenceInsertStatement.setInt(1, id);
             for (BibliographicReference relatedReference : reference.getRelatedReferences()) {
                 relatedReferenceInsertStatement.setInt(2, relatedReference.getID());
                 relatedReferenceInsertStatement.executeUpdate();
@@ -408,11 +414,11 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
             // idem per le categorie
 
             categoriesRemoveStatement = connection.prepareStatement(categoriesRemoveCommand);
-            categoriesRemoveStatement.setInt(1, reference.getID());
+            categoriesRemoveStatement.setInt(1, id);
             categoriesRemoveStatement.executeUpdate();
 
             categoriesInsertStatement = connection.prepareStatement(categoriesInsertCommand);
-            categoriesInsertStatement.setInt(2, reference.getID());
+            categoriesInsertStatement.setInt(2, id);
 
             for (Category category : reference.getCategories()) {
                 categoriesInsertStatement.setInt(1, category.getID());
@@ -422,17 +428,22 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
             // idem per gli autori
 
             authorsRemoveStatement = connection.prepareStatement(authorsRemoveCommand);
-            authorsRemoveStatement.setInt(1, reference.getID());
+            authorsRemoveStatement.setInt(1, id);
             authorsRemoveStatement.executeUpdate();
 
             authorsInsertStatement = connection.prepareStatement(authorsInsertCommand);
+            authorsInsertStatement.setInt(1, id);
             for (Author author : reference.getAuthors()) {
-                authorsInsertStatement.setInt(1, reference.getID());
                 authorsInsertStatement.setInt(2, author.getId());
                 authorsInsertStatement.executeUpdate();
             }
 
             connection.commit();
+
+            // l'id lo mettiamo alla fine, in questo modo siamo sicuri che sia andato tutto bene prima
+            // e quindi abbiamo un id valido
+            reference.setID(id);
+
         } catch (SQLException | DatabaseConnectionException e) {
             try {
                 connection.rollback();
@@ -440,7 +451,6 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
                 // non fare niente
             }
 
-            e.printStackTrace();
             throw new ReferenceDatabaseException("Impossibile aggiungere nuovo riferimento.");
         } finally {
             try {

@@ -38,18 +38,19 @@ public class AuthorInputField extends TermsField {
         ArrayList<Author> authors = new ArrayList<>(terms.size());
 
         for (String term : terms) {
-            int startIndex = term.indexOf('[');
-            int endIndex = term.lastIndexOf(']');
+            int orcidStartIndex = term.indexOf('[');
+            int orcidEndIndex = term.lastIndexOf(']');
 
             String orcid = null;
-            if (startIndex != -1 && endIndex != -1 && startIndex < endIndex) {
-                orcid = term.substring(startIndex + 1, endIndex).trim();
+
+            if (orcidStartIndex != -1 && orcidEndIndex != -1 && orcidStartIndex < orcidEndIndex) {
+                orcid = term.substring(orcidStartIndex + 1, orcidEndIndex);
 
                 if (!Author.isORCIDValid(orcid))
                     orcid = null;
             }
 
-            String name = term.substring(0, startIndex == -1 ? term.length() : startIndex).trim();
+            String name = term.substring(0, orcidStartIndex == -1 ? term.length() : orcidStartIndex);
 
             authors.add(new Author(name, orcid));
         }

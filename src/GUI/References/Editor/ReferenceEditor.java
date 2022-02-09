@@ -136,6 +136,63 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         return referenceToChange;
     }
 
+    /**
+     * Restituisce un nuovo riferimento da riempire.
+     * 
+     * @return istanza vuota da riempire
+     */
+    protected abstract T getNewInstance();
+
+    /**
+     * Crea un nuovo riferimenti con i valori inseriti dall'utente.
+     * 
+     * @return riferimento con i dati inseriti dall'utente
+     * @throws RequiredFieldMissingException
+     *             se i campi obbligatori non sono stati riempiti
+     */
+    protected T createNewReference() throws RequiredFieldMissingException {
+        T reference = getNewInstance();
+
+        if (getReferenceToChange() != null)
+            reference.setID(getReferenceToChange().getID());
+
+        reference.setTitle(getTitleValue());
+        reference.setAuthors(getAuthorValues());
+        reference.setDOI(getDOIValue());
+        reference.setDescription(getDescriptionValue());
+        reference.setLanguage(getLanguageValue());
+        reference.setPubblicationDate(getPubblicationDateValue());
+        reference.setTags(getTagValues());
+        reference.setRelatedReferences(getRelatedReferenceValues());
+        reference.setCategories(getCategoryValues());
+
+        return reference;
+    }
+
+    /**
+     * Salva il riferimento.
+     * 
+     * @param reference
+     *            riferimento da salvare
+     * @throws ReferenceDatabaseException
+     *             se il salvataggio non va a buon fine
+     */
+    protected abstract void saveToDatabase(T reference) throws ReferenceDatabaseException;
+
+    private void save() {
+        try {
+            T reference = createNewReference();
+            saveToDatabase(reference);
+            setVisible(false);
+        } catch (RequiredFieldMissingException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
+        } catch (ReferenceDatabaseException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Salvataggio non riuscito", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     private void setupBaseFields() {
         fieldPanel = new JPanel();
         fieldPanel.setLayout(new BoxLayout(fieldPanel, BoxLayout.PAGE_AXIS));
@@ -162,15 +219,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         addRelatedReference.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                List<BibliographicReference> referencesToExclude = new ArrayList<>();
-
-                if (getRelatedReferenceValues() != null)
-                    referencesToExclude.addAll(getRelatedReferenceValues());
-
-                if (getReferenceToChange() != null)
-                    referencesToExclude.add(getReferenceToChange());
-
-                relatedReferencesDialog.setVisible(true, referencesToExclude);
+                openReferencePicker();
             }
         });
 
@@ -214,6 +263,18 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         fieldPanel.add(confirmButton);
     }
 
+    private void openReferencePicker() {
+        List<BibliographicReference> referencesToExclude = new ArrayList<>();
+
+        if (getRelatedReferenceValues() != null)
+            referencesToExclude.addAll(getRelatedReferenceValues());
+
+        if (getReferenceToChange() != null)
+            referencesToExclude.add(getReferenceToChange());
+
+        relatedReferencesDialog.setVisible(true, referencesToExclude);
+    }
+
     /**
      * Prepara i campi necessari per la creazione di un riferimento.
      */
@@ -255,7 +316,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      * @param reference
      *            riferimento da cui prendere i valori (se {@code null}, i campi verrano resettati)
      */
-    protected void setFieldsValues(T reference) {
+    protected void setFieldsInitialValues(T reference) {
         if (reference == null) {
             setTitleValue(null);
             setPubblicationDateValue(null);
@@ -277,63 +338,6 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
             setAuthorValues(reference.getAuthors());
             setCategoryValues(reference.getCategories());
         }
-    }
-
-    /**
-     * Restituisce un nuovo riferimento da riempire.
-     * 
-     * @return istanza vuota da riempire
-     */
-    protected abstract T getNewInstance();
-
-    /**
-     * Salva il riferimento.
-     * 
-     * @param reference
-     *            riferimento da salvare
-     * @throws ReferenceDatabaseException
-     *             se il salvataggio non va a buon fine
-     */
-    protected abstract void saveToDatabase(T reference) throws ReferenceDatabaseException;
-
-    private void save() {
-        try {
-            T reference = createNewReference();
-            saveToDatabase(reference);
-            setVisible(false);
-        } catch (RequiredFieldMissingException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
-        } catch (ReferenceDatabaseException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Salvataggio non riuscito", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    /**
-     * Crea un nuovo riferimenti con i valori inseriti dall'utente.
-     * 
-     * @return riferimento con i dati inseriti dall'utente
-     * @throws RequiredFieldMissingException
-     *             se i campi obbligatori non sono stati riempiti
-     */
-    protected T createNewReference() throws RequiredFieldMissingException {
-        T reference = getNewInstance();
-
-        if (getReferenceToChange() != null)
-            reference.setID(getReferenceToChange().getID());
-
-        reference.setTitle(getTitleValue());
-        reference.setAuthors(getAuthorValues());
-        reference.setDOI(getDOIValue());
-        reference.setDescription(getDescriptionValue());
-        reference.setLanguage(getLanguageValue());
-        reference.setPubblicationDate(getPubblicationDateValue());
-        reference.setTags(getTagValues());
-        reference.setRelatedReferences(getRelatedReferenceValues());
-        reference.setCategories(getCategoryValues());
-
-        return reference;
     }
 
     @Override
@@ -369,7 +373,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
                 failedToLoad = true;
             }
 
-            setFieldsValues(reference);
+            setFieldsInitialValues(reference);
 
             setLocationRelativeTo(null);
         }

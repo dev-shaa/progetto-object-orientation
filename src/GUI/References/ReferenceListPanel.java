@@ -35,6 +35,7 @@ public class ReferenceListPanel extends JScrollPane {
      */
     public ReferenceListPanel() {
         String[] tableColumns = { "Titolo", "Autori", "Data di pubblicazione", "Citazione ricevute" };
+
         this.referencesTableModel = new DefaultTableModel(tableColumns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -135,7 +136,7 @@ public class ReferenceListPanel extends JScrollPane {
             return;
 
         if (selectionListeners == null)
-            selectionListeners = new ArrayList<>(2);
+            selectionListeners = new ArrayList<>();
 
         if (selectionListeners.contains(listener))
             return;

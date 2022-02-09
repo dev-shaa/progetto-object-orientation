@@ -36,8 +36,8 @@ public class WebsiteEditor extends OnlineResourceEditor<Website> {
     }
 
     @Override
-    protected void setFieldsValues(Website reference) {
-        super.setFieldsValues(reference);
+    protected void setFieldsInitialValues(Website reference) {
+        super.setFieldsInitialValues(reference);
     }
 
     @Override

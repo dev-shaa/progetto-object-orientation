@@ -52,11 +52,11 @@ public abstract class PublicationEditor<T extends Publication> extends Reference
     }
 
     @Override
-    protected void setFieldsValues(T reference) {
-        super.setFieldsValues(reference);
+    protected void setFieldsInitialValues(T reference) {
+        super.setFieldsInitialValues(reference);
 
         if (reference == null) {
-            setPageCountValue(1);
+            setPageCountValue(0);
             setURLValue(null);
             setPublisherValue(null);
         } else {

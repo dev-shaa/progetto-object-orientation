@@ -47,8 +47,8 @@ public class ImageEditor extends OnlineResourceEditor<Image> {
     }
 
     @Override
-    protected void setFieldsValues(Image reference) {
-        super.setFieldsValues(reference);
+    protected void setFieldsInitialValues(Image reference) {
+        super.setFieldsInitialValues(reference);
 
         if (reference == null) {
             setWidthValue(1);
