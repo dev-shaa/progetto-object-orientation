@@ -9,14 +9,14 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 /**
- * TODO: commenta
+ * Modello di selezione per un {@code CheckboxTree}.
  */
 public class CheckboxTreeSelectionModel extends DefaultTreeSelectionModel {
 
     private ArrayList<TreePath> selectedPaths;
 
     /**
-     * TODO: commenta
+     * Crea un nuovo modello di selezione.
      */
     public CheckboxTreeSelectionModel() {
         super();

@@ -24,8 +24,6 @@ import Exceptions.TagDatabaseException;
  */
 public class ReferenceController {
 
-    // FIXME: quando viene eliminata una categoria dovrebbe essere rimossa dai riferimenti
-
     private BibliographicReferenceDAO referenceDAO;
     private AuthorDAO authorDAO;
     private TagDAO tagDAO;
