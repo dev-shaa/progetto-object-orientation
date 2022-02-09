@@ -6,6 +6,8 @@ import javax.swing.*;
 
 /**
  * Un {@code JButton} che, quando premuto, apre un menu popup.
+ * <p>
+ * Se vuoto, mostra un {@code JLabel} di avviso.
  */
 public class PopupButton extends JButton {
 

@@ -106,7 +106,7 @@ public class Category {
      *             se il nome non è valido
      * @see #isNameValid(String)
      */
-    public void setName(String name) throws IllegalArgumentException {
+    public void setName(String name) {
         if (!isNameValid(name))
             throw new IllegalArgumentException("Il nome della categoria non può essere nullo.");
 

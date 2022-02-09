@@ -30,11 +30,20 @@ public class CheckboxTree<T extends Object> extends JTree {
         super.setSelectionModel(new CheckboxTreeSelectionModel());
     }
 
+    /**
+     * FUNZIONE DISATTIVATA, CHIAMARE {@link #setModel(CustomTreeModel)}
+     */
     @Override
     public void setModel(TreeModel newModel) {
-
+        // non fare niente
     }
 
+    /**
+     * Imposta il modello dell'albero da mostrare.
+     * 
+     * @param newModel
+     *            nuovo modello dell'albero
+     */
     public void setModel(CustomTreeModel<T> newModel) {
         super.setModel(newModel);
         this.treeModel = newModel;

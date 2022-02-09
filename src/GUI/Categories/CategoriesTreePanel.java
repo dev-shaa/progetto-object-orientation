@@ -52,7 +52,6 @@ public class CategoriesTreePanel extends JScrollPane {
             tree.setEditable(false);
             tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
             tree.addTreeSelectionListener(new TreeSelectionListener() {
-
                 @Override
                 public void valueChanged(TreeSelectionEvent e) {
                     if (selectionListeners == null)
