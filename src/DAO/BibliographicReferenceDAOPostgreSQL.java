@@ -671,8 +671,11 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
     }
 
     private List<Integer> getRelatedReferencesID(Statement statement, BibliographicReference reference) throws SQLException {
-        if (statement == null || statement.isClosed() || reference == null)
-            throw new IllegalArgumentException();
+        if (statement == null)
+            throw new IllegalArgumentException("statement can't be null or closed");
+
+        if (reference == null)
+            throw new IllegalArgumentException("reference can't be null");
 
         ResultSet relatedReferencesResultSet = null;
         String relatedReferencesQuery = "select * from related_references where quoted_by = " + reference.getID();
@@ -692,9 +695,6 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         } finally {
             if (relatedReferencesResultSet != null)
                 relatedReferencesResultSet.close();
-
-            if (statement != null)
-                statement.close();
         }
     }
 

@@ -133,7 +133,7 @@ public class Author {
         // l'espressione regex lascia libertà sullo spazio all'inizio e alla fine della stringa, perchè è più comodo per lavorarci
         // quindi è meglio toglierli
 
-        this.ORCID = ORCID.trim();
+        this.ORCID = ORCID == null ? ORCID : ORCID.trim();
     }
 
     /**

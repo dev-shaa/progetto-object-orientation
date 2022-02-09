@@ -120,13 +120,4 @@ public class PopupButton extends JButton {
         popupMenu.show(this, 0, getHeight());
     }
 
-    /**
-     * Restituisce l'elemento impostato quando non ci sono altri elementi.
-     * 
-     * @return
-     */
-    protected JMenuItem getEmptyPopupLabel() {
-        return emptyPopupLabel;
-    }
-
 }

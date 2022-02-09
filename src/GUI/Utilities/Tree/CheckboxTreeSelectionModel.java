@@ -10,6 +10,12 @@ import javax.swing.tree.TreePath;
 
 /**
  * Modello di selezione per un {@code CheckboxTree}.
+ * <p>
+ * Quando viene selezionato un nodo, tutti i nodi superiori fino al nodo root vengono selezionati.
+ * <p>
+ * Quando viene deselezionato un nodo, tutti i nodi discendenti vengono deselezionati.
+ * <p>
+ * I percorsi selezionati sono solo quelli delle foglie.
  */
 public class CheckboxTreeSelectionModel extends DefaultTreeSelectionModel {
 
@@ -33,21 +39,22 @@ public class CheckboxTreeSelectionModel extends DefaultTreeSelectionModel {
 
     @Override
     public void addSelectionPath(TreePath path) {
-        addAncestorPath(path.getParentPath());
-        super.addSelectionPath(path);
+        if (path == null || isPathSelected(path))
+            return;
+
+        addPathVisually(path);
+
         selectedPaths.add(path);
     }
 
     @Override
     public void removeSelectionPath(TreePath path) {
-        Enumeration<? extends TreeNode> children = ((MutableTreeNode) path.getLastPathComponent()).children();
+        if (path == null || !isPathSelected(path))
+            return;
 
-        while (children.hasMoreElements()) {
-            removeSelectionPath(path.pathByAddingChild(children.nextElement()));
-        }
+        removeChildrenPaths(path);
 
-        super.removeSelectionPath(path);
-        selectedPaths.remove(path);
+        addSelectionPath(path.getParentPath());
     }
 
     @Override
@@ -55,6 +62,9 @@ public class CheckboxTreeSelectionModel extends DefaultTreeSelectionModel {
         // non fare niente
     }
 
+    /**
+     * Vengono restituiti i percorsi dei nodi foglia selezionati.
+     */
     @Override
     public TreePath[] getSelectionPaths() {
         return selectedPaths.toArray(new TreePath[selectedPaths.size()]);
@@ -66,15 +76,37 @@ public class CheckboxTreeSelectionModel extends DefaultTreeSelectionModel {
         selectedPaths.clear();
     }
 
-    private void addAncestorPath(TreePath path) {
+    /**
+     * Aggiunge un percorso ai selezionati, ma senza aggiungerlo alla lista dei percorsi che verranno restituiti.
+     * 
+     * @param path
+     *            percorso da aggiungere
+     */
+    private void addPathVisually(TreePath path) {
+        if (path == null || isPathSelected(path))
+            return;
+
+        // è stata selezionato il percorso di un nodo figlio,
+        // quindi dobbiamo rimuovere questo percorso da quelli effettivamente selezionati
+        selectedPaths.remove(path);
+
+        addPathVisually(path.getParentPath());
+
+        super.addSelectionPath(path);
+    }
+
+    private void removeChildrenPaths(TreePath path) {
         if (path == null)
             return;
 
+        Enumeration<? extends TreeNode> children = ((MutableTreeNode) path.getLastPathComponent()).children();
+
+        while (children.hasMoreElements()) {
+            removeSelectionPath(path.pathByAddingChild(children.nextElement()));
+        }
+
+        super.removeSelectionPath(path);
         selectedPaths.remove(path);
-
-        addAncestorPath(path.getParentPath());
-
-        super.addSelectionPath(path);
     }
 
 }
