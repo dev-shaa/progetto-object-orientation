@@ -281,6 +281,9 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         JMenuItem articleOption = new JMenuItem("Articolo");
         articleOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                categoriesTreePanel.clearSelection();
+                referenceListPanel.setReferences(null);
+
                 getController().openArticleEditor(null);
             }
         });
@@ -288,6 +291,9 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         JMenuItem bookOption = new JMenuItem("Libro");
         bookOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                categoriesTreePanel.clearSelection();
+                referenceListPanel.setReferences(null);
+
                 getController().openBookEditor(null);
             }
         });
@@ -295,6 +301,9 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         JMenuItem thesisOption = new JMenuItem("Tesi");
         thesisOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                categoriesTreePanel.clearSelection();
+                referenceListPanel.setReferences(null);
+
                 getController().openThesisEditor(null);
             }
         });
@@ -302,6 +311,9 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         JMenuItem websiteOption = new JMenuItem("Sito web");
         websiteOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                categoriesTreePanel.clearSelection();
+                referenceListPanel.setReferences(null);
+
                 getController().openWebsiteEditor(null);
             }
         });
@@ -309,6 +321,9 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         JMenuItem sourceCodeOption = new JMenuItem("Codice sorgente");
         sourceCodeOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                categoriesTreePanel.clearSelection();
+                referenceListPanel.setReferences(null);
+
                 getController().openSourceCodeEditor(null);
             }
         });
@@ -316,6 +331,9 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         JMenuItem imageOption = new JMenuItem("Immagine");
         imageOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                categoriesTreePanel.clearSelection();
+                referenceListPanel.setReferences(null);
+
                 getController().openImageEditor(null);
             }
         });
@@ -323,6 +341,9 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         JMenuItem videoOption = new JMenuItem("Video");
         videoOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                categoriesTreePanel.clearSelection();
+                referenceListPanel.setReferences(null);
+
                 getController().openVideoEditor(null);
             }
         });
@@ -384,6 +405,9 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
 
         if (selectedReference == null)
             return;
+
+        categoriesTreePanel.clearSelection();
+        referenceListPanel.setReferences(null);
 
         if (selectedReference instanceof Article) {
             getController().openArticleEditor((Article) selectedReference);

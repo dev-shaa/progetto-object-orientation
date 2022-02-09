@@ -384,7 +384,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
             // se l'id è nullo, abbiamo inserito un nuovo riferimento, quindi dobbiamo recuperare la chiave appena generata
             // però non lo impostiamo subito, perchè se le istruzioni successive falliscono viene eseguito il rollback
             // quindi avremo un id che nel database non corrisponde a niente
-            int id = reference.getID();
+            int id = reference.getID() == null ? 0 : reference.getID();
 
             if (reference.getID() == null) {
                 resultSet = referenceStatement.getGeneratedKeys();
