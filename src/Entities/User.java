@@ -33,11 +33,11 @@ public class User {
      * @param name
      *            nome dell'utente
      * @throws IllegalArgumentException
-     *             se {@code name == null} o {@code name.isBlank()}
+     *             se {@code name} è nullo o vuoto
      */
     public void setName(String name) {
-        if (name == null || name.isBlank())
-            throw new IllegalArgumentException("Il nome non può essere nullo o vuoto.");
+        if (!isNameValid(name))
+            throw new IllegalArgumentException("Il nome non può essere vuoto.");
 
         this.name = name.trim();
     }
@@ -57,11 +57,11 @@ public class User {
      * @param password
      *            password dell'utente
      * @throws IllegalArgumentException
-     *             se {@code password == null} o {@code password.isBlank()}
+     *             se la password è vuota
      */
     public void setPassword(String password) {
-        if (password == null || password.isBlank())
-            throw new IllegalArgumentException("La password non può essere nulla o vuota.");
+        if (!isPasswordValid(password))
+            throw new IllegalArgumentException("La password non può essere vuota.");
 
         this.password = password;
     }
@@ -78,6 +78,14 @@ public class User {
     @Override
     public String toString() {
         return getName();
+    }
+
+    private boolean isNameValid(String name) {
+        return name != null && !name.isEmpty() && !name.isBlank();
+    }
+
+    private boolean isPasswordValid(String password) {
+        return password != null && !password.isEmpty() && !password.isBlank();
     }
 
 }

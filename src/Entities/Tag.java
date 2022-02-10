@@ -38,8 +38,8 @@ public class Tag {
      *             se il nome è nullo o vuoto
      */
     public void setName(String value) {
-        if (value == null || value.isBlank())
-            throw new IllegalArgumentException("value non può essere null");
+        if (!isNameValid(value))
+            throw new IllegalArgumentException("value can't be null");
 
         this.value = value.trim();
     }
@@ -58,6 +58,10 @@ public class Tag {
             return false;
 
         return getName().equals(((Tag) obj).getName());
+    }
+
+    private boolean isNameValid(String name) {
+        return name != null && !name.isEmpty() && !name.isBlank();
     }
 
 }

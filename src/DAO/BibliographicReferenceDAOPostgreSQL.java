@@ -699,7 +699,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
     }
 
     private String getFormattedStringForQuery(String input) {
-        return (input == null || input.isBlank()) ? null : "'" + input + "'";
+        return (input == null || input.isEmpty() || input.isBlank()) ? null : "'" + input + "'";
     }
 
     private java.sql.Date convertToSQLDate(Date date) {

@@ -102,8 +102,8 @@ public class Author {
      *             se {@code name} è nullo o vuoto
      */
     public void setName(String name) {
-        if (name == null || name.isBlank())
-            throw new IllegalArgumentException("name can't be null");
+        if (!isNameValid(name))
+            throw new IllegalArgumentException("Il nome non può essere vuoto");
 
         this.name = name.trim();
     }
@@ -146,15 +146,12 @@ public class Author {
         return ORCID;
     }
 
-    /**
-     * Controlla se la stringa di input è un ORCID valido.
-     * 
-     * @param ORCID
-     *            stringa da controllare
-     * @return {@code true} se la stringa è nulla o se rispetta il codice ORCID.
-     */
-    public static boolean isORCIDValid(String ORCID) {
-        if (ORCID == null || ORCID.isBlank())
+    private boolean isNameValid(String name) {
+        return name != null && !name.isEmpty() && !name.isBlank();
+    }
+
+    private boolean isORCIDValid(String ORCID) {
+        if (ORCID == null || ORCID.isEmpty() || ORCID.isBlank())
             return true;
 
         return orcidPattern.matcher(ORCID).find();

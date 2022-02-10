@@ -142,7 +142,7 @@ public class Category {
     }
 
     private boolean isNameValid(String name) {
-        return name != null && !name.isBlank();
+        return name != null && !name.isEmpty() && !name.isBlank();
     }
 
 }

@@ -46,15 +46,15 @@ public class AuthorInputField extends TermsField {
 
             if (orcidStartIndex != -1 && orcidEndIndex != -1 && orcidStartIndex < orcidEndIndex) {
                 orcid = term.substring(orcidStartIndex + 1, orcidEndIndex);
-
-                if (!Author.isORCIDValid(orcid)) {
-                    throw new InvalidAuthorInputException("L'ORCID non è valido");
-                }
             }
 
             String name = term.substring(0, orcidStartIndex == -1 ? term.length() : orcidStartIndex);
 
-            authors.add(new Author(name, orcid));
+            try {
+                authors.add(new Author(name, orcid));
+            } catch (IllegalArgumentException e) {
+                throw new InvalidAuthorInputException("L'ORCID inserito non è valido.");
+            }
         }
 
         authors.trimToSize();

@@ -493,10 +493,10 @@ public abstract class BibliographicReference {
      * 
      * @param string
      *            stringa da controllare
-     * @return {@code true} se {@code string == null} o {@code string.isBlank()}
+     * @return {@code true} se {@code string == null}, {@code string.isEmpty()} o {@code string.isBlank()}
      */
     protected boolean isStringNullOrEmpty(String string) {
-        return string == null || string.isBlank();
+        return string == null || string.isEmpty() || string.isBlank();
     }
 
     private boolean isTitleValid(String title) {

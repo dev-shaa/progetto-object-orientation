@@ -394,6 +394,17 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         }
     }
 
+    /**
+     * Controlla se una stringa è vuota
+     * 
+     * @param string
+     *            stringa da controllare
+     * @return se {@code string == null || string.isEmpty() || string.isBlank()}
+     */
+    protected boolean isStringNullOrEmpty(String string) {
+        return string == null || string.isEmpty() || string.isBlank();
+    }
+
     // #region VALUES GETTER/SETTER
 
     private void setTitleValue(String text) {
@@ -403,7 +414,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     private String getTitleValue() throws RequiredFieldMissingException {
         String referenceTitle = title.getText().trim();
 
-        if (referenceTitle == null || referenceTitle.isBlank())
+        if (!isStringNullOrEmpty(referenceTitle))
             throw new RequiredFieldMissingException("Il titolo del riferimento non può essere nullo.");
 
         return referenceTitle;
