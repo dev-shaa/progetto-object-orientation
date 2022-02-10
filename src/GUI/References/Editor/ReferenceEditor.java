@@ -414,7 +414,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     private String getTitleValue() throws RequiredFieldMissingException {
         String referenceTitle = title.getText().trim();
 
-        if (!isStringNullOrEmpty(referenceTitle))
+        if (isStringNullOrEmpty(referenceTitle))
             throw new RequiredFieldMissingException("Il titolo del riferimento non può essere nullo.");
 
         return referenceTitle;

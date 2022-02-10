@@ -133,7 +133,7 @@ public class Author {
         // l'espressione regex lascia libertà sullo spazio all'inizio e alla fine della stringa, perchè è più comodo per lavorarci
         // quindi è meglio toglierli
 
-        this.ORCID = ORCID == null ? ORCID : ORCID.trim();
+        this.ORCID = isStringNullOrEmpty(ORCID) ? null : ORCID.trim();
     }
 
     /**
@@ -146,12 +146,16 @@ public class Author {
         return ORCID;
     }
 
+    private boolean isStringNullOrEmpty(String string) {
+        return string == null || string.isEmpty() || string.isBlank();
+    }
+
     private boolean isNameValid(String name) {
-        return name != null && !name.isEmpty() && !name.isBlank();
+        return !isStringNullOrEmpty(name);
     }
 
     private boolean isORCIDValid(String ORCID) {
-        if (ORCID == null || ORCID.isEmpty() || ORCID.isBlank())
+        if (isStringNullOrEmpty(ORCID))
             return true;
 
         return orcidPattern.matcher(ORCID).find();
