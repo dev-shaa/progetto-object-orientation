@@ -204,7 +204,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
             HashMap<Category, Integer> nodeToParentID = new HashMap<>();
 
             while (resultSet.next()) {
-                Category category = new Category(resultSet.getString("name"), resultSet.getInt("id"));
+                Category category = new Category(resultSet.getString("name"), null, resultSet.getInt("id"));
                 idToCategory.put(category.getID(), category);
                 nodeToParentID.put(category, resultSet.getInt("parent"));
             }

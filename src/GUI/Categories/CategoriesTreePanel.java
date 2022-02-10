@@ -54,16 +54,7 @@ public class CategoriesTreePanel extends JScrollPane {
             tree.addTreeSelectionListener(new TreeSelectionListener() {
                 @Override
                 public void valueChanged(TreeSelectionEvent e) {
-                    if (selectionListeners == null)
-                        return;
-
-                    if (getSelectedNode() == null) {
-                        for (CategorySelectionListener categorySelectionListener : selectionListeners)
-                            categorySelectionListener.onCategoryClearSelection();
-                    } else {
-                        for (CategorySelectionListener categorySelectionListener : selectionListeners)
-                            categorySelectionListener.onCategorySelection(getSelectedCategory());
-                    }
+                    notifyListener();
                 }
             });
         }
@@ -128,6 +119,19 @@ public class CategoriesTreePanel extends JScrollPane {
     @SuppressWarnings("unchecked")
     private CustomTreeNode<Category> getSelectedNode() {
         return (CustomTreeNode<Category>) tree.getLastSelectedPathComponent();
+    }
+
+    private void notifyListener() {
+        if (selectionListeners == null)
+            return;
+
+        if (getSelectedNode() == null) {
+            for (CategorySelectionListener categorySelectionListener : selectionListeners)
+                categorySelectionListener.onCategoryClearSelection();
+        } else {
+            for (CategorySelectionListener categorySelectionListener : selectionListeners)
+                categorySelectionListener.onCategorySelection(getSelectedCategory());
+        }
     }
 
 }

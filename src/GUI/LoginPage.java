@@ -112,8 +112,8 @@ public class LoginPage extends JFrame {
 
 			getController().getUserController().register(user);
 			getController().openHomePage(user);
-		} catch (IllegalArgumentException | UserDatabaseException ex) {
-			JOptionPane.showMessageDialog(this, ex.getMessage(), "Errore registrazione utente", JOptionPane.ERROR_MESSAGE);
+		} catch (IllegalArgumentException | UserDatabaseException e) {
+			JOptionPane.showMessageDialog(this, e.getMessage(), "Errore registrazione utente", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -128,8 +128,8 @@ public class LoginPage extends JFrame {
 				getController().openHomePage(user);
 			else
 				JOptionPane.showMessageDialog(this, "Impossibile accedere: nome o password errati.", "Errore accesso utente", JOptionPane.ERROR_MESSAGE);
-		} catch (IllegalArgumentException | UserDatabaseException ex) {
-			JOptionPane.showMessageDialog(this, ex.getMessage(), "Errore accesso utente", JOptionPane.ERROR_MESSAGE);
+		} catch (IllegalArgumentException | UserDatabaseException e) {
+			JOptionPane.showMessageDialog(this, e.getMessage(), "Errore accesso utente", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 

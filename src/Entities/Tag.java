@@ -20,16 +20,6 @@ public class Tag {
     }
 
     /**
-     * Restituisce il nome della parola chiave.
-     * 
-     * @return
-     *         nome della parola chiave
-     */
-    public String getName() {
-        return value;
-    }
-
-    /**
      * Imposta il nome della parola chiave.
      * 
      * @param value
@@ -42,6 +32,16 @@ public class Tag {
             throw new IllegalArgumentException("value can't be null");
 
         this.value = value.trim();
+    }
+
+    /**
+     * Restituisce il nome della parola chiave.
+     * 
+     * @return
+     *         nome della parola chiave
+     */
+    public String getName() {
+        return value;
     }
 
     @Override

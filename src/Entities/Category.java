@@ -10,39 +10,19 @@ public class Category {
     private Category parent;
 
     /**
-     * Crea {@code Category} con un nome e nessun genitore.
+     * Crea una categoria con un nome e nessun genitore.
      * 
      * @param name
      *            nome della categoria
      * @throws IllegalArgumentException
      *             se il nome non è valido
-     * @see #isNameValid(String)
      */
     public Category(String name) {
-        setName(name);
-        setParent(null);
+        this(name, null);
     }
 
     /**
-     * Crea {@code Category} con un nome, un ID e nessun genitore.
-     * 
-     * @param name
-     *            nome della categoria
-     * @param id
-     *            identificativo della categoria
-     * @throws IllegalArgumentException
-     *             se il nome non è valido
-     * @see #isNameValid(String)
-     */
-    public Category(String name, int id) {
-        setName(name);
-        setParent(null);
-        setID(id);
-    }
-
-    /**
-     * Crea {@code Category} con un nome e una categoria genitore (che può essere
-     * {@code null}).
+     * Crea una categoria con un nome e il genitore specificato.
      * 
      * @param name
      *            nome della categoria
@@ -50,11 +30,27 @@ public class Category {
      *            categoria genitore
      * @throws IllegalArgumentException
      *             se il nome non è valido
-     * @see #isNameValid(String)
      */
     public Category(String name, Category parent) {
+        this(name, parent, null);
+    }
+
+    /**
+     * Crea una categoria con un nome, il genitore e l'id specificati.
+     * 
+     * @param name
+     *            nome della categoria
+     * @param parent
+     *            categoria genitore
+     * @param id
+     *            identificativo della categoria
+     * @throws IllegalArgumentException
+     *             se il nome non è valido
+     */
+    public Category(String name, Category parent, Integer id) {
         setName(name);
         setParent(parent);
+        setID(id);
     }
 
     @Override
