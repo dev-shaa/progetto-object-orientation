@@ -1,7 +1,7 @@
 package DAO;
 
 import Entities.User;
-import Exceptions.UserDatabaseException;
+import Exceptions.Database.UserDatabaseException;
 
 /**
  * Interfaccia che deve essere implementata per gestire la parte di database relativo agli utenti.

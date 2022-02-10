@@ -11,8 +11,8 @@ import java.util.List;
 import Controller.DatabaseController;
 import Entities.Tag;
 import Entities.References.BibliographicReference;
-import Exceptions.DatabaseConnectionException;
-import Exceptions.TagDatabaseException;
+import Exceptions.Database.DatabaseConnectionException;
+import Exceptions.Database.TagDatabaseException;
 
 /**
  * Implementazione dell'interfaccia TagDAO per database relazionali PostgreSQL.

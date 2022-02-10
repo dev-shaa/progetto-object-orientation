@@ -6,9 +6,11 @@ import GUI.Authors.AuthorInputField;
 import GUI.References.Picker.*;
 import GUI.Tags.TagInputField;
 import GUI.Utilities.*;
-import Exceptions.CategoryDatabaseException;
-import Exceptions.ReferenceDatabaseException;
+import Exceptions.InvalidAuthorInputException;
+import Exceptions.InvalidInputException;
 import Exceptions.RequiredFieldMissingException;
+import Exceptions.Database.CategoryDatabaseException;
+import Exceptions.Database.ReferenceDatabaseException;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -150,7 +152,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      * @throws RequiredFieldMissingException
      *             se i campi obbligatori non sono stati riempiti
      */
-    protected T createNewReference() throws RequiredFieldMissingException {
+    protected T createNewReference() throws InvalidInputException {
         T reference = getNewInstance();
 
         if (getReferenceToChange() != null)
@@ -184,9 +186,9 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
             T reference = createNewReference();
             saveToDatabase(reference);
             setVisible(false);
-        } catch (RequiredFieldMissingException ex) {
+        } catch (InvalidInputException ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Campi obbligatori mancanti", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Parametri inseriti non validi", JOptionPane.ERROR_MESSAGE);
         } catch (ReferenceDatabaseException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Salvataggio non riuscito", JOptionPane.ERROR_MESSAGE);
@@ -464,7 +466,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         this.authors.setText(foo);
     }
 
-    private List<Author> getAuthorValues() {
+    private List<Author> getAuthorValues() throws InvalidAuthorInputException {
         return authors.getAuthors();
     }
 

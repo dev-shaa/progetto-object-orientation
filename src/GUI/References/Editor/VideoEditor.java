@@ -1,9 +1,8 @@
 package GUI.References.Editor;
 
 import Entities.References.OnlineResources.Video;
-import Exceptions.ReferenceDatabaseException;
-import Exceptions.RequiredFieldMissingException;
-
+import Exceptions.InvalidInputException;
+import Exceptions.Database.ReferenceDatabaseException;
 import Controller.CategoryController;
 import Controller.ReferenceController;
 
@@ -80,7 +79,7 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
     }
 
     @Override
-    protected Video createNewReference() throws RequiredFieldMissingException {
+    protected Video createNewReference() throws InvalidInputException {
         Video reference = super.createNewReference();
 
         reference.setWidth(getWidthValue());

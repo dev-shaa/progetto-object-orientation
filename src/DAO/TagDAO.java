@@ -4,7 +4,7 @@ import java.util.List;
 
 import Entities.Tag;
 import Entities.References.BibliographicReference;
-import Exceptions.TagDatabaseException;
+import Exceptions.Database.TagDatabaseException;
 
 /**
  * Interfaccia che deve essere implementata per gestire la parte di database relativo alle parole chiave.

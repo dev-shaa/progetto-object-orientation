@@ -11,7 +11,8 @@ import java.sql.Statement;
 import Controller.DatabaseController;
 import Entities.References.BibliographicReference;
 import Entities.*;
-import Exceptions.*;
+import Exceptions.Database.CategoryDatabaseException;
+import Exceptions.Database.DatabaseConnectionException;
 
 /**
  * Implementazione dell'interfaccia CategoryDAO per database relazionali PostgreSQL.

@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import Entities.Author;
 import Entities.References.BibliographicReference;
-import Exceptions.AuthorDatabaseException;
+import Exceptions.Database.AuthorDatabaseException;
 
 /**
  * Interfaccia che deve essere implementata per gestire la parte di database relativo agli autori.

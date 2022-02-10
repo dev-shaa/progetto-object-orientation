@@ -2,7 +2,7 @@ package Controller;
 
 import DAO.UserDAO;
 import Entities.User;
-import Exceptions.UserDatabaseException;
+import Exceptions.Database.UserDatabaseException;
 
 /**
  * Controller per gestire il recupero e l'inserimento di utenti.

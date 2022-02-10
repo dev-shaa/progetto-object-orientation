@@ -2,9 +2,8 @@ package GUI.References.Editor;
 
 import Entities.References.OnlineResources.SourceCode;
 import Entities.References.OnlineResources.ProgrammingLanguage;
-import Exceptions.ReferenceDatabaseException;
-import Exceptions.RequiredFieldMissingException;
-
+import Exceptions.InvalidInputException;
+import Exceptions.Database.ReferenceDatabaseException;
 import Controller.CategoryController;
 import Controller.ReferenceController;
 
@@ -60,7 +59,7 @@ public class SourceCodeEditor extends OnlineResourceEditor<SourceCode> {
     }
 
     @Override
-    protected SourceCode createNewReference() throws RequiredFieldMissingException {
+    protected SourceCode createNewReference() throws InvalidInputException {
         SourceCode reference = super.createNewReference();
 
         reference.setProgrammingLanguage(getProgrammingLanguageValue());

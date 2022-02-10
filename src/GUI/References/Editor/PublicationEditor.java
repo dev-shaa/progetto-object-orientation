@@ -1,7 +1,7 @@
 package GUI.References.Editor;
 
 import Entities.References.PhysicalResources.Publication;
-import Exceptions.RequiredFieldMissingException;
+import Exceptions.InvalidInputException;
 
 import Controller.CategoryController;
 import Controller.ReferenceController;
@@ -67,7 +67,7 @@ public abstract class PublicationEditor<T extends Publication> extends Reference
     }
 
     @Override
-    protected T createNewReference() throws RequiredFieldMissingException {
+    protected T createNewReference() throws InvalidInputException {
         T reference = super.createNewReference();
 
         reference.setPageCount(getPageCountValue());

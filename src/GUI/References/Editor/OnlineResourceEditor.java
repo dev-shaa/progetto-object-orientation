@@ -1,6 +1,7 @@
 package GUI.References.Editor;
 
 import Entities.References.OnlineResources.OnlineResource;
+import Exceptions.InvalidInputException;
 import Exceptions.RequiredFieldMissingException;
 
 import Controller.CategoryController;
@@ -51,7 +52,7 @@ public abstract class OnlineResourceEditor<T extends OnlineResource> extends Ref
     }
 
     @Override
-    protected T createNewReference() throws RequiredFieldMissingException {
+    protected T createNewReference() throws InvalidInputException {
         T reference = super.createNewReference();
 
         reference.setURL(getURLValue());

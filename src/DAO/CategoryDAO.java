@@ -3,7 +3,7 @@ package DAO;
 import java.util.List;
 import Entities.*;
 import Entities.References.BibliographicReference;
-import Exceptions.*;
+import Exceptions.Database.CategoryDatabaseException;
 
 /**
  * Interfaccia che deve essere implementata per gestire la parte di database relativo alle categorie.

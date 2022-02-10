@@ -1,9 +1,8 @@
 package GUI.References.Editor;
 
 import Entities.References.OnlineResources.Website;
-import Exceptions.ReferenceDatabaseException;
-import Exceptions.RequiredFieldMissingException;
-
+import Exceptions.InvalidInputException;
+import Exceptions.Database.ReferenceDatabaseException;
 import Controller.CategoryController;
 import Controller.ReferenceController;
 
@@ -51,7 +50,7 @@ public class WebsiteEditor extends OnlineResourceEditor<Website> {
     }
 
     @Override
-    protected Website createNewReference() throws RequiredFieldMissingException {
+    protected Website createNewReference() throws InvalidInputException {
         return super.createNewReference();
     }
 

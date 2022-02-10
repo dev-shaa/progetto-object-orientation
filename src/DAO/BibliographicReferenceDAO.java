@@ -5,7 +5,7 @@ import java.util.List;
 import Entities.References.*;
 import Entities.References.OnlineResources.*;
 import Entities.References.PhysicalResources.*;
-import Exceptions.ReferenceDatabaseException;
+import Exceptions.Database.ReferenceDatabaseException;
 
 /**
  * Interfaccia che deve essere implementata per gestire la parte di database relativo ai riferimenti.

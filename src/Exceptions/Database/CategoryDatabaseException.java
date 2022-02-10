@@ -1,4 +1,4 @@
-package Exceptions;
+package Exceptions.Database;
 
 /**
  * Eccezione per indicare che qualcosa è andato storto nell'interazione con il database delle categorie.

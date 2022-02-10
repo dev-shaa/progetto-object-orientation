@@ -1,9 +1,8 @@
 package GUI.References.Editor;
 
 import Entities.References.PhysicalResources.Thesis;
-import Exceptions.ReferenceDatabaseException;
-import Exceptions.RequiredFieldMissingException;
-
+import Exceptions.InvalidInputException;
+import Exceptions.Database.ReferenceDatabaseException;
 import Controller.CategoryController;
 import Controller.ReferenceController;
 
@@ -69,7 +68,7 @@ public class ThesisEditor extends PublicationEditor<Thesis> {
     }
 
     @Override
-    protected Thesis createNewReference() throws RequiredFieldMissingException {
+    protected Thesis createNewReference() throws InvalidInputException {
         Thesis reference = super.createNewReference();
 
         reference.setUniversity(getUniversityValue());

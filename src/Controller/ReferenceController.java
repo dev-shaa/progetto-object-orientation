@@ -12,10 +12,10 @@ import Entities.Search;
 import Entities.References.*;
 import Entities.References.OnlineResources.*;
 import Entities.References.PhysicalResources.*;
-import Exceptions.AuthorDatabaseException;
-import Exceptions.CategoryDatabaseException;
-import Exceptions.ReferenceDatabaseException;
-import Exceptions.TagDatabaseException;
+import Exceptions.Database.AuthorDatabaseException;
+import Exceptions.Database.CategoryDatabaseException;
+import Exceptions.Database.ReferenceDatabaseException;
+import Exceptions.Database.TagDatabaseException;
 
 /**
  * Controller per gestire il recupero, l'inserimento, la rimozione e la modifica di riferimenti.

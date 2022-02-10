@@ -2,7 +2,8 @@ package Controller;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import Exceptions.DatabaseConnectionException;
+
+import Exceptions.Database.DatabaseConnectionException;
 
 public class DatabaseController {
 

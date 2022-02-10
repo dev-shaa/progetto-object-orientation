@@ -12,8 +12,8 @@ import Entities.*;
 import Entities.References.*;
 import Entities.References.OnlineResources.*;
 import Entities.References.PhysicalResources.*;
-import Exceptions.DatabaseConnectionException;
-import Exceptions.ReferenceDatabaseException;
+import Exceptions.Database.DatabaseConnectionException;
+import Exceptions.Database.ReferenceDatabaseException;
 
 /**
  * Implementazione dell'interfaccia BibliographicReferenceDAO per database relazionali PostgreSQL.

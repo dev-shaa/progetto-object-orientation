@@ -1,4 +1,4 @@
-package Exceptions;
+package Exceptions.Database;
 
 /**
  * Eccezione per indicare che non è stato possibile stabilire una connessione al database.

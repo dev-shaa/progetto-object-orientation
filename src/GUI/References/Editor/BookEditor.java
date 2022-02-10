@@ -1,9 +1,8 @@
 package GUI.References.Editor;
 
 import Entities.References.PhysicalResources.Book;
-import Exceptions.ReferenceDatabaseException;
-import Exceptions.RequiredFieldMissingException;
-
+import Exceptions.InvalidInputException;
+import Exceptions.Database.ReferenceDatabaseException;
 import Controller.CategoryController;
 import Controller.ReferenceController;
 
@@ -59,7 +58,7 @@ public class BookEditor extends PublicationEditor<Book> {
     }
 
     @Override
-    protected Book createNewReference() throws RequiredFieldMissingException {
+    protected Book createNewReference() throws InvalidInputException {
         Book reference = super.createNewReference();
 
         reference.setISBN(getISBNValue());

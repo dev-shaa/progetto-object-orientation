@@ -7,8 +7,8 @@ import java.sql.Statement;
 
 import Controller.DatabaseController;
 import Entities.User;
-import Exceptions.DatabaseConnectionException;
-import Exceptions.UserDatabaseException;
+import Exceptions.Database.DatabaseConnectionException;
+import Exceptions.Database.UserDatabaseException;
 
 /**
  * Implementazione dell'interfaccia {@code UserDAO} per database relazionali PostgreSQL.

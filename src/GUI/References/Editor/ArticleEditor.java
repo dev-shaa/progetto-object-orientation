@@ -1,9 +1,8 @@
 package GUI.References.Editor;
 
 import Entities.References.PhysicalResources.Article;
-import Exceptions.ReferenceDatabaseException;
-import Exceptions.RequiredFieldMissingException;
-
+import Exceptions.InvalidInputException;
+import Exceptions.Database.ReferenceDatabaseException;
 import Controller.CategoryController;
 import Controller.ReferenceController;
 
@@ -59,7 +58,7 @@ public class ArticleEditor extends PublicationEditor<Article> {
     }
 
     @Override
-    protected Article createNewReference() throws RequiredFieldMissingException {
+    protected Article createNewReference() throws InvalidInputException {
         Article reference = super.createNewReference();
 
         reference.setISSN(getISSNValue());

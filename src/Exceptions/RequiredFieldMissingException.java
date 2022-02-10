@@ -3,7 +3,7 @@ package Exceptions;
 /**
  * Eccezione per indicare che un campo obbligatorio non è stato riempito.
  */
-public class RequiredFieldMissingException extends Exception {
+public class RequiredFieldMissingException extends InvalidInputException {
     public RequiredFieldMissingException() {
         super();
     }

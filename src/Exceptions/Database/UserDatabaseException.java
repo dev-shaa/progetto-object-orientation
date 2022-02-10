@@ -1,4 +1,4 @@
-package Exceptions;
+package Exceptions.Database;
 
 public class UserDatabaseException extends Exception {
 

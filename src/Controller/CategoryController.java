@@ -7,7 +7,7 @@ import java.util.List;
 import DAO.CategoryDAO;
 import Entities.Category;
 import Entities.References.BibliographicReference;
-import Exceptions.CategoryDatabaseException;
+import Exceptions.Database.CategoryDatabaseException;
 import GUI.Utilities.Tree.CustomTreeModel;
 import GUI.Utilities.Tree.CustomTreeNode;
 

@@ -1,7 +1,7 @@
 package GUI;
 
 import Entities.*;
-import Exceptions.UserDatabaseException;
+import Exceptions.Database.UserDatabaseException;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;

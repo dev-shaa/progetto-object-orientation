@@ -3,6 +3,7 @@ package GUI.Authors;
 import java.util.ArrayList;
 
 import Entities.Author;
+import Exceptions.InvalidAuthorInputException;
 import GUI.Utilities.TermsField;
 
 /**
@@ -29,7 +30,7 @@ public class AuthorInputField extends TermsField {
      * 
      * @return lista di autori
      */
-    public ArrayList<Author> getAuthors() {
+    public ArrayList<Author> getAuthors() throws InvalidAuthorInputException {
         ArrayList<String> terms = getTerms();
 
         if (terms == null || terms.isEmpty())
@@ -46,8 +47,9 @@ public class AuthorInputField extends TermsField {
             if (orcidStartIndex != -1 && orcidEndIndex != -1 && orcidStartIndex < orcidEndIndex) {
                 orcid = term.substring(orcidStartIndex + 1, orcidEndIndex);
 
-                if (!Author.isORCIDValid(orcid))
-                    orcid = null;
+                if (!Author.isORCIDValid(orcid)) {
+                    throw new InvalidAuthorInputException("L'ORCID non è valido");
+                }
             }
 
             String name = term.substring(0, orcidStartIndex == -1 ? term.length() : orcidStartIndex);

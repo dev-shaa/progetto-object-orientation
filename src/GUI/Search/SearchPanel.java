@@ -10,7 +10,7 @@ import com.toedter.calendar.JDateChooser;
 
 import Entities.Category;
 import Entities.Search;
-import Exceptions.EmptySearchException;
+import Exceptions.InvalidInputException;
 import GUI.Authors.AuthorInputField;
 import GUI.Tags.TagInputField;
 import GUI.Utilities.PopupCheckboxTree;
@@ -114,7 +114,7 @@ public class SearchPanel extends JPanel {
                 listener.search(search);
 
             reset();
-        } catch (EmptySearchException e) {
+        } catch (InvalidInputException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }

@@ -6,8 +6,8 @@ import java.util.*;
 import Controller.DatabaseController;
 import Entities.Author;
 import Entities.References.BibliographicReference;
-import Exceptions.AuthorDatabaseException;
-import Exceptions.DatabaseConnectionException;
+import Exceptions.Database.AuthorDatabaseException;
+import Exceptions.Database.DatabaseConnectionException;
 
 /**
  * Implementazione dell'interfaccia AuthorDAO per database relazionali PostgreSQL.

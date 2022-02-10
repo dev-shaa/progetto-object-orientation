@@ -1,4 +1,4 @@
-package Exceptions;
+package Exceptions.Database;
 
 public class TagDatabaseException extends Exception {
 

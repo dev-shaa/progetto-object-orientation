@@ -1,9 +1,8 @@
 package GUI.References.Editor;
 
 import Entities.References.OnlineResources.Image;
-import Exceptions.ReferenceDatabaseException;
-import Exceptions.RequiredFieldMissingException;
-
+import Exceptions.InvalidInputException;
+import Exceptions.Database.ReferenceDatabaseException;
 import Controller.CategoryController;
 import Controller.ReferenceController;
 
@@ -70,7 +69,7 @@ public class ImageEditor extends OnlineResourceEditor<Image> {
     }
 
     @Override
-    protected Image createNewReference() throws RequiredFieldMissingException {
+    protected Image createNewReference() throws InvalidInputException {
         Image reference = super.createNewReference();
 
         reference.setWidth(getWidthValue());
