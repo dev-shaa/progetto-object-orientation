@@ -15,6 +15,7 @@ import Controller.Controller;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.List;
 import java.awt.BorderLayout;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -282,7 +283,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         articleOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 categoriesTreePanel.clearSelection();
-                referenceListPanel.setReferences(null);
+                referenceListPanel.removeAllReferences();
 
                 getController().openArticleEditor(null);
             }
@@ -292,7 +293,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         bookOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 categoriesTreePanel.clearSelection();
-                referenceListPanel.setReferences(null);
+                referenceListPanel.removeAllReferences();
 
                 getController().openBookEditor(null);
             }
@@ -302,7 +303,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         thesisOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 categoriesTreePanel.clearSelection();
-                referenceListPanel.setReferences(null);
+                referenceListPanel.removeAllReferences();
 
                 getController().openThesisEditor(null);
             }
@@ -312,7 +313,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         websiteOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 categoriesTreePanel.clearSelection();
-                referenceListPanel.setReferences(null);
+                referenceListPanel.removeAllReferences();
 
                 getController().openWebsiteEditor(null);
             }
@@ -322,7 +323,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         sourceCodeOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 categoriesTreePanel.clearSelection();
-                referenceListPanel.setReferences(null);
+                referenceListPanel.removeAllReferences();
 
                 getController().openSourceCodeEditor(null);
             }
@@ -332,7 +333,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         imageOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 categoriesTreePanel.clearSelection();
-                referenceListPanel.setReferences(null);
+                referenceListPanel.removeAllReferences();
 
                 getController().openImageEditor(null);
             }
@@ -342,7 +343,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         videoOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 categoriesTreePanel.clearSelection();
-                referenceListPanel.setReferences(null);
+                referenceListPanel.removeAllReferences();
 
                 getController().openVideoEditor(null);
             }
@@ -449,7 +450,11 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         categoriesTreePanel.clearSelection();
 
         try {
+            List<BibliographicReference> references = getController().getReferenceController().get(search);
             referenceListPanel.setReferences(getController().getReferenceController().get(search));
+
+            String searchResultMessage = "Riferimenti trovati: " + references.size();
+            JOptionPane.showMessageDialog(this, searchResultMessage, "Risultati ricerca", JOptionPane.INFORMATION_MESSAGE);
         } catch (ReferenceDatabaseException e) {
             e.printStackTrace();
             referenceListPanel.setReferences(null);

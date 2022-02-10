@@ -39,27 +39,31 @@ public class AuthorInputField extends TermsField {
         ArrayList<Author> authors = new ArrayList<>(terms.size());
 
         for (String term : terms) {
-            int orcidStartIndex = term.indexOf('[');
-            int orcidEndIndex = term.lastIndexOf(']');
-
-            String orcid = null;
-
-            if (orcidStartIndex != -1 && orcidEndIndex != -1 && orcidStartIndex < orcidEndIndex) {
-                orcid = term.substring(orcidStartIndex + 1, orcidEndIndex);
-            }
-
-            String name = term.substring(0, orcidStartIndex == -1 ? term.length() : orcidStartIndex);
-
-            try {
-                authors.add(new Author(name, orcid));
-            } catch (IllegalArgumentException e) {
-                throw new InvalidAuthorInputException("L'ORCID inserito non è valido.");
-            }
+            authors.add(getAuthorFromString(term));
         }
 
         authors.trimToSize();
 
         return authors;
+    }
+
+    private Author getAuthorFromString(String string) throws InvalidAuthorInputException {
+        int orcidStartIndex = string.indexOf('[');
+        int orcidEndIndex = string.lastIndexOf(']');
+
+        String orcid = null;
+
+        if (orcidStartIndex != -1 && orcidEndIndex != -1 && orcidStartIndex < orcidEndIndex) {
+            orcid = string.substring(orcidStartIndex + 1, orcidEndIndex);
+        }
+
+        String name = string.substring(0, orcidStartIndex == -1 ? string.length() : orcidStartIndex);
+
+        try {
+            return new Author(name, orcid);
+        } catch (IllegalArgumentException e) {
+            throw new InvalidAuthorInputException("L'ORCID inserito non è valido.");
+        }
     }
 
 }
