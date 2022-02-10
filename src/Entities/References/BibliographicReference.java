@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Classe che rappresenta un riferimento bibiliografico.
+ * Classe che rappresenta un riferimento bibliografico.
  */
 public abstract class BibliographicReference {
 

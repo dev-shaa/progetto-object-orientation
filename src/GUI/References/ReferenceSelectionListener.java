@@ -9,7 +9,7 @@ import Entities.References.BibliographicReference;
 public interface ReferenceSelectionListener extends EventListener {
 
     /**
-     * Invocato quando viene eseguito il logout.
+     * Invocato quando viene selezionato un riferimento.
      * 
      * @param reference
      *            riferimento selezionato

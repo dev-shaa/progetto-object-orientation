@@ -283,7 +283,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         articleOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 categoriesTreePanel.clearSelection();
-                referenceListPanel.removeAllReferences();
+                referenceListPanel.clear();
 
                 getController().openArticleEditor(null);
             }
@@ -293,7 +293,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         bookOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 categoriesTreePanel.clearSelection();
-                referenceListPanel.removeAllReferences();
+                referenceListPanel.clear();
 
                 getController().openBookEditor(null);
             }
@@ -303,7 +303,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         thesisOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 categoriesTreePanel.clearSelection();
-                referenceListPanel.removeAllReferences();
+                referenceListPanel.clear();
 
                 getController().openThesisEditor(null);
             }
@@ -313,7 +313,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         websiteOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 categoriesTreePanel.clearSelection();
-                referenceListPanel.removeAllReferences();
+                referenceListPanel.clear();
 
                 getController().openWebsiteEditor(null);
             }
@@ -323,7 +323,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         sourceCodeOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 categoriesTreePanel.clearSelection();
-                referenceListPanel.removeAllReferences();
+                referenceListPanel.clear();
 
                 getController().openSourceCodeEditor(null);
             }
@@ -333,7 +333,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         imageOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 categoriesTreePanel.clearSelection();
-                referenceListPanel.removeAllReferences();
+                referenceListPanel.clear();
 
                 getController().openImageEditor(null);
             }
@@ -343,7 +343,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         videoOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 categoriesTreePanel.clearSelection();
-                referenceListPanel.removeAllReferences();
+                referenceListPanel.clear();
 
                 getController().openVideoEditor(null);
             }

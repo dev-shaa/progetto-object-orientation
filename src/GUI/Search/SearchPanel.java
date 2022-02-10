@@ -68,9 +68,9 @@ public class SearchPanel extends JPanel {
 
         addFieldComponent("Parole chiave", tags, null);
         addFieldComponent("Autori", authors, null);
-        addFieldComponent("Categorie", categories, "Seleziona le categorie in cui cercare il riferimento");
-        addFieldComponent("Da", dateFrom, "Data di inizio dell'intervallo di ricerca");
-        addFieldComponent("A", dateTo, "Data di fine dell'intervallo di ricerca");
+        addFieldComponent("Categorie", categories, "Seleziona le categorie in cui cercare il riferimento.");
+        addFieldComponent("Da", dateFrom, "Data di inizio dell'intervallo di ricerca.");
+        addFieldComponent("A", dateTo, "Data di fine dell'intervallo di ricerca.");
 
         Component spacing = Box.createVerticalGlue();
         spacing.setMaximumSize(new Dimension(100, 32));
@@ -89,34 +89,6 @@ public class SearchPanel extends JPanel {
 
         add(new JLabel("<html><b>Ricerca riferimenti</b></html>"), BorderLayout.NORTH);
         add(searchPanel, BorderLayout.CENTER);
-    }
-
-    private void addFieldComponent(String label, JComponent component, String tooltip) {
-        JLabel labelField = new JLabel(label);
-        labelField.setMaximumSize(maximumSize);
-        labelField.setAlignmentX(alignment);
-        searchPanel.add(labelField);
-
-        component.setMaximumSize(maximumSize);
-        component.setAlignmentX(alignment);
-
-        if (tooltip != null)
-            component.setToolTipText(tooltip);
-
-        searchPanel.add(component);
-    }
-
-    private void search() {
-        try {
-            Search search = new Search(dateFrom.getDate(), dateTo.getDate(), tags.getTags(), categories.getCheckboxTree().getSelectedItems(), authors.getAuthors());
-
-            for (SearchListener listener : searchListeners)
-                listener.search(search);
-
-            reset();
-        } catch (InvalidInputException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
-        }
     }
 
     /**
@@ -169,6 +141,34 @@ public class SearchPanel extends JPanel {
         categories.getCheckboxTree().clearSelection();
         dateFrom.setDate(null);
         dateTo.setDate(null);
+    }
+
+    private void addFieldComponent(String label, JComponent component, String tooltip) {
+        JLabel labelField = new JLabel(label);
+        labelField.setMaximumSize(maximumSize);
+        labelField.setAlignmentX(alignment);
+        searchPanel.add(labelField);
+
+        component.setMaximumSize(maximumSize);
+        component.setAlignmentX(alignment);
+
+        if (tooltip != null)
+            component.setToolTipText(tooltip);
+
+        searchPanel.add(component);
+    }
+
+    private void search() {
+        try {
+            Search search = new Search(dateFrom.getDate(), dateTo.getDate(), tags.getTags(), categories.getCheckboxTree().getSelectedItems(), authors.getAuthors());
+
+            for (SearchListener listener : searchListeners)
+                listener.search(search);
+
+            reset();
+        } catch (InvalidInputException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
     }
 
 }

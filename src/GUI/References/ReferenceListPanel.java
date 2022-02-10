@@ -54,7 +54,7 @@ public class ReferenceListPanel extends JScrollPane {
                 if (e.getValueIsAdjusting())
                     return;
 
-                notifyReferenceSelectionListeners();
+                notifyListeners();
             }
 
         });
@@ -69,27 +69,17 @@ public class ReferenceListPanel extends JScrollPane {
      *            i riferimenti da mostrare (se {@code null} non viene mostrato nulla)
      */
     public void setReferences(Collection<? extends BibliographicReference> references) {
-        removeAllReferences();
+        clear();
 
         if (references == null)
             return;
 
-        for (BibliographicReference reference : references)
-            addReference(reference);
-    }
-
-    /**
-     * Aggiunge un riferimento all'elenco attuale.
-     * 
-     * @param reference
-     *            riferimento da aggiungere
-     */
-    public void addReference(BibliographicReference reference) {
         if (displayedReferences == null)
             displayedReferences = new ArrayList<>();
 
-        displayedReferences.add(reference);
-        referencesTableModel.addRow(new Object[] { reference.getTitle(), reference.getAuthorsAsString(), reference.getFormattedDate(), reference.getQuotationCount() });
+        displayedReferences.addAll(references);
+
+        showDisplayedReferences();
     }
 
     /**
@@ -117,11 +107,18 @@ public class ReferenceListPanel extends JScrollPane {
     /**
      * Rimuove tutte le righe dalla tabella.
      */
-    public void removeAllReferences() {
+    public void clear() {
         if (displayedReferences != null)
             displayedReferences.clear();
 
         referencesTableModel.setRowCount(0);
+    }
+
+    /**
+     * Ricarica il pannello, aggiornando le informazioni che vengono mostrate.
+     */
+    public void reload() {
+        showDisplayedReferences();
     }
 
     /**
@@ -157,11 +154,26 @@ public class ReferenceListPanel extends JScrollPane {
         selectionListeners.remove(listener);
     }
 
+    private void showDisplayedReferences() {
+        if (displayedReferences == null)
+            return;
+
+        referencesTableModel.setRowCount(displayedReferences.size());
+
+        for (int i = 0; i < displayedReferences.size(); i++) {
+            BibliographicReference reference = displayedReferences.get(i);
+            referencesTableModel.setValueAt(reference.getTitle(), i, 0);
+            referencesTableModel.setValueAt(reference.getAuthorsAsString(), i, 1);
+            referencesTableModel.setValueAt(reference.getFormattedDate(), i, 2);
+            referencesTableModel.setValueAt(reference.getQuotationCount(), i, 3);
+        }
+    }
+
     private int getSelectedReferenceIndex() {
         return referencesTable.convertRowIndexToModel(referencesTable.getSelectedRow());
     }
 
-    private void notifyReferenceSelectionListeners() {
+    private void notifyListeners() {
         if (selectionListeners == null)
             return;
 
