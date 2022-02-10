@@ -130,14 +130,13 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
 
         Connection connection = null;
         Statement statement = null;
+        String command = "update category set name = '" + category.getName() + "' where id = " + category.getID();
 
         try {
             connection = DatabaseController.getConnection();
             statement = connection.createStatement();
 
-            String query = "update category set name = '" + category.getName() + "' where id = " + category.getID();
-
-            statement.executeUpdate(query);
+            statement.executeUpdate(command);
         } catch (SQLException | DatabaseConnectionException e) {
             throw new CategoryDatabaseException("Impossibile modificare questa categoria.");
         } finally {
@@ -166,14 +165,13 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
 
         Connection connection = null;
         Statement statement = null;
+        String command = "delete from category where id = " + category.getID();
 
         try {
             connection = DatabaseController.getConnection();
             statement = connection.createStatement();
 
-            String query = "delete from category where id = " + category.getID();
-
-            statement.executeUpdate(query);
+            statement.executeUpdate(command);
         } catch (SQLException | DatabaseConnectionException e) {
             throw new CategoryDatabaseException("Impossibile rimuovere questa categoria.");
         } finally {
