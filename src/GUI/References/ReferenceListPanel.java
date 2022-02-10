@@ -68,7 +68,7 @@ public class ReferenceListPanel extends JScrollPane {
      * @param references
      *            i riferimenti da mostrare (se {@code null} non viene mostrato nulla)
      */
-    public void setReferences(Collection<? extends BibliographicReference> references) {
+    public void showReferences(Collection<? extends BibliographicReference> references) {
         clear();
 
         if (references == null)

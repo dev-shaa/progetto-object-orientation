@@ -104,7 +104,6 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
      *            riferimenti da escludere
      */
     public void setVisible(boolean b, Collection<? extends BibliographicReference> referencesToExclude) {
-        boolean showErrorMessage = false;
         String errorMessage = null;
 
         if (b) {
@@ -113,9 +112,8 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
             try {
                 categoriesPanel.setCategoriesTree(categoryController.getTree());
                 categoriesPanel.clearSelection();
-                referencesPanel.setReferences(null);
+                referencesPanel.showReferences(null);
             } catch (CategoryDatabaseException e) {
-                showErrorMessage = true;
                 errorMessage = e.getMessage();
             }
 
@@ -124,9 +122,8 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
 
         super.setVisible(b);
 
-        if (showErrorMessage) {
+        if (errorMessage != null)
             JOptionPane.showMessageDialog(this, errorMessage, "Errore", JOptionPane.ERROR_MESSAGE);
-        }
     }
 
     /**
@@ -168,16 +165,16 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
             if (referencesToExclude != null)
                 referencesToShow.removeAll(referencesToExclude);
 
-            referencesPanel.setReferences(referencesToShow);
+            referencesPanel.showReferences(referencesToShow);
         } catch (ReferenceDatabaseException e) {
-            referencesPanel.setReferences(null);
+            referencesPanel.showReferences(null);
             JOptionPane.showMessageDialog(this, e.getMessage(), "Errore recupero riferimenti", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     @Override
     public void onCategoryClearSelection() {
-        referencesPanel.setReferences(null);
+        referencesPanel.showReferences(null);
     }
 
     @Override

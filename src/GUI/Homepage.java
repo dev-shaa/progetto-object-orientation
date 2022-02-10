@@ -102,8 +102,8 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
                 failedToLoad = true;
             }
 
-            referenceListPanel.setReferences(null);
-            referenceInfoPanel.setReference(null);
+            referenceListPanel.showReferences(null);
+            referenceInfoPanel.showReference(null);
             referenceSearchPanel.reset();
             setLocationRelativeTo(null);
         }
@@ -204,10 +204,11 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         removeCategoryButton.setEnabled(selectedCategory != null);
 
         try {
-            referenceListPanel.setReferences(getController().getReferenceController().get(selectedCategory));
+            referenceListPanel.showReferences(getController().getReferenceController().get(selectedCategory));
         } catch (ReferenceDatabaseException e) {
             e.printStackTrace();
-            referenceListPanel.setReferences(null);
+
+            referenceListPanel.showReferences(null);
             JOptionPane.showMessageDialog(this, e.getMessage(), "Errore recupero riferimenti", JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -251,7 +252,12 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
             int confirmDialogBoxOption = JOptionPane.showConfirmDialog(null, "Sicuro di voler eliminare questa categoria?", "Elimina categoria", JOptionPane.YES_NO_OPTION);
 
             if (confirmDialogBoxOption == JOptionPane.YES_OPTION) {
-                getController().getCategoryController().remove(categoriesTreePanel.getSelectedCategory());
+                Category category = categoriesTreePanel.getSelectedCategory();
+                getController().getCategoryController().remove(category);
+                getController().getReferenceController().removeCategoryFromReferences(category);
+
+                referenceListPanel.clear();
+                referenceInfoPanel.clear();
             }
         } catch (CategoryDatabaseException e) {
             e.printStackTrace();
@@ -396,7 +402,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
 
     @Override
     public void onReferenceSelection(BibliographicReference reference) {
-        referenceInfoPanel.setReference(reference);
+        referenceInfoPanel.showReference(reference);
         updateReferenceButton.setEnabled(reference != null);
         removeReferenceButton.setEnabled(reference != null);
     }
@@ -408,7 +414,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
             return;
 
         categoriesTreePanel.clearSelection();
-        referenceListPanel.setReferences(null);
+        referenceListPanel.showReferences(null);
 
         if (selectedReference instanceof Article) {
             getController().openArticleEditor((Article) selectedReference);
@@ -451,13 +457,13 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
 
         try {
             List<BibliographicReference> references = getController().getReferenceController().get(search);
-            referenceListPanel.setReferences(getController().getReferenceController().get(search));
+            referenceListPanel.showReferences(getController().getReferenceController().get(search));
 
             String searchResultMessage = "Riferimenti trovati: " + references.size();
             JOptionPane.showMessageDialog(this, searchResultMessage, "Risultati ricerca", JOptionPane.INFORMATION_MESSAGE);
         } catch (ReferenceDatabaseException e) {
             e.printStackTrace();
-            referenceListPanel.setReferences(null);
+            referenceListPanel.showReferences(null);
             JOptionPane.showMessageDialog(this, e.getMessage(), "Errore recupero riferimenti", JOptionPane.ERROR_MESSAGE);
         }
     }

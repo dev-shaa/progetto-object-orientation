@@ -42,7 +42,7 @@ public class ReferenceInfoPanel extends JScrollPane {
      * @param reference
      *            riferimento da mostrare
      */
-    public void setReference(BibliographicReference reference) {
+    public void showReference(BibliographicReference reference) {
         currentReference = reference;
 
         if (reference == null) {
@@ -64,7 +64,14 @@ public class ReferenceInfoPanel extends JScrollPane {
      * Ricarica il pannello, aggiornando le informazioni che vengono mostrate.
      */
     public void reload() {
-        setReference(currentReference);
+        showReference(currentReference);
+    }
+
+    /**
+     * Rimuove il riferimento mostrato.
+     */
+    public void clear() {
+        showReference(null);
     }
 
 }

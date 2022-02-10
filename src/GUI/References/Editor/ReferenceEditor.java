@@ -265,18 +265,6 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         fieldPanel.add(confirmButton);
     }
 
-    private void openReferencePicker() {
-        List<BibliographicReference> referencesToExclude = new ArrayList<>();
-
-        if (getRelatedReferenceValues() != null)
-            referencesToExclude.addAll(getRelatedReferenceValues());
-
-        if (getReferenceToChange() != null)
-            referencesToExclude.add(getReferenceToChange());
-
-        relatedReferencesDialog.setVisible(true, referencesToExclude);
-    }
-
     /**
      * Prepara i campi necessari per la creazione di un riferimento.
      */
@@ -340,6 +328,18 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
             setAuthorValues(reference.getAuthors());
             setCategoryValues(reference.getCategories());
         }
+    }
+
+    private void openReferencePicker() {
+        List<BibliographicReference> referencesToExclude = new ArrayList<>();
+
+        if (getRelatedReferenceValues() != null)
+            referencesToExclude.addAll(getRelatedReferenceValues());
+
+        if (getReferenceToChange() != null)
+            referencesToExclude.add(getReferenceToChange());
+
+        relatedReferencesDialog.setVisible(true, referencesToExclude);
     }
 
     @Override
