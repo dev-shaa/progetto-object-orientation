@@ -333,6 +333,8 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         save(website, command);
     }
 
+    // UTILITIES
+
     private void save(BibliographicReference reference, String subReferenceCommand) throws ReferenceDatabaseException {
         if (reference == null)
             return;

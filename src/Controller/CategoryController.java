@@ -15,15 +15,15 @@ import GUI.Utilities.Tree.CustomTreeNode;
  * Controller per gestire il recupero, l'inserimento, la rimozione e la modifica di categorie.
  */
 public class CategoryController {
+
     private CategoryDAO categoryDAO;
 
     private List<Category> categories;
     private CustomTreeModel<Category> treeModel;
+    private HashMap<Integer, Category> idToCategory;
 
     private boolean needToRetrieveFromDatabase;
     private boolean treeNeedsUpdate;
-
-    private HashMap<Integer, Category> idToCategory;
 
     /**
      * Crea un nuovo controller delle categorie con il DAO indicato.
