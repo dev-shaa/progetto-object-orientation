@@ -6,7 +6,7 @@ import Entities.Tag;
 import GUI.Utilities.TermsField;
 
 /**
- * Un {@code JTermsField} che restituisce dei tag a partire dai termini inseriti dall'utente.
+ * Un {@code TermsField} che restituisce dei tag a partire dai termini inseriti dall'utente.
  */
 public class TagInputField extends TermsField {
 
@@ -20,7 +20,8 @@ public class TagInputField extends TermsField {
         super(separator);
 
         super.setToolTipText("Parole chiave associate al riferimento, separate da una virgola.\n"
-                + "Esempio: \"Programmazione, Object Orientation\"");
+                + "Non fa distinzioni tra maiuscolo e minuscolo\n"
+                + "Esempio: \"programmazione, object orientation\"");
     }
 
     /**
@@ -36,8 +37,14 @@ public class TagInputField extends TermsField {
 
         ArrayList<Tag> tags = new ArrayList<>(tagsString.size());
 
-        for (String string : tagsString)
-            tags.add(new Tag(string));
+        for (String string : tagsString) {
+            Tag tag = new Tag(string);
+
+            if (!tags.contains(tag))
+                tags.add(new Tag(string));
+        }
+
+        tags.trimToSize();
 
         return tags;
     }
