@@ -2,46 +2,48 @@ package GUI.Tags;
 
 import java.util.ArrayList;
 
+import javax.swing.JTextField;
+
 import Entities.Tag;
-import GUI.Utilities.TermsField;
 
 /**
- * Un {@code TermsField} che restituisce dei tag a partire dai termini inseriti dall'utente.
+ * Un {@code JTextField} che restituisce dei tag a partire dai termini inseriti dall'utente.
  */
-public class TagInputField extends TermsField {
+public class TagInputField extends JTextField {
+
+    private final String separator = ",";
 
     /**
-     * Crea un nuovo {@code TagInputField} con il separatore indicato.
-     * 
-     * @param separator
-     *            separatore dei termini
+     * Crea un nuovo {@code TagInputField}.
      */
     public TagInputField() {
-        super(",");
+        super();
 
-        super.setToolTipText("Parole chiave associate al riferimento, separate da una virgola.\n"
-                + "Non fa distinzioni tra maiuscolo e minuscolo\n"
+        setToolTipText("Parole chiave associate al riferimento, separate da una virgola.\n"
+                + "Non fa distinzioni tra maiuscolo e minuscolo.\n"
                 + "Esempio: \"programmazione, object orientation\"");
     }
 
     /**
-     * Restituisce i tag dai termini inseriti dall'utente.
+     * Restituisce i tag inseriti dall'utente.
      * 
      * @return lista di tag
      */
     public ArrayList<Tag> getTags() {
-        ArrayList<String> tagsString = getTerms();
+        String[] inputText = getText().split(separator);
 
-        if (tagsString == null)
-            return null;
+        ArrayList<Tag> tags = new ArrayList<>(inputText.length);
 
-        ArrayList<Tag> tags = new ArrayList<>(tagsString.size());
+        for (String tagName : inputText) {
+            tagName = tagName.trim();
 
-        for (String string : tagsString) {
-            Tag tag = new Tag(string);
+            if (tagName.isEmpty() || tagName.isBlank())
+                continue;
+
+            Tag tag = new Tag(tagName);
 
             if (!tags.contains(tag))
-                tags.add(new Tag(string));
+                tags.add(tag);
         }
 
         tags.trimToSize();
