@@ -143,6 +143,7 @@ public class ReferenceController {
             throw new IllegalArgumentException("categoryController can't be null");
 
         this.categoryController = categoryController;
+
         forceNextRetrievalFromDatabase();
     }
 
@@ -255,7 +256,7 @@ public class ReferenceController {
             getAuthorDAO().save(reference.getAuthors());
             getReferenceDAO().save(reference);
             getTagDAO().save(reference);
-            saveLocally(reference);
+            saveToLocal(reference);
         } catch (AuthorDatabaseException | TagDatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
         }
@@ -279,7 +280,7 @@ public class ReferenceController {
             getAuthorDAO().save(reference.getAuthors());
             getReferenceDAO().save(reference);
             getTagDAO().save(reference);
-            saveLocally(reference);
+            saveToLocal(reference);
         } catch (AuthorDatabaseException | TagDatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
         }
@@ -303,7 +304,7 @@ public class ReferenceController {
             getAuthorDAO().save(reference.getAuthors());
             getReferenceDAO().save(reference);
             getTagDAO().save(reference);
-            saveLocally(reference);
+            saveToLocal(reference);
         } catch (AuthorDatabaseException | TagDatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
         }
@@ -327,7 +328,7 @@ public class ReferenceController {
             getAuthorDAO().save(reference.getAuthors());
             getReferenceDAO().save(reference);
             getTagDAO().save(reference);
-            saveLocally(reference);
+            saveToLocal(reference);
         } catch (AuthorDatabaseException | TagDatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
         }
@@ -351,7 +352,7 @@ public class ReferenceController {
             getAuthorDAO().save(reference.getAuthors());
             getReferenceDAO().save(reference);
             getTagDAO().save(reference);
-            saveLocally(reference);
+            saveToLocal(reference);
         } catch (AuthorDatabaseException | TagDatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
         }
@@ -375,7 +376,7 @@ public class ReferenceController {
             getAuthorDAO().save(reference.getAuthors());
             getReferenceDAO().save(reference);
             getTagDAO().save(reference);
-            saveLocally(reference);
+            saveToLocal(reference);
         } catch (AuthorDatabaseException | TagDatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
         }
@@ -399,7 +400,7 @@ public class ReferenceController {
             getAuthorDAO().save(reference.getAuthors());
             getReferenceDAO().save(reference);
             getTagDAO().save(reference);
-            saveLocally(reference);
+            saveToLocal(reference);
         } catch (AuthorDatabaseException | TagDatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
         }
@@ -412,16 +413,20 @@ public class ReferenceController {
         needToRetrieveFromDatabase = true;
     }
 
-    private void saveLocally(BibliographicReference reference) throws ReferenceDatabaseException {
-        int index = getAll().indexOf(reference);
+    private List<BibliographicReference> getFromLocal() {
+        return references;
+    }
+
+    private void saveToLocal(BibliographicReference reference) {
+        int index = getFromLocal().indexOf(reference);
 
         if (index == -1) {
-            getAll().add(reference);
+            getFromLocal().add(reference);
         } else {
             // se è già contenuta nell'elenco vuol dire che stiamo aggiornando il riferimento
             // conviene prima rimuoverlo dal conteggio delle citazioni ricevute e poi aggiornarlo di nuovo
 
-            getAll().set(index, reference);
+            getFromLocal().set(index, reference);
             replaceInRelatedReferences(reference);
             removeFromQuotationCount(reference);
         }
@@ -429,8 +434,8 @@ public class ReferenceController {
         addToQuotationCount(reference);
     }
 
-    private void removeFromLocal(BibliographicReference referenceToRemove) throws ReferenceDatabaseException {
-        getAll().remove(referenceToRemove);
+    private void removeFromLocal(BibliographicReference referenceToRemove) {
+        getFromLocal().remove(referenceToRemove);
 
         for (BibliographicReference reference : references) {
             reference.getRelatedReferences().remove(referenceToRemove);
@@ -457,12 +462,21 @@ public class ReferenceController {
         }
     }
 
-    private void replaceInRelatedReferences(BibliographicReference newReference) throws ReferenceDatabaseException {
-        for (BibliographicReference reference : getAll()) {
+    private void replaceInRelatedReferences(BibliographicReference newReference) {
+        for (BibliographicReference reference : getFromLocal()) {
             int index = reference.getRelatedReferences().indexOf(newReference);
 
             if (index != -1)
                 reference.getRelatedReferences().set(index, newReference);
+        }
+    }
+
+    public void removeCategoryFromReferences(Category category) {
+        if (category == null)
+            return;
+
+        for (BibliographicReference reference : getFromLocal()) {
+            reference.getCategories().remove(category);
         }
     }
 

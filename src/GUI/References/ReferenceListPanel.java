@@ -162,6 +162,7 @@ public class ReferenceListPanel extends JScrollPane {
 
         for (int i = 0; i < displayedReferences.size(); i++) {
             BibliographicReference reference = displayedReferences.get(i);
+
             referencesTableModel.setValueAt(reference.getTitle(), i, 0);
             referencesTableModel.setValueAt(reference.getAuthorsAsString(), i, 1);
             referencesTableModel.setValueAt(reference.getFormattedDate(), i, 2);
