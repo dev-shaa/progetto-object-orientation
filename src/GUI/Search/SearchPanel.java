@@ -32,7 +32,6 @@ public class SearchPanel extends JPanel {
 
     private ArrayList<SearchListener> searchListeners;
 
-    private final String searchFieldSeparator = ",";
     private final Dimension maximumSize = new Dimension(Integer.MAX_VALUE, 24);
     private final float alignment = Container.LEFT_ALIGNMENT;
 
@@ -62,7 +61,7 @@ public class SearchPanel extends JPanel {
         searchPanel.setLayout(new BoxLayout(searchPanel, BoxLayout.PAGE_AXIS));
 
         tags = new TagInputField();
-        authors = new AuthorInputField(searchFieldSeparator);
+        authors = new AuthorInputField();
         dateFrom = new JDateChooser();
         dateTo = new JDateChooser();
 

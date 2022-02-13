@@ -7,18 +7,18 @@ import Exceptions.Input.InvalidAuthorInputException;
 import GUI.Utilities.TermsField;
 
 /**
- * Un {@code JTermsField} che restituisce degli autori a partire dai termini inseriti dall'utente.
+ * Un {@code TermsField} che restituisce degli autori a partire dai termini inseriti dall'utente.
  */
 public class AuthorInputField extends TermsField {
 
     /**
-     * Crea un nuovo {@code AuthorInputField} con il separatore indicato.
+     * Crea un nuovo {@code AuthorInputField}.
      * 
      * @param separator
      *            separatore dei termini
      */
-    public AuthorInputField(String separator) {
-        super(separator);
+    public AuthorInputField() {
+        super(",");
 
         super.setToolTipText("Autori del riferimento, separati da una virgola.\n"
                 + "È possibile specificare l'ORCID mettendolo tra parentesi quadre.\n"
@@ -48,6 +48,9 @@ public class AuthorInputField extends TermsField {
     }
 
     private Author getAuthorFromString(String string) throws InvalidAuthorInputException {
+        if (string == null)
+            throw new IllegalArgumentException();
+
         int orcidStartIndex = string.indexOf('[');
         int orcidEndIndex = string.lastIndexOf(']');
 

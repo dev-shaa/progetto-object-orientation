@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import javax.swing.JTextField;
 
 /**
- * Un JTextField adattato come campo di ricerca, che restituisce i termini inseriti delimitati da un separatore.
+ * Un {@code JTextField} adattato come campo di ricerca, che restituisce i termini inseriti delimitati da un separatore.
  */
 public class TermsField extends JTextField {
 
@@ -21,16 +21,6 @@ public class TermsField extends JTextField {
     }
 
     /**
-     * Restituisce il separatore.
-     * 
-     * @return
-     *         separatore
-     */
-    public String getSeparator() {
-        return separator;
-    }
-
-    /**
      * Imposta l'espressione da usare come separatore.
      * 
      * @param separator
@@ -38,6 +28,16 @@ public class TermsField extends JTextField {
      */
     public void setSeparator(String separator) {
         this.separator = separator;
+    }
+
+    /**
+     * Restituisce il separatore.
+     * 
+     * @return
+     *         separatore
+     */
+    public String getSeparator() {
+        return separator;
     }
 
     /**
@@ -50,7 +50,7 @@ public class TermsField extends JTextField {
      *         i termini inseriti dall'utente, {@code null} se non ci sono termini validi
      */
     public ArrayList<String> getTerms() {
-        String[] text = getText().split(separator);
+        String[] text = getText().split(getSeparator());
 
         ArrayList<String> terms = new ArrayList<>(text.length);
 

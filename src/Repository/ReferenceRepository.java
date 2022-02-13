@@ -68,15 +68,6 @@ public class ReferenceRepository {
     }
 
     /**
-     * Restituisce il DAO usato per recuperare i riferimenti.
-     * 
-     * @return DAO dei riferimenti
-     */
-    public BibliographicReferenceDAO getReferenceDAO() {
-        return referenceDAO;
-    }
-
-    /**
      * Imposta la classe DAO per recuperare gli autori dei riferimenti.
      * 
      * @param authorDAO
@@ -92,15 +83,6 @@ public class ReferenceRepository {
     }
 
     /**
-     * Restituisce il DAO usato per recuperare gli autori dei riferimenti.
-     * 
-     * @return DAO degli autori
-     */
-    public AuthorDAO getAuthorDAO() {
-        return authorDAO;
-    }
-
-    /**
      * Imposta la classe DAO per recuperare le parole chiave dei riferimenti.
      * 
      * @param tagDAO
@@ -113,15 +95,6 @@ public class ReferenceRepository {
             throw new IllegalArgumentException("tagDAO can't be null");
 
         this.tagDAO = tagDAO;
-    }
-
-    /**
-     * Restituisce il DAO usato per recuperare le parole chiave dei riferimenti.
-     * 
-     * @return DAO delle parole chiave
-     */
-    public TagDAO getTagDAO() {
-        return tagDAO;
     }
 
     /**
@@ -142,15 +115,6 @@ public class ReferenceRepository {
     }
 
     /**
-     * Restituisce il controller usato per recuperare le categorie dei riferimenti.
-     * 
-     * @return controller delle categorie
-     */
-    public CategoryRepository getCategoryRepository() {
-        return categoryRepository;
-    }
-
-    /**
      * Restituisce tutti i riferimenti associati all'utente che sta usando l'applicazione.
      * 
      * @return
@@ -162,9 +126,9 @@ public class ReferenceRepository {
                 references = referenceDAO.getAll();
 
                 for (BibliographicReference reference : references) {
-                    reference.setCategories(getCategoryRepository().get(reference));
-                    reference.setAuthors(getAuthorDAO().get(reference));
-                    reference.setTags(getTagDAO().get(reference));
+                    reference.setCategories(categoryRepository.get(reference));
+                    reference.setAuthors(authorDAO.get(reference));
+                    reference.setTags(tagDAO.get(reference));
                 }
             } catch (ReferenceDatabaseException | CategoryDatabaseException | AuthorDatabaseException | TagDatabaseException e) {
                 throw new ReferenceDatabaseException(e.getMessage());
@@ -184,6 +148,7 @@ public class ReferenceRepository {
      *            categoria in cui cercare i riferimenti
      * @return lista dei riferimenti presenti in una categoria
      * @throws ReferenceDatabaseException
+     *             // TODO: commenta
      */
     public List<BibliographicReference> get(Category category) throws ReferenceDatabaseException {
         Predicate<BibliographicReference> categoryFilter = e -> e.isContainedIn(category);
@@ -231,7 +196,7 @@ public class ReferenceRepository {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
-        getReferenceDAO().remove(reference);
+        referenceDAO.remove(reference);
         removeFromLocal(reference);
     }
 
@@ -250,9 +215,9 @@ public class ReferenceRepository {
             throw new IllegalArgumentException("reference can't be null");
 
         try {
-            getAuthorDAO().save(reference.getAuthors());
-            getReferenceDAO().save(reference);
-            getTagDAO().save(reference);
+            authorDAO.save(reference.getAuthors());
+            referenceDAO.save(reference);
+            tagDAO.save(reference);
             saveToLocal(reference);
         } catch (AuthorDatabaseException | TagDatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
@@ -274,9 +239,9 @@ public class ReferenceRepository {
             throw new IllegalArgumentException("reference can't be null");
 
         try {
-            getAuthorDAO().save(reference.getAuthors());
-            getReferenceDAO().save(reference);
-            getTagDAO().save(reference);
+            authorDAO.save(reference.getAuthors());
+            referenceDAO.save(reference);
+            tagDAO.save(reference);
             saveToLocal(reference);
         } catch (AuthorDatabaseException | TagDatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
@@ -298,9 +263,9 @@ public class ReferenceRepository {
             throw new IllegalArgumentException("reference can't be null");
 
         try {
-            getAuthorDAO().save(reference.getAuthors());
-            getReferenceDAO().save(reference);
-            getTagDAO().save(reference);
+            authorDAO.save(reference.getAuthors());
+            referenceDAO.save(reference);
+            tagDAO.save(reference);
             saveToLocal(reference);
         } catch (AuthorDatabaseException | TagDatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
@@ -322,9 +287,9 @@ public class ReferenceRepository {
             throw new IllegalArgumentException("reference can't be null");
 
         try {
-            getAuthorDAO().save(reference.getAuthors());
-            getReferenceDAO().save(reference);
-            getTagDAO().save(reference);
+            authorDAO.save(reference.getAuthors());
+            referenceDAO.save(reference);
+            tagDAO.save(reference);
             saveToLocal(reference);
         } catch (AuthorDatabaseException | TagDatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
@@ -346,9 +311,9 @@ public class ReferenceRepository {
             throw new IllegalArgumentException("reference can't be null");
 
         try {
-            getAuthorDAO().save(reference.getAuthors());
-            getReferenceDAO().save(reference);
-            getTagDAO().save(reference);
+            authorDAO.save(reference.getAuthors());
+            referenceDAO.save(reference);
+            tagDAO.save(reference);
             saveToLocal(reference);
         } catch (AuthorDatabaseException | TagDatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
@@ -370,9 +335,9 @@ public class ReferenceRepository {
             throw new IllegalArgumentException("reference can't be null");
 
         try {
-            getAuthorDAO().save(reference.getAuthors());
-            getReferenceDAO().save(reference);
-            getTagDAO().save(reference);
+            authorDAO.save(reference.getAuthors());
+            referenceDAO.save(reference);
+            tagDAO.save(reference);
             saveToLocal(reference);
         } catch (AuthorDatabaseException | TagDatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
@@ -394,9 +359,9 @@ public class ReferenceRepository {
             throw new IllegalArgumentException("reference can't be null");
 
         try {
-            getAuthorDAO().save(reference.getAuthors());
-            getReferenceDAO().save(reference);
-            getTagDAO().save(reference);
+            authorDAO.save(reference.getAuthors());
+            referenceDAO.save(reference);
+            tagDAO.save(reference);
             saveToLocal(reference);
         } catch (AuthorDatabaseException | TagDatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());

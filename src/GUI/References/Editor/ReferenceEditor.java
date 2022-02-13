@@ -49,7 +49,6 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
 
     private T referenceToChange;
 
-    private final String separator = ",";
     private final Dimension maximumSize = new Dimension(Integer.MAX_VALUE, 24);
     private final Dimension spacingSize = new Dimension(0, 10);
     private final float alignment = Container.LEFT_ALIGNMENT;
@@ -203,7 +202,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
 
         title = new JTextField();
         tags = new TagInputField();
-        authors = new AuthorInputField(separator);
+        authors = new AuthorInputField();
         categories = new PopupCheckboxTree<>();
         DOI = new JTextField();
         pubblicationDate = new JDateChooser();

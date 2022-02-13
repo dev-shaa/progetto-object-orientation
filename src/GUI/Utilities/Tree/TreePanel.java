@@ -80,11 +80,6 @@ public class TreePanel<T extends Object> extends JScrollPane {
         return selectedNode == null ? null : selectedNode.getUserObject();
     }
 
-    @SuppressWarnings("unchecked")
-    private CustomTreeNode<T> getSelectedNode() {
-        return (CustomTreeNode<T>) tree.getLastSelectedPathComponent();
-    }
-
     /**
      * Aggiunge un listener all'evento di selezione di un nodo.
      * Se {@code listener == null} o se è già registrato all'evento, non succede niente.
@@ -116,6 +111,11 @@ public class TreePanel<T extends Object> extends JScrollPane {
             return;
 
         selectionListeners.remove(listener);
+    }
+
+    @SuppressWarnings("unchecked")
+    private CustomTreeNode<T> getSelectedNode() {
+        return (CustomTreeNode<T>) tree.getLastSelectedPathComponent();
     }
 
     private void notifyListener() {

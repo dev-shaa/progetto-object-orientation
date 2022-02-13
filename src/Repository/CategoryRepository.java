@@ -183,7 +183,7 @@ public class CategoryRepository {
     }
 
     /**
-     * Restituisce l'albero delle categorie.
+     * Restituisce le categorie dell'utente in forma di albero.
      * 
      * @return
      *         albero delle categorie dell'utente
