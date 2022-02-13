@@ -3,8 +3,8 @@ package GUI.References.Editor;
 import Entities.References.PhysicalResources.Book;
 import Exceptions.InvalidInputException;
 import Exceptions.Database.ReferenceDatabaseException;
-import Controller.CategoryController;
-import Controller.ReferenceController;
+import Repository.CategoryRepository;
+import Repository.ReferenceRepository;
 
 import java.awt.Frame;
 import javax.swing.JTextField;
@@ -28,7 +28,7 @@ public class BookEditor extends PublicationEditor<Book> {
      * @throws IllegalArgumentException
      *             se {@code categoryController == null} o {@code referenceController == null}
      */
-    public BookEditor(Frame owner, CategoryController categoryController, ReferenceController referenceController) {
+    public BookEditor(Frame owner, CategoryRepository categoryController, ReferenceRepository referenceController) {
         super(owner, "Libro", categoryController, referenceController);
     }
 

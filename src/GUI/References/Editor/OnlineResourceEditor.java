@@ -3,9 +3,8 @@ package GUI.References.Editor;
 import Entities.References.OnlineResources.OnlineResource;
 import Exceptions.InvalidInputException;
 import Exceptions.RequiredFieldMissingException;
-
-import Controller.CategoryController;
-import Controller.ReferenceController;
+import Repository.CategoryRepository;
+import Repository.ReferenceRepository;
 
 import javax.swing.*;
 import java.awt.Frame;
@@ -31,7 +30,7 @@ public abstract class OnlineResourceEditor<T extends OnlineResource> extends Ref
      * @throws IllegalArgumentException
      *             se {@code categoryController == null} o {@code referenceController == null}
      */
-    public OnlineResourceEditor(Frame owner, String title, CategoryController categoryController, ReferenceController referenceController) {
+    public OnlineResourceEditor(Frame owner, String title, CategoryRepository categoryController, ReferenceRepository referenceController) {
         super(owner, title, categoryController, referenceController);
     }
 

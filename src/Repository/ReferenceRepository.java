@@ -1,33 +1,27 @@
-package Controller;
+package Repository;
 
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import DAO.AuthorDAO;
-import DAO.BibliographicReferenceDAO;
-import DAO.TagDAO;
-import Entities.Category;
-import Entities.Search;
+import DAO.*;
+import Entities.*;
 import Entities.References.*;
 import Entities.References.OnlineResources.*;
 import Entities.References.PhysicalResources.*;
-import Exceptions.Database.AuthorDatabaseException;
-import Exceptions.Database.CategoryDatabaseException;
-import Exceptions.Database.ReferenceDatabaseException;
-import Exceptions.Database.TagDatabaseException;
+import Exceptions.Database.*;
 
 /**
  * Controller per gestire il recupero, l'inserimento, la rimozione e la modifica di riferimenti.
  * <p>
  * Serve per non doversi sempre interfacciarsi col database per recuperare le categorie.
  */
-public class ReferenceController {
+public class ReferenceRepository {
 
     private BibliographicReferenceDAO referenceDAO;
     private AuthorDAO authorDAO;
     private TagDAO tagDAO;
-    private CategoryController categoryController;
+    private CategoryRepository categoryRepository;
 
     private List<BibliographicReference> references;
 
@@ -42,17 +36,17 @@ public class ReferenceController {
      *            DAO per recuperare gli autori dei riferimenti dal database
      * @param tagDAO
      *            DAO per recuperare le parole chiave dei riferimenti dal database
-     * @param categoryController
+     * @param categoryRepository
      *            controller per recuperare le categorie associate ai riferimenti
      * @throws IllegalArgumentException
      *             se {@code referenceDAO == null}, {@code authorDAO == null}, {@code tagDAO == null} o {@code categoryController == null}
      * @see #setReferenceDAO(BibliographicReferenceDAO)
      * @see #setAuthorDAO(AuthorDAO)
-     * @see #setCategoryController(CategoryController)
+     * @see #setCategoryRepository(CategoryRepository)
      */
-    public ReferenceController(BibliographicReferenceDAO referenceDAO, AuthorDAO authorDAO, TagDAO tagDAO, CategoryController categoryController) {
+    public ReferenceRepository(BibliographicReferenceDAO referenceDAO, AuthorDAO authorDAO, TagDAO tagDAO, CategoryRepository categoryRepository) {
         setReferenceDAO(referenceDAO);
-        setCategoryController(categoryController);
+        setCategoryRepository(categoryRepository);
         setAuthorDAO(authorDAO);
         setTagDAO(tagDAO);
     }
@@ -133,16 +127,16 @@ public class ReferenceController {
     /**
      * Imposta il controller per recuperare le categorie associate ai riferimenti.
      * 
-     * @param categoryController
+     * @param categoryRepository
      *            controller delle categorie
      * @throws IllegalArgumentException
      *             se {@code categoryController == null}
      */
-    public void setCategoryController(CategoryController categoryController) {
-        if (categoryController == null)
+    public void setCategoryRepository(CategoryRepository categoryRepository) {
+        if (categoryRepository == null)
             throw new IllegalArgumentException("categoryController can't be null");
 
-        this.categoryController = categoryController;
+        this.categoryRepository = categoryRepository;
 
         forceNextRetrievalFromDatabase();
     }
@@ -152,8 +146,8 @@ public class ReferenceController {
      * 
      * @return controller delle categorie
      */
-    public CategoryController getCategoryController() {
-        return categoryController;
+    public CategoryRepository getCategoryRepository() {
+        return categoryRepository;
     }
 
     /**
@@ -168,15 +162,15 @@ public class ReferenceController {
                 references = referenceDAO.getAll();
 
                 for (BibliographicReference reference : references) {
-                    reference.setCategories(getCategoryController().get(reference));
+                    reference.setCategories(getCategoryRepository().get(reference));
                     reference.setAuthors(getAuthorDAO().get(reference));
                     reference.setTags(getTagDAO().get(reference));
                 }
-
-                needToRetrieveFromDatabase = false;
             } catch (ReferenceDatabaseException | CategoryDatabaseException | AuthorDatabaseException | TagDatabaseException e) {
                 throw new ReferenceDatabaseException(e.getMessage());
             }
+
+            needToRetrieveFromDatabase = false;
         }
 
         return references;
@@ -189,6 +183,7 @@ public class ReferenceController {
      * @param category
      *            categoria in cui cercare i riferimenti
      * @return lista dei riferimenti presenti in una categoria
+     * @throws ReferenceDatabaseException
      */
     public List<BibliographicReference> get(Category category) throws ReferenceDatabaseException {
         Predicate<BibliographicReference> categoryFilter = e -> e.isContainedIn(category);
@@ -203,6 +198,8 @@ public class ReferenceController {
      * @return lista dei riferimenti corrispondenti alla ricerca
      * @throws IllegalArgumentException
      *             se {@code search == null}
+     * @throws ReferenceDatabaseException
+     *             // TODO: commenta
      */
     public List<BibliographicReference> get(Search search) throws ReferenceDatabaseException {
         if (search == null)

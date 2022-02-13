@@ -3,8 +3,8 @@ package GUI.References.Editor;
 import Entities.References.OnlineResources.Website;
 import Exceptions.InvalidInputException;
 import Exceptions.Database.ReferenceDatabaseException;
-import Controller.CategoryController;
-import Controller.ReferenceController;
+import Repository.CategoryRepository;
+import Repository.ReferenceRepository;
 
 import java.awt.Frame;
 
@@ -25,7 +25,7 @@ public class WebsiteEditor extends OnlineResourceEditor<Website> {
      * @throws IllegalArgumentException
      *             se {@code categoryController == null} o {@code referenceController == null}
      */
-    public WebsiteEditor(Frame owner, CategoryController categoryController, ReferenceController referenceController) {
+    public WebsiteEditor(Frame owner, CategoryRepository categoryController, ReferenceRepository referenceController) {
         super(owner, "Sito web", categoryController, referenceController);
     }
 

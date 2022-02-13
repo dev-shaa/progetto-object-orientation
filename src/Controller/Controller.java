@@ -6,6 +6,8 @@ import com.formdev.flatlaf.*;
 import DAO.*;
 import GUI.*;
 import GUI.References.Editor.*;
+import Repository.CategoryRepository;
+import Repository.ReferenceRepository;
 import Entities.*;
 import Entities.References.OnlineResources.*;
 import Entities.References.OnlineResources.Image;
@@ -28,8 +30,8 @@ public class Controller {
     private WebsiteEditor websiteEditor;
 
     private User user;
-    private CategoryController categoryController;
-    private ReferenceController referenceController;
+    private CategoryRepository categoryRepository;
+    private ReferenceRepository referenceRepository;
     private UserController loginController;
 
     /**
@@ -45,8 +47,8 @@ public class Controller {
      * 
      * @return controller dei riferimenti
      */
-    public ReferenceController getReferenceController() {
-        return referenceController;
+    public ReferenceRepository getReferenceController() {
+        return referenceRepository;
     }
 
     /**
@@ -54,8 +56,8 @@ public class Controller {
      * 
      * @return controller delle categoria
      */
-    public CategoryController getCategoryController() {
-        return categoryController;
+    public CategoryRepository getCategoryController() {
+        return categoryRepository;
     }
 
     /**
@@ -101,13 +103,13 @@ public class Controller {
     public void openHomePage(User user) {
         this.user = user;
 
-        AuthorDAO authorDAO = new AuthorDAOPostgreSQL();
         CategoryDAO categoryDAO = new CategoryDAOPostgreSQL(getUser());
         BibliographicReferenceDAO referenceDAO = new BibliographicReferenceDAOPostgreSQL(getUser());
+        AuthorDAO authorDAO = new AuthorDAOPostgreSQL();
         TagDAO tagDAO = new TagDAOPostgreSQL();
 
-        categoryController = new CategoryController(categoryDAO);
-        referenceController = new ReferenceController(referenceDAO, authorDAO, tagDAO, categoryController);
+        categoryRepository = new CategoryRepository(categoryDAO);
+        referenceRepository = new ReferenceRepository(referenceDAO, authorDAO, tagDAO, categoryRepository);
 
         if (homepage == null)
             homepage = new Homepage(this);

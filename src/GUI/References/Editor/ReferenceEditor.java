@@ -6,6 +6,8 @@ import GUI.Authors.AuthorInputField;
 import GUI.References.Picker.*;
 import GUI.Tags.TagInputField;
 import GUI.Utilities.*;
+import Repository.CategoryRepository;
+import Repository.ReferenceRepository;
 import Exceptions.InvalidAuthorInputException;
 import Exceptions.InvalidInputException;
 import Exceptions.RequiredFieldMissingException;
@@ -21,9 +23,6 @@ import java.util.List;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import com.toedter.calendar.JDateChooser;
-
-import Controller.CategoryController;
-import Controller.ReferenceController;
 
 /**
  * Finestra di dialogo per la creazione o modifica di un riferimento bibliografico.
@@ -45,8 +44,8 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
 
     private JPanel fieldPanel;
 
-    private CategoryController categoryController;
-    private ReferenceController referenceController;
+    private CategoryRepository categoryController;
+    private ReferenceRepository referenceController;
 
     private T referenceToChange;
 
@@ -69,7 +68,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      * @throws IllegalArgumentException
      *             se {@code categoryController == null} o {@code referenceController == null}
      */
-    public ReferenceEditor(Frame owner, String title, CategoryController categoryController, ReferenceController referenceController) {
+    public ReferenceEditor(Frame owner, String title, CategoryRepository categoryController, ReferenceRepository referenceController) {
         super(owner, title, true);
 
         setSize(500, 700);
@@ -89,7 +88,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      * @throws IllegalArgumentException
      *             se {@code categoryController == null}
      */
-    public void setCategoryController(CategoryController categoryController) {
+    public void setCategoryController(CategoryRepository categoryController) {
         if (categoryController == null)
             throw new IllegalArgumentException("categoryController can't be null");
 
@@ -101,7 +100,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      * 
      * @return controller delle categorie
      */
-    public CategoryController getCategoryController() {
+    public CategoryRepository getCategoryController() {
         return categoryController;
     }
 
@@ -113,7 +112,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      * @throws IllegalArgumentException
      *             se {@code referenceController == null}
      */
-    public void setReferenceController(ReferenceController referenceController) {
+    public void setReferenceController(ReferenceRepository referenceController) {
         if (referenceController == null)
             throw new IllegalArgumentException("referenceController can't be null");
 
@@ -126,7 +125,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      * @return
      *         controller dei riferimenti
      */
-    public ReferenceController getReferenceController() {
+    public ReferenceRepository getReferenceController() {
         return referenceController;
     }
 

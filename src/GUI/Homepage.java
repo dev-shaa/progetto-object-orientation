@@ -497,7 +497,7 @@ public class Homepage extends JFrame implements TreePanelSelectionListener<Categ
     }
 
     @Override
-    public void onObjectSelection(Category category) {
+    public void onTreePanelSelection(Category category) {
         createCategoryButton.setEnabled(true);
         updateCategoryButton.setEnabled(category != null);
         removeCategoryButton.setEnabled(category != null);
@@ -513,7 +513,7 @@ public class Homepage extends JFrame implements TreePanelSelectionListener<Categ
     }
 
     @Override
-    public void onObjectDeselection() {
+    public void onTreePanelClearSelection() {
         createCategoryButton.setEnabled(false);
         updateCategoryButton.setEnabled(false);
         removeCategoryButton.setEnabled(false);

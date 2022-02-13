@@ -58,6 +58,8 @@ public class TreePanel<T extends Object> extends JScrollPane {
 
         for (int i = 0; i < tree.getRowCount(); i++)
             tree.expandRow(i);
+
+        clearSelection();
     }
 
     /**

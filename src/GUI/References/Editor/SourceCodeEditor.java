@@ -4,8 +4,8 @@ import Entities.References.OnlineResources.SourceCode;
 import Entities.References.OnlineResources.ProgrammingLanguage;
 import Exceptions.InvalidInputException;
 import Exceptions.Database.ReferenceDatabaseException;
-import Controller.CategoryController;
-import Controller.ReferenceController;
+import Repository.CategoryRepository;
+import Repository.ReferenceRepository;
 
 import java.awt.Frame;
 import javax.swing.JComboBox;
@@ -29,7 +29,7 @@ public class SourceCodeEditor extends OnlineResourceEditor<SourceCode> {
      * @throws IllegalArgumentException
      *             se {@code categoryController == null} o {@code referenceController == null}
      */
-    public SourceCodeEditor(Frame owner, CategoryController categoryController, ReferenceController referenceController) {
+    public SourceCodeEditor(Frame owner, CategoryRepository categoryController, ReferenceRepository referenceController) {
         super(owner, "Codice sorgente", categoryController, referenceController);
     }
 

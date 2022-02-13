@@ -1,4 +1,4 @@
-package Controller;
+package Repository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,7 +14,7 @@ import GUI.Utilities.Tree.CustomTreeNode;
 /**
  * Controller per gestire il recupero, l'inserimento, la rimozione e la modifica di categorie.
  */
-public class CategoryController {
+public class CategoryRepository {
 
     private CategoryDAO categoryDAO;
 
@@ -33,7 +33,7 @@ public class CategoryController {
      * @throws IllegalArgumentException
      *             se {@code categoryDAO == null}
      */
-    public CategoryController(CategoryDAO categoryDAO) {
+    public CategoryRepository(CategoryDAO categoryDAO) {
         setCategoryDAO(categoryDAO);
 
         idToCategory = new HashMap<>();
@@ -58,15 +58,6 @@ public class CategoryController {
     }
 
     /**
-     * Restituisce la classe DAO usata per recuperare le categorie.
-     * 
-     * @return classe DAO per le categorie
-     */
-    public CategoryDAO getCategoryDAO() {
-        return categoryDAO;
-    }
-
-    /**
      * Salva una categoria.
      * <p>
      * Il modello dell'albero delle categorie verrà aggiornato.
@@ -84,7 +75,7 @@ public class CategoryController {
         if (category == null)
             throw new IllegalArgumentException("category can't be null");
 
-        getCategoryDAO().save(category);
+        categoryDAO.save(category);
 
         idToCategory.put(category.getID(), category);
 
@@ -120,7 +111,7 @@ public class CategoryController {
         category.setName(newName);
 
         try {
-            getCategoryDAO().update(category);
+            categoryDAO.update(category);
         } catch (CategoryDatabaseException e) {
             category.setName(oldName);
             throw e;
@@ -141,10 +132,8 @@ public class CategoryController {
         if (category == null)
             throw new IllegalArgumentException("category can't be null");
 
-        getCategoryDAO().remove(category);
-
+        categoryDAO.remove(category);
         idToCategory.remove(category.getID());
-
         treeModel.removeNodeFromParent(treeModel.findNode(category));
     }
 
@@ -164,9 +153,8 @@ public class CategoryController {
      * @see #forceNextRetrievalFromDatabase()
      */
     public List<Category> getAll() throws CategoryDatabaseException {
-        if (needToRetrieveFromDatabase) {
+        if (needToRetrieveFromDatabase)
             retrieveFromDatabase();
-        }
 
         return categories;
     }
@@ -183,16 +171,14 @@ public class CategoryController {
     public List<Category> get(BibliographicReference reference) throws CategoryDatabaseException {
 
         // ci serve perchè dobbiamo prima assicurarci che idToCategory sia pieno
-        if (needToRetrieveFromDatabase) {
+        if (needToRetrieveFromDatabase)
             retrieveFromDatabase();
-        }
 
-        List<Integer> ids = getCategoryDAO().getIDs(reference);
+        List<Integer> ids = categoryDAO.getIDs(reference);
         ArrayList<Category> categories = new ArrayList<>();
 
-        for (Integer id : ids) {
+        for (Integer id : ids)
             categories.add(idToCategory.get(id));
-        }
 
         categories.trimToSize();
         return categories;
@@ -245,13 +231,12 @@ public class CategoryController {
 
     private void retrieveFromDatabase() throws CategoryDatabaseException {
         idToCategory.clear();
+        categories = categoryDAO.getAll();
 
-        categories = getCategoryDAO().getAll();
-
-        for (Category category : categories) {
+        for (Category category : categories)
             idToCategory.put(category.getID(), category);
-        }
 
         needToRetrieveFromDatabase = false;
     }
+
 }

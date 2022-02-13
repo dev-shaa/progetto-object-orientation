@@ -2,9 +2,8 @@ package GUI.References.Editor;
 
 import Entities.References.PhysicalResources.Publication;
 import Exceptions.InvalidInputException;
-
-import Controller.CategoryController;
-import Controller.ReferenceController;
+import Repository.CategoryRepository;
+import Repository.ReferenceRepository;
 
 import java.awt.Frame;
 import javax.swing.JSpinner;
@@ -34,7 +33,7 @@ public abstract class PublicationEditor<T extends Publication> extends Reference
      * @throws IllegalArgumentException
      *             se {@code categoryController == null} o {@code referenceController == null}
      */
-    public PublicationEditor(Frame owner, String title, CategoryController categoryController, ReferenceController referenceController) {
+    public PublicationEditor(Frame owner, String title, CategoryRepository categoryController, ReferenceRepository referenceController) {
         super(owner, title, categoryController, referenceController);
     }
 

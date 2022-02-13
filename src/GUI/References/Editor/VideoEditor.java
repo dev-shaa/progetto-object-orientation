@@ -3,8 +3,8 @@ package GUI.References.Editor;
 import Entities.References.OnlineResources.Video;
 import Exceptions.InvalidInputException;
 import Exceptions.Database.ReferenceDatabaseException;
-import Controller.CategoryController;
-import Controller.ReferenceController;
+import Repository.CategoryRepository;
+import Repository.ReferenceRepository;
 
 import java.awt.Frame;
 import javax.swing.JSpinner;
@@ -32,7 +32,7 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
      * @throws IllegalArgumentException
      *             se {@code categoryController == null} o {@code referenceController == null}
      */
-    public VideoEditor(Frame owner, CategoryController categoryController, ReferenceController referenceController) {
+    public VideoEditor(Frame owner, CategoryRepository categoryController, ReferenceRepository referenceController) {
         super(owner, "Video", categoryController, referenceController);
     }
 

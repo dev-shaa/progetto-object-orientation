@@ -11,8 +11,6 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.border.EmptyBorder;
 
-import Controller.CategoryController;
-import Controller.ReferenceController;
 import Entities.Category;
 import Entities.References.BibliographicReference;
 import Exceptions.Database.CategoryDatabaseException;
@@ -21,6 +19,8 @@ import GUI.References.ReferenceListPanel;
 import GUI.References.ReferenceSelectionListener;
 import GUI.Utilities.Tree.TreePanel;
 import GUI.Utilities.Tree.TreePanelSelectionListener;
+import Repository.CategoryRepository;
+import Repository.ReferenceRepository;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -31,8 +31,8 @@ import java.awt.event.ActionListener;
  */
 public class ReferencePicker extends JDialog implements TreePanelSelectionListener<Category>, ReferenceSelectionListener {
 
-    private CategoryController categoryController;
-    private ReferenceController referenceController;
+    private CategoryRepository categoryRepository;
+    private ReferenceRepository referenceRepository;
 
     private TreePanel<Category> categoriesPanel;
     private ReferenceListPanel referencesPanel;
@@ -44,21 +44,22 @@ public class ReferencePicker extends JDialog implements TreePanelSelectionListen
     /**
      * Crea una nuova finestra di dialogo in cui è possibile scegliere un riferimento.
      * 
-     * @param categoryController
+     * @param categoryRepository
      *            controller delle categorie
-     * @param referenceController
+     * @param referenceRepository
      *            controller dei riferimenti
      * @throws IllegalArgumentException
      *             se {@code categoryManager == null} o {@code referenceManager == null}
      */
-    public ReferencePicker(CategoryController categoryController, ReferenceController referenceController) {
-        setCategoryController(categoryController);
-        setReferenceController(referenceController);
+    public ReferencePicker(CategoryRepository categoryRepository, ReferenceRepository referenceRepository) {
+        setCategoryRepository(categoryRepository);
+        setReferenceRepository(referenceRepository);
 
-        setTitle("Aggiungi riferimento");
+        setTitle("Seleziona riferimento");
         setModal(true);
         setSize(500, 500);
         setResizable(false);
+        setLocationRelativeTo(null);
 
         JPanel contentPane = new JPanel(new BorderLayout(10, 10));
         setContentPane(contentPane);
@@ -111,14 +112,11 @@ public class ReferencePicker extends JDialog implements TreePanelSelectionListen
             this.referencesToExclude = referencesToExclude;
 
             try {
-                categoriesPanel.setTreeModel(categoryController.getTree());
-                categoriesPanel.clearSelection();
-                referencesPanel.showReferences(null);
+                categoriesPanel.setTreeModel(categoryRepository.getTree());
+                referencesPanel.clear();
             } catch (CategoryDatabaseException e) {
                 errorMessage = e.getMessage();
             }
-
-            setLocationRelativeTo(null);
         }
 
         super.setVisible(b);
@@ -131,36 +129,56 @@ public class ReferencePicker extends JDialog implements TreePanelSelectionListen
      * Imposta il controller delle categorie.
      * Reimposta i pannelli delle categorie e dei riferimenti.
      * 
-     * @param categoryController
+     * @param categoryRepository
      *            controller delle categorie
      * @throws IllegalArgumentException
      *             se {@code categoryController == null}
      */
-    public void setCategoryController(CategoryController categoryController) {
-        if (categoryController == null)
-            throw new IllegalArgumentException("categoryController can't be null");
+    public void setCategoryRepository(CategoryRepository categoryRepository) {
+        if (categoryRepository == null)
+            throw new IllegalArgumentException("categoryRepository can't be null");
 
-        this.categoryController = categoryController;
+        this.categoryRepository = categoryRepository;
     }
 
     /**
      * Imposta il controller dei riferimenti.
      * 
-     * @param referenceController
+     * @param referenceRepository
      *            controller dei riferimenti
      * @throws IllegalArgumentException
      *             se {@code referenceController == null}
      */
-    public void setReferenceController(ReferenceController referenceController) {
-        if (referenceController == null)
-            throw new IllegalArgumentException("referenceController can't be null");
+    public void setReferenceRepository(ReferenceRepository referenceRepository) {
+        if (referenceRepository == null)
+            throw new IllegalArgumentException("referenceRepository can't be null");
 
-        this.referenceController = referenceController;
+        this.referenceRepository = referenceRepository;
     }
 
     @Override
     public void onReferenceSelection(BibliographicReference reference) {
         confirmButton.setEnabled(reference != null);
+    }
+
+    @Override
+    public void onTreePanelSelection(Category category) {
+        try {
+            List<BibliographicReference> referencesToShow = referenceRepository.get(category);
+
+            if (referencesToExclude != null)
+                referencesToShow.removeAll(referencesToExclude);
+
+            referencesPanel.showReferences(referencesToShow);
+        } catch (ReferenceDatabaseException e) {
+            referencesPanel.clear();
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Errore recupero riferimenti", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    @Override
+    public void onTreePanelClearSelection() {
+        referencesPanel.clear();
     }
 
     /**
@@ -205,26 +223,6 @@ public class ReferencePicker extends JDialog implements TreePanelSelectionListen
         }
 
         setVisible(false);
-    }
-
-    @Override
-    public void onObjectSelection(Category category) {
-        try {
-            List<BibliographicReference> referencesToShow = referenceController.get(category);
-
-            if (referencesToExclude != null)
-                referencesToShow.removeAll(referencesToExclude);
-
-            referencesPanel.showReferences(referencesToShow);
-        } catch (ReferenceDatabaseException e) {
-            referencesPanel.showReferences(null);
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Errore recupero riferimenti", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    @Override
-    public void onObjectDeselection() {
-        referencesPanel.showReferences(null);
     }
 
 }

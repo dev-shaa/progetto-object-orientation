@@ -3,8 +3,8 @@ package GUI.References.Editor;
 import Entities.References.OnlineResources.Image;
 import Exceptions.InvalidInputException;
 import Exceptions.Database.ReferenceDatabaseException;
-import Controller.CategoryController;
-import Controller.ReferenceController;
+import Repository.CategoryRepository;
+import Repository.ReferenceRepository;
 
 import java.awt.Frame;
 import javax.swing.JSpinner;
@@ -30,7 +30,7 @@ public class ImageEditor extends OnlineResourceEditor<Image> {
      * @throws IllegalArgumentException
      *             se {@code categoryController == null} o {@code referenceController == null}
      */
-    public ImageEditor(Frame owner, CategoryController categoryController, ReferenceController referenceController) {
+    public ImageEditor(Frame owner, CategoryRepository categoryController, ReferenceRepository referenceController) {
         super(owner, "Immagine", categoryController, referenceController);
     }
 
