@@ -2,8 +2,8 @@ package GUI.Utilities;
 
 import java.awt.Dimension;
 
-import GUI.Utilities.Tree.CheckboxTree;
 import GUI.Utilities.Tree.CustomTreeModel;
+import GUI.Utilities.Tree.Checkbox.CheckboxTree;
 
 /**
  * Un {@code PopupButton} al cui interno è presente un {@code CheckBoxTree}.
