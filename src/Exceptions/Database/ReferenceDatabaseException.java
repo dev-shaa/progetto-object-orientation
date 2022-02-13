@@ -3,7 +3,7 @@ package Exceptions.Database;
 /**
  * Eccezione per indicare che qualcosa è andato storto nell'interazione con il database dei riferimenti.
  */
-public class ReferenceDatabaseException extends Exception {
+public class ReferenceDatabaseException extends DatabaseException {
     public ReferenceDatabaseException() {
         super();
     }

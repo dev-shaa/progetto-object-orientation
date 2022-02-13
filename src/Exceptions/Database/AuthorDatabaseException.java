@@ -3,7 +3,7 @@ package Exceptions.Database;
 /**
  * Eccezione per indicare che qualcosa è andato storto nell'interazione con il database degli autori.
  */
-public class AuthorDatabaseException extends Exception {
+public class AuthorDatabaseException extends DatabaseException {
     public AuthorDatabaseException() {
         super();
     }
