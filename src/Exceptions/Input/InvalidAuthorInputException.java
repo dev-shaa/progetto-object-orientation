@@ -1,4 +1,4 @@
-package Exceptions;
+package Exceptions.Input;
 
 /**
  * Eccezione per indicare che l'input degli autori inseriti non è valido.

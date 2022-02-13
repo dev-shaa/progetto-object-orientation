@@ -1,8 +1,8 @@
 package GUI.References.Editor;
 
 import Entities.References.OnlineResources.OnlineResource;
-import Exceptions.InvalidInputException;
-import Exceptions.RequiredFieldMissingException;
+import Exceptions.Input.InvalidInputException;
+import Exceptions.Input.RequiredFieldMissingException;
 import Repository.CategoryRepository;
 import Repository.ReferenceRepository;
 

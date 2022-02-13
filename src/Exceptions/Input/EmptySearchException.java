@@ -1,4 +1,4 @@
-package Exceptions;
+package Exceptions.Input;
 
 /**
  * Eccezione per indicare che i parametri di una ricerca sono tutti vuoti.

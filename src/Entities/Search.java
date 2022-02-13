@@ -2,7 +2,8 @@ package Entities;
 
 import java.util.Collection;
 import java.util.Date;
-import Exceptions.EmptySearchException;
+
+import Exceptions.Input.EmptySearchException;
 
 /**
  * Classe contenente i parametri di una ricerca.

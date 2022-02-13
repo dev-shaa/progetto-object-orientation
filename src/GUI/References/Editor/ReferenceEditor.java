@@ -8,11 +8,11 @@ import GUI.Tags.TagInputField;
 import GUI.Utilities.*;
 import Repository.CategoryRepository;
 import Repository.ReferenceRepository;
-import Exceptions.InvalidAuthorInputException;
-import Exceptions.InvalidInputException;
-import Exceptions.RequiredFieldMissingException;
 import Exceptions.Database.CategoryDatabaseException;
 import Exceptions.Database.ReferenceDatabaseException;
+import Exceptions.Input.InvalidAuthorInputException;
+import Exceptions.Input.InvalidInputException;
+import Exceptions.Input.RequiredFieldMissingException;
 
 import java.awt.*;
 import java.awt.event.*;

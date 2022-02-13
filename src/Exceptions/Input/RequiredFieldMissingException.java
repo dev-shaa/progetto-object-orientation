@@ -1,4 +1,4 @@
-package Exceptions;
+package Exceptions.Input;
 
 /**
  * Eccezione per indicare che un campo obbligatorio non è stato riempito.

@@ -3,7 +3,7 @@ package GUI.Authors;
 import java.util.ArrayList;
 
 import Entities.Author;
-import Exceptions.InvalidAuthorInputException;
+import Exceptions.Input.InvalidAuthorInputException;
 import GUI.Utilities.TermsField;
 
 /**

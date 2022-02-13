@@ -1,7 +1,7 @@
 package GUI.References.Editor;
 
 import Entities.References.PhysicalResources.Publication;
-import Exceptions.InvalidInputException;
+import Exceptions.Input.InvalidInputException;
 import Repository.CategoryRepository;
 import Repository.ReferenceRepository;
 

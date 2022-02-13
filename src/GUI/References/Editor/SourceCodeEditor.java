@@ -2,8 +2,8 @@ package GUI.References.Editor;
 
 import Entities.References.OnlineResources.SourceCode;
 import Entities.References.OnlineResources.ProgrammingLanguage;
-import Exceptions.InvalidInputException;
 import Exceptions.Database.ReferenceDatabaseException;
+import Exceptions.Input.InvalidInputException;
 import Repository.CategoryRepository;
 import Repository.ReferenceRepository;
 

@@ -10,7 +10,7 @@ import com.toedter.calendar.JDateChooser;
 
 import Entities.Category;
 import Entities.Search;
-import Exceptions.InvalidInputException;
+import Exceptions.Input.InvalidInputException;
 import GUI.Authors.AuthorInputField;
 import GUI.Tags.TagInputField;
 import GUI.Utilities.PopupCheckboxTree;
