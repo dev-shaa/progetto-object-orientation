@@ -202,7 +202,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         setContentPane(new JScrollPane(fieldPanel));
 
         title = new JTextField();
-        tags = new TagInputField(separator);
+        tags = new TagInputField();
         authors = new AuthorInputField(separator);
         categories = new PopupCheckboxTree<>();
         DOI = new JTextField();

@@ -61,7 +61,7 @@ public class SearchPanel extends JPanel {
         searchPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
         searchPanel.setLayout(new BoxLayout(searchPanel, BoxLayout.PAGE_AXIS));
 
-        tags = new TagInputField(searchFieldSeparator);
+        tags = new TagInputField();
         authors = new AuthorInputField(searchFieldSeparator);
         dateFrom = new JDateChooser();
         dateTo = new JDateChooser();

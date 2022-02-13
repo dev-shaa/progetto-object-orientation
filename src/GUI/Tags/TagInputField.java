@@ -16,8 +16,8 @@ public class TagInputField extends TermsField {
      * @param separator
      *            separatore dei termini
      */
-    public TagInputField(String separator) {
-        super(separator);
+    public TagInputField() {
+        super(",");
 
         super.setToolTipText("Parole chiave associate al riferimento, separate da una virgola.\n"
                 + "Non fa distinzioni tra maiuscolo e minuscolo\n"
