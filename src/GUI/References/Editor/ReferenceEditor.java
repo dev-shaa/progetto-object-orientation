@@ -61,38 +61,38 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      *            proprietario di questa finestra di dialogo
      * @param title
      *            titolo della finestra
-     * @param categoryController
-     *            controller delle categorie
-     * @param referenceController
-     *            controller dei riferimenti
+     * @param categoryRepository
+     *            repository delle categorie
+     * @param referenceRepository
+     *            repository dei riferimenti
      * @throws IllegalArgumentException
-     *             se {@code categoryController == null} o {@code referenceController == null}
+     *             se {@code categoryRepository == null} o {@code referenceRepository == null}
      */
-    public ReferenceEditor(Frame owner, String title, CategoryRepository categoryController, ReferenceRepository referenceController) {
+    public ReferenceEditor(Frame owner, String title, CategoryRepository categoryRepository, ReferenceRepository referenceRepository) {
         super(owner, title, true);
 
         setSize(500, 700);
         setResizable(false);
 
-        setCategoryController(categoryController);
-        setReferenceController(referenceController);
+        setCategoryRepository(categoryRepository);
+        setReferenceRepository(referenceRepository);
 
         setupBaseFields();
     }
 
     /**
-     * Imposta il controller delle categorie da usare per recuperare le categorie da scegliere.
+     * Imposta il repository delle categorie da usare per recuperare le categorie da scegliere.
      * 
-     * @param categoryController
-     *            nuovo controller delle categorie
+     * @param categoryRepository
+     *            nuovo repository delle categorie
      * @throws IllegalArgumentException
-     *             se {@code categoryController == null}
+     *             se {@code categoryRepository == null}
      */
-    public void setCategoryController(CategoryRepository categoryController) {
-        if (categoryController == null)
+    public void setCategoryRepository(CategoryRepository categoryRepository) {
+        if (categoryRepository == null)
             throw new IllegalArgumentException("categoryController can't be null");
 
-        this.categoryController = categoryController;
+        this.categoryController = categoryRepository;
     }
 
     /**
@@ -100,7 +100,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      * 
      * @return controller delle categorie
      */
-    public CategoryRepository getCategoryController() {
+    public CategoryRepository getCategoryRepository() {
         return categoryController;
     }
 
@@ -112,7 +112,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      * @throws IllegalArgumentException
      *             se {@code referenceController == null}
      */
-    public void setReferenceController(ReferenceRepository referenceController) {
+    public void setReferenceRepository(ReferenceRepository referenceController) {
         if (referenceController == null)
             throw new IllegalArgumentException("referenceController can't be null");
 
@@ -125,7 +125,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      * @return
      *         controller dei riferimenti
      */
-    public ReferenceRepository getReferenceController() {
+    public ReferenceRepository getReferenceRepository() {
         return referenceController;
     }
 
@@ -185,12 +185,12 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
             T reference = createNewReference();
             saveToDatabase(reference);
             setVisible(false);
-        } catch (InvalidInputException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Parametri inseriti non validi", JOptionPane.ERROR_MESSAGE);
-        } catch (ReferenceDatabaseException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Salvataggio non riuscito", JOptionPane.ERROR_MESSAGE);
+        } catch (InvalidInputException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Parametri inseriti non validi", JOptionPane.ERROR_MESSAGE);
+        } catch (ReferenceDatabaseException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Salvataggio non riuscito", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -210,7 +210,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         language = new JComboBox<>(ReferenceLanguage.values());
         description = new JTextArea(10, 1);
 
-        relatedReferencesDialog = new ReferencePicker(getCategoryController(), getReferenceController());
+        relatedReferencesDialog = new ReferencePicker(getCategoryRepository(), getReferenceRepository());
         relatedReferencesDialog.addReferencePickerListener(this);
 
         relatedReferencesPopupButton = new PopupButton("Premi per vedere i rimandi");
@@ -368,7 +368,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
             setReferenceToChange(reference);
 
             try {
-                categories.setTreeModel(getCategoryController().getTree());
+                categories.setTreeModel(getCategoryRepository().getTree());
             } catch (CategoryDatabaseException e) {
                 categories.setTreeModel(null);
                 failedToLoad = true;

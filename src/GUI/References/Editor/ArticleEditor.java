@@ -54,7 +54,7 @@ public class ArticleEditor extends PublicationEditor<Article> {
 
     @Override
     protected void saveToDatabase(Article reference) throws ReferenceDatabaseException {
-        getReferenceController().save(reference);
+        getReferenceRepository().save(reference);
     }
 
     @Override

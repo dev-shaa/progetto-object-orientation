@@ -1,9 +1,11 @@
 package GUI.Utilities.Tree;
 
+import java.util.EventListener;
+
 /**
  * Interfaccia per i listener che vogliono essere avvertiti quando viene selezionato un oggetto nel {@code TreePanel}.
  */
-public interface TreePanelSelectionListener<T extends Object> {
+public interface TreePanelSelectionListener<T extends Object> extends EventListener {
 
     /**
      * Invocato quando viene selezionata un oggetto.

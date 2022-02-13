@@ -64,7 +64,7 @@ public class ThesisEditor extends PublicationEditor<Thesis> {
 
     @Override
     protected void saveToDatabase(Thesis reference) throws ReferenceDatabaseException {
-        getReferenceController().save(reference);
+        getReferenceRepository().save(reference);
     }
 
     @Override
