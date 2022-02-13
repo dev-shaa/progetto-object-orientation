@@ -9,7 +9,7 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreeSelectionModel;
 
 /**
- * TODO: commenta
+ * Pannello che mostra un albero.
  */
 public class TreePanel<T extends Object> extends JScrollPane {
 
@@ -61,7 +61,7 @@ public class TreePanel<T extends Object> extends JScrollPane {
     }
 
     /**
-     * Deseleziona tutto
+     * Deseleziona tutto.
      */
     public void clearSelection() {
         tree.clearSelection();
@@ -122,10 +122,10 @@ public class TreePanel<T extends Object> extends JScrollPane {
 
         if (getSelectedNode() == null) {
             for (TreePanelSelectionListener<T> categorySelectionListener : selectionListeners)
-                categorySelectionListener.onObjectDeselection();
+                categorySelectionListener.onTreePanelClearSelection();
         } else {
             for (TreePanelSelectionListener<T> categorySelectionListener : selectionListeners)
-                categorySelectionListener.onObjectSelection(getSelectedObject());
+                categorySelectionListener.onTreePanelSelection(getSelectedObject());
         }
     }
 
