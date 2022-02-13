@@ -41,7 +41,7 @@ public class Image extends OnlineResource {
      */
     public void setWidth(int width) {
         if (width < 0)
-            throw new IllegalArgumentException("width can't be less than 1");
+            throw new IllegalArgumentException("width can't be less than 0");
 
         this.width = width;
     }
@@ -66,7 +66,7 @@ public class Image extends OnlineResource {
      */
     public void setHeight(int height) {
         if (height < 0)
-            throw new IllegalArgumentException("height can't be less than 1");
+            throw new IllegalArgumentException("height can't be less than 0");
 
         this.height = height;
     }

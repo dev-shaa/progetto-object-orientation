@@ -169,8 +169,6 @@ public class CategoryRepository {
      *             se il recupero delle categorie dal database non va a buon fine
      */
     public List<Category> get(BibliographicReference reference) throws CategoryDatabaseException {
-
-        // ci serve perchè dobbiamo prima assicurarci che idToCategory sia pieno
         if (needToRetrieveFromDatabase)
             retrieveFromDatabase();
 
