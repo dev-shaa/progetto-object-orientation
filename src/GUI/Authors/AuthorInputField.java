@@ -1,45 +1,81 @@
 package GUI.Authors;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.awt.*;
+import java.awt.event.*;
+
+import javax.swing.*;
 
 import Entities.Author;
 import Exceptions.Input.InvalidAuthorInputException;
-import GUI.Utilities.TermsField;
 
 /**
+ * TODO: commenta
  * Un {@code TermsField} che restituisce degli autori a partire dai termini inseriti dall'utente.
  */
-public class AuthorInputField extends TermsField {
+public class AuthorInputField extends JPanel {
+
+    private JTextField firstAuthorField;
+    private ArrayList<JTextField> otherAuthorsFields;
+
+    private final Dimension maximumSize = new Dimension(Integer.MAX_VALUE, 24);
+
+    private final String addTooltip = "Aggiungi autore.";
+    private final String removeTooltip = "Rimuovi autore.";
+    private final String textTooltip = "Autore del riferimento.\nÈ possibile specificare l'ORCID mettendolo tra parentesi quadre.\nEsempio: \"Mario Rossi [0000-0000-0000-0000]\"";
 
     /**
      * Crea un nuovo {@code AuthorInputField}.
-     * 
-     * @param separator
-     *            separatore dei termini
      */
     public AuthorInputField() {
-        super(",");
+        super();
 
-        super.setToolTipText("Autori del riferimento, separati da una virgola.\n"
-                + "È possibile specificare l'ORCID mettendolo tra parentesi quadre.\n"
-                + "Esempio: \"Mario Rossi [0000-0000-0000-0000], Luigi Bianchi\"");
+        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+
+        otherAuthorsFields = new ArrayList<>();
+
+        addFirstAuthorField();
     }
 
     /**
-     * Restituisce gli autori dai termini inseriti dall'utente.
+     * Imposta gli autori da mostrare.
+     * <p>
+     * Se {@code authors} è nullo o vuoto, ha lo stesso effetto di chiamare {@link #clear()}.
+     * 
+     * @param authors
+     *            autori da mostrare
+     */
+    public void setAuthors(List<Author> authors) {
+        clear();
+
+        if (authors == null || authors.isEmpty())
+            return;
+
+        firstAuthorField.setText(authors.get(0).toString());
+
+        for (int i = 1; i < authors.size(); i++)
+            addAuthorField(authors.get(i));
+    }
+
+    /**
+     * Restituisce gli autori inseriti dall'utente.
      * 
      * @return lista di autori
      */
     public ArrayList<Author> getAuthors() throws InvalidAuthorInputException {
-        ArrayList<String> terms = getTerms();
+        ArrayList<Author> authors = new ArrayList<>(otherAuthorsFields.size() + 1);
 
-        if (terms == null || terms.isEmpty())
-            return null;
+        Author firstAuthor = getAuthorFromString(firstAuthorField.getText());
 
-        ArrayList<Author> authors = new ArrayList<>(terms.size());
+        if (firstAuthor != null)
+            authors.add(firstAuthor);
 
-        for (String term : terms) {
-            authors.add(getAuthorFromString(term));
+        for (JTextField authorField : otherAuthorsFields) {
+            Author author = getAuthorFromString(authorField.getText());
+
+            if (author != null && !authors.contains(author))
+                authors.add(author);
         }
 
         authors.trimToSize();
@@ -47,9 +83,87 @@ public class AuthorInputField extends TermsField {
         return authors;
     }
 
+    /**
+     * Reimposta tutti i campi.
+     */
+    public void clear() {
+        otherAuthorsFields.clear();
+        removeAll();
+
+        addFirstAuthorField();
+
+        revalidate();
+    }
+
+    private void addFirstAuthorField() {
+        JPanel authorPanel = new JPanel(new BorderLayout(10, 0));
+        authorPanel.setMaximumSize(maximumSize);
+
+        firstAuthorField = new JTextField();
+        firstAuthorField.setToolTipText(textTooltip);
+
+        JButton addButton = new JButton(new ImageIcon("images/button_add.png"));
+        addButton.setToolTipText(addTooltip);
+
+        Component spacing = Box.createVerticalStrut(10);
+
+        authorPanel.add(firstAuthorField, BorderLayout.CENTER);
+        authorPanel.add(addButton, BorderLayout.EAST);
+
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addAuthorField(null);
+            }
+        });
+
+        add(authorPanel);
+        add(spacing);
+
+        revalidate();
+    }
+
+    private void addAuthorField(Author author) {
+
+        JPanel authorPanel = new JPanel(new BorderLayout(10, 0));
+        authorPanel.setMaximumSize(maximumSize);
+
+        JTextField textField = new JTextField();
+        textField.setToolTipText(textTooltip);
+
+        if (author != null)
+            textField.setText(author.toString());
+
+        JButton removeButton = new JButton(new ImageIcon("images/button_remove.png"));
+        removeButton.setToolTipText(removeTooltip);
+
+        Component spacing = Box.createVerticalStrut(10);
+
+        authorPanel.add(textField, BorderLayout.CENTER);
+        authorPanel.add(removeButton, BorderLayout.EAST);
+        otherAuthorsFields.add(textField);
+
+        JPanel thisPanel = this;
+        removeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                otherAuthorsFields.remove(textField);
+
+                thisPanel.remove(authorPanel);
+                thisPanel.remove(spacing);
+                thisPanel.revalidate();
+            }
+        });
+
+        add(authorPanel);
+        add(spacing);
+
+        revalidate();
+    }
+
     private Author getAuthorFromString(String string) throws InvalidAuthorInputException {
-        if (string == null)
-            throw new IllegalArgumentException();
+        if (string == null || string.isEmpty() || string.isBlank())
+            return null;
 
         int orcidStartIndex = string.indexOf('[');
         int orcidEndIndex = string.lastIndexOf(']');

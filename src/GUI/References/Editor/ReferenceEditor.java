@@ -464,15 +464,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     }
 
     private void setAuthorValues(List<Author> authors) {
-        if (authors == null) {
-            this.authors.setText(null);
-            return;
-        }
-
-        String foo = authors.toString().substring(1, authors.toString().lastIndexOf(']'));
-        foo = foo.replaceAll("ORCID: ", "");
-
-        this.authors.setText(foo);
+        this.authors.setAuthors(authors);
     }
 
     private List<Author> getAuthorValues() throws InvalidAuthorInputException {

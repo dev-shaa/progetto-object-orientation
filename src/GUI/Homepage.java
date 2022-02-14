@@ -84,7 +84,7 @@ public class Homepage extends JFrame implements TreePanelSelectionListener<Categ
         subSplitPane.setResizeWeight(0.15);
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, subSplitPane, referenceSearchPanel);
-        splitPane.setResizeWeight(1);
+        splitPane.setResizeWeight(0.8);
 
         contentPane.add(splitPane, BorderLayout.CENTER);
     }
@@ -237,7 +237,7 @@ public class Homepage extends JFrame implements TreePanelSelectionListener<Categ
             if (confirmDialogBoxOption == JOptionPane.YES_OPTION) {
                 Category category = categoriesTreePanel.getSelectedObject();
                 getController().getCategoryController().remove(category);
-                getController().getReferenceController().removeCategoryFromReferences(category);
+                getController().getReferenceController().removeCategoryFromReferences(category); // FIXME: non dovrebbe essere qui
 
                 referenceListPanel.clear();
                 referenceInfoPanel.clear();
@@ -271,9 +271,6 @@ public class Homepage extends JFrame implements TreePanelSelectionListener<Categ
         JMenuItem articleOption = new JMenuItem("Articolo");
         articleOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // categoriesTreePanel.clearSelection();
-                // referenceListPanel.clear();
-
                 getController().openArticleEditor(null);
             }
         });
@@ -281,9 +278,6 @@ public class Homepage extends JFrame implements TreePanelSelectionListener<Categ
         JMenuItem bookOption = new JMenuItem("Libro");
         bookOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // categoriesTreePanel.clearSelection();
-                // referenceListPanel.clear();
-
                 getController().openBookEditor(null);
             }
         });
@@ -291,10 +285,6 @@ public class Homepage extends JFrame implements TreePanelSelectionListener<Categ
         JMenuItem thesisOption = new JMenuItem("Tesi");
         thesisOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // TODO: rimuovi
-                categoriesTreePanel.clearSelection();
-                referenceListPanel.clear();
-
                 getController().openThesisEditor(null);
             }
         });
@@ -302,9 +292,6 @@ public class Homepage extends JFrame implements TreePanelSelectionListener<Categ
         JMenuItem websiteOption = new JMenuItem("Sito web");
         websiteOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                categoriesTreePanel.clearSelection();
-                referenceListPanel.clear();
-
                 getController().openWebsiteEditor(null);
             }
         });
@@ -312,9 +299,6 @@ public class Homepage extends JFrame implements TreePanelSelectionListener<Categ
         JMenuItem sourceCodeOption = new JMenuItem("Codice sorgente");
         sourceCodeOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                categoriesTreePanel.clearSelection();
-                referenceListPanel.clear();
-
                 getController().openSourceCodeEditor(null);
             }
         });
@@ -322,9 +306,6 @@ public class Homepage extends JFrame implements TreePanelSelectionListener<Categ
         JMenuItem imageOption = new JMenuItem("Immagine");
         imageOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                categoriesTreePanel.clearSelection();
-                referenceListPanel.clear();
-
                 getController().openImageEditor(null);
             }
         });
@@ -332,9 +313,6 @@ public class Homepage extends JFrame implements TreePanelSelectionListener<Categ
         JMenuItem videoOption = new JMenuItem("Video");
         videoOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                categoriesTreePanel.clearSelection();
-                referenceListPanel.clear();
-
                 getController().openVideoEditor(null);
             }
         });
