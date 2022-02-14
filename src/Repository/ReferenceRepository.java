@@ -98,12 +98,12 @@ public class ReferenceRepository {
     }
 
     /**
-     * Imposta il controller per recuperare le categorie associate ai riferimenti.
+     * Imposta il repository per recuperare le categorie associate ai riferimenti.
      * 
      * @param categoryRepository
-     *            controller delle categorie
+     *            repository delle categorie
      * @throws IllegalArgumentException
-     *             se {@code categoryController == null}
+     *             se {@code categoryRepository == null}
      */
     public void setCategoryRepository(CategoryRepository categoryRepository) {
         if (categoryRepository == null)
@@ -119,6 +119,8 @@ public class ReferenceRepository {
      * 
      * @return
      *         lista dei riferimenti
+     * @throws ReferenceDatabaseException
+     *             se il recupero non va a buon fine
      */
     public List<BibliographicReference> getAll() throws ReferenceDatabaseException {
         if (needToRetrieveFromDatabase) {
@@ -142,13 +144,14 @@ public class ReferenceRepository {
 
     /**
      * Restituisce tutti i riferimenti associati all'utente presenti in una categoria specificata.
+     * <p>
      * Se {@code category == null}, verranno restituiti i riferimenti che non appartengono a nessuna categoria.
      * 
      * @param category
      *            categoria in cui cercare i riferimenti
      * @return lista dei riferimenti presenti in una categoria
      * @throws ReferenceDatabaseException
-     *             // TODO: commenta
+     *             se il recupero non va a buon fine
      */
     public List<BibliographicReference> get(Category category) throws ReferenceDatabaseException {
         Predicate<BibliographicReference> categoryFilter = e -> e.isContainedIn(category);
@@ -164,7 +167,7 @@ public class ReferenceRepository {
      * @throws IllegalArgumentException
      *             se {@code search == null}
      * @throws ReferenceDatabaseException
-     *             // TODO: commenta
+     *             se il recupero non va a buon fine
      */
     public List<BibliographicReference> get(Search search) throws ReferenceDatabaseException {
         if (search == null)

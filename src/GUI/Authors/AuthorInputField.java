@@ -11,8 +11,7 @@ import Entities.Author;
 import Exceptions.Input.InvalidAuthorInputException;
 
 /**
- * TODO: commenta
- * Un {@code TermsField} che restituisce degli autori a partire dai termini inseriti dall'utente.
+ * Un pannello che permette all'utente di inserire degli autori.
  */
 public class AuthorInputField extends JPanel {
 
