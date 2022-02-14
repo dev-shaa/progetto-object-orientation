@@ -375,20 +375,20 @@ public class ReferenceRepository {
         needToRetrieveFromDatabase = true;
     }
 
-    private List<BibliographicReference> getFromLocal() {
+    private List<BibliographicReference> getAllLocal() {
         return references;
     }
 
     private void saveToLocal(BibliographicReference reference) {
-        int index = getFromLocal().indexOf(reference);
+        int index = getAllLocal().indexOf(reference);
 
         if (index == -1) {
-            getFromLocal().add(reference);
+            getAllLocal().add(reference);
         } else {
             // se è già contenuta nell'elenco vuol dire che stiamo aggiornando il riferimento
             // conviene prima rimuoverlo dal conteggio delle citazioni ricevute e poi aggiornarlo di nuovo
 
-            getFromLocal().set(index, reference);
+            getAllLocal().set(index, reference);
             replaceInRelatedReferences(reference);
             removeFromQuotationCount(reference);
         }
@@ -397,11 +397,10 @@ public class ReferenceRepository {
     }
 
     private void removeFromLocal(BibliographicReference referenceToRemove) {
-        getFromLocal().remove(referenceToRemove);
+        getAllLocal().remove(referenceToRemove);
 
-        for (BibliographicReference reference : references) {
+        for (BibliographicReference reference : references)
             reference.getRelatedReferences().remove(referenceToRemove);
-        }
 
         removeFromQuotationCount(referenceToRemove);
     }
@@ -425,7 +424,7 @@ public class ReferenceRepository {
     }
 
     private void replaceInRelatedReferences(BibliographicReference newReference) {
-        for (BibliographicReference reference : getFromLocal()) {
+        for (BibliographicReference reference : getAllLocal()) {
             int index = reference.getRelatedReferences().indexOf(newReference);
 
             if (index != -1)
@@ -433,13 +432,17 @@ public class ReferenceRepository {
         }
     }
 
+    /**
+     * FIXME:
+     * 
+     * @param category
+     */
     public void removeCategoryFromReferences(Category category) {
         if (category == null)
             return;
 
-        for (BibliographicReference reference : getFromLocal()) {
+        for (BibliographicReference reference : getAllLocal())
             reference.getCategories().remove(category);
-        }
     }
 
 }

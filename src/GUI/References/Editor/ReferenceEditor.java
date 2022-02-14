@@ -443,12 +443,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     }
 
     private void setTagValues(List<Tag> tags) {
-        if (tags == null) {
-            this.tags.setText(null);
-            return;
-        }
-
-        this.tags.setText(tags.toString().substring(1, tags.toString().lastIndexOf(']')));
+        this.tags.setTags(tags);
     }
 
     private List<Tag> getTagValues() {

@@ -44,10 +44,10 @@ public class SearchPanel extends JPanel {
     /**
      * Crea un pannello per la ricerca di riferimenti.
      * 
-     * @param treeModel
+     * @param categoriesTree
      *            albero delle categorie selezionabili
      */
-    public SearchPanel(CustomTreeModel<Category> treeModel) {
+    public SearchPanel(CustomTreeModel<Category> categoriesTree) {
         super();
 
         setLayout(new BorderLayout(5, 5));
@@ -61,7 +61,7 @@ public class SearchPanel extends JPanel {
 
         tags = new TagInputField();
         authors = new AuthorInputField();
-        categories = new PopupCheckboxTree<>(treeModel);
+        categories = new PopupCheckboxTree<>(categoriesTree);
         dateFrom = new JDateChooser();
         dateTo = new JDateChooser();
 
@@ -98,10 +98,10 @@ public class SearchPanel extends JPanel {
     /**
      * Imposta l'albero delle categorie selezionabili.
      * 
-     * @param treeModel
+     * @param categoriesTree
      */
-    public void setCategoriesTree(CustomTreeModel<Category> treeModel) {
-        categories.setTreeModel(treeModel);
+    public void setCategoriesTree(CustomTreeModel<Category> categoriesTree) {
+        categories.setTreeModel(categoriesTree);
     }
 
     /**
@@ -140,7 +140,7 @@ public class SearchPanel extends JPanel {
      * Resetta i campi di ricerca.
      */
     public void reset() {
-        tags.setText(null);
+        tags.clear();
         authors.clear();
         categories.getCheckboxTree().clearSelection();
         dateFrom.setDate(null);
