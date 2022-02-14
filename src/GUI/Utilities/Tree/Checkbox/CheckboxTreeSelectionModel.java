@@ -83,7 +83,7 @@ public class CheckboxTreeSelectionModel extends DefaultTreeSelectionModel {
      *            percorso da aggiungere
      */
     private void addPathVisually(TreePath path) {
-        if (path == null || isPathSelected(path))
+        if (path == null)
             return;
 
         // è stata selezionato il percorso di un nodo figlio,

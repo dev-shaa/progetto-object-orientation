@@ -1,12 +1,9 @@
 package GUI.Utilities.Tree.Checkbox;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JTree;
-import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreePath;
-import javax.swing.tree.TreeSelectionModel;
+import javax.swing.tree.*;
 
 import GUI.Utilities.Tree.CustomTreeModel;
 import GUI.Utilities.Tree.CustomTreeNode;
@@ -63,7 +60,7 @@ public class CheckboxTree<T extends Object> extends JTree {
      * @return lista con gli elementi selezionati, {@code null} se non è selezionato niente
      */
     @SuppressWarnings("unchecked")
-    public List<T> getSelectedItems() {
+    public ArrayList<T> getSelectedItems() {
         TreePath[] selectedPaths = getSelectionModel().getSelectionPaths();
 
         if (selectedPaths == null)
