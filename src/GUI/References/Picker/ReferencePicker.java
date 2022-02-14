@@ -15,10 +15,10 @@ import Entities.Category;
 import Entities.References.BibliographicReference;
 import Exceptions.Database.CategoryDatabaseException;
 import Exceptions.Database.ReferenceDatabaseException;
+import GUI.Categories.CategoriesTreePanel;
+import GUI.Categories.CategorySelectionListener;
 import GUI.References.ReferenceListPanel;
 import GUI.References.ReferenceSelectionListener;
-import GUI.Utilities.Tree.TreePanel;
-import GUI.Utilities.Tree.TreePanelSelectionListener;
 import Repository.CategoryRepository;
 import Repository.ReferenceRepository;
 
@@ -29,12 +29,12 @@ import java.awt.event.ActionListener;
 /**
  * Finestra di dialogo per scegliere un riferimento.
  */
-public class ReferencePicker extends JDialog implements TreePanelSelectionListener<Category>, ReferenceSelectionListener {
+public class ReferencePicker extends JDialog implements CategorySelectionListener, ReferenceSelectionListener {
 
     private CategoryRepository categoryRepository;
     private ReferenceRepository referenceRepository;
 
-    private TreePanel<Category> categoriesPanel;
+    private CategoriesTreePanel categoriesPanel;
     private ReferenceListPanel referencesPanel;
     private JButton confirmButton;
 
@@ -64,7 +64,7 @@ public class ReferencePicker extends JDialog implements TreePanelSelectionListen
         JPanel contentPane = new JPanel(new BorderLayout(10, 10));
         setContentPane(contentPane);
 
-        categoriesPanel = new TreePanel<Category>();
+        categoriesPanel = new CategoriesTreePanel();
         categoriesPanel.addSelectionListener(this);
 
         referencesPanel = new ReferenceListPanel();
@@ -162,7 +162,7 @@ public class ReferencePicker extends JDialog implements TreePanelSelectionListen
     }
 
     @Override
-    public void onTreePanelSelection(Category category) {
+    public void onCategorySelection(Category category) {
         try {
             List<BibliographicReference> referencesToShow = referenceRepository.get(category);
 
@@ -177,7 +177,7 @@ public class ReferencePicker extends JDialog implements TreePanelSelectionListen
     }
 
     @Override
-    public void onTreePanelClearSelection() {
+    public void onCategoryClearSelection() {
         referencesPanel.clear();
     }
 

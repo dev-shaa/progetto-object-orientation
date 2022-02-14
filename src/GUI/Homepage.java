@@ -7,12 +7,12 @@ import Entities.References.OnlineResources.Image;
 import Entities.References.PhysicalResources.*;
 import Exceptions.Database.CategoryDatabaseException;
 import Exceptions.Database.ReferenceDatabaseException;
+import GUI.Categories.CategoriesTreePanel;
+import GUI.Categories.CategorySelectionListener;
 import GUI.References.*;
 import GUI.Search.*;
 import GUI.Utilities.PopupButton;
 import GUI.Utilities.Tree.CustomTreeModel;
-import GUI.Utilities.Tree.TreePanel;
-import GUI.Utilities.Tree.TreePanelSelectionListener;
 import Controller.Controller;
 
 import java.awt.*;
@@ -27,14 +27,14 @@ import javax.swing.border.EmptyBorder;
  * <p>
  * Mostra e offre opzioni per gestire le categorie e i riferimenti dell'utente.
  */
-public class Homepage extends JFrame implements TreePanelSelectionListener<Category>, ReferenceSelectionListener, SearchListener {
+public class Homepage extends JFrame implements CategorySelectionListener, ReferenceSelectionListener, SearchListener {
 
     private Controller controller;
 
     private JLabel userLabel;
     private JButton logoutButton;
 
-    private TreePanel<Category> categoriesTreePanel;
+    private CategoriesTreePanel categoriesTreePanel;
     private JButton createCategoryButton;
     private JButton updateCategoryButton;
     private JButton removeCategoryButton;
@@ -157,7 +157,7 @@ public class Homepage extends JFrame implements TreePanelSelectionListener<Categ
     private JPanel setupCategoriesPanel() {
         JPanel categoriesPanel = new JPanel();
 
-        categoriesTreePanel = new TreePanel<Category>();
+        categoriesTreePanel = new CategoriesTreePanel();
         categoriesTreePanel.addSelectionListener(this);
 
         categoriesPanel.setLayout(new BorderLayout(5, 5));
@@ -475,7 +475,7 @@ public class Homepage extends JFrame implements TreePanelSelectionListener<Categ
     }
 
     @Override
-    public void onTreePanelSelection(Category category) {
+    public void onCategorySelection(Category category) {
         createCategoryButton.setEnabled(true);
         updateCategoryButton.setEnabled(category != null);
         removeCategoryButton.setEnabled(category != null);
@@ -491,7 +491,7 @@ public class Homepage extends JFrame implements TreePanelSelectionListener<Categ
     }
 
     @Override
-    public void onTreePanelClearSelection() {
+    public void onCategoryClearSelection() {
         createCategoryButton.setEnabled(false);
         updateCategoryButton.setEnabled(false);
         removeCategoryButton.setEnabled(false);
