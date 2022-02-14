@@ -1,9 +1,9 @@
 package GUI.Tags;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JTextField;
-
 import Entities.Tag;
 
 /**
@@ -12,6 +12,7 @@ import Entities.Tag;
 public class TagInputField extends JTextField {
 
     private final String separator = ",";
+    private final String tooltip = "Parole chiave associate al riferimento, separate da una virgola.\nNon fa distinzioni tra maiuscolo e minuscolo.\nEsempio: \"programmazione, object orientation\"";
 
     /**
      * Crea un nuovo {@code TagInputField}.
@@ -19,9 +20,22 @@ public class TagInputField extends JTextField {
     public TagInputField() {
         super();
 
-        setToolTipText("Parole chiave associate al riferimento, separate da una virgola.\n"
-                + "Non fa distinzioni tra maiuscolo e minuscolo.\n"
-                + "Esempio: \"programmazione, object orientation\"");
+        setToolTipText(tooltip);
+    }
+
+    /**
+     * Imposta le parole chiave da mostrare.
+     * <p>
+     * Se {@code tags} è nullo o vuoto, ha lo stesso effetto di {@link #clear()}.
+     * 
+     * @param tags
+     *            parole chiave da mostrare.
+     */
+    public void setTags(List<Tag> tags) {
+        if (tags == null || tags.isEmpty())
+            clear();
+        else
+            setText(tags.toString().substring(1, tags.toString().lastIndexOf(']')));
     }
 
     /**
@@ -49,6 +63,13 @@ public class TagInputField extends JTextField {
         tags.trimToSize();
 
         return tags;
+    }
+
+    /**
+     * Reimposta il campo.
+     */
+    public void clear() {
+        setText(null);
     }
 
 }
