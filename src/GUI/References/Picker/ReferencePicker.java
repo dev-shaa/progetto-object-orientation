@@ -4,12 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JSplitPane;
-import javax.swing.border.EmptyBorder;
+import javax.swing.*;
 
 import Entities.Category;
 import Entities.References.BibliographicReference;
@@ -72,7 +67,7 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, categoriesPanel, referencesPanel);
         splitPane.setResizeWeight(0.3);
-        splitPane.setBorder(new EmptyBorder(10, 10, 0, 10));
+        splitPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
 
         contentPane.add(splitPane, BorderLayout.CENTER);
 
@@ -86,7 +81,7 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
         });
 
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setBorder(new EmptyBorder(0, 50, 0, 50));
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 50, 0, 50));
 
         buttonPanel.add(confirmButton);
         contentPane.add(buttonPanel, BorderLayout.SOUTH);
@@ -110,11 +105,12 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
 
         if (b) {
             this.referencesToExclude = referencesToExclude;
+            referencesPanel.clear();
 
             try {
                 categoriesPanel.setTreeModel(categoryRepository.getTree());
-                referencesPanel.clear();
             } catch (CategoryDatabaseException e) {
+                categoriesPanel.setTreeModel(null);
                 errorMessage = e.getMessage();
             }
         }

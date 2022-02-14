@@ -42,6 +42,7 @@ public class ReferenceRepository {
      *             se {@code referenceDAO == null}, {@code authorDAO == null}, {@code tagDAO == null} o {@code categoryController == null}
      * @see #setReferenceDAO(BibliographicReferenceDAO)
      * @see #setAuthorDAO(AuthorDAO)
+     * @see #setTagDAO(TagDAO)
      * @see #setCategoryRepository(CategoryRepository)
      */
     public ReferenceRepository(BibliographicReferenceDAO referenceDAO, AuthorDAO authorDAO, TagDAO tagDAO, CategoryRepository categoryRepository) {
@@ -132,7 +133,7 @@ public class ReferenceRepository {
                     reference.setAuthors(authorDAO.get(reference));
                     reference.setTags(tagDAO.get(reference));
                 }
-            } catch (ReferenceDatabaseException | CategoryDatabaseException | AuthorDatabaseException | TagDatabaseException e) {
+            } catch (DatabaseException e) {
                 throw new ReferenceDatabaseException(e.getMessage());
             }
 
@@ -222,7 +223,7 @@ public class ReferenceRepository {
             referenceDAO.save(reference);
             tagDAO.save(reference);
             saveToLocal(reference);
-        } catch (AuthorDatabaseException | TagDatabaseException e) {
+        } catch (DatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
         }
     }
@@ -246,7 +247,7 @@ public class ReferenceRepository {
             referenceDAO.save(reference);
             tagDAO.save(reference);
             saveToLocal(reference);
-        } catch (AuthorDatabaseException | TagDatabaseException e) {
+        } catch (DatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
         }
     }
@@ -270,7 +271,7 @@ public class ReferenceRepository {
             referenceDAO.save(reference);
             tagDAO.save(reference);
             saveToLocal(reference);
-        } catch (AuthorDatabaseException | TagDatabaseException e) {
+        } catch (DatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
         }
     }
@@ -294,7 +295,7 @@ public class ReferenceRepository {
             referenceDAO.save(reference);
             tagDAO.save(reference);
             saveToLocal(reference);
-        } catch (AuthorDatabaseException | TagDatabaseException e) {
+        } catch (DatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
         }
     }
@@ -433,19 +434,6 @@ public class ReferenceRepository {
             if (index != -1)
                 reference.getRelatedReferences().set(index, newReference);
         }
-    }
-
-    /**
-     * FIXME:
-     * 
-     * @param category
-     */
-    public void removeCategoryFromReferences(Category category) {
-        if (category == null)
-            return;
-
-        for (BibliographicReference reference : getAllLocal())
-            reference.getCategories().remove(category);
     }
 
 }

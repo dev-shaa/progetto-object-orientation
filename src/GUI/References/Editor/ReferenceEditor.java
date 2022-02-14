@@ -128,13 +128,13 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         return referenceController;
     }
 
-    private void setReferenceToChange(T reference) {
-        this.referenceToChange = reference;
-    }
+    // private void setReferenceToChange(T reference) {
+    // this.referenceToChange = reference;
+    // }
 
-    private T getReferenceToChange() {
-        return referenceToChange;
-    }
+    // private T getReferenceToChange() {
+    // return referenceToChange;
+    // }
 
     /**
      * Restituisce un nuovo riferimento da riempire.
@@ -153,8 +153,8 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     protected T createNewReference() throws InvalidInputException {
         T reference = getNewInstance();
 
-        if (getReferenceToChange() != null)
-            reference.setID(getReferenceToChange().getID());
+        if (referenceToChange != null)
+            reference.setID(referenceToChange.getID());
 
         reference.setTitle(getTitleValue());
         reference.setAuthors(getAuthorValues());
@@ -177,12 +177,12 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      * @throws ReferenceDatabaseException
      *             se il salvataggio non va a buon fine
      */
-    protected abstract void saveToDatabase(T reference) throws ReferenceDatabaseException;
+    protected abstract void save(T reference) throws ReferenceDatabaseException;
 
     private void save() {
         try {
             T reference = createNewReference();
-            saveToDatabase(reference);
+            save(reference);
             setVisible(false);
         } catch (InvalidInputException e) {
             e.printStackTrace();
@@ -249,7 +249,6 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
 
         JButton confirmButton = new JButton("Salva riferimento");
         confirmButton.setAlignmentX(alignment);
-
         confirmButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -334,8 +333,8 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         if (getRelatedReferenceValues() != null)
             referencesToExclude.addAll(getRelatedReferenceValues());
 
-        if (getReferenceToChange() != null)
-            referencesToExclude.add(getReferenceToChange());
+        if (referenceToChange != null)
+            referencesToExclude.add(referenceToChange);
 
         relatedReferencesDialog.setVisible(true, referencesToExclude);
     }
@@ -364,7 +363,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         boolean failedToLoad = false;
 
         if (b) {
-            setReferenceToChange(reference);
+            referenceToChange = reference;
 
             try {
                 categories.setTreeModel(getCategoryRepository().getTree());
@@ -485,13 +484,12 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         relatedReferences = null;
         relatedReferencesPopupButton.removeAllFromPopupMenu();
 
-        for (BibliographicReference reference : references) {
+        for (BibliographicReference reference : references)
             addRelatedReference(reference);
-        }
     }
 
     private void addRelatedReference(BibliographicReference reference) {
-        if (reference == null || reference.equals(getReferenceToChange()))
+        if (reference == null || reference.equals(referenceToChange))
             return;
 
         if (relatedReferences == null)
@@ -508,13 +506,11 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         removeButton.setBorderPainted(false);
         removeButton.setFocusPainted(false);
         removeButton.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 relatedReferences.remove(reference);
                 relatedReferencesPopupButton.removeFromPopupMenu(panel);
             }
-
         });
 
         panel.add(new JLabel(reference.toString()), BorderLayout.CENTER);

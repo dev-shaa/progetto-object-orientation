@@ -54,7 +54,7 @@ public class SourceCodeEditor extends OnlineResourceEditor<SourceCode> {
     }
 
     @Override
-    protected void saveToDatabase(SourceCode reference) throws ReferenceDatabaseException {
+    protected void save(SourceCode reference) throws ReferenceDatabaseException {
         getReferenceRepository().save(reference);
     }
 

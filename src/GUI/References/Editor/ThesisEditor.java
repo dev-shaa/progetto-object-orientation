@@ -63,7 +63,7 @@ public class ThesisEditor extends PublicationEditor<Thesis> {
     }
 
     @Override
-    protected void saveToDatabase(Thesis reference) throws ReferenceDatabaseException {
+    protected void save(Thesis reference) throws ReferenceDatabaseException {
         getReferenceRepository().save(reference);
     }
 

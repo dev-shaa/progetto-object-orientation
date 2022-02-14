@@ -64,7 +64,7 @@ public class ImageEditor extends OnlineResourceEditor<Image> {
     }
 
     @Override
-    protected void saveToDatabase(Image reference) throws ReferenceDatabaseException {
+    protected void save(Image reference) throws ReferenceDatabaseException {
         getReferenceRepository().save(reference);
     }
 
