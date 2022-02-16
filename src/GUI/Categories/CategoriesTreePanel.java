@@ -43,7 +43,7 @@ public class CategoriesTreePanel extends JScrollPane {
         tree.addTreeSelectionListener(new TreeSelectionListener() {
             @Override
             public void valueChanged(TreeSelectionEvent e) {
-                notifyListener();
+                notifyListeners();
             }
         });
 
@@ -74,18 +74,17 @@ public class CategoriesTreePanel extends JScrollPane {
     }
 
     /**
-     * Restituisce l'oggetto dell'ultimo nodo selezionato.
+     * Restituisce la categoria dell'ultimo nodo selezionato.
      * 
-     * @return oggetto dell'ultimo nodo selezionato, {@code null} se non è selezionato nulla
+     * @return categoria dell'ultimo nodo selezionato, {@code null} se non è selezionato nulla
      */
-    public Category getSelectedObject() {
+    public Category getSelectedCategory() {
         CustomTreeNode<Category> selectedNode = getSelectedNode();
-
         return selectedNode == null ? null : selectedNode.getUserObject();
     }
 
     /**
-     * Aggiunge un listener all'evento di selezione di un nodo.
+     * Aggiunge un listener all'evento di selezione di una categoria.
      * Se {@code listener == null} o se è già registrato all'evento, non succede niente.
      * 
      * @param listener
@@ -105,7 +104,7 @@ public class CategoriesTreePanel extends JScrollPane {
     }
 
     /**
-     * Rimuove un listener dall'evento di selezione di un nodo.
+     * Rimuove un listener dall'evento di selezione di una categoria.
      * 
      * @param listener
      *            listener da rimuovere
@@ -122,7 +121,7 @@ public class CategoriesTreePanel extends JScrollPane {
         return (CustomTreeNode<Category>) tree.getLastSelectedPathComponent();
     }
 
-    private void notifyListener() {
+    private void notifyListeners() {
         if (selectionListeners == null)
             return;
 
@@ -131,7 +130,7 @@ public class CategoriesTreePanel extends JScrollPane {
                 categorySelectionListener.onCategoryClearSelection();
         } else {
             for (CategorySelectionListener categorySelectionListener : selectionListeners)
-                categorySelectionListener.onCategorySelection(getSelectedObject());
+                categorySelectionListener.onCategorySelection(getSelectedCategory());
         }
     }
 
