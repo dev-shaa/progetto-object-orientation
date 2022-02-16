@@ -13,7 +13,6 @@ import javax.swing.table.DefaultTableModel;
 public class ReferenceInfoPanel extends JScrollPane {
 
     private DefaultTableModel details;
-    private BibliographicReference currentReference;
 
     /**
      * Crea un pannello contenente una tabella composta da due colonne,
@@ -43,8 +42,6 @@ public class ReferenceInfoPanel extends JScrollPane {
      *            riferimento da mostrare
      */
     public void showReference(BibliographicReference reference) {
-        currentReference = reference;
-
         if (reference == null) {
             details.setRowCount(0);
             return;
@@ -58,13 +55,6 @@ public class ReferenceInfoPanel extends JScrollPane {
             details.setValueAt(referenceInfo.get(i).getName(), i, 0);
             details.setValueAt(referenceInfo.get(i).getValue(), i, 1);
         }
-    }
-
-    /**
-     * Ricarica il pannello, aggiornando le informazioni che vengono mostrate.
-     */
-    public void reload() {
-        showReference(currentReference);
     }
 
     /**

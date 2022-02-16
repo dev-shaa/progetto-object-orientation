@@ -28,7 +28,6 @@ public class ReferenceListPanel extends JScrollPane {
         referencesTableModel = new ReferenceTableModel();
 
         referencesTable = new JTable(referencesTableModel);
-        referencesTable.setFillsViewportHeight(true);
         referencesTable.setAutoCreateRowSorter(true);
         referencesTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         referencesTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {

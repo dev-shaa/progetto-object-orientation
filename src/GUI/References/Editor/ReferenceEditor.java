@@ -128,14 +128,6 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         return referenceController;
     }
 
-    // private void setReferenceToChange(T reference) {
-    // this.referenceToChange = reference;
-    // }
-
-    // private T getReferenceToChange() {
-    // return referenceToChange;
-    // }
-
     /**
      * Restituisce un nuovo riferimento da riempire.
      * 
@@ -351,13 +343,16 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
 
     /**
      * Mostra o nasconde questo pannello a seconda del valore di {@code b}.
+     * <p>
      * Se {@code b == true}, i campi di input verranno riempiti con i valori presenti in {@code reference}.
+     * <p>
+     * In caso si verifichi un errore nel recupero dell'albero delle categorie, viene mostrato un messaggio di errore.
      * 
      * @param b
      *            se {@code true} il pannello verrà mostrato e verrano riempiti i campi con i valori di {@code reference},
      *            se {@code false} il pannello verrà nascosto
      * @param reference
-     *            riferimento da mostrare (eventualmente)
+     *            riferimento da mostrare (può essere {@code null})
      */
     public void setVisible(boolean b, T reference) {
         boolean failedToLoad = false;
@@ -367,12 +362,11 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
 
             try {
                 categories.setTreeModel(getCategoryRepository().getTree());
+                setFieldsInitialValues(reference);
             } catch (CategoryDatabaseException e) {
                 categories.setTreeModel(null);
                 failedToLoad = true;
             }
-
-            setFieldsInitialValues(reference);
 
             setLocationRelativeTo(null);
         }
@@ -382,12 +376,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         if (failedToLoad) {
             String[] choices = { "Riprova", "Chiudi" };
             int option = JOptionPane.showOptionDialog(this, "Si è verificato un errore durante il recupero delle categorie dell'utente.", "Errore recupero", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null, choices, 0);
-
-            if (option == JOptionPane.YES_OPTION) {
-                setVisible(true);
-            } else {
-                setVisible(false);
-            }
+            setVisible(option == JOptionPane.YES_OPTION, reference);
         }
     }
 

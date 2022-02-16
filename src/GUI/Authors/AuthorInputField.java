@@ -123,7 +123,6 @@ public class AuthorInputField extends JPanel {
     }
 
     private void addAuthorField(Author author) {
-
         JPanel authorPanel = new JPanel(new BorderLayout(10, 0));
         authorPanel.setMaximumSize(maximumSize);
 
