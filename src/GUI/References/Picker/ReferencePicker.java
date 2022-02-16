@@ -165,7 +165,7 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
             if (referencesToExclude != null)
                 referencesToShow.removeAll(referencesToExclude);
 
-            referencesPanel.showReferences(referencesToShow);
+            referencesPanel.setReferences(referencesToShow);
         } catch (ReferenceDatabaseException e) {
             referencesPanel.clear();
             JOptionPane.showMessageDialog(this, e.getMessage(), "Errore recupero riferimenti", JOptionPane.ERROR_MESSAGE);
