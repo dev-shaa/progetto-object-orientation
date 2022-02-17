@@ -33,14 +33,6 @@ public class PopupCheckboxTree<T extends Object> extends PopupButton {
         addToPopupMenu(checkboxTree);
     }
 
-    @Override
-    protected void onPopupOpen() {
-        for (int i = 0; i < checkboxTree.getRowCount(); i++)
-            checkboxTree.expandRow(i);
-
-        super.onPopupOpen();
-    }
-
     /**
      * Imposta l'albero da mostrare
      * 
@@ -67,6 +59,14 @@ public class PopupCheckboxTree<T extends Object> extends PopupButton {
      */
     public CheckboxTree<T> getCheckboxTree() {
         return checkboxTree;
+    }
+
+    @Override
+    protected void onPopupOpen() {
+        for (int i = 0; i < checkboxTree.getRowCount(); i++)
+            checkboxTree.expandRow(i);
+
+        super.onPopupOpen();
     }
 
 }

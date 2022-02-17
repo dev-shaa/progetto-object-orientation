@@ -12,7 +12,7 @@ import Entities.References.PhysicalResources.*;
 import Exceptions.Database.*;
 
 /**
- * Controller per gestire il recupero, l'inserimento, la rimozione e la modifica di riferimenti.
+ * Repository per gestire il recupero, l'inserimento, la rimozione e la modifica di riferimenti.
  * <p>
  * Serve per non doversi sempre interfacciarsi col database per recuperare le categorie.
  */
@@ -28,10 +28,10 @@ public class ReferenceRepository {
     private boolean needToRetrieveFromDatabase;
 
     /**
-     * Crea un nuovo controller dei riferimenti, caricando dal database i riferimenti.
+     * Crea un nuovo repository dei riferimenti.
      * 
      * @param referenceDAO
-     *            DAO per interfacciarsi col database
+     *            DAO per recuperare i riferimenti dal database
      * @param authorDAO
      *            DAO per recuperare gli autori dei riferimenti dal database
      * @param tagDAO
@@ -53,7 +53,9 @@ public class ReferenceRepository {
     }
 
     /**
-     * Imposta la classe DAO per la gestione dei riferimenti nel database e recupera i riferimenti dal database.
+     * Imposta la classe DAO per la gestione dei riferimenti nel database.
+     * <p>
+     * Il recupero successivo alla chiamata di questa funzione avverrà dal database.
      * 
      * @param referenceDAO
      *            DAO dei riferimenti
@@ -100,6 +102,8 @@ public class ReferenceRepository {
 
     /**
      * Imposta il repository per recuperare le categorie associate ai riferimenti.
+     * <p>
+     * Il recupero successivo alla chiamata di questa funzione avverrà dal database.
      * 
      * @param categoryRepository
      *            repository delle categorie
@@ -108,10 +112,9 @@ public class ReferenceRepository {
      */
     public void setCategoryRepository(CategoryRepository categoryRepository) {
         if (categoryRepository == null)
-            throw new IllegalArgumentException("categoryController can't be null");
+            throw new IllegalArgumentException("categoryRepository can't be null");
 
         this.categoryRepository = categoryRepository;
-
         forceNextRetrievalFromDatabase();
     }
 
@@ -133,11 +136,11 @@ public class ReferenceRepository {
                     reference.setAuthors(authorDAO.get(reference));
                     reference.setTags(tagDAO.get(reference));
                 }
+
+                needToRetrieveFromDatabase = false;
             } catch (DatabaseException e) {
                 throw new ReferenceDatabaseException(e.getMessage());
             }
-
-            needToRetrieveFromDatabase = false;
         }
 
         return references;
@@ -182,12 +185,8 @@ public class ReferenceRepository {
         return get(searchFilter);
     }
 
-    private List<BibliographicReference> get(Predicate<BibliographicReference> filter) throws ReferenceDatabaseException {
-        return getAll().stream().filter(filter).collect(Collectors.toList());
-    }
-
     /**
-     * Rimuove un riferimento dal database.
+     * Rimuove un riferimento.
      * 
      * @param reference
      *            riferimento da rimuovere
@@ -200,8 +199,18 @@ public class ReferenceRepository {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
+        // rimuovi dal database
         referenceDAO.remove(reference);
-        removeFromLocal(reference);
+
+        // rimuovi dalla memoria locale
+        getAllLocal().remove(reference);
+
+        // rimovi dalle liste di rimandi degli altri riferimenti
+        for (BibliographicReference referenceQuotingThis : getAllLocal())
+            referenceQuotingThis.getRelatedReferences().remove(reference);
+
+        // tutti i rimandi citati hanno un riferimento in meno che li pensa
+        removeFromQuotationCount(reference);
     }
 
     /**
@@ -379,6 +388,10 @@ public class ReferenceRepository {
         needToRetrieveFromDatabase = true;
     }
 
+    private List<BibliographicReference> get(Predicate<BibliographicReference> filter) throws ReferenceDatabaseException {
+        return getAll().stream().filter(filter).collect(Collectors.toList());
+    }
+
     private List<BibliographicReference> getAllLocal() {
         return references;
     }
@@ -400,31 +413,20 @@ public class ReferenceRepository {
         addToQuotationCount(reference);
     }
 
-    private void removeFromLocal(BibliographicReference referenceToRemove) {
-        getAllLocal().remove(referenceToRemove);
-
-        for (BibliographicReference reference : references)
-            reference.getRelatedReferences().remove(referenceToRemove);
-
-        removeFromQuotationCount(referenceToRemove);
-    }
-
     private void addToQuotationCount(BibliographicReference reference) {
         if (reference == null)
             return;
 
-        for (BibliographicReference bibliographicReference : reference.getRelatedReferences()) {
+        for (BibliographicReference bibliographicReference : reference.getRelatedReferences())
             bibliographicReference.setQuotationCount(bibliographicReference.getQuotationCount() + 1);
-        }
     }
 
     private void removeFromQuotationCount(BibliographicReference referenceToRemove) {
         if (referenceToRemove == null)
             return;
 
-        for (BibliographicReference reference : referenceToRemove.getRelatedReferences()) {
+        for (BibliographicReference reference : referenceToRemove.getRelatedReferences())
             reference.setQuotationCount(reference.getQuotationCount() - 1);
-        }
     }
 
     private void replaceInRelatedReferences(BibliographicReference newReference) {
