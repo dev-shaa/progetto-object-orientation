@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -29,34 +30,13 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
      * @param user
      *            l'utente che accede al database
      * @throws IllegalArgumentException
-     *             se l'utente di input è {@code null}
-     */
-    public CategoryDAOPostgreSQL(User user) {
-        setUser(user);
-    }
-
-    /**
-     * Imposta l'utente di cui recuperare le categorie.
-     *
-     * @param user
-     *            utente di cui recuperare le categorie.
-     * @throws IllegalArgumentException
      *             se {@code user == null}
      */
-    public void setUser(User user) throws IllegalArgumentException {
+    public CategoryDAOPostgreSQL(User user) {
         if (user == null)
-            throw new IllegalArgumentException("L'utente non può essere nullo.");
+            throw new IllegalArgumentException("user can't be null");
 
         this.user = user;
-    }
-
-    /**
-     * Restituisce l'utente che accede al database.
-     *
-     * @return utente che accede al database
-     */
-    public User getUser() {
-        return this.user;
     }
 
     /**
@@ -71,7 +51,11 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
             throw new IllegalArgumentException("category can't be null");
 
         Connection connection = null;
-        Statement statement = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+
+        String parentID = category.getParent() == null ? null : String.valueOf(category.getParent().getID());
+        String command = "insert into category(name, parent, owner) values(?," + parentID + ",?)";
 
         try {
             connection = DatabaseController.getConnection();
@@ -80,21 +64,15 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
             // se non siamo in grado di recuperarlo e assegnarlo alla categoria, annulliamo tutta l'operazione
             connection.setAutoCommit(false);
 
-            statement = connection.createStatement();
+            statement = connection.prepareStatement(command, Statement.RETURN_GENERATED_KEYS);
+            statement.setString(1, category.getName());
+            statement.setString(2, user.getName());
+            statement.executeUpdate();
 
-            String parentID = category.getParent() == null ? "null" : String.valueOf(category.getParent().getID());
+            resultSet = statement.getGeneratedKeys();
 
-            String query = "insert into category(name, parent, owner) values('" + category.getName() + "', " + parentID + ", '" + getUser().getName() + "')";
-
-            // il database genera un ID per ogni categoria, quindi vogliamo aggiornare la
-            // classe category prima di concludere ogni operazione
-            statement.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
-
-            ResultSet set = statement.getGeneratedKeys();
-
-            if (set.next()) {
-                category.setID(set.getInt(1));
-            }
+            if (resultSet.next())
+                category.setID(resultSet.getInt(1));
 
             connection.commit();
         } catch (SQLException | DatabaseConnectionException e) {
@@ -107,6 +85,9 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
             throw new CategoryDatabaseException("Impossibile aggiungere nuova categoria.");
         } finally {
             try {
+                if (resultSet != null)
+                    resultSet.close();
+
                 if (statement != null)
                     statement.close();
 
@@ -122,20 +103,26 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
      * {@inheritDoc}
      * 
      * @throws IllegalArgumentException
-     *             se {@code category == null}
+     *             se {@code category == null} o se {@code category} non ha un ID
      */
     @Override
     public void update(Category category) throws CategoryDatabaseException {
         if (category == null)
             throw new IllegalArgumentException("category can't be null");
 
+        if (category.getID() == null)
+            throw new IllegalArgumentException("category doesn't have an ID");
+
         Connection connection = null;
-        Statement statement = null;
-        String command = "update category set name = '" + category.getName() + "' where id = " + category.getID();
+        PreparedStatement statement = null;
+        String command = "update category set name = ? where id = ?";
 
         try {
             connection = DatabaseController.getConnection();
-            statement = connection.createStatement();
+            statement = connection.prepareStatement(command);
+
+            statement.setString(1, category.getName());
+            statement.setInt(2, category.getID());
 
             statement.executeUpdate(command);
         } catch (SQLException | DatabaseConnectionException e) {
@@ -157,12 +144,15 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
      * {@inheritDoc}
      * 
      * @throws IllegalArgumentException
-     *             se {@code category == null}
+     *             se {@code category == null} o se {@code category} non ha un ID
      */
     @Override
     public void remove(Category category) throws CategoryDatabaseException {
         if (category == null)
             throw new IllegalArgumentException("category can't be null");
+
+        if (category.getID() == null)
+            throw new IllegalArgumentException("category doesn't have an ID");
 
         Connection connection = null;
         Statement statement = null;
@@ -191,14 +181,15 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
     @Override
     public List<Category> getAll() throws CategoryDatabaseException {
         Connection connection = null;
-        Statement statement = null;
+        PreparedStatement statement = null;
         ResultSet resultSet = null;
-        String query = "select * from category where owner = '" + getUser().getName() + "'";
+        String query = "select * from category where owner = ?";
 
         try {
             connection = DatabaseController.getConnection();
-            statement = connection.createStatement();
-            resultSet = statement.executeQuery(query);
+            statement = connection.prepareStatement(query);
+            statement.setString(1, user.getName());
+            resultSet = statement.executeQuery();
 
             HashMap<Integer, Category> idToCategory = new HashMap<>();
             HashMap<Category, Integer> nodeToParentID = new HashMap<>();
@@ -244,21 +235,24 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
      * {@inheritDoc}
      * 
      * @throws IllegalArgumentException
-     *             se {@code reference == null}
+     *             se {@code reference == null} o se {@code reference} non ha un ID
      */
     @Override
     public List<Integer> getIDs(BibliographicReference reference) throws CategoryDatabaseException {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
+        if (reference.getID() == null)
+            throw new IllegalArgumentException("reference doesn't have an ID");
+
         Connection connection = null;
         Statement statement = null;
         ResultSet resultSet = null;
+        String query = "select category from category_reference_association where reference = " + reference.getID();
 
         try {
             connection = DatabaseController.getConnection();
             statement = connection.createStatement();
-            String query = "select category from category_reference_association where reference = " + reference.getID();
             resultSet = statement.executeQuery(query);
 
             ArrayList<Integer> ids = new ArrayList<>();

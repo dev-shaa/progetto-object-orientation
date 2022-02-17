@@ -58,11 +58,11 @@ public class AuthorDAOPostgreSQL implements AuthorDAO {
         } catch (SQLException | DatabaseConnectionException e) {
             try {
                 connection.rollback();
-            } catch (Exception ex) {
+            } catch (SQLException ex) {
                 // non fare niente
             }
 
-            throw new AuthorDatabaseException("Impossibile salvare l'autore");
+            throw new AuthorDatabaseException("Impossibile salvare gli autori.");
         } finally {
             try {
                 if (idResultSet != null)
@@ -112,7 +112,7 @@ public class AuthorDAOPostgreSQL implements AuthorDAO {
             authors.trimToSize();
             return authors;
         } catch (SQLException | DatabaseConnectionException e) {
-            throw new AuthorDatabaseException("Impossibile salvare l'autore");
+            throw new AuthorDatabaseException("Impossibile recuperare gli autori.");
         } finally {
             try {
                 if (resultSet != null)
