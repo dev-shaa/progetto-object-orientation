@@ -19,6 +19,7 @@ public class AuthorInputField extends JPanel {
     private ArrayList<JTextField> otherAuthorsFields;
 
     private final Dimension maximumSize = new Dimension(Integer.MAX_VALUE, 24);
+    private final ImageIcon removeIcon = new ImageIcon("images/button_remove.png");
 
     private final String addTooltip = "Aggiungi autore";
     private final String removeTooltip = "Rimuovi autore";
@@ -51,10 +52,12 @@ public class AuthorInputField extends JPanel {
         if (authors == null || authors.isEmpty())
             return;
 
-        firstAuthorField.setText(authors.get(0).toString());
+        firstAuthorField.setText(getStringFromAuthor(authors.get(0)));
 
         for (int i = 1; i < authors.size(); i++)
             addAuthorField(authors.get(i));
+
+        revalidate();
     }
 
     /**
@@ -104,22 +107,21 @@ public class AuthorInputField extends JPanel {
         JButton addButton = new JButton(new ImageIcon("images/button_add.png"));
         addButton.setToolTipText(addTooltip);
 
-        Component spacing = Box.createVerticalStrut(10);
-
         authorPanel.add(firstAuthorField, BorderLayout.CENTER);
         authorPanel.add(addButton, BorderLayout.EAST);
 
+        JPanel thisPanel = this;
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 addAuthorField(null);
+
+                thisPanel.revalidate();
             }
         });
 
         add(authorPanel);
-        add(spacing);
-
-        revalidate();
+        add(Box.createVerticalStrut(10));
     }
 
     private void addAuthorField(Author author) {
@@ -130,9 +132,9 @@ public class AuthorInputField extends JPanel {
         textField.setToolTipText(textTooltip);
 
         if (author != null)
-            textField.setText(author.toString());
+            textField.setText(getStringFromAuthor(author));
 
-        JButton removeButton = new JButton(new ImageIcon("images/button_remove.png"));
+        JButton removeButton = new JButton(removeIcon);
         removeButton.setToolTipText(removeTooltip);
 
         Component spacing = Box.createVerticalStrut(10);
@@ -155,8 +157,6 @@ public class AuthorInputField extends JPanel {
 
         add(authorPanel);
         add(spacing);
-
-        revalidate();
     }
 
     private Author getAuthorFromString(String string) throws InvalidAuthorInputException {
@@ -179,6 +179,18 @@ public class AuthorInputField extends JPanel {
         } catch (IllegalArgumentException e) {
             throw new InvalidAuthorInputException("L'ORCID inserito non è valido.");
         }
+    }
+
+    private String getStringFromAuthor(Author author) {
+        if (author == null)
+            return null;
+
+        String output = author.getName();
+
+        if (author.getORCID() != null)
+            output += " [" + author.getORCID() + "]";
+
+        return output;
     }
 
 }
