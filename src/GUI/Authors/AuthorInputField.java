@@ -98,7 +98,7 @@ public class AuthorInputField extends JPanel {
     }
 
     private void addFirstAuthorField() {
-        JPanel authorPanel = new JPanel(new BorderLayout(10, 0));
+        JPanel authorPanel = new JPanel(new BorderLayout(0, 0));
         authorPanel.setMaximumSize(maximumSize);
 
         firstAuthorField = new JTextField();
@@ -125,7 +125,7 @@ public class AuthorInputField extends JPanel {
     }
 
     private void addAuthorField(Author author) {
-        JPanel authorPanel = new JPanel(new BorderLayout(10, 0));
+        JPanel authorPanel = new JPanel(new BorderLayout(0, 0));
         authorPanel.setMaximumSize(maximumSize);
 
         JTextField textField = new JTextField();

@@ -51,11 +51,14 @@ public class TagInputField extends JTextField {
         for (String tagName : inputText) {
             tagName = tagName.trim();
 
+            // può capitare che l'utente non inserisce nulla tra due virgole, tipo ", ,"
+            // ovviamente non vogliamo aggiungerlo all'elenco
             if (tagName.isEmpty() || tagName.isBlank())
                 continue;
 
             Tag tag = new Tag(tagName);
 
+            // non mettiamo ripetizioni
             if (!tags.contains(tag))
                 tags.add(tag);
         }

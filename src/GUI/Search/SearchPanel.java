@@ -67,11 +67,11 @@ public class SearchPanel extends JPanel {
 
         addFieldComponent("Parole chiave", tags, null);
 
-        JLabel labelField = new JLabel("Autori");
-        labelField.setMaximumSize(maximumSize);
-        labelField.setAlignmentX(alignment);
-        searchPanel.add(labelField);
+        JLabel authorLabel = new JLabel("Autori");
+        authorLabel.setMaximumSize(maximumSize);
+        authorLabel.setAlignmentX(alignment);
         authors.setAlignmentX(alignment);
+        searchPanel.add(authorLabel);
         searchPanel.add(authors);
 
         addFieldComponent("Categorie", categories, "Seleziona le categorie in cui cercare il riferimento.");
@@ -86,7 +86,7 @@ public class SearchPanel extends JPanel {
         searchButton.setMaximumSize(new Dimension(100, 32));
         searchButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                search();
+                notifyListeners();
             }
         });
         searchPanel.add(searchButton);
@@ -163,7 +163,7 @@ public class SearchPanel extends JPanel {
         searchPanel.add(Box.createVerticalStrut(5));
     }
 
-    private void search() {
+    private void notifyListeners() {
         try {
             Search search = new Search(dateFrom.getDate(), dateTo.getDate(), tags.getTags(), categories.getCheckboxTree().getSelectedItems(), authors.getAuthors());
 
