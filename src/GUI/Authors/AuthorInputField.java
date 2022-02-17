@@ -20,8 +20,8 @@ public class AuthorInputField extends JPanel {
 
     private final Dimension maximumSize = new Dimension(Integer.MAX_VALUE, 24);
 
-    private final String addTooltip = "Aggiungi autore.";
-    private final String removeTooltip = "Rimuovi autore.";
+    private final String addTooltip = "Aggiungi autore";
+    private final String removeTooltip = "Rimuovi autore";
     private final String textTooltip = "Autore del riferimento.\nÈ possibile specificare l'ORCID mettendolo tra parentesi quadre.\nEsempio: \"Mario Rossi [0000-0000-0000-0000]\"";
 
     /**

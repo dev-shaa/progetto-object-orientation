@@ -11,7 +11,7 @@ public class Author {
     private String name;
     private String ORCID;
 
-    private static final Pattern orcidPattern = Pattern.compile("^ *[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9xX] *$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern orcidPattern = Pattern.compile("^ *[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9x] *$", Pattern.CASE_INSENSITIVE);
 
     /**
      * Crea un nuovo autore con il nome e l'ORCID dati.

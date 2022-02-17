@@ -39,6 +39,8 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
     /**
      * Crea una nuova finestra di dialogo in cui è possibile scegliere un riferimento.
      * 
+     * @param owner
+     *            proprietario della finestra
      * @param categoryRepository
      *            controller delle categorie
      * @param referenceRepository
@@ -46,7 +48,9 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
      * @throws IllegalArgumentException
      *             se {@code categoryManager == null} o {@code referenceManager == null}
      */
-    public ReferencePicker(CategoryRepository categoryRepository, ReferenceRepository referenceRepository) {
+    public ReferencePicker(Dialog owner, CategoryRepository categoryRepository, ReferenceRepository referenceRepository) {
+        super(owner);
+
         setCategoryRepository(categoryRepository);
         setReferenceRepository(referenceRepository);
 
@@ -54,7 +58,6 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
         setModal(true);
         setSize(500, 500);
         setResizable(false);
-        setLocationRelativeTo(null);
 
         JPanel contentPane = new JPanel(new BorderLayout(10, 10));
         setContentPane(contentPane);
@@ -76,7 +79,7 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
         confirmButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                onConfirmButton();
+                notifyListeners();
             }
         });
 
@@ -113,6 +116,8 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
                 categoriesPanel.setTreeModel(null);
                 errorMessage = e.getMessage();
             }
+
+            setLocationRelativeTo(null);
         }
 
         super.setVisible(b);
@@ -209,14 +214,12 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
             pickerListeners.remove(listener);
     }
 
-    private void onConfirmButton() {
+    private void notifyListeners() {
         if (pickerListeners == null)
             return;
 
-        for (ReferencePickerListener listener : pickerListeners) {
-            setVisible(false);
+        for (ReferencePickerListener listener : pickerListeners)
             listener.onReferencePick(referencesPanel.getSelectedReference());
-        }
 
         setVisible(false);
     }

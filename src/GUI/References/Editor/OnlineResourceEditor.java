@@ -66,7 +66,7 @@ public abstract class OnlineResourceEditor<T extends OnlineResource> extends Ref
     private String getURLValue() throws RequiredFieldMissingException {
         String newURL = URL.getText().trim();
 
-        if (isStringNullOrEmpty(newURL))
+        if (newURL == null || newURL.isEmpty() || newURL.isBlank())
             throw new RequiredFieldMissingException("L'URL di una risorsa online non può essere nullo.");
 
         return newURL;

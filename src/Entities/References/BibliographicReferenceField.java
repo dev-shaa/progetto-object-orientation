@@ -30,9 +30,6 @@ public class BibliographicReferenceField {
      *             se {@code name == null}, {@code name.isEmpty()} o {@code name.isBlank()}
      */
     public void setName(String name) {
-        if (!isNameValid(name))
-            throw new IllegalArgumentException("name can't be null");
-
         this.name = name.trim();
     }
 
@@ -64,10 +61,6 @@ public class BibliographicReferenceField {
      */
     public Object getValue() {
         return this.value;
-    }
-
-    private boolean isNameValid(String name) {
-        return name != null && !name.isEmpty() && !name.isBlank();
     }
 
 }
