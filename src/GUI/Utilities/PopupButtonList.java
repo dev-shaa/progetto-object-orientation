@@ -7,30 +7,51 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
+/**
+ * Un {@code PopupButton} che mostra una lista di elementi rimovibili.
+ */
 public class PopupButtonList<T extends Object> extends PopupButton {
 
     private ArrayList<T> items;
 
-    public PopupButtonList() {
-        this(null);
-    }
-
+    /**
+     * Crea un nuovo pulsante senza elementi con il testo indicato.
+     * 
+     * @param text
+     *            testo del pulsante
+     */
     public PopupButtonList(String text) {
         super(text);
         items = new ArrayList<>();
     }
 
+    /**
+     * Imposta gli elementi presenti nella lista.
+     * <p>
+     * Se la lista è nulla, vengono solo rimossi quelli già esistenti.
+     * 
+     * @param items
+     *            elementi da aggiungere
+     */
     public void setItems(Collection<? extends T> items) {
-        if (items == null)
-            return;
-
         this.items.clear();
         removeAllFromPopupMenu();
+
+        if (items == null)
+            return;
 
         for (T item : items)
             addItem(item);
     }
 
+    /**
+     * Aggiunge un elemento alla lista.
+     * <p>
+     * Se l'elemento è nullo o già contenuto, non viene eseguito nulla.
+     * 
+     * @param item
+     *            elemento da aggiungere
+     */
     public void addItem(T item) {
         if (item == null || items.contains(item))
             return;
@@ -57,6 +78,11 @@ public class PopupButtonList<T extends Object> extends PopupButton {
         addToPopupMenu(panel);
     }
 
+    /**
+     * Restituisce gli elementi presenti nella lista.
+     * 
+     * @return elementi della lista
+     */
     public ArrayList<T> getItems() {
         return items;
     }

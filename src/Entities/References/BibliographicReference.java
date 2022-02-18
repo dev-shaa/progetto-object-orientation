@@ -65,6 +65,8 @@ public abstract class BibliographicReference {
         return (getID() == null && reference == null) || (getID() != null && getID().equals(reference.getID()));
     }
 
+    // #region GETTER/SETTER
+
     /**
      * Imposta l'id del riferimento.
      * <p>
@@ -378,6 +380,8 @@ public abstract class BibliographicReference {
     public String getFormattedDate() {
         return getPubblicationDate() == null ? null : DATE_FORMAT.format(getPubblicationDate());
     }
+
+    // #endregion
 
     /**
      * Controlla se questo riferimento è stato pubblicato dopo una certa data.

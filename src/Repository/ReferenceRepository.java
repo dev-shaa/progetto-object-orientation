@@ -203,10 +203,10 @@ public class ReferenceRepository {
         referenceDAO.remove(reference);
 
         // rimuovi dalla memoria locale
-        getAllLocal().remove(reference);
+        references.remove(reference);
 
         // rimovi dalle liste di rimandi degli altri riferimenti
-        for (BibliographicReference referenceQuotingThis : getAllLocal())
+        for (BibliographicReference referenceQuotingThis : references)
             referenceQuotingThis.getRelatedReferences().remove(reference);
 
         // tutti i rimandi citati hanno un riferimento in meno che li pensa
@@ -392,20 +392,16 @@ public class ReferenceRepository {
         return getAll().stream().filter(filter).collect(Collectors.toList());
     }
 
-    private List<BibliographicReference> getAllLocal() {
-        return references;
-    }
-
     private void saveToLocal(BibliographicReference reference) {
-        int index = getAllLocal().indexOf(reference);
+        int index = references.indexOf(reference);
 
         if (index == -1) {
-            getAllLocal().add(reference);
+            references.add(reference);
         } else {
             // se è già contenuta nell'elenco vuol dire che stiamo aggiornando il riferimento
             // conviene prima rimuoverlo dal conteggio delle citazioni ricevute e poi aggiornarlo di nuovo
 
-            getAllLocal().set(index, reference);
+            references.set(index, reference);
             replaceInRelatedReferences(reference);
             removeFromQuotationCount(reference);
         }
@@ -430,7 +426,7 @@ public class ReferenceRepository {
     }
 
     private void replaceInRelatedReferences(BibliographicReference newReference) {
-        for (BibliographicReference reference : getAllLocal()) {
+        for (BibliographicReference reference : references) {
             int index = reference.getRelatedReferences().indexOf(newReference);
 
             if (index != -1)
