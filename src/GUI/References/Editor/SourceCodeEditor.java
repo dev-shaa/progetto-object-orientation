@@ -7,7 +7,6 @@ import Exceptions.Input.InvalidInputException;
 import Repository.CategoryRepository;
 import Repository.ReferenceRepository;
 
-import java.awt.Frame;
 import javax.swing.JComboBox;
 
 /**
@@ -20,8 +19,6 @@ public class SourceCodeEditor extends OnlineResourceEditor<SourceCode> {
     /**
      * Crea una nuova finestra di dialogo per la creazione o modifica di codice sorgente.
      * 
-     * @param owner
-     *            proprietario di questa finestra di dialogo
      * @param categoryController
      *            controller delle categorie
      * @param referenceController
@@ -29,8 +26,8 @@ public class SourceCodeEditor extends OnlineResourceEditor<SourceCode> {
      * @throws IllegalArgumentException
      *             se {@code categoryController == null} o {@code referenceController == null}
      */
-    public SourceCodeEditor(Frame owner, CategoryRepository categoryController, ReferenceRepository referenceController) {
-        super(owner, "Codice sorgente", categoryController, referenceController);
+    public SourceCodeEditor(CategoryRepository categoryController, ReferenceRepository referenceController) {
+        super("Codice sorgente", categoryController, referenceController);
     }
 
     @Override

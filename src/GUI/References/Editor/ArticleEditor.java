@@ -6,7 +6,6 @@ import Exceptions.Input.InvalidInputException;
 import Repository.CategoryRepository;
 import Repository.ReferenceRepository;
 
-import java.awt.Frame;
 import javax.swing.JTextField;
 
 /**
@@ -19,8 +18,6 @@ public class ArticleEditor extends PublicationEditor<Article> {
     /**
      * Crea una nuova finestra di dialogo per la creazione o modifica di un articolo.
      * 
-     * @param owner
-     *            proprietario di questa finestra di dialogo
      * @param categoryController
      *            controller delle categorie
      * @param referenceController
@@ -28,8 +25,8 @@ public class ArticleEditor extends PublicationEditor<Article> {
      * @throws IllegalArgumentException
      *             se {@code categoryController == null} o {@code referenceController == null}
      */
-    public ArticleEditor(Frame owner, CategoryRepository categoryController, ReferenceRepository referenceController) {
-        super(owner, "Articolo", categoryController, referenceController);
+    public ArticleEditor(CategoryRepository categoryController, ReferenceRepository referenceController) {
+        super("Articolo", categoryController, referenceController);
     }
 
     @Override

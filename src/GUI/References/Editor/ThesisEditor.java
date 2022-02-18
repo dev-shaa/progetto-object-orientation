@@ -6,7 +6,6 @@ import Exceptions.Input.InvalidInputException;
 import Repository.CategoryRepository;
 import Repository.ReferenceRepository;
 
-import java.awt.Frame;
 import javax.swing.JTextField;
 
 /**
@@ -20,8 +19,6 @@ public class ThesisEditor extends PublicationEditor<Thesis> {
     /**
      * Crea una nuova finestra di dialogo per la creazione o modifica di una tesi.
      * 
-     * @param owner
-     *            proprietario di questa finestra di dialogo
      * @param categoryController
      *            controller delle categorie
      * @param referenceController
@@ -29,8 +26,8 @@ public class ThesisEditor extends PublicationEditor<Thesis> {
      * @throws IllegalArgumentException
      *             se {@code categoryController == null} o {@code referenceController == null}
      */
-    public ThesisEditor(Frame owner, CategoryRepository categoryController, ReferenceRepository referenceController) {
-        super(owner, "Tesi", categoryController, referenceController);
+    public ThesisEditor(CategoryRepository categoryController, ReferenceRepository referenceController) {
+        super("Tesi", categoryController, referenceController);
     }
 
     @Override

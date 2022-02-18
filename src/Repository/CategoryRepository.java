@@ -81,7 +81,6 @@ public class CategoryRepository {
 
         CustomTreeNode<Category> node = new CustomTreeNode<Category>(category);
         CustomTreeNode<Category> parentNode = treeModel.findNode(category.getParent());
-
         treeModel.addNode(node, parentNode);
     }
 
@@ -108,7 +107,7 @@ public class CategoryRepository {
         if (oldName.equals(newName))
             return;
 
-        category.setName(newName);
+        category.setName(newName); // se il nome non è valido lancia una IllegalArgumentException
 
         try {
             categoryDAO.update(category);

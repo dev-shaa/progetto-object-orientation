@@ -5,7 +5,6 @@ import Exceptions.Input.InvalidInputException;
 import Repository.CategoryRepository;
 import Repository.ReferenceRepository;
 
-import java.awt.Frame;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
@@ -22,8 +21,6 @@ public abstract class PublicationEditor<T extends Publication> extends Reference
     /**
      * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento.
      * 
-     * @param owner
-     *            proprietario di questa finestra di dialogo
      * @param title
      *            titolo della finestra
      * @param categoryController
@@ -33,8 +30,8 @@ public abstract class PublicationEditor<T extends Publication> extends Reference
      * @throws IllegalArgumentException
      *             se {@code categoryController == null} o {@code referenceController == null}
      */
-    public PublicationEditor(Frame owner, String title, CategoryRepository categoryController, ReferenceRepository referenceController) {
-        super(owner, title, categoryController, referenceController);
+    public PublicationEditor(String title, CategoryRepository categoryController, ReferenceRepository referenceController) {
+        super(title, categoryController, referenceController);
     }
 
     @Override

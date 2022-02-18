@@ -6,7 +6,6 @@ import Exceptions.Input.InvalidInputException;
 import Repository.CategoryRepository;
 import Repository.ReferenceRepository;
 
-import java.awt.Frame;
 import javax.swing.JTextField;
 
 /**
@@ -19,8 +18,6 @@ public class BookEditor extends PublicationEditor<Book> {
     /**
      * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento.
      * 
-     * @param owner
-     *            proprietario di questa finestra di dialogo
      * @param categoryController
      *            controller delle categorie
      * @param referenceController
@@ -28,8 +25,8 @@ public class BookEditor extends PublicationEditor<Book> {
      * @throws IllegalArgumentException
      *             se {@code categoryController == null} o {@code referenceController == null}
      */
-    public BookEditor(Frame owner, CategoryRepository categoryController, ReferenceRepository referenceController) {
-        super(owner, "Libro", categoryController, referenceController);
+    public BookEditor(CategoryRepository categoryController, ReferenceRepository referenceController) {
+        super("Libro", categoryController, referenceController);
     }
 
     @Override

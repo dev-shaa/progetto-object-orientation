@@ -7,7 +7,6 @@ import Repository.CategoryRepository;
 import Repository.ReferenceRepository;
 
 import javax.swing.*;
-import java.awt.Frame;
 
 /**
  * Finestra di dialogo per la creazione o modifica di un riferimento a una risorsa online.
@@ -19,8 +18,6 @@ public abstract class OnlineResourceEditor<T extends OnlineResource> extends Ref
     /**
      * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento.
      * 
-     * @param owner
-     *            proprietario di questa finestra di dialogo
      * @param title
      *            titolo della finestra
      * @param categoryController
@@ -30,8 +27,8 @@ public abstract class OnlineResourceEditor<T extends OnlineResource> extends Ref
      * @throws IllegalArgumentException
      *             se {@code categoryController == null} o {@code referenceController == null}
      */
-    public OnlineResourceEditor(Frame owner, String title, CategoryRepository categoryController, ReferenceRepository referenceController) {
-        super(owner, title, categoryController, referenceController);
+    public OnlineResourceEditor(String title, CategoryRepository categoryController, ReferenceRepository referenceController) {
+        super(title, categoryController, referenceController);
     }
 
     @Override

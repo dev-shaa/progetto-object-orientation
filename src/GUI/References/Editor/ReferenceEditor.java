@@ -54,8 +54,6 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     /**
      * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento.
      * 
-     * @param owner
-     *            proprietario di questa finestra di dialogo
      * @param title
      *            titolo della finestra
      * @param categoryRepository
@@ -65,16 +63,62 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      * @throws IllegalArgumentException
      *             se {@code categoryRepository == null} o {@code referenceRepository == null}
      */
-    public ReferenceEditor(Frame owner, String title, CategoryRepository categoryRepository, ReferenceRepository referenceRepository) {
-        super(owner, title, true);
+    public ReferenceEditor(String title, CategoryRepository categoryRepository, ReferenceRepository referenceRepository) {
+        super();
 
-        setSize(1000, 700);
+        setTitle(title);
+        setModal(true);
+        setSize(500, 700);
         setResizable(false);
 
         setCategoryRepository(categoryRepository);
         setReferenceRepository(referenceRepository);
 
         setupBaseFields();
+    }
+
+    @Override
+    public void setVisible(boolean b) {
+        setVisible(b, null);
+    }
+
+    /**
+     * Mostra o nasconde questo pannello a seconda del valore di {@code b}.
+     * <p>
+     * Se {@code b == true}, i campi di input verranno riempiti con i valori presenti in {@code reference}.
+     * <p>
+     * In caso si verifichi un errore nel recupero dell'albero delle categorie, viene mostrato un messaggio di errore.
+     * 
+     * @param b
+     *            se {@code true} il pannello verrà mostrato e verrano riempiti i campi con i valori di {@code reference},
+     *            se {@code false} il pannello verrà nascosto
+     * @param reference
+     *            riferimento da mostrare (può essere {@code null})
+     */
+    public void setVisible(boolean b, T reference) {
+        boolean failedToLoad = false;
+
+        if (b) {
+            referenceToChange = reference;
+
+            try {
+                categories.setTreeModel(getCategoryRepository().getTree());
+                setFieldsInitialValues(reference);
+            } catch (CategoryDatabaseException e) {
+                categories.setTreeModel(null);
+                failedToLoad = true;
+            }
+
+            setLocationRelativeTo(null);
+        }
+
+        super.setVisible(b);
+
+        if (failedToLoad) {
+            String[] choices = { "Riprova", "Chiudi" };
+            int option = JOptionPane.showOptionDialog(this, "Si è verificato un errore durante il recupero delle categorie dell'utente.", "Errore recupero", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null, choices, 0);
+            setVisible(option == JOptionPane.YES_OPTION, reference);
+        }
     }
 
     /**
@@ -90,6 +134,8 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
             throw new IllegalArgumentException("categoryController can't be null");
 
         this.categoryController = categoryRepository;
+
+        // TODO: aggiorna reference picker
     }
 
     /**
@@ -114,6 +160,8 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
             throw new IllegalArgumentException("referenceController can't be null");
 
         this.referenceController = referenceController;
+
+        // TODO: aggiorna reference picker
     }
 
     /**
@@ -126,62 +174,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         return referenceController;
     }
 
-    /**
-     * Restituisce un nuovo riferimento da riempire.
-     * 
-     * @return istanza vuota da riempire
-     */
-    protected abstract T getNewInstance();
-
-    /**
-     * Crea un nuovo riferimenti con i valori inseriti dall'utente.
-     * 
-     * @return riferimento con i dati inseriti dall'utente
-     * @throws RequiredFieldMissingException
-     *             se i campi obbligatori non sono stati riempiti
-     */
-    protected T createNewReference() throws InvalidInputException {
-        T reference = getNewInstance();
-
-        if (referenceToChange != null)
-            reference.setID(referenceToChange.getID());
-
-        reference.setTitle(getTitleValue());
-        reference.setAuthors(getAuthorValues());
-        reference.setDOI(getDOIValue());
-        reference.setDescription(getDescriptionValue());
-        reference.setLanguage(getLanguageValue());
-        reference.setPubblicationDate(getPubblicationDateValue());
-        reference.setTags(getTagValues());
-        reference.setRelatedReferences(getRelatedReferenceValues());
-        reference.setCategories(getCategoryValues());
-
-        return reference;
-    }
-
-    /**
-     * Salva il riferimento.
-     * 
-     * @param reference
-     *            riferimento da salvare
-     * @throws ReferenceDatabaseException
-     *             se il salvataggio non va a buon fine
-     */
-    protected abstract void save(T reference) throws ReferenceDatabaseException;
-
-    private void save() {
-        try {
-            T reference = createNewReference();
-            save(reference);
-            setVisible(false);
-        } catch (InvalidInputException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Parametri inseriti non validi", JOptionPane.ERROR_MESSAGE);
-        } catch (ReferenceDatabaseException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Salvataggio non riuscito", JOptionPane.ERROR_MESSAGE);
-        }
-    }
+    // #region GUI
 
     private void setupBaseFields() {
         fieldPanel = new JPanel();
@@ -191,13 +184,25 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         setContentPane(new JScrollPane(fieldPanel));
 
         title = new JTextField();
+        addFieldComponent(title, "Titolo (obbligatorio)", "Titolo univoco del riferimento.");
+
         tags = new TagInputField();
-        authors = new AuthorInputField();
-        categories = new PopupCheckboxTree<>();
+        addFieldComponent(tags, "Parole chiave", null);
+
         DOI = new JTextField();
+        addFieldComponent(DOI, "DOI", "Codice identificativo DOI del riferimento.");
+
+        authors = new AuthorInputField();
+        addFieldComponent(authors, "Autori", null);
+
+        categories = new PopupCheckboxTree<>();
+        addFieldComponent(categories, "Categorie", "Categorie a cui deve essere associato questo riferimento.");
+
         pubblicationDate = new JDateChooser();
+        addFieldComponent(pubblicationDate, "Data di pubblicazione", "Data di pubblicazione del riferimento.");
+
         language = new JComboBox<>(ReferenceLanguage.values());
-        description = new JTextArea(10, 1);
+        addFieldComponent(language, "Lingua", "Lingua del riferimento.");
 
         relatedReferencesPicker = new ReferencePicker(this, getCategoryRepository(), getReferenceRepository());
         relatedReferencesPicker.addReferencePickerListener(new ReferencePickerListener() {
@@ -208,6 +213,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         });
 
         relatedReferences = new PopupButtonList<>("Premi per vedere i rimandi");
+
         JButton addRelatedReference = new JButton(new ImageIcon("images/button_add.png"));
         addRelatedReference.setBorderPainted(false);
         addRelatedReference.setBackground(new Color(0, 0, 0, 0));
@@ -222,25 +228,21 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         relatedReferencesPanel.add(relatedReferences, BorderLayout.CENTER);
         relatedReferencesPanel.add(addRelatedReference, BorderLayout.EAST);
 
-        addFieldComponent(title, "Titolo (obbligatorio)", "Titolo univoco del riferimento.");
-        addFieldComponent(tags, "Parole chiave", null);
-        addFieldComponent(DOI, "DOI", "Codice identificativo DOI del riferimento.");
-        addFieldComponent(pubblicationDate, "Data di pubblicazione", "Data di pubblicazione del riferimento.");
-        addFieldComponent(language, "Lingua", "Lingua del riferimento.");
-        addFieldComponent(categories, "Categorie", "Categorie a cui deve essere associato questo riferimento.");
-        addFieldComponent(authors, "Autori", null);
         addFieldComponent(relatedReferencesPanel, "Rimandi", "Riferimenti menzionati all'interno del testo.");
 
+        // gli altri campi li mettiamo prima della descrizione e del tasto di conferma
         setupSecondaryFields();
-
-        // la descrizione e il tasto di conferma vogliamo che siano sempre alla fine
 
         JLabel descriptionLabel = new JLabel("Descrizione");
         descriptionLabel.setMaximumSize(maximumSize);
         descriptionLabel.setAlignmentX(alignment);
+        fieldPanel.add(descriptionLabel);
 
+        description = new JTextArea(10, 1);
         description.setLineWrap(true);
         description.setAlignmentX(alignment);
+        fieldPanel.add(description);
+        fieldPanel.add(Box.createVerticalStrut(20));
 
         JButton confirmButton = new JButton("Salva riferimento");
         confirmButton.setAlignmentX(alignment);
@@ -251,9 +253,6 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
             }
         });
 
-        fieldPanel.add(descriptionLabel);
-        fieldPanel.add(description);
-        fieldPanel.add(Box.createRigidArea(new Dimension(0, 20)));
         fieldPanel.add(confirmButton);
     }
 
@@ -334,49 +333,64 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         relatedReferencesPicker.setVisible(true, referencesToExclude);
     }
 
-    @Override
-    public void setVisible(boolean b) {
-        setVisible(b, null);
+    // #endregion
+
+    private void save() {
+        try {
+            T reference = createNewReference();
+            save(reference);
+            setVisible(false);
+        } catch (InvalidInputException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Parametri inseriti non validi", JOptionPane.ERROR_MESSAGE);
+        } catch (ReferenceDatabaseException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Salvataggio non riuscito", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /**
-     * Mostra o nasconde questo pannello a seconda del valore di {@code b}.
-     * <p>
-     * Se {@code b == true}, i campi di input verranno riempiti con i valori presenti in {@code reference}.
-     * <p>
-     * In caso si verifichi un errore nel recupero dell'albero delle categorie, viene mostrato un messaggio di errore.
+     * Crea un nuovo riferimenti con i valori inseriti dall'utente.
      * 
-     * @param b
-     *            se {@code true} il pannello verrà mostrato e verrano riempiti i campi con i valori di {@code reference},
-     *            se {@code false} il pannello verrà nascosto
-     * @param reference
-     *            riferimento da mostrare (può essere {@code null})
+     * @return riferimento con i dati inseriti dall'utente
+     * @throws RequiredFieldMissingException
+     *             se i campi obbligatori non sono stati riempiti
      */
-    public void setVisible(boolean b, T reference) {
-        boolean failedToLoad = false;
+    protected T createNewReference() throws InvalidInputException {
+        T reference = getNewInstance();
 
-        if (b) {
-            referenceToChange = reference;
+        if (referenceToChange != null)
+            reference.setID(referenceToChange.getID());
 
-            try {
-                categories.setTreeModel(getCategoryRepository().getTree());
-                setFieldsInitialValues(reference);
-            } catch (CategoryDatabaseException e) {
-                categories.setTreeModel(null);
-                failedToLoad = true;
-            }
+        reference.setTitle(getTitleValue());
+        reference.setAuthors(getAuthorValues());
+        reference.setDOI(getDOIValue());
+        reference.setDescription(getDescriptionValue());
+        reference.setLanguage(getLanguageValue());
+        reference.setPubblicationDate(getPubblicationDateValue());
+        reference.setTags(getTagValues());
+        reference.setRelatedReferences(getRelatedReferenceValues());
+        reference.setCategories(getCategoryValues());
 
-            setLocationRelativeTo(null);
-        }
-
-        super.setVisible(b);
-
-        if (failedToLoad) {
-            String[] choices = { "Riprova", "Chiudi" };
-            int option = JOptionPane.showOptionDialog(this, "Si è verificato un errore durante il recupero delle categorie dell'utente.", "Errore recupero", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null, choices, 0);
-            setVisible(option == JOptionPane.YES_OPTION, reference);
-        }
+        return reference;
     }
+
+    /**
+     * Restituisce un nuovo riferimento da riempire.
+     * 
+     * @return istanza vuota da riempire
+     */
+    protected abstract T getNewInstance();
+
+    /**
+     * Salva il riferimento.
+     * 
+     * @param reference
+     *            riferimento da salvare
+     * @throws ReferenceDatabaseException
+     *             se il salvataggio non va a buon fine
+     */
+    protected abstract void save(T reference) throws ReferenceDatabaseException;
 
     // #region VALUES GETTER/SETTER
 
