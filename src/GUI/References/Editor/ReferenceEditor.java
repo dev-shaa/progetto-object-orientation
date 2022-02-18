@@ -42,8 +42,8 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
 
     private JPanel fieldPanel;
 
-    private CategoryRepository categoryController;
-    private ReferenceRepository referenceController;
+    private CategoryRepository categoryRepository;
+    private ReferenceRepository referenceRepository;
 
     private T referenceToChange;
 
@@ -70,6 +70,14 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         setModal(true);
         setSize(500, 700);
         setResizable(false);
+
+        relatedReferencesPicker = new ReferencePicker(this, categoryRepository, referenceRepository);
+        relatedReferencesPicker.addReferencePickerListener(new ReferencePickerListener() {
+            @Override
+            public void onReferencePick(BibliographicReference reference) {
+                addRelatedReference(reference);
+            }
+        });
 
         setCategoryRepository(categoryRepository);
         setReferenceRepository(referenceRepository);
@@ -131,11 +139,10 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      */
     public void setCategoryRepository(CategoryRepository categoryRepository) {
         if (categoryRepository == null)
-            throw new IllegalArgumentException("categoryController can't be null");
+            throw new IllegalArgumentException("categoryRepository can't be null");
 
-        this.categoryController = categoryRepository;
-
-        // TODO: aggiorna reference picker
+        this.categoryRepository = categoryRepository;
+        relatedReferencesPicker.setCategoryRepository(categoryRepository);
     }
 
     /**
@@ -144,24 +151,23 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      * @return controller delle categorie
      */
     public CategoryRepository getCategoryRepository() {
-        return categoryController;
+        return categoryRepository;
     }
 
     /**
      * Imposta il controller dei riferimenti da usare per salvare i riferimenti creati.
      * 
-     * @param referenceController
+     * @param referenceRepository
      *            nuovo controller dei riferimenti
      * @throws IllegalArgumentException
      *             se {@code referenceController == null}
      */
-    public void setReferenceRepository(ReferenceRepository referenceController) {
-        if (referenceController == null)
-            throw new IllegalArgumentException("referenceController can't be null");
+    public void setReferenceRepository(ReferenceRepository referenceRepository) {
+        if (referenceRepository == null)
+            throw new IllegalArgumentException("referenceRepository can't be null");
 
-        this.referenceController = referenceController;
-
-        // TODO: aggiorna reference picker
+        this.referenceRepository = referenceRepository;
+        relatedReferencesPicker.setReferenceRepository(referenceRepository);
     }
 
     /**
@@ -171,7 +177,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      *         controller dei riferimenti
      */
     public ReferenceRepository getReferenceRepository() {
-        return referenceController;
+        return referenceRepository;
     }
 
     // #region GUI
@@ -203,14 +209,6 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
 
         language = new JComboBox<>(ReferenceLanguage.values());
         addFieldComponent(language, "Lingua", "Lingua del riferimento.");
-
-        relatedReferencesPicker = new ReferencePicker(this, getCategoryRepository(), getReferenceRepository());
-        relatedReferencesPicker.addReferencePickerListener(new ReferencePickerListener() {
-            @Override
-            public void onReferencePick(BibliographicReference reference) {
-                addRelatedReference(reference);
-            }
-        });
 
         relatedReferences = new PopupButtonList<>("Premi per vedere i rimandi");
 
