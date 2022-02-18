@@ -21,13 +21,12 @@ import java.util.Date;
 import java.util.List;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import com.toedter.calendar.JDateChooser;
 
 /**
  * Finestra di dialogo per la creazione o modifica di un riferimento bibliografico.
  */
-public abstract class ReferenceEditor<T extends BibliographicReference> extends JDialog implements ReferencePickerListener {
+public abstract class ReferenceEditor<T extends BibliographicReference> extends JDialog {
 
     private JTextField title;
     private JTextField DOI;
@@ -38,9 +37,8 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     private TagInputField tags;
     private AuthorInputField authors;
 
-    private PopupButton relatedReferencesPopupButton;
-    private ReferencePicker relatedReferencesDialog;
-    private ArrayList<BibliographicReference> relatedReferences;
+    private ReferencePicker relatedReferencesPicker;
+    private PopupButtonList<BibliographicReference> relatedReferences;
 
     private JPanel fieldPanel;
 
@@ -70,7 +68,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     public ReferenceEditor(Frame owner, String title, CategoryRepository categoryRepository, ReferenceRepository referenceRepository) {
         super(owner, title, true);
 
-        setSize(500, 700);
+        setSize(1000, 700);
         setResizable(false);
 
         setCategoryRepository(categoryRepository);
@@ -188,7 +186,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     private void setupBaseFields() {
         fieldPanel = new JPanel();
         fieldPanel.setLayout(new BoxLayout(fieldPanel, BoxLayout.PAGE_AXIS));
-        fieldPanel.setBorder(new EmptyBorder(50, 30, 50, 30));
+        fieldPanel.setBorder(BorderFactory.createEmptyBorder(50, 30, 50, 30));
 
         setContentPane(new JScrollPane(fieldPanel));
 
@@ -201,10 +199,15 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         language = new JComboBox<>(ReferenceLanguage.values());
         description = new JTextArea(10, 1);
 
-        relatedReferencesDialog = new ReferencePicker(getCategoryRepository(), getReferenceRepository());
-        relatedReferencesDialog.addReferencePickerListener(this);
+        relatedReferencesPicker = new ReferencePicker(this, getCategoryRepository(), getReferenceRepository());
+        relatedReferencesPicker.addReferencePickerListener(new ReferencePickerListener() {
+            @Override
+            public void onReferencePick(BibliographicReference reference) {
+                addRelatedReference(reference);
+            }
+        });
 
-        relatedReferencesPopupButton = new PopupButton("Premi per vedere i rimandi");
+        relatedReferences = new PopupButtonList<>("Premi per vedere i rimandi");
         JButton addRelatedReference = new JButton(new ImageIcon("images/button_add.png"));
         addRelatedReference.setBorderPainted(false);
         addRelatedReference.setBackground(new Color(0, 0, 0, 0));
@@ -216,7 +219,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         });
 
         JPanel relatedReferencesPanel = new JPanel(new BorderLayout(10, 0));
-        relatedReferencesPanel.add(relatedReferencesPopupButton, BorderLayout.CENTER);
+        relatedReferencesPanel.add(relatedReferences, BorderLayout.CENTER);
         relatedReferencesPanel.add(addRelatedReference, BorderLayout.EAST);
 
         addFieldComponent(title, "Titolo (obbligatorio)", "Titolo univoco del riferimento.");
@@ -328,12 +331,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         if (referenceToChange != null)
             referencesToExclude.add(referenceToChange);
 
-        relatedReferencesDialog.setVisible(true, referencesToExclude);
-    }
-
-    @Override
-    public void onReferencePick(BibliographicReference reference) {
-        addRelatedReference(reference);
+        relatedReferencesPicker.setVisible(true, referencesToExclude);
     }
 
     @Override
@@ -380,17 +378,6 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         }
     }
 
-    /**
-     * Controlla se una stringa è vuota
-     * 
-     * @param string
-     *            stringa da controllare
-     * @return se {@code string == null || string.isEmpty() || string.isBlank()}
-     */
-    protected boolean isStringNullOrEmpty(String string) {
-        return string == null || string.isEmpty() || string.isBlank();
-    }
-
     // #region VALUES GETTER/SETTER
 
     private void setTitleValue(String text) {
@@ -400,7 +387,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     private String getTitleValue() throws RequiredFieldMissingException {
         String referenceTitle = title.getText().trim();
 
-        if (isStringNullOrEmpty(referenceTitle))
+        if (referenceTitle == null || referenceTitle.isEmpty() || referenceTitle.isBlank())
             throw new RequiredFieldMissingException("Il titolo del riferimento non può essere nullo.");
 
         return referenceTitle;
@@ -467,53 +454,15 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     }
 
     private void setRelatedReferences(List<BibliographicReference> references) {
-        if (references == null)
-            return;
-
-        relatedReferences = null;
-        relatedReferencesPopupButton.removeAllFromPopupMenu();
-
-        for (BibliographicReference reference : references)
-            addRelatedReference(reference);
+        relatedReferences.setItems(references);
     }
 
     private void addRelatedReference(BibliographicReference reference) {
-        if (reference == null || reference.equals(referenceToChange))
-            return;
-
-        if (relatedReferences == null)
-            relatedReferences = new ArrayList<>(5);
-
-        if (relatedReferences.contains(reference))
-            return;
-
-        JPanel panel = new JPanel(new BorderLayout(10, 0));
-        panel.setBorder(new EmptyBorder(0, 20, 0, 5));
-        panel.setBackground(new Color(0, 0, 0, 0));
-
-        JButton removeButton = new JButton(new ImageIcon("images/button_remove.png"));
-        removeButton.setBorderPainted(false);
-        removeButton.setFocusPainted(false);
-        removeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                relatedReferences.remove(reference);
-                relatedReferencesPopupButton.removeFromPopupMenu(panel);
-            }
-        });
-
-        panel.add(new JLabel(reference.toString()), BorderLayout.CENTER);
-        panel.add(removeButton, BorderLayout.EAST);
-
-        relatedReferences.add(reference);
-        relatedReferencesPopupButton.addToPopupMenu(panel);
+        relatedReferences.addItem(reference);
     }
 
     private List<BibliographicReference> getRelatedReferenceValues() {
-        if (relatedReferences == null || relatedReferences.isEmpty())
-            return null;
-
-        return relatedReferences;
+        return relatedReferences.getItems();
     }
 
     // #endregion

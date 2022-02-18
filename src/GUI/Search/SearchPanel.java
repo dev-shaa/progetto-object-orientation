@@ -139,7 +139,7 @@ public class SearchPanel extends JPanel {
     /**
      * Resetta i campi di ricerca.
      */
-    public void reset() {
+    public void clear() {
         tags.clear();
         authors.clear();
         categories.getCheckboxTree().clearSelection();
@@ -170,7 +170,7 @@ public class SearchPanel extends JPanel {
             for (SearchListener listener : searchListeners)
                 listener.search(search);
 
-            reset();
+            clear();
         } catch (InvalidInputException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }

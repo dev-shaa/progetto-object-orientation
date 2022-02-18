@@ -30,34 +30,13 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
      * @param user
      *            l'utente che accede al database
      * @throws IllegalArgumentException
-     *             se l'utente di input è {@code null}
-     */
-    public BibliographicReferenceDAOPostgreSQL(User user) throws IllegalArgumentException {
-        setUser(user);
-    }
-
-    /**
-     * Imposta l'utente di cui recuperare i riferimenti.
-     * 
-     * @param user
-     *            utente di cui recuperare i riferimenti
-     * @throws IllegalArgumentException
      *             se {@code user == null}
      */
-    public void setUser(User user) {
+    public BibliographicReferenceDAOPostgreSQL(User user) throws IllegalArgumentException {
         if (user == null)
             throw new IllegalArgumentException("user non può essere null");
 
         this.user = user;
-    }
-
-    /**
-     * Restituisce l'utente assegnato a questo DAO.
-     * 
-     * @return utente assegnato al DAO
-     */
-    public User getUser() {
-        return user;
     }
 
     @Override
@@ -84,7 +63,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
 
             for (BibliographicReference reference : references) {
                 idToReference.put(reference.getID(), reference);
-                referenceToRelatedID.put(reference, getRelatedReferencesID(statement, reference));
+                referenceToRelatedID.put(reference, getRelatedReferencesID(statement, resultSet, reference));
             }
 
             // ASSEGNAZIONE RIMANDI
@@ -125,21 +104,24 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
      * {@inheritDoc}
      * 
      * @throws IllegalArgumentException
-     *             se {@code reference == null}
+     *             se {@code reference == null} o se {@code reference} non ha un ID
      */
     @Override
     public void remove(BibliographicReference reference) throws ReferenceDatabaseException {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
+        if (reference.getID() == null)
+            throw new IllegalArgumentException("reference doesn't have an ID");
+
         Connection connection = null;
         Statement statement = null;
-        String query = "delete from bibliographic_reference where id = " + reference.getID();
+        String command = "delete from bibliographic_reference where id = " + reference.getID();
 
         try {
             connection = DatabaseController.getConnection();
             statement = connection.createStatement();
-            statement.executeUpdate(query);
+            statement.executeUpdate(command);
         } catch (Exception e) {
             throw new ReferenceDatabaseException("Impossibile rimuovere il riferimento.");
         } finally {
@@ -375,7 +357,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
 
             referenceStatement = connection.prepareStatement(referenceInsertCommand, Statement.RETURN_GENERATED_KEYS);
 
-            referenceStatement.setString(1, getUser().getName());
+            referenceStatement.setString(1, user.getName());
             referenceStatement.setString(2, reference.getTitle());
             referenceStatement.setString(3, reference.getDOI());
             referenceStatement.setString(4, reference.getDescription());
@@ -492,7 +474,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
     }
 
     private List<Article> getArticles(Statement statement, ResultSet resultSet) throws SQLException {
-        String referenceQuery = "select * from bibliographic_reference natural join article where owner = '" + getUser().getName() + "'";
+        String referenceQuery = "select * from bibliographic_reference natural join article where owner = '" + user.getName() + "'";
 
         resultSet = statement.executeQuery(referenceQuery);
 
@@ -519,7 +501,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
     }
 
     private List<Book> getBooks(Statement statement, ResultSet resultSet) throws SQLException {
-        String referenceQuery = "select * from bibliographic_reference natural join book where owner = '" + getUser().getName() + "'";
+        String referenceQuery = "select * from bibliographic_reference natural join book where owner = '" + user.getName() + "'";
 
         resultSet = statement.executeQuery(referenceQuery);
 
@@ -546,7 +528,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
     }
 
     private List<Thesis> getThesis(Statement statement, ResultSet resultSet) throws SQLException {
-        String referenceQuery = "select * from bibliographic_reference natural join thesis where owner = '" + getUser().getName() + "'";
+        String referenceQuery = "select * from bibliographic_reference natural join thesis where owner = '" + user.getName() + "'";
 
         resultSet = statement.executeQuery(referenceQuery);
 
@@ -574,7 +556,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
     }
 
     private List<Website> getWebsites(Statement statement, ResultSet resultSet) throws SQLException {
-        String referenceQuery = "select * from bibliographic_reference natural join website where owner = '" + getUser().getName() + "'";
+        String referenceQuery = "select * from bibliographic_reference natural join website where owner = '" + user.getName() + "'";
 
         resultSet = statement.executeQuery(referenceQuery);
 
@@ -597,7 +579,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
     }
 
     private List<Image> getImages(Statement statement, ResultSet resultSet) throws SQLException {
-        String referenceQuery = "select * from bibliographic_reference natural join image where owner = '" + getUser().getName() + "'";
+        String referenceQuery = "select * from bibliographic_reference natural join image where owner = '" + user.getName() + "'";
 
         resultSet = statement.executeQuery(referenceQuery);
 
@@ -622,7 +604,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
     }
 
     private List<Video> getVideos(Statement statement, ResultSet resultSet) throws SQLException {
-        String referenceQuery = "select * from bibliographic_reference natural join video where owner = '" + getUser().getName() + "'";
+        String referenceQuery = "select * from bibliographic_reference natural join video where owner = '" + user.getName() + "'";
 
         resultSet = statement.executeQuery(referenceQuery);
 
@@ -649,7 +631,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
     }
 
     private List<SourceCode> getSourceCodes(Statement statement, ResultSet resultSet) throws SQLException {
-        String referenceQuery = "select * from bibliographic_reference natural join source_code where owner = '" + getUser().getName() + "'";
+        String referenceQuery = "select * from bibliographic_reference natural join source_code where owner = '" + user.getName() + "'";
 
         resultSet = statement.executeQuery(referenceQuery);
 
@@ -672,32 +654,19 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         return sourceCodes;
     }
 
-    private List<Integer> getRelatedReferencesID(Statement statement, BibliographicReference reference) throws SQLException {
-        if (statement == null)
-            throw new IllegalArgumentException("statement can't be null or closed");
+    private List<Integer> getRelatedReferencesID(Statement statement, ResultSet resultSet, BibliographicReference reference) throws SQLException {
+        if (statement == null || reference == null || reference.getID() == null)
+            throw new IllegalArgumentException();
 
-        if (reference == null)
-            throw new IllegalArgumentException("reference can't be null");
-
-        ResultSet relatedReferencesResultSet = null;
         String relatedReferencesQuery = "select * from related_references where quoted_by = " + reference.getID();
+        ArrayList<Integer> relatedReferencesID = new ArrayList<>();
 
-        try {
-            relatedReferencesResultSet = statement.executeQuery(relatedReferencesQuery);
+        resultSet = statement.executeQuery(relatedReferencesQuery);
+        while (resultSet.next())
+            relatedReferencesID.add(resultSet.getInt("quotes"));
 
-            ArrayList<Integer> relatedReferencesID = new ArrayList<>();
-
-            while (relatedReferencesResultSet.next()) {
-                relatedReferencesID.add(relatedReferencesResultSet.getInt("quotes"));
-            }
-
-            relatedReferencesID.trimToSize();
-
-            return relatedReferencesID;
-        } finally {
-            if (relatedReferencesResultSet != null)
-                relatedReferencesResultSet.close();
-        }
+        relatedReferencesID.trimToSize();
+        return relatedReferencesID;
     }
 
     private String getFormattedStringForQuery(String input) {

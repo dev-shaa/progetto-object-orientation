@@ -104,10 +104,10 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         boolean failedToLoad = false;
 
         if (b) {
-            try {
-                updateUserLabelText();
+            updateUserLabelText();
 
-                CustomTreeModel<Category> tree = getController().getCategoryController().getTree();
+            try {
+                CustomTreeModel<Category> tree = getController().getCategoryRepository().getTree();
 
                 categoriesTreePanel.setTreeModel(tree);
                 referenceSearchPanel.setCategoriesTree(tree);
@@ -119,7 +119,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
 
             referenceListPanel.clear();
             referenceInfoPanel.clear();
-            referenceSearchPanel.reset();
+            referenceSearchPanel.clear();
 
             setLocationRelativeTo(null);
         }
@@ -130,11 +130,10 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
             String[] choices = { "Riprova", "Esci" };
             int option = JOptionPane.showOptionDialog(this, "Si è verificato un errore durante il recupero dei dati dell'utente.", "Errore recupero", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null, choices, 0);
 
-            if (option == JOptionPane.YES_OPTION) {
+            if (option == JOptionPane.YES_OPTION)
                 setVisible(true);
-            } else {
+            else
                 getController().openLoginPage();
-            }
         }
     }
 
@@ -222,7 +221,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         Category newCategory = new Category(newCategoryName, categoriesTreePanel.getSelectedCategory());
 
         try {
-            getController().getCategoryController().save(newCategory);
+            getController().getCategoryRepository().save(newCategory);
         } catch (CategoryDatabaseException | IllegalArgumentException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Errore salvataggio categoria", JOptionPane.ERROR_MESSAGE);
         }
@@ -240,7 +239,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
             return;
 
         try {
-            getController().getCategoryController().update(selectedCategory, newName);
+            getController().getCategoryRepository().update(selectedCategory, newName);
         } catch (CategoryDatabaseException | IllegalArgumentException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Errore modifica categoria", JOptionPane.ERROR_MESSAGE);
         }
@@ -258,8 +257,8 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
             return;
 
         try {
-            getController().getCategoryController().remove(selectedCategory);
-            getController().getReferenceController().forceNextRetrievalFromDatabase();
+            getController().getCategoryRepository().remove(selectedCategory);
+            getController().getReferenceRepository().forceNextRetrievalFromDatabase();
             referenceListPanel.clear();
             referenceInfoPanel.clear();
         } catch (CategoryDatabaseException e) {
@@ -279,10 +278,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         JPanel referencePanel = new JPanel();
 
         referencePanel.setLayout(new BorderLayout(5, 5));
-        referencePanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-
-        JToolBar toolbar = new JToolBar();
-        toolbar.setFloatable(false);
+        referencePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
         PopupButton createReferenceButton = new PopupButton(new ImageIcon("images/file_add.png"));
         createReferenceButton.setToolTipText("Crea riferimento");
@@ -346,7 +342,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
 
         updateReferenceButton = new JButton(new ImageIcon("images/file_edit.png"));
         updateReferenceButton.setToolTipText("Modifica riferimento");
-        updateReferenceButton.setEnabled(false);
+        updateReferenceButton.setEnabled(false); // all'inizio teniamolo disattivato
         updateReferenceButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 changeSelectedReference();
@@ -355,16 +351,19 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
 
         removeReferenceButton = new JButton(new ImageIcon("images/file_remove.png"));
         removeReferenceButton.setToolTipText("Elimina riferimento");
-        removeReferenceButton.setEnabled(false);
+        removeReferenceButton.setEnabled(false); // all'inizio teniamolo disattivato
         removeReferenceButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 removeSelectedReference();
             }
         });
 
+        JToolBar toolbar = new JToolBar();
+        toolbar.setFloatable(false);
         toolbar.add(createReferenceButton);
         toolbar.add(updateReferenceButton);
         toolbar.add(removeReferenceButton);
+        referencePanel.add(toolbar, BorderLayout.NORTH);
 
         referenceInfoPanel = new ReferenceInfoPanel();
         referenceListPanel = new ReferenceListPanel();
@@ -374,7 +373,6 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         referenceSplitPane.setDividerSize(10);
         referenceSplitPane.setResizeWeight(0.6f);
 
-        referencePanel.add(toolbar, BorderLayout.NORTH);
         referencePanel.add(referenceSplitPane, BorderLayout.CENTER);
 
         return referencePanel;
@@ -414,7 +412,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
             return;
 
         try {
-            getController().getReferenceController().remove(referenceListPanel.getSelectedReference());
+            getController().getReferenceRepository().remove(referenceListPanel.getSelectedReference());
             referenceListPanel.removeSelectedReference();
         } catch (ReferenceDatabaseException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Errore salvataggio riferimento", JOptionPane.ERROR_MESSAGE);
@@ -424,6 +422,8 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
     @Override
     public void onReferenceSelection(BibliographicReference reference) {
         referenceInfoPanel.showReference(reference);
+
+        // se non è selezionato un riferimento, disattiviamo i pulsanti di modifica e rimozione
         updateReferenceButton.setEnabled(reference != null);
         removeReferenceButton.setEnabled(reference != null);
     }
@@ -437,14 +437,13 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         categoriesTreePanel.clearSelection();
 
         try {
-            List<BibliographicReference> references = getController().getReferenceController().get(search);
+            List<BibliographicReference> references = getController().getReferenceRepository().get(search);
             referenceListPanel.setReferences(references);
 
             String searchResultMessage = references.size() == 1 ? "È stato trovato un riferimento." : "Sono stati trovati " + references.size() + " riferimenti.";
             JOptionPane.showMessageDialog(this, searchResultMessage, "Risultati ricerca", JOptionPane.INFORMATION_MESSAGE);
         } catch (ReferenceDatabaseException e) {
-            e.printStackTrace();
-            referenceListPanel.setReferences(null);
+            referenceListPanel.clear();
             JOptionPane.showMessageDialog(this, e.getMessage(), "Errore recupero riferimenti", JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -486,11 +485,12 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
     }
 
     private void updateUserLabelText() {
+        // il nome dell'utente lo mettiamo in grassetto
         userLabel.setText("<html>Benvenuto, <b>" + getController().getUser() + "</b></html>");
     }
 
     private void logout() {
-        controller.openLoginPage();
+        getController().openLoginPage();
     }
 
     @Override
@@ -500,11 +500,9 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         removeCategoryButton.setEnabled(category != null);
 
         try {
-            referenceListPanel.setReferences(getController().getReferenceController().get(category));
+            referenceListPanel.setReferences(getController().getReferenceRepository().get(category));
         } catch (ReferenceDatabaseException e) {
-            e.printStackTrace();
-
-            referenceListPanel.setReferences(null);
+            referenceListPanel.clear();
             JOptionPane.showMessageDialog(this, e.getMessage(), "Errore recupero riferimenti", JOptionPane.ERROR_MESSAGE);
         }
     }

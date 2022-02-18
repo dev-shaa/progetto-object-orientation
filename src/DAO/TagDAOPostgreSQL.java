@@ -1,10 +1,6 @@
 package DAO;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -92,12 +88,15 @@ public class TagDAOPostgreSQL implements TagDAO {
      * {@inheritDoc}
      * 
      * @throws IllegalArgumentException
-     *             se {@code reference == null}
+     *             se {@code reference == null} o se {@code reference} non ha un ID
      */
     @Override
     public List<Tag> get(BibliographicReference reference) throws TagDatabaseException {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
+
+        if (reference.getID() == null)
+            throw new IllegalArgumentException("reference doesn't have an ID");
 
         Connection connection = null;
         Statement statement = null;
