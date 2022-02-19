@@ -59,6 +59,10 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
         setSize(500, 500);
         setResizable(false);
 
+        setupLayout();
+    }
+
+    private void setupLayout() {
         JPanel contentPane = new JPanel(new BorderLayout(10, 10));
         setContentPane(contentPane);
 
@@ -107,7 +111,7 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
         String errorMessage = null;
 
         if (b) {
-            this.referencesToExclude = referencesToExclude;
+            setReferencesToExclude(referencesToExclude);
             referencesPanel.clear();
 
             try {
@@ -124,6 +128,10 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
 
         if (errorMessage != null)
             JOptionPane.showMessageDialog(this, errorMessage, "Errore", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void setReferencesToExclude(Collection<? extends BibliographicReference> referencesToExclude) {
+        this.referencesToExclude = referencesToExclude;
     }
 
     /**

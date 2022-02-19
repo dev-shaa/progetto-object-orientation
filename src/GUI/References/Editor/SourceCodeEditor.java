@@ -51,17 +51,17 @@ public class SourceCodeEditor extends OnlineResourceEditor<SourceCode> {
     }
 
     @Override
-    protected void save(SourceCode reference) throws ReferenceDatabaseException {
-        getReferenceRepository().save(reference);
-    }
-
-    @Override
     protected SourceCode createNewReference() throws InvalidInputException {
         SourceCode reference = super.createNewReference();
 
         reference.setProgrammingLanguage(getProgrammingLanguageValue());
 
         return reference;
+    }
+
+    @Override
+    protected void save(SourceCode reference) throws ReferenceDatabaseException {
+        getReferenceRepository().save(reference);
     }
 
     private void setProgrammingLanguageValue(ProgrammingLanguage programmingLanguage) {

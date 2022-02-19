@@ -50,17 +50,17 @@ public class ArticleEditor extends PublicationEditor<Article> {
     }
 
     @Override
-    protected void save(Article reference) throws ReferenceDatabaseException {
-        getReferenceRepository().save(reference);
-    }
-
-    @Override
     protected Article createNewReference() throws InvalidInputException {
         Article reference = super.createNewReference();
 
         reference.setISSN(getISSNValue());
 
         return reference;
+    }
+
+    @Override
+    protected void save(Article reference) throws ReferenceDatabaseException {
+        getReferenceRepository().save(reference);
     }
 
     private void setISSNValue(String ISSN) {

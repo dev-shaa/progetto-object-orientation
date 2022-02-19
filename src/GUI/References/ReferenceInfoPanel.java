@@ -36,14 +36,14 @@ public class ReferenceInfoPanel extends JScrollPane {
 
     /**
      * Imposta il riferimento bibliografico di cui mostrare i dettagli.
-     * Se {@code reference == null}, verrà mostrata una schermata vuota.
+     * Se {@code reference == null}, ha lo stesso effetto di {@link #clear()}
      * 
      * @param reference
      *            riferimento da mostrare
      */
     public void showReference(BibliographicReference reference) {
         if (reference == null) {
-            details.setRowCount(0);
+            clear();
             return;
         }
 
@@ -61,7 +61,7 @@ public class ReferenceInfoPanel extends JScrollPane {
      * Rimuove il riferimento mostrato.
      */
     public void clear() {
-        showReference(null);
+        details.setRowCount(0);
     }
 
 }

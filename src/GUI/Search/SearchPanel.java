@@ -111,7 +111,7 @@ public class SearchPanel extends JPanel {
      * @param listener
      *            listener da aggiungere
      */
-    public void addReferenceSearchListener(SearchListener listener) {
+    public void addSearchListener(SearchListener listener) {
         if (listener == null)
             return;
 
@@ -129,7 +129,7 @@ public class SearchPanel extends JPanel {
      * @param listener
      *            listener da rimuovere
      */
-    public void removeReferenceSearchListener(SearchListener listener) {
+    public void removeSearchListener(SearchListener listener) {
         if (listener == null || searchListeners == null)
             return;
 

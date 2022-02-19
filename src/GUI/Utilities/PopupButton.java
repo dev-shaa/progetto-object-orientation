@@ -84,10 +84,11 @@ public class PopupButton extends JButton {
      * 
      * @param component
      *            componente da rimuovere
-     * @throws IllegalArgumentException
-     *             se {@code component == null}
      */
-    public void removeFromPopupMenu(Component component) throws IllegalArgumentException {
+    public void removeFromPopupMenu(Component component) {
+        if (component == null)
+            return;
+
         popupMenu.remove(component);
 
         if (popupMenu.getComponentCount() == 0) {

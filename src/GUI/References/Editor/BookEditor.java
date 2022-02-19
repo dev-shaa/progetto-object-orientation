@@ -50,17 +50,17 @@ public class BookEditor extends PublicationEditor<Book> {
     }
 
     @Override
-    protected void save(Book reference) throws ReferenceDatabaseException {
-        getReferenceRepository().save(reference);
-    }
-
-    @Override
     protected Book createNewReference() throws InvalidInputException {
         Book reference = super.createNewReference();
 
         reference.setISBN(getISBNValue());
 
         return reference;
+    }
+
+    @Override
+    protected void save(Book reference) throws ReferenceDatabaseException {
+        getReferenceRepository().save(reference);
     }
 
     private void setISBNValue(String ISBN) {
