@@ -30,9 +30,9 @@ public class Controller {
     private WebsiteEditor websiteEditor;
 
     private User user;
+
     private CategoryRepository categoryRepository;
     private ReferenceRepository referenceRepository;
-    private UserController loginController;
 
     /**
      * Crea un nuovo controller.
@@ -43,33 +43,42 @@ public class Controller {
     }
 
     /**
-     * Restituisce il controller dei riferimenti.
+     * Restituisce il repository dei riferimenti.
      * 
-     * @return controller dei riferimenti
+     * @return repository dei riferimenti
      */
-    public ReferenceRepository getReferenceController() {
+    public ReferenceRepository getReferenceRepository() {
         return referenceRepository;
     }
 
     /**
-     * Restituisce il controller delle categorie.
+     * Restituisce il repository delle categorie.
      * 
-     * @return controller delle categoria
+     * @return repository delle categorie
      */
-    public CategoryRepository getCategoryController() {
+    public CategoryRepository getCategoryRepository() {
         return categoryRepository;
     }
 
     /**
-     * Restituisce il controller degli utenti.
+     * TODO: commenta
      * 
-     * @return controller delle categoria
+     * @param user
+     * @throws IllegalArgumentException
      */
-    public UserController getUserController() {
-        if (loginController == null)
-            loginController = new UserController(new UserDAOPostgreSQL());
+    public void setUser(User user) {
+        if (user == null)
+            throw new IllegalArgumentException("user can't be null");
 
-        return loginController;
+        this.user = user;
+
+        CategoryDAO categoryDAO = new CategoryDAOPostgreSQL(getUser());
+        BibliographicReferenceDAO referenceDAO = new BibliographicReferenceDAOPostgreSQL(getUser());
+        AuthorDAO authorDAO = new AuthorDAOPostgreSQL();
+        TagDAO tagDAO = new TagDAOPostgreSQL();
+
+        categoryRepository = new CategoryRepository(categoryDAO);
+        referenceRepository = new ReferenceRepository(referenceDAO, authorDAO, tagDAO, categoryRepository);
     }
 
     /**
@@ -86,7 +95,7 @@ public class Controller {
      */
     public void openLoginPage() {
         if (loginFrame == null)
-            loginFrame = new LoginPage(this);
+            loginFrame = new LoginPage(this, new UserDAOPostgreSQL());
 
         loginFrame.setVisible(true);
 
@@ -100,21 +109,21 @@ public class Controller {
      * @param user
      *            utente che ha eseguito l'accesso
      */
-    public void openHomePage(User user) {
-        this.user = user;
-
-        CategoryDAO categoryDAO = new CategoryDAOPostgreSQL(getUser());
-        BibliographicReferenceDAO referenceDAO = new BibliographicReferenceDAOPostgreSQL(getUser());
-        AuthorDAO authorDAO = new AuthorDAOPostgreSQL();
-        TagDAO tagDAO = new TagDAOPostgreSQL();
-
-        categoryRepository = new CategoryRepository(categoryDAO);
-        referenceRepository = new ReferenceRepository(referenceDAO, authorDAO, tagDAO, categoryRepository);
-
+    public void openHomePage() {
         if (homepage == null)
             homepage = new Homepage(this);
 
         loginFrame.setVisible(false);
+
+        // FIXME:
+        // articleEditor.setVisible(false);
+        // bookEditor.setVisible(false);
+        // thesisEditor.setVisible(false);
+        // imageEditor.setVisible(false);
+        // sourceCodeEditor.setVisible(false);
+        // videoEditor.setVisible(false);
+        // websiteEditor.setVisible(false);
+
         homepage.setVisible(true);
     }
 
@@ -126,7 +135,7 @@ public class Controller {
      */
     public void openArticleEditor(Article article) {
         if (articleEditor == null)
-            articleEditor = new ArticleEditor(homepage, getCategoryController(), getReferenceController());
+            articleEditor = new ArticleEditor(getCategoryRepository(), getReferenceRepository());
 
         articleEditor.setVisible(true, article);
     }
@@ -139,7 +148,7 @@ public class Controller {
      */
     public void openBookEditor(Book book) {
         if (bookEditor == null)
-            bookEditor = new BookEditor(homepage, getCategoryController(), getReferenceController());
+            bookEditor = new BookEditor(getCategoryRepository(), getReferenceRepository());
 
         bookEditor.setVisible(true, book);
     }
@@ -152,7 +161,7 @@ public class Controller {
      */
     public void openThesisEditor(Thesis thesis) {
         if (thesisEditor == null)
-            thesisEditor = new ThesisEditor(homepage, getCategoryController(), getReferenceController());
+            thesisEditor = new ThesisEditor(getCategoryRepository(), getReferenceRepository());
 
         thesisEditor.setVisible(true, thesis);
     }
@@ -165,7 +174,7 @@ public class Controller {
      */
     public void openSourceCodeEditor(SourceCode sourceCode) {
         if (sourceCodeEditor == null)
-            sourceCodeEditor = new SourceCodeEditor(homepage, getCategoryController(), getReferenceController());
+            sourceCodeEditor = new SourceCodeEditor(getCategoryRepository(), getReferenceRepository());
 
         sourceCodeEditor.setVisible(true, sourceCode);
     }
@@ -178,7 +187,7 @@ public class Controller {
      */
     public void openImageEditor(Image image) {
         if (imageEditor == null)
-            imageEditor = new ImageEditor(homepage, getCategoryController(), getReferenceController());
+            imageEditor = new ImageEditor(getCategoryRepository(), getReferenceRepository());
 
         imageEditor.setVisible(true, image);
     }
@@ -191,7 +200,7 @@ public class Controller {
      */
     public void openVideoEditor(Video video) {
         if (videoEditor == null)
-            videoEditor = new VideoEditor(homepage, getCategoryController(), getReferenceController());
+            videoEditor = new VideoEditor(getCategoryRepository(), getReferenceRepository());
 
         videoEditor.setVisible(true, video);
     }
@@ -204,7 +213,7 @@ public class Controller {
      */
     public void openWebsiteEditor(Website website) {
         if (websiteEditor == null)
-            websiteEditor = new WebsiteEditor(homepage, getCategoryController(), getReferenceController());
+            websiteEditor = new WebsiteEditor(getCategoryRepository(), getReferenceRepository());
 
         websiteEditor.setVisible(true, website);
     }

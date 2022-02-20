@@ -72,7 +72,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         contentPane.add(setupUserInfoPanel(), BorderLayout.NORTH);
 
         referenceSearchPanel = new SearchPanel();
-        referenceSearchPanel.addReferenceSearchListener(this);
+        referenceSearchPanel.addSearchListener(this);
 
         // JSplitPane ammette solo due pannelli
         // noi ne abbiamo tre, quindi dobbiamo creare due JSplitPane

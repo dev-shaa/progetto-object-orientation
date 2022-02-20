@@ -180,8 +180,6 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         return referenceRepository;
     }
 
-    // #region GUI
-
     private void setupBaseFields() {
         fieldPanel = new JPanel();
         fieldPanel.setLayout(new BoxLayout(fieldPanel, BoxLayout.PAGE_AXIS));
@@ -331,8 +329,6 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         relatedReferencesPicker.setVisible(true, referencesToExclude);
     }
 
-    // #endregion
-
     private void save() {
         try {
             T reference = createNewReference();
@@ -351,8 +347,8 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      * Crea un nuovo riferimenti con i valori inseriti dall'utente.
      * 
      * @return riferimento con i dati inseriti dall'utente
-     * @throws RequiredFieldMissingException
-     *             se i campi obbligatori non sono stati riempiti
+     * @throws InvalidInputException
+     *             se alcuni input non sono corretti
      */
     protected T createNewReference() throws InvalidInputException {
         T reference = getNewInstance();

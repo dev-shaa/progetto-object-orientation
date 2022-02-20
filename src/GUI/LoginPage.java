@@ -8,6 +8,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import Controller.Controller;
+import DAO.UserDAO;
+
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
@@ -25,6 +27,7 @@ import java.awt.event.ActionListener;
 public class LoginPage extends JFrame {
 
 	private Controller controller;
+	private UserDAO userDAO;
 
 	private JTextField usernameField;
 	private JPasswordField passwordField;
@@ -34,9 +37,12 @@ public class LoginPage extends JFrame {
 	 * 
 	 * @param controller
 	 *            controller della GUI
+	 * @throws IllegalArgumentException
+	 *             se {@code controller == null} o {@code userDAO == null}
 	 */
-	public LoginPage(Controller controller) {
+	public LoginPage(Controller controller, UserDAO userDAO) {
 		setController(controller);
+		setUserDAO(userDAO);
 
 		setTitle("Login");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -99,38 +105,52 @@ public class LoginPage extends JFrame {
 		this.controller = controller;
 	}
 
-	private Controller getController() {
-		return controller;
+	/**
+	 * Imposta il DAO per interfacciarsi col database per gli utenti.
+	 * 
+	 * @param userDAO
+	 *            DAO degli utenti
+	 * @throws IllegalArgumentException
+	 *             se {@code userDAO == null}
+	 */
+	public void setUserDAO(UserDAO userDAO) {
+		if (userDAO == null)
+			throw new IllegalArgumentException("userDAO can't be null");
+
+		this.userDAO = userDAO;
 	}
 
 	private void register() {
-		String username = usernameField.getText();
-		String password = new String(passwordField.getPassword());
-
 		try {
-			User user = new User(username, password);
+			User user = getUserFromFields();
 
-			getController().getUserController().register(user);
-			getController().openHomePage(user);
+			userDAO.register(user);
+			controller.setUser(user);
+			controller.openHomePage();
 		} catch (IllegalArgumentException | UserDatabaseException e) {
 			JOptionPane.showMessageDialog(this, e.getMessage(), "Errore registrazione utente", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
 	private void login() {
-		String username = usernameField.getText();
-		String password = new String(passwordField.getPassword());
-
 		try {
-			User user = new User(username, password);
+			User user = getUserFromFields();
 
-			if (getController().getUserController().login(user))
-				getController().openHomePage(user);
-			else
+			if (userDAO.doesUserExist(user)) {
+				controller.setUser(user);
+				controller.openHomePage();
+			} else {
 				JOptionPane.showMessageDialog(this, "Impossibile accedere: nome o password errati.", "Errore accesso utente", JOptionPane.ERROR_MESSAGE);
+			}
 		} catch (IllegalArgumentException | UserDatabaseException e) {
 			JOptionPane.showMessageDialog(this, e.getMessage(), "Errore accesso utente", JOptionPane.ERROR_MESSAGE);
 		}
+	}
+
+	private User getUserFromFields() {
+		String username = usernameField.getText();
+		String password = new String(passwordField.getPassword());
+		return new User(username, password);
 	}
 
 }
