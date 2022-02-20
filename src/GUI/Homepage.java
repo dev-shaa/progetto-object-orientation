@@ -452,7 +452,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
     }
 
     @Override
-    public void search(Search search) {
+    public void onSearch(Search search) {
         categoriesTreePanel.clearSelection();
 
         try {

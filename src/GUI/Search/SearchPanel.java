@@ -169,7 +169,7 @@ public class SearchPanel extends JPanel {
             Search search = getSearch();
 
             for (SearchListener listener : searchListeners)
-                listener.search(search);
+                listener.onSearch(search);
 
             clear();
         } catch (InvalidInputException e) {

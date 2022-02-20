@@ -14,5 +14,5 @@ public interface SearchListener extends EventListener {
      * @param search
      *            ricerca eseguita
      */
-    public void search(Search search);
+    public void onSearch(Search search);
 }
