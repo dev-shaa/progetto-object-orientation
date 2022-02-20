@@ -8,7 +8,6 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import Controller.Controller;
-import DAO.UserDAO;
 
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
@@ -27,7 +26,6 @@ import java.awt.event.ActionListener;
 public class LoginPage extends JFrame {
 
 	private Controller controller;
-	private UserDAO userDAO;
 
 	private JTextField usernameField;
 	private JPasswordField passwordField;
@@ -38,11 +36,10 @@ public class LoginPage extends JFrame {
 	 * @param controller
 	 *            controller della GUI
 	 * @throws IllegalArgumentException
-	 *             se {@code controller == null} o {@code userDAO == null}
+	 *             se {@code controller == null}
 	 */
-	public LoginPage(Controller controller, UserDAO userDAO) {
+	public LoginPage(Controller controller) {
 		setController(controller);
-		setUserDAO(userDAO);
 
 		setTitle("Login");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -105,28 +102,10 @@ public class LoginPage extends JFrame {
 		this.controller = controller;
 	}
 
-	/**
-	 * Imposta il DAO per interfacciarsi col database per gli utenti.
-	 * 
-	 * @param userDAO
-	 *            DAO degli utenti
-	 * @throws IllegalArgumentException
-	 *             se {@code userDAO == null}
-	 */
-	public void setUserDAO(UserDAO userDAO) {
-		if (userDAO == null)
-			throw new IllegalArgumentException("userDAO can't be null");
-
-		this.userDAO = userDAO;
-	}
-
 	private void register() {
 		try {
 			User user = getUserFromFields();
-
-			userDAO.register(user);
-			controller.setUser(user);
-			controller.openHomePage();
+			controller.login(user);
 		} catch (IllegalArgumentException | UserDatabaseException e) {
 			JOptionPane.showMessageDialog(this, e.getMessage(), "Errore registrazione utente", JOptionPane.ERROR_MESSAGE);
 		}
@@ -136,12 +115,8 @@ public class LoginPage extends JFrame {
 		try {
 			User user = getUserFromFields();
 
-			if (userDAO.doesUserExist(user)) {
-				controller.setUser(user);
-				controller.openHomePage();
-			} else {
+			if (!controller.login(user))
 				JOptionPane.showMessageDialog(this, "Impossibile accedere: nome o password errati.", "Errore accesso utente", JOptionPane.ERROR_MESSAGE);
-			}
 		} catch (IllegalArgumentException | UserDatabaseException e) {
 			JOptionPane.showMessageDialog(this, e.getMessage(), "Errore accesso utente", JOptionPane.ERROR_MESSAGE);
 		}

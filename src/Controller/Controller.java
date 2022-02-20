@@ -12,6 +12,7 @@ import Entities.*;
 import Entities.References.OnlineResources.*;
 import Entities.References.OnlineResources.Image;
 import Entities.References.PhysicalResources.*;
+import Exceptions.Database.UserDatabaseException;
 
 /**
  * Controller dell'applicazione.
@@ -60,13 +61,7 @@ public class Controller {
         return categoryRepository;
     }
 
-    /**
-     * TODO: commenta
-     * 
-     * @param user
-     * @throws IllegalArgumentException
-     */
-    public void setUser(User user) {
+    private void setUser(User user) {
         if (user == null)
             throw new IllegalArgumentException("user can't be null");
 
@@ -95,7 +90,7 @@ public class Controller {
      */
     public void openLoginPage() {
         if (loginFrame == null)
-            loginFrame = new LoginPage(this, new UserDAOPostgreSQL());
+            loginFrame = new LoginPage(this);
 
         loginFrame.setVisible(true);
 
@@ -104,26 +99,42 @@ public class Controller {
     }
 
     /**
-     * Apre la pagina principale dell'applicazione.
+     * TODO: commenta
      * 
      * @param user
-     *            utente che ha eseguito l'accesso
+     * @throws UserDatabaseException
      */
-    public void openHomePage() {
+    public void registerUser(User user) throws UserDatabaseException {
+        UserDAO userDAO = new UserDAOPostgreSQL();
+        userDAO.register(user);
+        openHomePage(user);
+    }
+
+    /**
+     * TODO: commenta
+     * 
+     * @param user
+     * @return
+     * @throws UserDatabaseException
+     */
+    public boolean login(User user) throws UserDatabaseException {
+        UserDAO userDAO = new UserDAOPostgreSQL();
+
+        if (!userDAO.doesUserExist(user))
+            return false;
+
+        openHomePage(user);
+
+        return true;
+    }
+
+    private void openHomePage(User user) {
+        setUser(user);
+
         if (homepage == null)
             homepage = new Homepage(this);
 
         loginFrame.setVisible(false);
-
-        // FIXME:
-        // articleEditor.setVisible(false);
-        // bookEditor.setVisible(false);
-        // thesisEditor.setVisible(false);
-        // imageEditor.setVisible(false);
-        // sourceCodeEditor.setVisible(false);
-        // videoEditor.setVisible(false);
-        // websiteEditor.setVisible(false);
-
         homepage.setVisible(true);
     }
 

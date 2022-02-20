@@ -9,6 +9,7 @@ import com.toedter.calendar.JDateChooser;
 
 import Entities.Category;
 import Entities.Search;
+import Exceptions.Input.EmptySearchException;
 import Exceptions.Input.InvalidInputException;
 import GUI.Authors.AuthorInputField;
 import GUI.Tags.TagInputField;
@@ -105,6 +106,17 @@ public class SearchPanel extends JPanel {
     }
 
     /**
+     * Resetta i campi di ricerca.
+     */
+    public void clear() {
+        tags.clear();
+        authors.clear();
+        categories.getCheckboxTree().clearSelection();
+        dateFrom.setDate(null);
+        dateTo.setDate(null);
+    }
+
+    /**
      * Aggiunge un listener all'evento di ricerca.
      * Se {@code listener == null} o se è già registrato, non viene aggiunto.
      * 
@@ -136,17 +148,6 @@ public class SearchPanel extends JPanel {
         searchListeners.remove(listener);
     }
 
-    /**
-     * Resetta i campi di ricerca.
-     */
-    public void clear() {
-        tags.clear();
-        authors.clear();
-        categories.getCheckboxTree().clearSelection();
-        dateFrom.setDate(null);
-        dateTo.setDate(null);
-    }
-
     private void addFieldComponent(String label, JComponent component, String tooltip) {
         JLabel labelField = new JLabel(label);
         labelField.setMaximumSize(maximumSize);
@@ -165,7 +166,7 @@ public class SearchPanel extends JPanel {
 
     private void notifyListeners() {
         try {
-            Search search = new Search(dateFrom.getDate(), dateTo.getDate(), tags.getTags(), categories.getCheckboxTree().getSelectedItems(), authors.getAuthors());
+            Search search = getSearch();
 
             for (SearchListener listener : searchListeners)
                 listener.search(search);
@@ -174,6 +175,10 @@ public class SearchPanel extends JPanel {
         } catch (InvalidInputException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
+    }
+
+    private Search getSearch() throws EmptySearchException, InvalidInputException {
+        return new Search(dateFrom.getDate(), dateTo.getDate(), tags.getTags(), categories.getCheckboxTree().getSelectedItems(), authors.getAuthors());
     }
 
 }

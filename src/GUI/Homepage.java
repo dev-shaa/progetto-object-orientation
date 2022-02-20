@@ -164,13 +164,8 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         });
     }
 
-    // #region CATEGORIES
-
     private JPanel setupCategoriesPanel() {
         JPanel categoriesPanel = new JPanel();
-
-        categoriesTreePanel = new CategoriesTreePanel();
-        categoriesTreePanel.addSelectionListener(this);
 
         categoriesPanel.setLayout(new BorderLayout(5, 5));
         categoriesPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -210,6 +205,10 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         toolbar.add(removeCategoryButton);
 
         categoriesPanel.add(toolbar, BorderLayout.NORTH);
+
+        categoriesTreePanel = new CategoriesTreePanel();
+        categoriesTreePanel.addSelectionListener(this);
+
         categoriesPanel.add(categoriesTreePanel, BorderLayout.CENTER);
 
         return categoriesPanel;
@@ -294,10 +293,6 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         referenceListPanel.clear();
         referenceInfoPanel.clear();
     }
-
-    // #endregion
-
-    // #region REFERENCES
 
     private JPanel setupReferencePanel() {
         JPanel referencePanel = new JPanel();
@@ -451,13 +446,10 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         referenceInfoPanel.showReference(reference);
 
         // se non è selezionato un riferimento, disattiviamo i pulsanti di modifica e rimozione
-        updateReferenceButton.setEnabled(reference != null);
-        removeReferenceButton.setEnabled(reference != null);
+        boolean shouldButtonsBeEnabled = reference != null;
+        updateReferenceButton.setEnabled(shouldButtonsBeEnabled);
+        removeReferenceButton.setEnabled(shouldButtonsBeEnabled);
     }
-
-    // #endregion
-
-    // #region SEARCH
 
     @Override
     public void search(Search search) {
@@ -475,10 +467,6 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         }
     }
 
-    // #endregion
-
-    // #region USER
-
     private JPanel setupUserInfoPanel() {
         JPanel userInfoPanel = new JPanel();
 
@@ -493,6 +481,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         userLabel.setIcon(new ImageIcon("images/bookmark_light.png"));
 
         updateUserLabelText();
+        userInfoPanel.add(userLabel, BorderLayout.WEST);
 
         logoutButton = new JButton(new ImageIcon("images/logout_white.png"));
         logoutButton.setToolTipText("Esci");
@@ -501,11 +490,10 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         logoutButton.setBorderPainted(false);
         logoutButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                logout();
+                getController().openLoginPage();
             }
         });
 
-        userInfoPanel.add(userLabel, BorderLayout.WEST);
         userInfoPanel.add(logoutButton, BorderLayout.EAST);
 
         return userInfoPanel;
@@ -515,11 +503,5 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         // il nome dell'utente lo mettiamo in grassetto
         userLabel.setText("<html>Benvenuto, <b>" + getController().getUser() + "</b></html>");
     }
-
-    private void logout() {
-        getController().openLoginPage();
-    }
-
-    // #endregion
 
 }
