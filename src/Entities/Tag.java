@@ -32,7 +32,7 @@ public class Tag {
         if (!(obj instanceof Tag))
             return false;
 
-        return getName().equals(((Tag) obj).getName());
+        return getName().equalsIgnoreCase(((Tag) obj).getName());
     }
 
     /**
