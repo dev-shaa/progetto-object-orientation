@@ -9,7 +9,7 @@ import Entities.Search;
 public interface SearchListener extends EventListener {
 
     /**
-     * Invocato quando viene eseguito la ricerca.
+     * Invocato quando viene eseguita la ricerca.
      * 
      * @param search
      *            ricerca eseguita

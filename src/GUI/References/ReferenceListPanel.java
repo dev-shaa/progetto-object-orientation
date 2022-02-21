@@ -45,7 +45,7 @@ public class ReferenceListPanel extends JScrollPane {
      * Imposta i riferimenti da mostrare nell'elenco.
      * 
      * @param references
-     *            i riferimenti da mostrare (se {@code null} non viene mostrato nulla)
+     *            i riferimenti da mostrare (se {@code null} ha lo stesso effetto di {@link #clear()})
      */
     public void setReferences(Collection<? extends BibliographicReference> references) {
         referencesTableModel.setReferences(references);
