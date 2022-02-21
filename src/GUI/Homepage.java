@@ -78,7 +78,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
 
         // JSplitPane ammette solo due pannelli
         // noi ne abbiamo tre, quindi dobbiamo creare due JSplitPane
-        JSplitPane subSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, setupCategoriesPanel(), setupReferencePanel());
+        JSplitPane subSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, setupCategoriesPanel(), setupReferencesPanel());
         subSplitPane.setResizeWeight(0.15);
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, subSplitPane, referenceSearchPanel);
@@ -217,90 +217,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         return categoriesPanel;
     }
 
-    private void addCategory() {
-        String newCategoryName = getCategoryNameFromUser("Nuova categoria");
-
-        if (newCategoryName == null)
-            return;
-
-        Category newCategory = new Category(newCategoryName, categoriesTreePanel.getSelectedCategory());
-
-        try {
-            getController().getCategoryRepository().save(newCategory);
-        } catch (CategoryDatabaseException | IllegalArgumentException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Errore salvataggio categoria", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private void changeCategory() {
-        Category selectedCategory = categoriesTreePanel.getSelectedCategory();
-
-        if (selectedCategory == null)
-            return;
-
-        String newName = getCategoryNameFromUser(selectedCategory.getName());
-
-        if (newName == null)
-            return;
-
-        try {
-            getController().getCategoryRepository().update(selectedCategory, newName);
-        } catch (CategoryDatabaseException | IllegalArgumentException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Errore modifica categoria", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private void removeCategory() {
-        Category selectedCategory = categoriesTreePanel.getSelectedCategory();
-
-        if (selectedCategory == null)
-            return;
-
-        int confirmDialogBoxOption = JOptionPane.showConfirmDialog(null, "Sicuro di voler eliminare questa categoria?", "Elimina categoria", JOptionPane.YES_NO_OPTION);
-
-        if (confirmDialogBoxOption != JOptionPane.YES_OPTION)
-            return;
-
-        try {
-            getController().getCategoryRepository().remove(selectedCategory);
-            getController().getReferenceRepository().forceNextRetrievalFromDatabase();
-        } catch (CategoryDatabaseException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Errore eliminazione categoria", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private String getCategoryNameFromUser(String defaultName) {
-        return (String) JOptionPane.showInputDialog(this, "Inserisci il nuovo nome della categoria", "Nuova categoria", JOptionPane.PLAIN_MESSAGE, null, null, defaultName);
-    }
-
-    @Override
-    public void onCategorySelection(Category category) {
-        createCategoryButton.setEnabled(true);
-        updateCategoryButton.setEnabled(category != null);
-        removeCategoryButton.setEnabled(category != null);
-
-        try {
-            ReferenceCriteriaCategory categoryFilter = new ReferenceCriteriaCategory(category);
-            List<? extends BibliographicReference> references = categoryFilter.get(getController().getReferenceRepository().getAll());
-
-            referenceListPanel.setReferences(references);
-        } catch (ReferenceDatabaseException e) {
-            referenceListPanel.clear();
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Errore recupero riferimenti", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    @Override
-    public void onCategoryClearSelection() {
-        createCategoryButton.setEnabled(false);
-        updateCategoryButton.setEnabled(false);
-        removeCategoryButton.setEnabled(false);
-
-        referenceListPanel.clear();
-        referenceInfoPanel.clear();
-    }
-
-    private JPanel setupReferencePanel() {
+    private JPanel setupReferencesPanel() {
         JPanel referencePanel = new JPanel();
 
         referencePanel.setLayout(new BorderLayout(5, 5));
@@ -404,6 +321,126 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         return referencePanel;
     }
 
+    private JPanel setupUserInfoPanel() {
+        JPanel userInfoPanel = new JPanel();
+
+        Color darkGray = Color.decode("#24292f");
+
+        userInfoPanel.setLayout(new BorderLayout(5, 0));
+        userInfoPanel.setBorder(new EmptyBorder(15, 15, 15, 15));
+        userInfoPanel.setBackground(darkGray);
+
+        userLabel = new JLabel();
+        userLabel.setForeground(Color.WHITE);
+        userLabel.setIcon(new ImageIcon("images/bookmark_light.png"));
+
+        updateUserLabelText();
+        userInfoPanel.add(userLabel, BorderLayout.WEST);
+
+        logoutButton = new JButton(new ImageIcon("images/logout_white.png"));
+        logoutButton.setToolTipText("Esci");
+        logoutButton.setHorizontalAlignment(SwingConstants.RIGHT);
+        logoutButton.setBackground(darkGray);
+        logoutButton.setBorderPainted(false);
+        logoutButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                getController().openLoginPage();
+            }
+        });
+
+        userInfoPanel.add(logoutButton, BorderLayout.EAST);
+
+        return userInfoPanel;
+    }
+
+    private void updateUserLabelText() {
+        // il nome dell'utente lo mettiamo in grassetto
+        userLabel.setText("<html>Benvenuto, <b>" + getController().getUser() + "</b></html>");
+    }
+
+    private void addCategory() {
+        String newCategoryName = getCategoryNameFromUser("Nuova categoria");
+
+        if (newCategoryName == null)
+            return;
+
+        Category newCategory = new Category(newCategoryName, categoriesTreePanel.getSelectedCategory());
+
+        try {
+            getController().getCategoryRepository().save(newCategory);
+        } catch (CategoryDatabaseException | IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Errore salvataggio categoria", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void changeCategory() {
+        Category selectedCategory = categoriesTreePanel.getSelectedCategory();
+
+        if (selectedCategory == null)
+            return;
+
+        String newName = getCategoryNameFromUser(selectedCategory.getName());
+
+        if (newName == null)
+            return;
+
+        try {
+            getController().getCategoryRepository().update(selectedCategory, newName);
+        } catch (CategoryDatabaseException | IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Errore modifica categoria", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void removeCategory() {
+        Category selectedCategory = categoriesTreePanel.getSelectedCategory();
+
+        if (selectedCategory == null)
+            return;
+
+        int confirmDialogBoxOption = JOptionPane.showConfirmDialog(null, "Sicuro di voler eliminare questa categoria?", "Elimina categoria", JOptionPane.YES_NO_OPTION);
+
+        if (confirmDialogBoxOption != JOptionPane.YES_OPTION)
+            return;
+
+        try {
+            getController().getCategoryRepository().remove(selectedCategory);
+            getController().getReferenceRepository().forceNextRetrievalFromDatabase();
+        } catch (CategoryDatabaseException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Errore eliminazione categoria", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private String getCategoryNameFromUser(String defaultName) {
+        return (String) JOptionPane.showInputDialog(this, "Inserisci il nuovo nome della categoria", "Nuova categoria", JOptionPane.PLAIN_MESSAGE, null, null, defaultName);
+    }
+
+    @Override
+    public void onCategorySelection(Category category) {
+        createCategoryButton.setEnabled(true);
+        updateCategoryButton.setEnabled(category != null);
+        removeCategoryButton.setEnabled(category != null);
+
+        try {
+            ReferenceCriteriaCategory categoryFilter = new ReferenceCriteriaCategory(category);
+            List<? extends BibliographicReference> references = categoryFilter.get(getController().getReferenceRepository().getAll());
+
+            referenceListPanel.setReferences(references);
+        } catch (ReferenceDatabaseException e) {
+            referenceListPanel.clear();
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Errore recupero riferimenti", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    @Override
+    public void onCategoryClearSelection() {
+        createCategoryButton.setEnabled(false);
+        updateCategoryButton.setEnabled(false);
+        removeCategoryButton.setEnabled(false);
+
+        referenceListPanel.clear();
+        referenceInfoPanel.clear();
+    }
+
     private void changeSelectedReference() {
         BibliographicReference selectedReference = referenceListPanel.getSelectedReference();
 
@@ -467,49 +504,11 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
 
             referenceListPanel.setReferences(references);
 
-            String searchResultMessage = references.size() == 1 ? "È stato trovato un riferimento." : "Sono stati trovati " + references.size() + " riferimenti.";
-            JOptionPane.showMessageDialog(this, searchResultMessage, "Risultati ricerca", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Riferimenti trovati: " + references.size(), "Risultati ricerca", JOptionPane.INFORMATION_MESSAGE);
         } catch (IllegalArgumentException | ReferenceDatabaseException e) {
             referenceListPanel.clear();
             JOptionPane.showMessageDialog(this, e.getMessage(), "Errore recupero riferimenti", JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    private JPanel setupUserInfoPanel() {
-        JPanel userInfoPanel = new JPanel();
-
-        Color darkGray = Color.decode("#24292f");
-
-        userInfoPanel.setLayout(new BorderLayout(5, 0));
-        userInfoPanel.setBorder(new EmptyBorder(15, 15, 15, 15));
-        userInfoPanel.setBackground(darkGray);
-
-        userLabel = new JLabel();
-        userLabel.setForeground(Color.WHITE);
-        userLabel.setIcon(new ImageIcon("images/bookmark_light.png"));
-
-        updateUserLabelText();
-        userInfoPanel.add(userLabel, BorderLayout.WEST);
-
-        logoutButton = new JButton(new ImageIcon("images/logout_white.png"));
-        logoutButton.setToolTipText("Esci");
-        logoutButton.setHorizontalAlignment(SwingConstants.RIGHT);
-        logoutButton.setBackground(darkGray);
-        logoutButton.setBorderPainted(false);
-        logoutButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                getController().openLoginPage();
-            }
-        });
-
-        userInfoPanel.add(logoutButton, BorderLayout.EAST);
-
-        return userInfoPanel;
-    }
-
-    private void updateUserLabelText() {
-        // il nome dell'utente lo mettiamo in grassetto
-        userLabel.setText("<html>Benvenuto, <b>" + getController().getUser() + "</b></html>");
     }
 
 }

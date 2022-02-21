@@ -5,9 +5,7 @@ import Entities.References.BibliographicReference;
 import Entities.References.OnlineResources.Image;
 import Exceptions.Input.InvalidInputException;
 import GUI.Utilities.Tree.CustomTreeModel;
-
 import java.util.Collection;
-
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
@@ -20,28 +18,16 @@ public class ImageEditor extends OnlineResourceEditor<Image> {
     private JSpinner height;
 
     /**
-     * TODO: commenta
+     * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a un'immagine.
      * 
      * @param categoriesTree
+     *            albero delle categorie in cui è possibile inserire un riferimento
      * @param references
+     *            riferimenti selezionabili come rimandi
      */
     public ImageEditor(CustomTreeModel<Category> categoriesTree, Collection<? extends BibliographicReference> references) {
         super("Immagine", categoriesTree, references);
     }
-
-    /**
-     * Crea una nuova finestra di dialogo per la creazione o modifica di un'immagine.
-     * 
-     * @param categoryController
-     *            controller delle categorie
-     * @param referenceController
-     *            controller dei riferimenti
-     * @throws IllegalArgumentException
-     *             se {@code categoryController == null} o {@code referenceController == null}
-     */
-    // public ImageEditor(CategoryRepository categoryController, ReferenceRepository referenceController) {
-    // super("Immagine", categoryController, referenceController);
-    // }
 
     @Override
     protected void setupSecondaryFields() {

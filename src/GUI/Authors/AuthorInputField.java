@@ -21,8 +21,6 @@ public class AuthorInputField extends JPanel {
     private final Dimension maximumSize = new Dimension(Integer.MAX_VALUE, 24);
     private final ImageIcon removeIcon = new ImageIcon("images/button_remove.png");
 
-    private final String addTooltip = "Aggiungi autore";
-    private final String removeTooltip = "Rimuovi autore";
     private final String textTooltip = "Autore del riferimento.\nÈ possibile specificare l'ORCID mettendolo tra parentesi quadre.\nEsempio: \"Mario Rossi [0000-0000-0000-0000]\"";
 
     /**
@@ -105,7 +103,7 @@ public class AuthorInputField extends JPanel {
         firstAuthorField.setToolTipText(textTooltip);
 
         JButton addButton = new JButton(new ImageIcon("images/button_add.png"));
-        addButton.setToolTipText(addTooltip);
+        addButton.setToolTipText("Aggiungi autore");
 
         authorPanel.add(firstAuthorField, BorderLayout.CENTER);
         authorPanel.add(addButton, BorderLayout.EAST);
@@ -135,7 +133,7 @@ public class AuthorInputField extends JPanel {
             textField.setText(getStringFromAuthor(author));
 
         JButton removeButton = new JButton(removeIcon);
-        removeButton.setToolTipText(removeTooltip);
+        removeButton.setToolTipText("Rimuovi autore");
 
         Component spacing = Box.createVerticalStrut(10);
 

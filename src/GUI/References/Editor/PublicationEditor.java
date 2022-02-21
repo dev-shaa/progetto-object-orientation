@@ -5,9 +5,7 @@ import Entities.References.BibliographicReference;
 import Entities.References.PhysicalResources.Publication;
 import Exceptions.Input.InvalidInputException;
 import GUI.Utilities.Tree.CustomTreeModel;
-
 import java.util.Collection;
-
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
@@ -22,13 +20,14 @@ public abstract class PublicationEditor<T extends Publication> extends Reference
     private JTextField publisher;
 
     /**
-     * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento.
-     * TODO: commenta
+     * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a una pubblicazione.
      * 
      * @param title
      *            titolo della finestra
      * @param categoriesTree
+     *            albero delle categorie in cui è possibile inserire un riferimento
      * @param references
+     *            riferimenti selezionabili come rimandi
      */
     public PublicationEditor(String title, CustomTreeModel<Category> categoriesTree, Collection<? extends BibliographicReference> references) {
         super(title, categoriesTree, references);

@@ -6,10 +6,8 @@ import Entities.References.OnlineResources.OnlineResource;
 import Exceptions.Input.InvalidInputException;
 import Exceptions.Input.RequiredFieldMissingException;
 import GUI.Utilities.Tree.CustomTreeModel;
-
 import java.util.Collection;
-
-import javax.swing.*;
+import javax.swing.JTextField;
 
 /**
  * Finestra di dialogo per la creazione o modifica di un riferimento a una risorsa online.
@@ -19,12 +17,14 @@ public abstract class OnlineResourceEditor<T extends OnlineResource> extends Ref
     private JTextField URL;
 
     /**
-     * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento.
-     * TODO: commenta
+     * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a una risorsa online.
      * 
      * @param title
+     *            titolo della finestra
      * @param categoriesTree
+     *            albero delle categorie in cui è possibile inserire un riferimento
      * @param references
+     *            riferimenti selezionabili come rimandi
      */
     public OnlineResourceEditor(String title, CustomTreeModel<Category> categoriesTree, Collection<? extends BibliographicReference> references) {
         super(title, categoriesTree, references);

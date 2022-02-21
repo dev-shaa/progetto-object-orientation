@@ -5,9 +5,7 @@ import Entities.References.BibliographicReference;
 import Entities.References.PhysicalResources.Book;
 import Exceptions.Input.InvalidInputException;
 import GUI.Utilities.Tree.CustomTreeModel;
-
 import java.util.Collection;
-
 import javax.swing.JTextField;
 
 /**
@@ -18,28 +16,16 @@ public class BookEditor extends PublicationEditor<Book> {
     private JTextField ISBN;
 
     /**
-     * TODO: commenta
+     * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a un libro.
      * 
      * @param categoriesTree
+     *            albero delle categorie in cui è possibile inserire un riferimento
      * @param references
+     *            riferimenti selezionabili come rimandi
      */
     public BookEditor(CustomTreeModel<Category> categoriesTree, Collection<? extends BibliographicReference> references) {
         super("Libro", categoriesTree, references);
     }
-
-    /**
-     * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento.
-     * 
-     * @param categoryController
-     *            controller delle categorie
-     * @param referenceController
-     *            controller dei riferimenti
-     * @throws IllegalArgumentException
-     *             se {@code categoryController == null} o {@code referenceController == null}
-     */
-    // public BookEditor(CategoryRepository categoryController, ReferenceRepository referenceController) {
-    // super("Libro", categoryController, referenceController);
-    // }
 
     @Override
     protected void setupSecondaryFields() {

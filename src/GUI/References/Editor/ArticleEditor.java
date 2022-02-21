@@ -5,9 +5,7 @@ import Entities.References.BibliographicReference;
 import Entities.References.PhysicalResources.Article;
 import Exceptions.Input.InvalidInputException;
 import GUI.Utilities.Tree.CustomTreeModel;
-
 import java.util.Collection;
-
 import javax.swing.JTextField;
 
 /**
@@ -18,10 +16,12 @@ public class ArticleEditor extends PublicationEditor<Article> {
     private JTextField ISSN;
 
     /**
-     * TODO: commenta
+     * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a un articolo.
      * 
      * @param categoriesTree
+     *            albero delle categorie in cui è possibile inserire un riferimento
      * @param references
+     *            riferimenti selezionabili come rimandi
      */
     public ArticleEditor(CustomTreeModel<Category> categoriesTree, Collection<? extends BibliographicReference> references) {
         super("Articolo", categoriesTree, references);

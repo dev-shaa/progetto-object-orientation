@@ -41,10 +41,12 @@ public class CategoriesTreePanel extends JScrollPane {
         tree.setEditable(false);
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         tree.addTreeSelectionListener(new TreeSelectionListener() {
+
             @Override
             public void valueChanged(TreeSelectionEvent e) {
                 notifyListeners();
             }
+
         });
 
         setTreeModel(treeModel);
@@ -97,10 +99,8 @@ public class CategoriesTreePanel extends JScrollPane {
         if (selectionListeners == null)
             selectionListeners = new ArrayList<>();
 
-        if (selectionListeners.contains(listener))
-            return;
-
-        selectionListeners.add(listener);
+        if (!selectionListeners.contains(listener))
+            selectionListeners.add(listener);
     }
 
     /**
@@ -110,10 +110,8 @@ public class CategoriesTreePanel extends JScrollPane {
      *            listener da rimuovere
      */
     public void removeSelectionListener(CategorySelectionListener listener) {
-        if (listener == null || selectionListeners == null)
-            return;
-
-        selectionListeners.remove(listener);
+        if (listener != null && selectionListeners != null)
+            selectionListeners.remove(listener);
     }
 
     @SuppressWarnings("unchecked")

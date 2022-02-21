@@ -34,14 +34,10 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     private PopupCheckboxTree<Category> categories;
     private TagInputField tags;
     private AuthorInputField authors;
-
-    private ReferencePicker relatedReferencesPicker;
     private PopupButtonList<BibliographicReference> relatedReferences;
+    private ReferencePicker relatedReferencesPicker;
 
     private JPanel fieldPanel;
-
-    // private CategoryRepository categoryRepository;
-    // private ReferenceRepository referenceRepository;
 
     private T referenceToChange;
 
@@ -56,20 +52,10 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      * 
      * @param title
      *            titolo della finestra
-     * @param categoryRepository
-     *            repository delle categorie
-     * @param referenceRepository
-     *            repository dei riferimenti
-     * @throws IllegalArgumentException
-     *             se {@code categoryRepository == null} o {@code referenceRepository == null}
-     */
-
-    /**
-     * TODO: commenta
-     * 
-     * @param title
      * @param categoriesTree
+     *            albero delle categorie in cui è possibile inserire un riferimento
      * @param references
+     *            riferimenti selezionabili come rimandi
      */
     public ReferenceEditor(String title, CustomTreeModel<Category> categoriesTree, Collection<? extends BibliographicReference> references) {
         super();
@@ -108,13 +94,13 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      * @param b
      *            se {@code true} il pannello verrà mostrato e verrano riempiti i campi con i valori di {@code reference},
      *            se {@code false} il pannello verrà nascosto
-     * @param reference
-     *            riferimento da mostrare (può essere {@code null})
+     * @param referenceToChange
+     *            riferimento da modificare (può essere {@code null})
      */
-    public void setVisible(boolean b, T reference) {
+    public void setVisible(boolean b, T referenceToChange) {
         if (b) {
-            referenceToChange = reference;
-            setFieldsInitialValues(reference);
+            this.referenceToChange = referenceToChange;
+            setFieldsInitialValues(referenceToChange);
             setLocationRelativeTo(null);
         }
 
@@ -122,18 +108,10 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     }
 
     /**
-     * Imposta il repository delle categorie da usare per recuperare le categorie da scegliere.
-     * 
-     * @param categoryRepository
-     *            nuovo repository delle categorie
-     * @throws IllegalArgumentException
-     *             se {@code categoryRepository == null}
-     */
-
-    /**
-     * TODO: commenta
+     * Imposta l'albero delle categorie in cui è possibile inserire un riferimento.
      * 
      * @param categoriesTree
+     *            albero delle categorie
      */
     public void setCategoriesTree(CustomTreeModel<Category> categoriesTree) {
         categories.setTreeModel(categoriesTree);
@@ -141,18 +119,10 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     }
 
     /**
-     * Imposta il controller dei riferimenti da usare per salvare i riferimenti creati.
-     * 
-     * @param referenceRepository
-     *            nuovo controller dei riferimenti
-     * @throws IllegalArgumentException
-     *             se {@code referenceController == null}
-     */
-
-    /**
-     * TODO: commenta
+     * Imposta i riferimenti selezionabili come rimandi.
      * 
      * @param references
+     *            possibili rimandi
      */
     public void setReferences(Collection<? extends BibliographicReference> references) {
         relatedReferencesPicker.setReferences(references);
@@ -312,7 +282,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
             T reference = createNewReference();
             notifyListeners(reference);
         } catch (InvalidInputException e) {
-            showErrorMessage("Parametri inseriti non validi", e.getMessage());
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Parametri inseriti non validi", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -350,11 +320,12 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     protected abstract T getNewInstance();
 
     /**
-     * TODO: commenta
+     * Aggiunge un ascoltatore all'evento di creazione di un riferimento.
      * 
      * @param listener
+     *            ascoltatore da aggiungere
      */
-    public void addListener(ReferenceEditorListener<T> listener) {
+    public void addReferenceCreationListener(ReferenceEditorListener<T> listener) {
         if (listener == null)
             return;
 
@@ -366,11 +337,12 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     }
 
     /**
-     * TODO: commenta
+     * Rimuove un ascoltatore dall'veneto di creazione di un riferimento.
      * 
      * @param listener
+     *            ascoltatore da rimuovere
      */
-    public void removeListener(ReferenceEditorListener<T> listener) {
+    public void removeReferenceCreationListener(ReferenceEditorListener<T> listener) {
         if (listener != null && listeners != null)
             listeners.remove(listener);
     }
@@ -379,19 +351,8 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         if (listeners == null)
             return;
 
-        for (ReferenceEditorListener<T> listener : listeners) {
+        for (ReferenceEditorListener<T> listener : listeners)
             listener.onReferenceCreation(reference);
-        }
-    }
-
-    /**
-     * TODO: commenta
-     * 
-     * @param title
-     * @param message
-     */
-    public void showErrorMessage(String title, String message) {
-        JOptionPane.showMessageDialog(this, message, title, JOptionPane.ERROR_MESSAGE);
     }
 
     // #region VALUES GETTER/SETTER

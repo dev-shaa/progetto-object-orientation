@@ -5,9 +5,7 @@ import Entities.References.BibliographicReference;
 import Entities.References.OnlineResources.Video;
 import Exceptions.Input.InvalidInputException;
 import GUI.Utilities.Tree.CustomTreeModel;
-
 import java.util.Collection;
-
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
@@ -22,22 +20,12 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
     private JSpinner duration;
 
     /**
-     * Crea una nuova finestra di dialogo per la creazione o modifica di codice sorgente.
-     * 
-     * @param categoryController
-     *            controller delle categorie
-     * @param referenceController
-     *            controller dei riferimenti
-     * @throws IllegalArgumentException
-     *             se {@code categoryController == null} o {@code referenceController == null}
-     */
-
-    /**
-     * Crea una nuova finestra di dialogo per la creazione o modifica di un video.
-     * TODO: commenta
+     * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a un video.
      * 
      * @param categoriesTree
+     *            albero delle categorie in cui è possibile inserire un riferimento
      * @param references
+     *            riferimenti selezionabili come rimandi
      */
     public VideoEditor(CustomTreeModel<Category> categoriesTree, Collection<? extends BibliographicReference> references) {
         super("Video", categoriesTree, references);

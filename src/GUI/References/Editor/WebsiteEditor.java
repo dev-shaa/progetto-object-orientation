@@ -1,12 +1,11 @@
 package GUI.References.Editor;
 
-import java.util.Collection;
-
 import Entities.Category;
 import Entities.References.BibliographicReference;
 import Entities.References.OnlineResources.Website;
 import Exceptions.Input.InvalidInputException;
 import GUI.Utilities.Tree.CustomTreeModel;
+import java.util.Collection;
 
 /**
  * Finestra di dialogo per la creazione o modifica di un riferimento a un sito web.
@@ -14,11 +13,12 @@ import GUI.Utilities.Tree.CustomTreeModel;
 public class WebsiteEditor extends OnlineResourceEditor<Website> {
 
     /**
-     * Crea una nuova finestra di dialogo per la creazione o modifica di un sito web.
-     * TODO: commenta
+     * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a un sito web.
      * 
      * @param categoriesTree
+     *            albero delle categorie in cui è possibile inserire un riferimento
      * @param references
+     *            riferimenti selezionabili come rimandi
      */
     public WebsiteEditor(CustomTreeModel<Category> categoriesTree, Collection<? extends BibliographicReference> references) {
         super("Sito web", categoriesTree, references);

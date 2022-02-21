@@ -76,12 +76,6 @@ public class CheckboxTreeSelectionModel extends DefaultTreeSelectionModel {
         selectedPaths.clear();
     }
 
-    /**
-     * Aggiunge un percorso ai selezionati, ma senza aggiungerlo alla lista dei percorsi che verranno restituiti.
-     * 
-     * @param path
-     *            percorso da aggiungere
-     */
     private void addPathVisually(TreePath path) {
         if (path == null)
             return;
