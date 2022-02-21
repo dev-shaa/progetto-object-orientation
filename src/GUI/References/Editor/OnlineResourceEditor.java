@@ -1,10 +1,13 @@
 package GUI.References.Editor;
 
+import Entities.Category;
+import Entities.References.BibliographicReference;
 import Entities.References.OnlineResources.OnlineResource;
 import Exceptions.Input.InvalidInputException;
 import Exceptions.Input.RequiredFieldMissingException;
-import Repository.CategoryRepository;
-import Repository.ReferenceRepository;
+import GUI.Utilities.Tree.CustomTreeModel;
+
+import java.util.Collection;
 
 import javax.swing.*;
 
@@ -17,18 +20,14 @@ public abstract class OnlineResourceEditor<T extends OnlineResource> extends Ref
 
     /**
      * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento.
+     * TODO: commenta
      * 
      * @param title
-     *            titolo della finestra
-     * @param categoryController
-     *            controller delle categorie
-     * @param referenceController
-     *            controller dei riferimenti
-     * @throws IllegalArgumentException
-     *             se {@code categoryController == null} o {@code referenceController == null}
+     * @param categoriesTree
+     * @param references
      */
-    public OnlineResourceEditor(String title, CategoryRepository categoryController, ReferenceRepository referenceController) {
-        super(title, categoryController, referenceController);
+    public OnlineResourceEditor(String title, CustomTreeModel<Category> categoriesTree, Collection<? extends BibliographicReference> references) {
+        super(title, categoriesTree, references);
     }
 
     @Override

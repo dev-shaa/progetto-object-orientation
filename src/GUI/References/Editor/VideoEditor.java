@@ -1,10 +1,12 @@
 package GUI.References.Editor;
 
+import Entities.Category;
+import Entities.References.BibliographicReference;
 import Entities.References.OnlineResources.Video;
-import Exceptions.Database.ReferenceDatabaseException;
 import Exceptions.Input.InvalidInputException;
-import Repository.CategoryRepository;
-import Repository.ReferenceRepository;
+import GUI.Utilities.Tree.CustomTreeModel;
+
+import java.util.Collection;
 
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
@@ -29,8 +31,16 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
      * @throws IllegalArgumentException
      *             se {@code categoryController == null} o {@code referenceController == null}
      */
-    public VideoEditor(CategoryRepository categoryController, ReferenceRepository referenceController) {
-        super("Video", categoryController, referenceController);
+
+    /**
+     * Crea una nuova finestra di dialogo per la creazione o modifica di un video.
+     * TODO: commenta
+     * 
+     * @param categoriesTree
+     * @param references
+     */
+    public VideoEditor(CustomTreeModel<Category> categoriesTree, Collection<? extends BibliographicReference> references) {
+        super("Video", categoriesTree, references);
     }
 
     @Override
@@ -38,10 +48,10 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
         super.setFieldsInitialValues(reference);
 
         if (reference == null) {
-            setWidthValue(1);
-            setHeightValue(1);
-            setFrameRateValue(1);
-            setDurationValue(1);
+            setWidthValue(0);
+            setHeightValue(0);
+            setFrameRateValue(0);
+            setDurationValue(0);
         } else {
             setWidthValue(reference.getWidth());
             setHeightValue(reference.getHeight());
@@ -68,11 +78,6 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
     @Override
     protected Video getNewInstance() {
         return new Video("title", "URL");
-    }
-
-    @Override
-    protected void save(Video reference) throws ReferenceDatabaseException {
-        getReferenceRepository().save(reference);
     }
 
     @Override

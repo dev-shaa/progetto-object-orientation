@@ -1,10 +1,12 @@
 package GUI.References.Editor;
 
+import Entities.Category;
+import Entities.References.BibliographicReference;
 import Entities.References.OnlineResources.Image;
-import Exceptions.Database.ReferenceDatabaseException;
 import Exceptions.Input.InvalidInputException;
-import Repository.CategoryRepository;
-import Repository.ReferenceRepository;
+import GUI.Utilities.Tree.CustomTreeModel;
+
+import java.util.Collection;
 
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
@@ -18,6 +20,16 @@ public class ImageEditor extends OnlineResourceEditor<Image> {
     private JSpinner height;
 
     /**
+     * TODO: commenta
+     * 
+     * @param categoriesTree
+     * @param references
+     */
+    public ImageEditor(CustomTreeModel<Category> categoriesTree, Collection<? extends BibliographicReference> references) {
+        super("Immagine", categoriesTree, references);
+    }
+
+    /**
      * Crea una nuova finestra di dialogo per la creazione o modifica di un'immagine.
      * 
      * @param categoryController
@@ -27,9 +39,9 @@ public class ImageEditor extends OnlineResourceEditor<Image> {
      * @throws IllegalArgumentException
      *             se {@code categoryController == null} o {@code referenceController == null}
      */
-    public ImageEditor(CategoryRepository categoryController, ReferenceRepository referenceController) {
-        super("Immagine", categoryController, referenceController);
-    }
+    // public ImageEditor(CategoryRepository categoryController, ReferenceRepository referenceController) {
+    // super("Immagine", categoryController, referenceController);
+    // }
 
     @Override
     protected void setupSecondaryFields() {
@@ -58,11 +70,6 @@ public class ImageEditor extends OnlineResourceEditor<Image> {
     @Override
     protected Image getNewInstance() {
         return new Image("title", "URL");
-    }
-
-    @Override
-    protected void save(Image reference) throws ReferenceDatabaseException {
-        getReferenceRepository().save(reference);
     }
 
     @Override

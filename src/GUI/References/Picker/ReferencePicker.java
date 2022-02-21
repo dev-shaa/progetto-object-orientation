@@ -6,16 +6,14 @@ import java.util.List;
 
 import javax.swing.*;
 
+import Criteria.ReferenceCriteriaCategory;
 import Entities.Category;
 import Entities.References.BibliographicReference;
-import Exceptions.Database.CategoryDatabaseException;
-import Exceptions.Database.ReferenceDatabaseException;
 import GUI.Categories.CategoriesTreePanel;
 import GUI.Categories.CategorySelectionListener;
 import GUI.References.ReferenceListPanel;
 import GUI.References.ReferenceSelectionListener;
-import Repository.CategoryRepository;
-import Repository.ReferenceRepository;
+import GUI.Utilities.Tree.CustomTreeModel;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -26,33 +24,32 @@ import java.awt.event.ActionListener;
  */
 public class ReferencePicker extends JDialog implements CategorySelectionListener, ReferenceSelectionListener {
 
-    private CategoryRepository categoryRepository;
-    private ReferenceRepository referenceRepository;
-
     private CategoriesTreePanel categoriesPanel;
     private ReferenceListPanel referencesPanel;
     private JButton confirmButton;
 
-    private ArrayList<ReferencePickerListener> pickerListeners;
+    private Collection<? extends BibliographicReference> references;
     private Collection<? extends BibliographicReference> referencesToExclude;
+
+    private ArrayList<ReferencePickerListener> pickerListeners;
+
+    /**
+     * TODO: commenta
+     */
+    public ReferencePicker() {
+        this(null, null);
+    }
 
     /**
      * Crea una nuova finestra di dialogo in cui è possibile scegliere un riferimento.
      * 
-     * @param owner
-     *            proprietario della finestra
-     * @param categoryRepository
-     *            controller delle categorie
-     * @param referenceRepository
-     *            controller dei riferimenti
-     * @throws IllegalArgumentException
-     *             se {@code categoryManager == null} o {@code referenceManager == null}
+     * @param categoriesTree
+     *            albero delle categorie che è possibile selezionare
+     * @param references
+     *            tutti i riferimenti che è possibile selezionare
      */
-    public ReferencePicker(Dialog owner, CategoryRepository categoryRepository, ReferenceRepository referenceRepository) {
-        super(owner);
-
-        setCategoryRepository(categoryRepository);
-        setReferenceRepository(referenceRepository);
+    public ReferencePicker(CustomTreeModel<Category> categoriesTree, Collection<? extends BibliographicReference> references) {
+        super();
 
         setTitle("Seleziona riferimento");
         setModal(true);
@@ -60,6 +57,9 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
         setResizable(false);
 
         setupLayout();
+
+        setCategoriesTree(categoriesTree);
+        setReferences(references);
     }
 
     private void setupLayout() {
@@ -108,61 +108,34 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
      *            riferimenti da escludere
      */
     public void setVisible(boolean b, Collection<? extends BibliographicReference> referencesToExclude) {
-        String errorMessage = null;
-
         if (b) {
             setReferencesToExclude(referencesToExclude);
+            categoriesPanel.clearSelection();
             referencesPanel.clear();
-
-            try {
-                categoriesPanel.setTreeModel(categoryRepository.getTree());
-            } catch (CategoryDatabaseException e) {
-                categoriesPanel.setTreeModel(null);
-                errorMessage = e.getMessage();
-            }
-
             setLocationRelativeTo(null);
         }
 
         super.setVisible(b);
-
-        if (errorMessage != null)
-            JOptionPane.showMessageDialog(this, errorMessage, "Errore", JOptionPane.ERROR_MESSAGE);
-    }
-
-    private void setReferencesToExclude(Collection<? extends BibliographicReference> referencesToExclude) {
-        this.referencesToExclude = referencesToExclude;
     }
 
     /**
-     * Imposta il controller delle categorie.
-     * Reimposta i pannelli delle categorie e dei riferimenti.
+     * Imposta l'albero delle categorie che è possibile selezionare.
      * 
-     * @param categoryRepository
-     *            controller delle categorie
-     * @throws IllegalArgumentException
-     *             se {@code categoryController == null}
+     * @param categoriesTree
+     *            albero delle categorie
      */
-    public void setCategoryRepository(CategoryRepository categoryRepository) {
-        if (categoryRepository == null)
-            throw new IllegalArgumentException("categoryRepository can't be null");
-
-        this.categoryRepository = categoryRepository;
+    public void setCategoriesTree(CustomTreeModel<Category> categoriesTree) {
+        categoriesPanel.setTreeModel(categoriesTree);
     }
 
     /**
-     * Imposta il controller dei riferimenti.
+     * Imposta i riferimenti che è possibile selezionare.
      * 
-     * @param referenceRepository
-     *            controller dei riferimenti
-     * @throws IllegalArgumentException
-     *             se {@code referenceController == null}
+     * @param references
+     *            riferimenti selezionabili
      */
-    public void setReferenceRepository(ReferenceRepository referenceRepository) {
-        if (referenceRepository == null)
-            throw new IllegalArgumentException("referenceRepository can't be null");
-
-        this.referenceRepository = referenceRepository;
+    public void setReferences(Collection<? extends BibliographicReference> references) {
+        this.references = references;
     }
 
     @Override
@@ -172,17 +145,13 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
 
     @Override
     public void onCategorySelection(Category category) {
-        try {
-            List<BibliographicReference> referencesToShow = referenceRepository.get(category);
+        ReferenceCriteriaCategory categoryFilter = new ReferenceCriteriaCategory(category);
+        List<? extends BibliographicReference> referencesToShow = categoryFilter.get(references);
 
-            if (referencesToExclude != null)
-                referencesToShow.removeAll(referencesToExclude);
+        if (referencesToShow != null && referencesToExclude != null)
+            referencesToShow.removeAll(referencesToExclude);
 
-            referencesPanel.setReferences(referencesToShow);
-        } catch (ReferenceDatabaseException e) {
-            referencesPanel.clear();
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Errore recupero riferimenti", JOptionPane.ERROR_MESSAGE);
-        }
+        referencesPanel.setReferences(referencesToShow);
     }
 
     @Override
@@ -220,6 +189,10 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
     public void removeReferencePickerListener(ReferencePickerListener listener) {
         if (listener != null && pickerListeners != null)
             pickerListeners.remove(listener);
+    }
+
+    private void setReferencesToExclude(Collection<? extends BibliographicReference> referencesToExclude) {
+        this.referencesToExclude = referencesToExclude;
     }
 
     private void notifyListeners() {

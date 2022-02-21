@@ -1,10 +1,12 @@
 package GUI.References.Editor;
 
+import Entities.Category;
+import Entities.References.BibliographicReference;
 import Entities.References.PhysicalResources.Article;
-import Exceptions.Database.ReferenceDatabaseException;
 import Exceptions.Input.InvalidInputException;
-import Repository.CategoryRepository;
-import Repository.ReferenceRepository;
+import GUI.Utilities.Tree.CustomTreeModel;
+
+import java.util.Collection;
 
 import javax.swing.JTextField;
 
@@ -16,17 +18,13 @@ public class ArticleEditor extends PublicationEditor<Article> {
     private JTextField ISSN;
 
     /**
-     * Crea una nuova finestra di dialogo per la creazione o modifica di un articolo.
+     * TODO: commenta
      * 
-     * @param categoryController
-     *            controller delle categorie
-     * @param referenceController
-     *            controller dei riferimenti
-     * @throws IllegalArgumentException
-     *             se {@code categoryController == null} o {@code referenceController == null}
+     * @param categoriesTree
+     * @param references
      */
-    public ArticleEditor(CategoryRepository categoryController, ReferenceRepository referenceController) {
-        super("Articolo", categoryController, referenceController);
+    public ArticleEditor(CustomTreeModel<Category> categoriesTree, Collection<? extends BibliographicReference> references) {
+        super("Articolo", categoriesTree, references);
     }
 
     @Override
@@ -56,11 +54,6 @@ public class ArticleEditor extends PublicationEditor<Article> {
         reference.setISSN(getISSNValue());
 
         return reference;
-    }
-
-    @Override
-    protected void save(Article reference) throws ReferenceDatabaseException {
-        getReferenceRepository().save(reference);
     }
 
     private void setISSNValue(String ISSN) {

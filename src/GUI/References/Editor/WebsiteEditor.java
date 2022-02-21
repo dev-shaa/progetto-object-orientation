@@ -1,10 +1,12 @@
 package GUI.References.Editor;
 
+import java.util.Collection;
+
+import Entities.Category;
+import Entities.References.BibliographicReference;
 import Entities.References.OnlineResources.Website;
-import Exceptions.Database.ReferenceDatabaseException;
 import Exceptions.Input.InvalidInputException;
-import Repository.CategoryRepository;
-import Repository.ReferenceRepository;
+import GUI.Utilities.Tree.CustomTreeModel;
 
 /**
  * Finestra di dialogo per la creazione o modifica di un riferimento a un sito web.
@@ -12,17 +14,14 @@ import Repository.ReferenceRepository;
 public class WebsiteEditor extends OnlineResourceEditor<Website> {
 
     /**
-     * Crea una nuova finestra di dialogo per la creazione o modifica di codice sorgente.
+     * Crea una nuova finestra di dialogo per la creazione o modifica di un sito web.
+     * TODO: commenta
      * 
-     * @param categoryController
-     *            controller delle categorie
-     * @param referenceController
-     *            controller dei riferimenti
-     * @throws IllegalArgumentException
-     *             se {@code categoryController == null} o {@code referenceController == null}
+     * @param categoriesTree
+     * @param references
      */
-    public WebsiteEditor(CategoryRepository categoryController, ReferenceRepository referenceController) {
-        super("Sito web", categoryController, referenceController);
+    public WebsiteEditor(CustomTreeModel<Category> categoriesTree, Collection<? extends BibliographicReference> references) {
+        super("Sito web", categoriesTree, references);
     }
 
     @Override
@@ -38,11 +37,6 @@ public class WebsiteEditor extends OnlineResourceEditor<Website> {
     @Override
     protected Website getNewInstance() {
         return new Website("title", "URL");
-    }
-
-    @Override
-    protected void save(Website reference) throws ReferenceDatabaseException {
-        getReferenceRepository().save(reference);
     }
 
     @Override

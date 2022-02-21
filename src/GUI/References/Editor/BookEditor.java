@@ -1,10 +1,12 @@
 package GUI.References.Editor;
 
+import Entities.Category;
+import Entities.References.BibliographicReference;
 import Entities.References.PhysicalResources.Book;
-import Exceptions.Database.ReferenceDatabaseException;
 import Exceptions.Input.InvalidInputException;
-import Repository.CategoryRepository;
-import Repository.ReferenceRepository;
+import GUI.Utilities.Tree.CustomTreeModel;
+
+import java.util.Collection;
 
 import javax.swing.JTextField;
 
@@ -16,6 +18,16 @@ public class BookEditor extends PublicationEditor<Book> {
     private JTextField ISBN;
 
     /**
+     * TODO: commenta
+     * 
+     * @param categoriesTree
+     * @param references
+     */
+    public BookEditor(CustomTreeModel<Category> categoriesTree, Collection<? extends BibliographicReference> references) {
+        super("Libro", categoriesTree, references);
+    }
+
+    /**
      * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento.
      * 
      * @param categoryController
@@ -25,9 +37,9 @@ public class BookEditor extends PublicationEditor<Book> {
      * @throws IllegalArgumentException
      *             se {@code categoryController == null} o {@code referenceController == null}
      */
-    public BookEditor(CategoryRepository categoryController, ReferenceRepository referenceController) {
-        super("Libro", categoryController, referenceController);
-    }
+    // public BookEditor(CategoryRepository categoryController, ReferenceRepository referenceController) {
+    // super("Libro", categoryController, referenceController);
+    // }
 
     @Override
     protected void setupSecondaryFields() {
@@ -56,11 +68,6 @@ public class BookEditor extends PublicationEditor<Book> {
         reference.setISBN(getISBNValue());
 
         return reference;
-    }
-
-    @Override
-    protected void save(Book reference) throws ReferenceDatabaseException {
-        getReferenceRepository().save(reference);
     }
 
     private void setISBNValue(String ISBN) {

@@ -1,11 +1,13 @@
 package GUI.References.Editor;
 
 import Entities.References.OnlineResources.SourceCode;
+import Entities.Category;
+import Entities.References.BibliographicReference;
 import Entities.References.OnlineResources.ProgrammingLanguage;
-import Exceptions.Database.ReferenceDatabaseException;
 import Exceptions.Input.InvalidInputException;
-import Repository.CategoryRepository;
-import Repository.ReferenceRepository;
+import GUI.Utilities.Tree.CustomTreeModel;
+
+import java.util.Collection;
 
 import javax.swing.JComboBox;
 
@@ -18,6 +20,17 @@ public class SourceCodeEditor extends OnlineResourceEditor<SourceCode> {
 
     /**
      * Crea una nuova finestra di dialogo per la creazione o modifica di codice sorgente.
+     * TODO: commenta
+     * 
+     * @param categoriesTree
+     * @param references
+     */
+    public SourceCodeEditor(CustomTreeModel<Category> categoriesTree, Collection<? extends BibliographicReference> references) {
+        super("Codice sorgente", categoriesTree, references);
+    }
+
+    /**
+     * Crea una nuova finestra di dialogo per la creazione o modifica di codice sorgente.
      * 
      * @param categoryController
      *            controller delle categorie
@@ -26,9 +39,9 @@ public class SourceCodeEditor extends OnlineResourceEditor<SourceCode> {
      * @throws IllegalArgumentException
      *             se {@code categoryController == null} o {@code referenceController == null}
      */
-    public SourceCodeEditor(CategoryRepository categoryController, ReferenceRepository referenceController) {
-        super("Codice sorgente", categoryController, referenceController);
-    }
+    // public SourceCodeEditor(CategoryRepository categoryController, ReferenceRepository referenceController) {
+    // super("Codice sorgente", categoryController, referenceController);
+    // }
 
     @Override
     protected void setupSecondaryFields() {
@@ -57,11 +70,6 @@ public class SourceCodeEditor extends OnlineResourceEditor<SourceCode> {
         reference.setProgrammingLanguage(getProgrammingLanguageValue());
 
         return reference;
-    }
-
-    @Override
-    protected void save(SourceCode reference) throws ReferenceDatabaseException {
-        getReferenceRepository().save(reference);
     }
 
     private void setProgrammingLanguageValue(ProgrammingLanguage programmingLanguage) {

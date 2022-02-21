@@ -6,10 +6,7 @@ import GUI.Authors.AuthorInputField;
 import GUI.References.Picker.*;
 import GUI.Tags.TagInputField;
 import GUI.Utilities.*;
-import Repository.CategoryRepository;
-import Repository.ReferenceRepository;
-import Exceptions.Database.CategoryDatabaseException;
-import Exceptions.Database.ReferenceDatabaseException;
+import GUI.Utilities.Tree.CustomTreeModel;
 import Exceptions.Input.InvalidAuthorInputException;
 import Exceptions.Input.InvalidInputException;
 import Exceptions.Input.RequiredFieldMissingException;
@@ -17,6 +14,7 @@ import Exceptions.Input.RequiredFieldMissingException;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -42,14 +40,16 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
 
     private JPanel fieldPanel;
 
-    private CategoryRepository categoryRepository;
-    private ReferenceRepository referenceRepository;
+    // private CategoryRepository categoryRepository;
+    // private ReferenceRepository referenceRepository;
 
     private T referenceToChange;
 
     private final Dimension maximumSize = new Dimension(Integer.MAX_VALUE, 24);
     private final Dimension spacingSize = new Dimension(0, 10);
     private final float alignment = Container.LEFT_ALIGNMENT;
+
+    private ArrayList<ReferenceEditorListener<T>> listeners;
 
     /**
      * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento.
@@ -63,7 +63,15 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      * @throws IllegalArgumentException
      *             se {@code categoryRepository == null} o {@code referenceRepository == null}
      */
-    public ReferenceEditor(String title, CategoryRepository categoryRepository, ReferenceRepository referenceRepository) {
+
+    /**
+     * TODO: commenta
+     * 
+     * @param title
+     * @param categoriesTree
+     * @param references
+     */
+    public ReferenceEditor(String title, CustomTreeModel<Category> categoriesTree, Collection<? extends BibliographicReference> references) {
         super();
 
         setTitle(title);
@@ -71,7 +79,9 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         setSize(500, 700);
         setResizable(false);
 
-        relatedReferencesPicker = new ReferencePicker(this, categoryRepository, referenceRepository);
+        listeners = new ArrayList<>(1);
+
+        relatedReferencesPicker = new ReferencePicker();
         relatedReferencesPicker.addReferencePickerListener(new ReferencePickerListener() {
             @Override
             public void onReferencePick(BibliographicReference reference) {
@@ -79,8 +89,8 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
             }
         });
 
-        setCategoryRepository(categoryRepository);
-        setReferenceRepository(referenceRepository);
+        setCategoriesTree(categoriesTree);
+        setReferences(references);
 
         setupBaseFields();
     }
@@ -94,8 +104,6 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      * Mostra o nasconde questo pannello a seconda del valore di {@code b}.
      * <p>
      * Se {@code b == true}, i campi di input verranno riempiti con i valori presenti in {@code reference}.
-     * <p>
-     * In caso si verifichi un errore nel recupero dell'albero delle categorie, viene mostrato un messaggio di errore.
      * 
      * @param b
      *            se {@code true} il pannello verrà mostrato e verrano riempiti i campi con i valori di {@code reference},
@@ -104,29 +112,13 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      *            riferimento da mostrare (può essere {@code null})
      */
     public void setVisible(boolean b, T reference) {
-        boolean failedToLoad = false;
-
         if (b) {
             referenceToChange = reference;
-
-            try {
-                categories.setTreeModel(getCategoryRepository().getTree());
-                setFieldsInitialValues(reference);
-            } catch (CategoryDatabaseException e) {
-                categories.setTreeModel(null);
-                failedToLoad = true;
-            }
-
+            setFieldsInitialValues(reference);
             setLocationRelativeTo(null);
         }
 
         super.setVisible(b);
-
-        if (failedToLoad) {
-            String[] choices = { "Riprova", "Chiudi" };
-            int option = JOptionPane.showOptionDialog(this, "Si è verificato un errore durante il recupero delle categorie dell'utente.", "Errore recupero", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null, choices, 0);
-            setVisible(option == JOptionPane.YES_OPTION, reference);
-        }
     }
 
     /**
@@ -137,21 +129,15 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      * @throws IllegalArgumentException
      *             se {@code categoryRepository == null}
      */
-    public void setCategoryRepository(CategoryRepository categoryRepository) {
-        if (categoryRepository == null)
-            throw new IllegalArgumentException("categoryRepository can't be null");
-
-        this.categoryRepository = categoryRepository;
-        relatedReferencesPicker.setCategoryRepository(categoryRepository);
-    }
 
     /**
-     * Restituisce il controller delle categorie.
+     * TODO: commenta
      * 
-     * @return controller delle categorie
+     * @param categoriesTree
      */
-    public CategoryRepository getCategoryRepository() {
-        return categoryRepository;
+    public void setCategoriesTree(CustomTreeModel<Category> categoriesTree) {
+        categories.setTreeModel(categoriesTree);
+        relatedReferencesPicker.setCategoriesTree(categoriesTree);
     }
 
     /**
@@ -162,22 +148,14 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      * @throws IllegalArgumentException
      *             se {@code referenceController == null}
      */
-    public void setReferenceRepository(ReferenceRepository referenceRepository) {
-        if (referenceRepository == null)
-            throw new IllegalArgumentException("referenceRepository can't be null");
-
-        this.referenceRepository = referenceRepository;
-        relatedReferencesPicker.setReferenceRepository(referenceRepository);
-    }
 
     /**
-     * Restituisce il controller dei riferimenti.
+     * TODO: commenta
      * 
-     * @return
-     *         controller dei riferimenti
+     * @param references
      */
-    public ReferenceRepository getReferenceRepository() {
-        return referenceRepository;
+    public void setReferences(Collection<? extends BibliographicReference> references) {
+        relatedReferencesPicker.setReferences(references);
     }
 
     private void setupBaseFields() {
@@ -332,14 +310,9 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     private void save() {
         try {
             T reference = createNewReference();
-            save(reference);
-            setVisible(false);
+            notifyListeners(reference);
         } catch (InvalidInputException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Parametri inseriti non validi", JOptionPane.ERROR_MESSAGE);
-        } catch (ReferenceDatabaseException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Salvataggio non riuscito", JOptionPane.ERROR_MESSAGE);
+            showErrorMessage("Parametri inseriti non validi", e.getMessage());
         }
     }
 
@@ -377,14 +350,49 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     protected abstract T getNewInstance();
 
     /**
-     * Salva il riferimento.
+     * TODO: commenta
      * 
-     * @param reference
-     *            riferimento da salvare
-     * @throws ReferenceDatabaseException
-     *             se il salvataggio non va a buon fine
+     * @param listener
      */
-    protected abstract void save(T reference) throws ReferenceDatabaseException;
+    public void addListener(ReferenceEditorListener<T> listener) {
+        if (listener == null)
+            return;
+
+        if (listeners == null)
+            listeners = new ArrayList<>(3);
+
+        if (!listeners.contains(listener))
+            listeners.add(listener);
+    }
+
+    /**
+     * TODO: commenta
+     * 
+     * @param listener
+     */
+    public void removeListener(ReferenceEditorListener<T> listener) {
+        if (listener != null && listeners != null)
+            listeners.remove(listener);
+    }
+
+    private void notifyListeners(T reference) {
+        if (listeners == null)
+            return;
+
+        for (ReferenceEditorListener<T> listener : listeners) {
+            listener.onReferenceCreation(reference);
+        }
+    }
+
+    /**
+     * TODO: commenta
+     * 
+     * @param title
+     * @param message
+     */
+    public void showErrorMessage(String title, String message) {
+        JOptionPane.showMessageDialog(this, message, title, JOptionPane.ERROR_MESSAGE);
+    }
 
     // #region VALUES GETTER/SETTER
 

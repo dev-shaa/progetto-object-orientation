@@ -14,6 +14,8 @@ import GUI.Search.*;
 import GUI.Utilities.PopupButton;
 import GUI.Utilities.Tree.CustomTreeModel;
 import Controller.Controller;
+import Criteria.ReferenceCriteriaCategory;
+import Criteria.ReferenceCriteriaSearch;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -155,6 +157,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
         addWindowListener(new WindowAdapter() {
+            @Override
             public void windowClosing(WindowEvent e) {
                 int confirmDialogBoxOption = JOptionPane.showConfirmDialog(null, "Sicuro di volere uscire?", "Esci", JOptionPane.YES_NO_OPTION);
 
@@ -168,7 +171,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         JPanel categoriesPanel = new JPanel();
 
         categoriesPanel.setLayout(new BorderLayout(5, 5));
-        categoriesPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+        categoriesPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
         JToolBar toolbar = new JToolBar();
         toolbar.setFloatable(false);
@@ -277,7 +280,10 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         removeCategoryButton.setEnabled(category != null);
 
         try {
-            referenceListPanel.setReferences(getController().getReferenceRepository().get(category));
+            ReferenceCriteriaCategory categoryFilter = new ReferenceCriteriaCategory(category);
+            List<? extends BibliographicReference> references = categoryFilter.get(getController().getReferenceRepository().getAll());
+
+            referenceListPanel.setReferences(references);
         } catch (ReferenceDatabaseException e) {
             referenceListPanel.clear();
             JOptionPane.showMessageDialog(this, e.getMessage(), "Errore recupero riferimenti", JOptionPane.ERROR_MESSAGE);
@@ -456,12 +462,14 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         categoriesTreePanel.clearSelection();
 
         try {
-            List<BibliographicReference> references = getController().getReferenceRepository().get(search);
+            ReferenceCriteriaSearch searchFilter = new ReferenceCriteriaSearch(search);
+            List<? extends BibliographicReference> references = searchFilter.get(getController().getReferenceRepository().getAll());
+
             referenceListPanel.setReferences(references);
 
             String searchResultMessage = references.size() == 1 ? "È stato trovato un riferimento." : "Sono stati trovati " + references.size() + " riferimenti.";
             JOptionPane.showMessageDialog(this, searchResultMessage, "Risultati ricerca", JOptionPane.INFORMATION_MESSAGE);
-        } catch (ReferenceDatabaseException e) {
+        } catch (IllegalArgumentException | ReferenceDatabaseException e) {
             referenceListPanel.clear();
             JOptionPane.showMessageDialog(this, e.getMessage(), "Errore recupero riferimenti", JOptionPane.ERROR_MESSAGE);
         }

@@ -1,10 +1,12 @@
 package GUI.References.Editor;
 
+import Entities.Category;
+import Entities.References.BibliographicReference;
 import Entities.References.PhysicalResources.Thesis;
-import Exceptions.Database.ReferenceDatabaseException;
 import Exceptions.Input.InvalidInputException;
-import Repository.CategoryRepository;
-import Repository.ReferenceRepository;
+import GUI.Utilities.Tree.CustomTreeModel;
+
+import java.util.Collection;
 
 import javax.swing.JTextField;
 
@@ -26,8 +28,15 @@ public class ThesisEditor extends PublicationEditor<Thesis> {
      * @throws IllegalArgumentException
      *             se {@code categoryController == null} o {@code referenceController == null}
      */
-    public ThesisEditor(CategoryRepository categoryController, ReferenceRepository referenceController) {
-        super("Tesi", categoryController, referenceController);
+
+    /**
+     * TODO: commenta
+     * 
+     * @param categoriesTree
+     * @param references
+     */
+    public ThesisEditor(CustomTreeModel<Category> categoriesTree, Collection<? extends BibliographicReference> references) {
+        super("Tesi", categoriesTree, references);
     }
 
     @Override
@@ -57,11 +66,6 @@ public class ThesisEditor extends PublicationEditor<Thesis> {
     @Override
     protected Thesis getNewInstance() {
         return new Thesis("title");
-    }
-
-    @Override
-    protected void save(Thesis reference) throws ReferenceDatabaseException {
-        getReferenceRepository().save(reference);
     }
 
     @Override
