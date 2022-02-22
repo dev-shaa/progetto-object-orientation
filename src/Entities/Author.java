@@ -102,7 +102,7 @@ public class Author {
      *             se {@code name} è nullo o vuoto
      */
     public void setName(String name) {
-        if (!isNameValid(name))
+        if (isStringNullOrEmpty(name))
             throw new IllegalArgumentException("Il nome non può essere vuoto");
 
         this.name = name.trim();
@@ -127,13 +127,12 @@ public class Author {
      *             se la stringa di input non rispetta il pattern del codice ORCID
      */
     public void setORCID(String ORCID) {
-        if (!isORCIDValid(ORCID))
+        if (isStringNullOrEmpty(ORCID))
+            this.ORCID = null;
+        else if (orcidPattern.matcher(ORCID).matches())
+            this.ORCID = ORCID.trim();
+        else
             throw new IllegalArgumentException("Codice ORCID non valido");
-
-        // l'espressione regex lascia libertà sullo spazio all'inizio e alla fine della stringa, perchè è più comodo per lavorarci
-        // quindi è meglio toglierli
-
-        this.ORCID = isStringNullOrEmpty(ORCID) ? null : ORCID.trim();
     }
 
     /**
@@ -148,17 +147,6 @@ public class Author {
 
     private boolean isStringNullOrEmpty(String string) {
         return string == null || string.isEmpty() || string.isBlank();
-    }
-
-    private boolean isNameValid(String name) {
-        return !isStringNullOrEmpty(name);
-    }
-
-    private boolean isORCIDValid(String ORCID) {
-        if (isStringNullOrEmpty(ORCID))
-            return true;
-
-        return orcidPattern.matcher(ORCID).find();
     }
 
 }

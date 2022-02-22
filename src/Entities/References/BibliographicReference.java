@@ -5,9 +5,9 @@ import Entities.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Classe che rappresenta un riferimento bibliografico.
@@ -26,7 +26,8 @@ public abstract class BibliographicReference {
     private List<BibliographicReference> relatedReferences;
     private int quotationCount;
 
-    private final static DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd");
+    private final Pattern doiPattern = Pattern.compile("^ *10\\.[0-9]{4,}\\/\\w{1,}(\\.\\w{1,}){1,} *$");
+    private final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd");
 
     /**
      * Crea un nuovo riferimento con il titolo indicato.
@@ -47,9 +48,6 @@ public abstract class BibliographicReference {
         return getTitle();
     }
 
-    /**
-     * @return {@code true} se l'identificativo è uguale
-     */
     @Override
     public boolean equals(Object obj) {
         // due riferimenti sono uguali se hanno lo stesso id
@@ -57,15 +55,13 @@ public abstract class BibliographicReference {
         if (obj == this)
             return true;
 
-        if (!(obj instanceof BibliographicReference))
+        if (obj == null || !(obj instanceof BibliographicReference))
             return false;
 
         BibliographicReference reference = (BibliographicReference) obj;
 
         return (getID() == null && reference == null) || (getID() != null && getID().equals(reference.getID()));
     }
-
-    // #region GETTER/SETTER
 
     /**
      * Imposta l'id del riferimento.
@@ -101,7 +97,7 @@ public abstract class BibliographicReference {
      */
     public void setTitle(String title) {
         if (!isTitleValid(title))
-            throw new IllegalArgumentException("title can't be null or empty");
+            throw new IllegalArgumentException("Il titolo di un riferimento non può essere nullo o vuoto.");
 
         this.title = title.trim();
     }
@@ -146,8 +142,10 @@ public abstract class BibliographicReference {
     public void setDOI(String DOI) {
         if (isStringNullOrEmpty(DOI))
             this.DOI = null;
+        else if (isDOIValid(DOI))
+            this.DOI = DOI.trim();
         else
-            this.DOI = DOI;
+            throw new IllegalArgumentException("Il DOI non è valido");
     }
 
     /**
@@ -188,8 +186,13 @@ public abstract class BibliographicReference {
      * 
      * @param language
      *            lingua del riferimento
+     * @throws IllegalArgumentException
+     *             se {@code language == null}
      */
     public void setLanguage(ReferenceLanguage language) {
+        if (language == null)
+            throw new IllegalArgumentException("La lingua del riferimento non può essere nulla.");
+
         this.language = language;
     }
 
@@ -320,8 +323,6 @@ public abstract class BibliographicReference {
      * 
      * @param quotationCount
      *            numero di citazioni ricevute
-     * @throws IllegalArgumentException
-     *             se {@code quotationCount < 0}
      */
     public void setQuotationCount(int quotationCount) {
         if (quotationCount < 0)
@@ -341,35 +342,41 @@ public abstract class BibliographicReference {
 
     /**
      * Restituisce gli autori di questo riferimento come un'unica stringa.
-     * Esempio: "Mario Rossi, Ciro Esposito"
+     * <p>
+     * Esempio: "Mario Rossi, Ciro Esposito".
      * 
      * @return
      *         autori come stringa
      */
     public String getAuthorsAsString() {
-        return getAuthors().toString().substring(1, getAuthors().toString().lastIndexOf(']'));
+        String authors = getAuthors().toString();
+        return authors.substring(1, authors.lastIndexOf(']'));
     }
 
     /**
      * Restituisce le parole chiave di questo riferimento come stringa.
-     * Esempio: "Informatica, Object Orientation"
+     * <p>
+     * Esempio: "Informatica, Object Orientation".
      * 
      * @return
      *         parole chiave come stringa
      */
     public String getTagsAsString() {
-        return getTags().toString().substring(1, getTags().toString().lastIndexOf(']'));
+        String tags = getTags().toString();
+        return tags.substring(1, tags.lastIndexOf(']'));
     }
 
     /**
      * Restituisce i rimandi di questo riferimento come stringa.
-     * Esempio: "Rimando1, Rimando2"
+     * <p>
+     * Esempio: "Rimando1, Rimando2".
      * 
      * @return
      *         rimandi del riferimento come stringa
      */
     public String getRelatedReferencesAsString() {
-        return getRelatedReferences().toString().substring(1, getRelatedReferences().toString().lastIndexOf(']'));
+        String relatedReferences = getRelatedReferences().toString();
+        return relatedReferences.substring(1, relatedReferences.lastIndexOf(']'));
     }
 
     /**
@@ -381,115 +388,16 @@ public abstract class BibliographicReference {
         return getPubblicationDate() == null ? null : DATE_FORMAT.format(getPubblicationDate());
     }
 
-    // #endregion
-
-    /**
-     * Controlla se questo riferimento è stato pubblicato dopo una certa data.
-     * 
-     * @param date
-     *            data con cui confrontare
-     * @return se {@code date == null}, viene considerato come se fosse pubblicato dopo, quindi restituisce {@code true};
-     *         se non è specificata la data di pubblicazione del riferimento, restituisce {@code false};
-     *         altrimenti, viene restituito {@code true} se la data di pubblicazione è succesiva a {@code date}.
-     */
-    public boolean wasPublishedAfter(Date date) {
-        if (date == null)
-            return true;
-
-        if (getPubblicationDate() == null)
-            return false;
-
-        return getPubblicationDate().after(date);
-    }
-
-    /**
-     * Controlla se questo riferimento è stato pubblicato prima di una certa data.
-     * 
-     * @param date
-     *            data con cui confrontare
-     * @return se {@code date == null}, viene considerato come se fosse pubblicato prima, quindi restituisce {@code true};
-     *         se non è specificata la data di pubblicazione del riferimento, restituisce {@code false};
-     *         altrimenti, viene restituito {@code true} se la data di pubblicazione è precedente a {@code date}.
-     */
-    public boolean wasPublishedBefore(Date date) {
-        if (date == null)
-            return true;
-
-        if (getPubblicationDate() == null)
-            return false;
-
-        return getPubblicationDate().before(date);
-    }
-
-    /**
-     * Controlla se questo riferimento è stato pubblicato in un certo intervallo compreso tra {@code start} e {@code end}.
-     * 
-     * @param start
-     *            data di inizio intervallo
-     * @param end
-     *            data di fine intervallo
-     * @return restituisce {@code true} se è stato pubblicato tra l'inizio e la fine dell'intervallo.
-     * @see #wasPublishedAfter(Date)
-     * @see #wasPublishedBefore(Date)
-     */
-    public boolean wasPublishedBetween(Date start, Date end) {
-        return wasPublishedAfter(start) && wasPublishedBefore(end);
-    }
-
-    /**
-     * Controlla se questo riferimento è stato scritto dagli autori indicati.
-     * 
-     * @param authors
-     *            autori del riferimento
-     * @return {@code true} se il riferimento è stato scritto da tutti gli autori indicati
-     */
-    public boolean wasWrittenBy(Collection<? extends Author> authors) {
-        if (authors == null || authors.isEmpty())
-            return true;
-
-        return getAuthors().containsAll(authors);
-    }
-
-    /**
-     * Controlla se il riferimento è associato con tutte le parole chiave indicate.
-     * 
-     * @param tags
-     *            parole chiave da cercare
-     * @return {@code true} se contiene tutte le parole chiave
-     */
-    public boolean isTaggedWith(Collection<? extends Tag> tags) {
-        if (tags == null || tags.isEmpty())
-            return true;
-
-        return getTags().containsAll(tags);
-    }
-
-    /**
-     * Controlla se il riferimento è contenuto nella categoria indicata.
-     * 
-     * @param category
-     *            categoria da cercare
-     * @return {@code true} se il riferimento è presente nella categoria
-     */
-    public boolean isContainedIn(Category category) {
-        if (category == null)
-            return getCategories().isEmpty();
-
-        return getCategories().contains(category);
-    }
-
-    /**
-     * Controlla se il riferimento è contenuto nelle categorie indicate.
-     * 
-     * @param categories
-     *            categorie da cercare
-     * @return {@code true} se il riferimento è presente in tutte categorie
-     */
-    public boolean isContainedIn(Collection<? extends Category> categories) {
-        if (categories == null)
-            return getCategories().isEmpty();
-
-        return getCategories().containsAll(categories);
+    // TODO:
+    public String getInfo() {
+        return "Titolo: " + getTitle()
+                + "\nAutori: " + getAuthorsAsString()
+                + "\nData di pubblicazione: " + getFormattedDate()
+                + "\nDOI: " + getDOI()
+                + "\nLingua: " + getLanguage()
+                + "\nParole chiave: " + getTagsAsString()
+                + "\nRimandi: " + getRelatedReferencesAsString()
+                + "\nDescrizione: " + getDescription();
     }
 
     /**
@@ -507,6 +415,13 @@ public abstract class BibliographicReference {
         // si potrebbe chiamare direttamente la funzione sotto, ma metti caso che un giorno decidessimo di cambiare
         // qual è il titolo valido
         return !isStringNullOrEmpty(title);
+    }
+
+    private boolean isDOIValid(String doi) {
+        if (isStringNullOrEmpty(doi))
+            return true;
+
+        return doiPattern.matcher(doi).matches();
     }
 
 }

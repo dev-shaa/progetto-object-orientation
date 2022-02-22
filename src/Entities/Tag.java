@@ -4,6 +4,7 @@ package Entities;
  * Classe che rappresenta una parola chiave di un riferimento.
  */
 public class Tag {
+
     private String name;
 
     /**
@@ -29,7 +30,7 @@ public class Tag {
         if (obj == this)
             return true;
 
-        if (!(obj instanceof Tag))
+        if (obj == null || !(obj instanceof Tag))
             return false;
 
         return getName().equalsIgnoreCase(((Tag) obj).getName());
@@ -45,7 +46,7 @@ public class Tag {
      */
     public void setName(String name) {
         if (!isNameValid(name))
-            throw new IllegalArgumentException("value can't be null");
+            throw new IllegalArgumentException("Il nome della parola chiave non può essere nullo o vuoto.");
 
         this.name = name.trim().toLowerCase();
     }

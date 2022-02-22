@@ -37,7 +37,7 @@ public class User {
      */
     public void setName(String name) {
         if (!isNameValid(name))
-            throw new IllegalArgumentException("Il nome non può essere vuoto.");
+            throw new IllegalArgumentException("Il nome non può essere nullo o vuoto.");
 
         this.name = name.trim();
     }

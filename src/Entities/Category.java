@@ -65,7 +65,7 @@ public class Category {
         if (obj == this)
             return true;
 
-        if (!(obj instanceof Category))
+        if (obj == null || !(obj instanceof Category))
             return false;
 
         return String.valueOf(getID()).equals(String.valueOf(((Category) obj).getID()));
@@ -99,14 +99,13 @@ public class Category {
      * @param name
      *            nome della categoria
      * @throws IllegalArgumentException
-     *             se il nome non è valido
-     * @see #isNameValid(String)
+     *             se il nome è nullo o vuoto
      */
     public void setName(String name) {
-        if (!isNameValid(name))
+        if (isNameValid(name))
+            this.name = name.trim();
+        else
             throw new IllegalArgumentException("Il nome della categoria non può essere nullo.");
-
-        this.name = name.trim();
     }
 
     /**
@@ -123,8 +122,12 @@ public class Category {
      * 
      * @param parent
      *            il genitore della categoria
+     * @throws IllegalArgumentException
      */
     public void setParent(Category parent) {
+        if (parent != null && parent.isDescendantOf(this))
+            throw new IllegalArgumentException("Non è possibile introdurre una dipendenza ciclica.");
+
         this.parent = parent;
     }
 
@@ -135,6 +138,28 @@ public class Category {
      */
     public Category getParent() {
         return this.parent;
+    }
+
+    /**
+     * Controlla se questa categoria è discendente della categoria indicata.
+     * 
+     * @param category
+     * @return {@code true} se questa categoria è discendente
+     */
+    public boolean isDescendantOf(Category category) {
+        if (category == null)
+            return false;
+
+        Category parent = getParent();
+
+        while (parent != null) {
+            if (parent.equals(category))
+                return true;
+
+            parent = parent.getParent();
+        }
+
+        return false;
     }
 
     private boolean isNameValid(String name) {
