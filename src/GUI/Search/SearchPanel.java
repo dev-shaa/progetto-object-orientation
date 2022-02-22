@@ -3,10 +3,8 @@ package GUI.Search;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
-
 import javax.swing.*;
 import com.toedter.calendar.JDateChooser;
-
 import Entities.Category;
 import Entities.Search;
 import Exceptions.Input.EmptySearchException;

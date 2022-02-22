@@ -20,7 +20,7 @@ public class Thesis extends Publication {
      *             se il titolo non è valido
      * @see #setTitle(String)
      */
-    public Thesis(String title) throws IllegalArgumentException {
+    public Thesis(String title) {
         super(title);
     }
 

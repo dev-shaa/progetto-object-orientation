@@ -12,6 +12,7 @@ import javax.swing.event.ListSelectionListener;
 
 /**
  * Pannello che mostra un elenco di riferimenti.
+ * <p>
  * Per ogni riferimento vengono mostrati il titolo, gli autori, la data di pubblicazione e il numero di citazioni ricevute da altri riferimenti.
  */
 public class ReferenceListPanel extends JScrollPane {

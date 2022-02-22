@@ -19,7 +19,7 @@ public class Book extends Publication {
      *             se il titolo non è valido
      * @see #setTitle(String)
      */
-    public Book(String title) throws IllegalArgumentException {
+    public Book(String title) {
         super(title);
     }
 

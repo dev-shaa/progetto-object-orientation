@@ -281,7 +281,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         try {
             T reference = createNewReference();
             notifyListeners(reference);
-        } catch (InvalidInputException e) {
+        } catch (InvalidInputException | IllegalArgumentException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Parametri inseriti non validi", JOptionPane.ERROR_MESSAGE);
         }
     }

@@ -36,7 +36,7 @@ public abstract class OnlineResource extends BibliographicReference {
      *             se l'url è nullo o vuoto
      */
     public void setURL(String URL) {
-        if (!isURLValid(URL))
+        if (!isStringNullOrEmpty(URL))
             throw new IllegalArgumentException("L'URL di una risorsa online non può essere nullo.");
 
         this.URL = URL;
@@ -50,12 +50,6 @@ public abstract class OnlineResource extends BibliographicReference {
      */
     public String getURL() {
         return this.URL;
-    }
-
-    private boolean isURLValid(String URL) {
-        // si potrebbe chiamare direttamente la funzione sotto, ma metti caso che un giorno decidessimo di cambiare
-        // qual è un url valido
-        return !isStringNullOrEmpty(URL);
     }
 
     @Override

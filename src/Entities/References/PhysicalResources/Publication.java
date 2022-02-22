@@ -21,7 +21,7 @@ public abstract class Publication extends BibliographicReference {
      *             se il titolo non è valido
      * @see #setTitle(String)
      */
-    public Publication(String title) throws IllegalArgumentException {
+    public Publication(String title) {
         super(title);
     }
 
@@ -33,7 +33,7 @@ public abstract class Publication extends BibliographicReference {
      * @throws IllegalArgumentException
      *             se {@code pageCount < 0}
      */
-    public void setPageCount(int pageCount) throws IllegalArgumentException {
+    public void setPageCount(int pageCount) {
         if (pageCount < 0)
             throw new IllegalArgumentException("Il numero di pagine del libro non può essere inferiore a 0");
 

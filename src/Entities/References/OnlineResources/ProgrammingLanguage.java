@@ -4,6 +4,7 @@ package Entities.References.OnlineResources;
  * Linguaggi di programmazione per i riferimenti a codice sorgente.
  */
 public enum ProgrammingLanguage {
+
     C("C/C++"), CSHARP("C#"), JAVA("Java"), PYTHON("Python"), LUA("LUA"), FORTRAN("Fortran"), OTHER("Altro");
 
     private String name;
@@ -31,4 +32,5 @@ public enum ProgrammingLanguage {
             return OTHER;
         }
     }
+
 }

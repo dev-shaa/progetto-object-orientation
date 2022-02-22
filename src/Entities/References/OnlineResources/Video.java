@@ -39,7 +39,7 @@ public class Video extends OnlineResource {
      */
     public void setWidth(int width) {
         if (width < 0)
-            throw new IllegalArgumentException("width can't be less than 1");
+            throw new IllegalArgumentException("width can't be less than 0");
 
         this.width = width;
     }
@@ -88,6 +88,9 @@ public class Video extends OnlineResource {
      *             se {@code frameRate < 0}
      */
     public void setFrameRate(int frameRate) {
+        if (frameRate < 0)
+            throw new IllegalArgumentException("frameRate can't be less than 0");
+
         this.frameRate = frameRate;
     }
 

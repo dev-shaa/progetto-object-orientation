@@ -11,10 +11,12 @@ import Entities.References.BibliographicReference;
 public interface ReferenceCriteria {
 
     /**
-     * TODO: commenta
+     * Restituisce una lista di riferimenti che corrispondono ai criteri di filtri.
      * 
      * @param references
-     * @return
+     *            riferimenti da filtrare
+     * @return una lista di elementi filtrati
      */
-    public List<? extends BibliographicReference> get(Collection<? extends BibliographicReference> references);
+    public List<BibliographicReference> get(Collection<? extends BibliographicReference> references);
+
 }

@@ -24,7 +24,7 @@ public class Image extends OnlineResource {
      * @see #setTitle(String)
      * @see #setURL(String)
      */
-    public Image(String title, String URL) throws IllegalArgumentException {
+    public Image(String title, String URL) {
         super(title, URL);
 
         setWidth(1);
