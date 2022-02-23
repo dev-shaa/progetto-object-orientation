@@ -28,13 +28,11 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
     private ReferenceListPanel referencesPanel;
     private JButton confirmButton;
 
-    private Collection<? extends BibliographicReference> references;
-    private Collection<? extends BibliographicReference> referencesToExclude;
-
+    private Collection<? extends BibliographicReference> selectableReferences;
     private ArrayList<ReferencePickerListener> pickerListeners;
 
     /**
-     * TODO: commenta
+     * Crea una nuova finestra di dialogo vuota.
      */
     public ReferencePicker() {
         this(null, null);
@@ -45,10 +43,10 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
      * 
      * @param categoriesTree
      *            albero delle categorie che è possibile selezionare
-     * @param references
+     * @param selectableReferences
      *            tutti i riferimenti che è possibile selezionare
      */
-    public ReferencePicker(CustomTreeModel<Category> categoriesTree, Collection<? extends BibliographicReference> references) {
+    public ReferencePicker(CustomTreeModel<Category> categoriesTree, Collection<? extends BibliographicReference> selectableReferences) {
         super();
 
         setTitle("Seleziona riferimento");
@@ -56,13 +54,6 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
         setSize(500, 500);
         setResizable(false);
 
-        setupLayout();
-
-        setCategoriesTree(categoriesTree);
-        setReferences(references);
-    }
-
-    private void setupLayout() {
         JPanel contentPane = new JPanel(new BorderLayout(10, 10));
         setContentPane(contentPane);
 
@@ -92,24 +83,14 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
 
         buttonPanel.add(confirmButton);
         contentPane.add(buttonPanel, BorderLayout.SOUTH);
+
+        setCategoriesTree(categoriesTree);
+        setAvailableReferences(selectableReferences);
     }
 
     @Override
     public void setVisible(boolean b) {
-        setVisible(b, null);
-    }
-
-    /**
-     * Chiama la funzione {@link #setVisible(boolean)} e imposta i riferimenti da escludere quando viene selezionata una categoria.
-     * 
-     * @param b
-     *            se {@code true}, viene mostrato il pannello
-     * @param referencesToExclude
-     *            riferimenti da escludere
-     */
-    public void setVisible(boolean b, Collection<? extends BibliographicReference> referencesToExclude) {
         if (b) {
-            setReferencesToExclude(referencesToExclude);
             categoriesPanel.clearSelection();
             referencesPanel.clear();
             setLocationRelativeTo(null);
@@ -131,11 +112,11 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
     /**
      * Imposta i riferimenti che è possibile selezionare.
      * 
-     * @param references
+     * @param selectableReferences
      *            riferimenti selezionabili
      */
-    public void setReferences(Collection<? extends BibliographicReference> references) {
-        this.references = references;
+    public void setAvailableReferences(Collection<? extends BibliographicReference> selectableReferences) {
+        this.selectableReferences = selectableReferences;
     }
 
     @Override
@@ -146,10 +127,7 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
     @Override
     public void onCategorySelection(Category category) {
         ReferenceCriteriaCategory categoryFilter = new ReferenceCriteriaCategory(category);
-        List<? extends BibliographicReference> referencesToShow = categoryFilter.get(references);
-
-        if (referencesToShow != null && referencesToExclude != null)
-            referencesToShow.removeAll(referencesToExclude);
+        List<? extends BibliographicReference> referencesToShow = categoryFilter.filter(selectableReferences);
 
         referencesPanel.setReferences(referencesToShow);
     }
@@ -189,10 +167,6 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
     public void removeReferencePickerListener(ReferencePickerListener listener) {
         if (listener != null && pickerListeners != null)
             pickerListeners.remove(listener);
-    }
-
-    private void setReferencesToExclude(Collection<? extends BibliographicReference> referencesToExclude) {
-        this.referencesToExclude = referencesToExclude;
     }
 
     private void notifyListeners() {

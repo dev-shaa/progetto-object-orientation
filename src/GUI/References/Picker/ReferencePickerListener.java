@@ -11,8 +11,9 @@ public interface ReferencePickerListener extends EventListener {
     /**
      * Invocato quando viene confermato il riferimento selezionato dalla finestra di dialogo.
      * 
-     * @param reference
+     * @param selectedReference
      *            riferimento selezionato
      */
-    public void onReferencePick(BibliographicReference reference);
+    public void onReferencePick(BibliographicReference selectedReference);
+
 }
