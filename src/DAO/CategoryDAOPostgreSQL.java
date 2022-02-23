@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import Controller.DatabaseController;
+import Controller.ConnectionController;
 import Entities.References.BibliographicReference;
 import Entities.*;
 import Exceptions.Database.CategoryDatabaseException;
@@ -58,7 +58,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
         String command = "insert into category(name, parent, owner) values(?," + parentID + ",?)";
 
         try {
-            connection = DatabaseController.getConnection();
+            connection = ConnectionController.getConnection();
 
             // il database genera, per ogni nuova categoria, un ID unico
             // se non siamo in grado di recuperarlo e assegnarlo alla categoria, annulliamo tutta l'operazione
@@ -118,7 +118,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
         String command = "update category set name = ? where id = ?";
 
         try {
-            connection = DatabaseController.getConnection();
+            connection = ConnectionController.getConnection();
             statement = connection.prepareStatement(command);
 
             statement.setString(1, category.getName());
@@ -159,7 +159,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
         String command = "delete from category where id = " + category.getID();
 
         try {
-            connection = DatabaseController.getConnection();
+            connection = ConnectionController.getConnection();
             statement = connection.createStatement();
 
             statement.executeUpdate(command);
@@ -186,7 +186,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
         String query = "select * from category where owner = ?";
 
         try {
-            connection = DatabaseController.getConnection();
+            connection = ConnectionController.getConnection();
             statement = connection.prepareStatement(query);
             statement.setString(1, user.getName());
             resultSet = statement.executeQuery();
@@ -251,7 +251,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
         String query = "select category from category_reference_association where reference = " + reference.getID();
 
         try {
-            connection = DatabaseController.getConnection();
+            connection = ConnectionController.getConnection();
             statement = connection.createStatement();
             resultSet = statement.executeQuery(query);
 

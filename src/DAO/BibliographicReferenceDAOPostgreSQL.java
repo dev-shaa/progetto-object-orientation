@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import Controller.DatabaseController;
+import Controller.ConnectionController;
 import Entities.*;
 import Entities.References.*;
 import Entities.References.OnlineResources.*;
@@ -50,7 +50,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         HashMap<BibliographicReference, Collection<Integer>> referenceToRelatedID = new HashMap<>();
 
         try {
-            connection = DatabaseController.getConnection();
+            connection = ConnectionController.getConnection();
             statement = connection.createStatement();
 
             references.addAll(getArticles(statement, resultSet));
@@ -120,7 +120,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         String command = "delete from bibliographic_reference where id = " + reference.getID();
 
         try {
-            connection = DatabaseController.getConnection();
+            connection = ConnectionController.getConnection();
             statement = connection.createStatement();
             statement.executeUpdate(command);
         } catch (Exception e) {
@@ -351,7 +351,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
             referenceInsertCommand = "update bibliographic_reference set owner = ?, title = ?, doi = ?, description = ?, language = " + language + ", pubblication_date = ? where id = " + reference.getID();
 
         try {
-            connection = DatabaseController.getConnection();
+            connection = ConnectionController.getConnection();
 
             // vogliamo che sia una transazione per evitare che il programma non sia coordinato con il database
             connection.setAutoCommit(false);

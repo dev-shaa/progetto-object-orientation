@@ -3,7 +3,7 @@ package DAO;
 import java.sql.*;
 import java.util.*;
 
-import Controller.DatabaseController;
+import Controller.ConnectionController;
 import Entities.Author;
 import Entities.References.BibliographicReference;
 import Exceptions.Database.AuthorDatabaseException;
@@ -41,7 +41,7 @@ public class AuthorDAOPostgreSQL implements AuthorDAO {
         String retrieveIDCommand = "select id from author where name = ? and orcid is not distinct from ?";
 
         try {
-            connection = DatabaseController.getConnection();
+            connection = ConnectionController.getConnection();
             connection.setAutoCommit(false);
 
             insertStatement = connection.prepareStatement(insertCommand);
@@ -105,7 +105,7 @@ public class AuthorDAOPostgreSQL implements AuthorDAO {
         String query = "select * from author_reference_association join author on author = id where reference = " + reference.getID();
 
         try {
-            connection = DatabaseController.getConnection();
+            connection = ConnectionController.getConnection();
             statement = connection.createStatement();
             resultSet = statement.executeQuery(query);
 

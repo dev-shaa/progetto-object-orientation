@@ -4,7 +4,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import Controller.DatabaseController;
+import Controller.ConnectionController;
 import Entities.Tag;
 import Entities.References.BibliographicReference;
 import Exceptions.Database.DatabaseConnectionException;
@@ -43,7 +43,7 @@ public class TagDAOPostgreSQL implements TagDAO {
         String tagInsertCommand = "insert into tag values(?, ?)";
 
         try {
-            connection = DatabaseController.getConnection();
+            connection = ConnectionController.getConnection();
             connection.setAutoCommit(false);
 
             tagRemoveStatement = connection.prepareStatement(tagRemoveCommand);
@@ -106,7 +106,7 @@ public class TagDAOPostgreSQL implements TagDAO {
         String command = "select name from tag where reference = " + reference.getID();
 
         try {
-            connection = DatabaseController.getConnection();
+            connection = ConnectionController.getConnection();
             statement = connection.createStatement();
             resultSet = statement.executeQuery(command);
 

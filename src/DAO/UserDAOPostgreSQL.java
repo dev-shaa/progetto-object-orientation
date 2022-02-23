@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import Controller.DatabaseController;
+import Controller.ConnectionController;
 import Entities.User;
 import Exceptions.Database.DatabaseConnectionException;
 import Exceptions.Database.UserDatabaseException;
@@ -33,7 +33,7 @@ public class UserDAOPostgreSQL implements UserDAO {
 		String command = "insert into user_app(name, password) values(?, ?)";
 
 		try {
-			connection = DatabaseController.getConnection();
+			connection = ConnectionController.getConnection();
 			statement = connection.prepareStatement(command);
 
 			statement.setString(1, user.getName());
@@ -72,7 +72,7 @@ public class UserDAOPostgreSQL implements UserDAO {
 		String query = "select * from user_app where name = ? and password = ?";
 
 		try {
-			connection = DatabaseController.getConnection();
+			connection = ConnectionController.getConnection();
 			statement = connection.prepareStatement(query);
 
 			statement.setString(1, user.getName());

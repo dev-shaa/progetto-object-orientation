@@ -6,9 +6,9 @@ import java.sql.DriverManager;
 import Exceptions.Database.DatabaseConnectionException;
 
 /**
- * TODO: commenta
+ * Controller per stabilire una connessione col database.
  */
-public class DatabaseController {
+public class ConnectionController {
 
 	private static final String connectionURL = "jdbc:postgresql://localhost:5432/progetto";
 	private static final String connectionUser = "postgres";
