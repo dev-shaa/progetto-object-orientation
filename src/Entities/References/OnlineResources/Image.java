@@ -1,9 +1,5 @@
 package Entities.References.OnlineResources;
 
-import java.util.List;
-
-import Entities.References.BibliographicReferenceField;
-
 /**
  * Classe che rappresenta un riferimento bibliografico a un'immagine.
  */
@@ -80,15 +76,4 @@ public class Image extends OnlineResource {
     public int getHeight() {
         return this.height;
     }
-
-    @Override
-    public List<BibliographicReferenceField> getReferenceFields() {
-        List<BibliographicReferenceField> fields = super.getReferenceFields();
-
-        fields.add(new BibliographicReferenceField("Larghezza", getWidth()));
-        fields.add(new BibliographicReferenceField("Altezza", getHeight()));
-
-        return fields;
-    }
-
 }

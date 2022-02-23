@@ -11,7 +11,7 @@ public class Author {
     private String name;
     private String ORCID;
 
-    private static final Pattern orcidPattern = Pattern.compile("^ *[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9x] *$", Pattern.CASE_INSENSITIVE);
+    private final Pattern orcidPattern = Pattern.compile("^ *[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9x] *$");
 
     /**
      * Crea un nuovo autore con il nome e l'ORCID dati.
@@ -44,7 +44,7 @@ public class Author {
      * @see #setORCID(String)
      */
     public Author(String name, String ORCID, Integer id) {
-        setId(id);
+        setID(id);
         setName(name);
         setORCID(ORCID);
     }
@@ -64,7 +64,7 @@ public class Author {
         if (obj == this)
             return true;
 
-        if (!(obj instanceof Author))
+        if (obj == null || !(obj instanceof Author))
             return false;
 
         Author author = (Author) obj;
@@ -80,7 +80,7 @@ public class Author {
      * @param id
      *            identificativo dell'autore
      */
-    public void setId(Integer id) {
+    public void setID(Integer id) {
         this.id = id;
     }
 
@@ -89,7 +89,7 @@ public class Author {
      * 
      * @return identificativo dell'autore
      */
-    public Integer getId() {
+    public Integer getID() {
         return id;
     }
 

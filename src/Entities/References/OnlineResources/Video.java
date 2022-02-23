@@ -1,8 +1,5 @@
 package Entities.References.OnlineResources;
 
-import Entities.References.*;
-import java.util.List;
-
 /**
  * Classe che rappresenta un riferimento bibliografico a un video.
  */
@@ -127,18 +124,6 @@ public class Video extends OnlineResource {
      */
     public int getDuration() {
         return this.duration;
-    }
-
-    @Override
-    public List<BibliographicReferenceField> getReferenceFields() {
-        List<BibliographicReferenceField> fields = super.getReferenceFields();
-
-        fields.add(new BibliographicReferenceField("Larghezza", getWidth()));
-        fields.add(new BibliographicReferenceField("Altezza", getHeight()));
-        fields.add(new BibliographicReferenceField("Frequenza fotogrammi", getFrameRate()));
-        fields.add(new BibliographicReferenceField("Durata", getDuration()));
-
-        return fields;
     }
 
 }

@@ -1,8 +1,5 @@
 package Entities.References.PhysicalResources;
 
-import Entities.References.*;
-import java.util.List;
-
 /**
  * Classe che rappresenta un riferimento bibliografico a una tesi.
  */
@@ -68,16 +65,6 @@ public class Thesis extends Publication {
      */
     public String getFaculty() {
         return this.faculty;
-    }
-
-    @Override
-    public List<BibliographicReferenceField> getReferenceFields() {
-        List<BibliographicReferenceField> fields = super.getReferenceFields();
-
-        fields.add(new BibliographicReferenceField("Università", getUniversity()));
-        fields.add(new BibliographicReferenceField("Facoltà", getFaculty()));
-
-        return fields;
     }
 
 }

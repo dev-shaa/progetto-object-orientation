@@ -298,27 +298,6 @@ public abstract class BibliographicReference {
     }
 
     /**
-     * Restituisce una lista contenente tutte le informazioni di questo riferimento.
-     * 
-     * @return
-     *         lista con le informazioni del riferimento
-     */
-    public List<BibliographicReferenceField> getReferenceFields() {
-        ArrayList<BibliographicReferenceField> fields = new ArrayList<>();
-
-        fields.add(new BibliographicReferenceField("Titolo", getTitle()));
-        fields.add(new BibliographicReferenceField("Autori", getAuthorsAsString()));
-        fields.add(new BibliographicReferenceField("DOI", getDOI()));
-        fields.add(new BibliographicReferenceField("Descrizione", getDescription()));
-        fields.add(new BibliographicReferenceField("Lingua", getLanguage()));
-        fields.add(new BibliographicReferenceField("Parole chiave", getTagsAsString()));
-        fields.add(new BibliographicReferenceField("Rimandi", getRelatedReferencesAsString()));
-        fields.add(new BibliographicReferenceField("Data di pubblicazione", getFormattedDate()));
-
-        return fields;
-    }
-
-    /**
      * Imposta il numero di citazioni ricevute da altri riferimenti.
      * 
      * @param quotationCount
@@ -388,16 +367,28 @@ public abstract class BibliographicReference {
         return getPubblicationDate() == null ? null : DATE_FORMAT.format(getPubblicationDate());
     }
 
-    // TODO:
+    /**
+     * Restituisce tutte le informazioni di questo riferimento
+     * 
+     * @return stringa con le informazioni
+     */
     public String getInfo() {
-        return "Titolo: " + getTitle()
-                + "\nAutori: " + getAuthorsAsString()
-                + "\nData di pubblicazione: " + getFormattedDate()
-                + "\nDOI: " + getDOI()
-                + "\nLingua: " + getLanguage()
-                + "\nParole chiave: " + getTagsAsString()
-                + "\nRimandi: " + getRelatedReferencesAsString()
-                + "\nDescrizione: " + getDescription();
+        // FIXME:
+
+        String info = "Titolo: %s\nDOI: %s";
+
+        info = String.format(info, getTitle(), getDOI());
+
+        return info;
+
+        // return "Titolo: " + getTitle()
+        // + "\nAutori: " + getAuthorsAsString()
+        // + "\nData di pubblicazione: " + getFormattedDate()
+        // + "\nDOI: " + getDOI()
+        // + "\nLingua: " + getLanguage()
+        // + "\nParole chiave: " + getTagsAsString()
+        // + "\nRimandi: " + getRelatedReferencesAsString()
+        // + "\nDescrizione: " + getDescription();
     }
 
     /**

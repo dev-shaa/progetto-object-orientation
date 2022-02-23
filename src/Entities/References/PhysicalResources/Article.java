@@ -1,7 +1,6 @@
 package Entities.References.PhysicalResources;
 
-import Entities.References.*;
-import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Classe che rappresenta un riferimento bibliografico a un articolo.
@@ -9,6 +8,8 @@ import java.util.List;
 public class Article extends Publication {
 
     private String ISSN;
+
+    private final Pattern issnPattern = Pattern.compile("^ *[0-9]{4}-[0-9]{3}[0-9xX] *$");
 
     /**
      * Crea un nuovo riferimento a un articolo con il titolo indicato.
@@ -19,7 +20,7 @@ public class Article extends Publication {
      *             se il titolo non è valido
      * @see #setTitle(String)
      */
-    public Article(String title) throws IllegalArgumentException {
+    public Article(String title) {
         super(title);
     }
 
@@ -28,12 +29,16 @@ public class Article extends Publication {
      * 
      * @param ISSN
      *            codice identificativo ISSN
+     * @throws IllegalArgumentException
+     *             se l'ISSN non rispetta il formato
      */
     public void setISSN(String ISSN) {
         if (isStringNullOrEmpty(ISSN))
             this.ISSN = null;
+        else if (issnPattern.matcher(ISSN).matches())
+            this.ISSN = ISSN.trim();
         else
-            this.ISSN = ISSN;
+            throw new IllegalArgumentException("Codice ISSN non valido");
     }
 
     /**
@@ -47,11 +52,9 @@ public class Article extends Publication {
     }
 
     @Override
-    public List<BibliographicReferenceField> getReferenceFields() {
-        List<BibliographicReferenceField> fields = super.getReferenceFields();
-
-        fields.add(new BibliographicReferenceField("ISSN", getISSN()));
-
-        return fields;
+    public String getInfo() {
+        // TODO Auto-generated method stub
+        return super.getInfo();
     }
+
 }

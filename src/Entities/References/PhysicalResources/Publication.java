@@ -1,7 +1,6 @@
 package Entities.References.PhysicalResources;
 
 import Entities.References.*;
-import java.util.List;
 
 /**
  * Classe che rappresenta un riferimento bibliografico a una pubblicazione.
@@ -97,14 +96,9 @@ public abstract class Publication extends BibliographicReference {
     }
 
     @Override
-    public List<BibliographicReferenceField> getReferenceFields() {
-        List<BibliographicReferenceField> fields = super.getReferenceFields();
-
-        fields.add(new BibliographicReferenceField("Numero di pagine", getPageCount()));
-        fields.add(new BibliographicReferenceField("URL", getURL()));
-        fields.add(new BibliographicReferenceField("Editore", getPublisher()));
-
-        return fields;
+    public String getInfo() {
+        // TODO Auto-generated method stub
+        return super.getInfo();
     }
 
 }

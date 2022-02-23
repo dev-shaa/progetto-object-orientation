@@ -1,37 +1,28 @@
 package GUI.References;
 
 import Entities.References.*;
-import java.util.List;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.JTextArea;
 
 /**
  * Pannello che mostra le informazioni relative a un riferimento bibliografico.
  */
 public class ReferenceInfoPanel extends JScrollPane {
 
-    private DefaultTableModel details;
+    private JTextArea textArea;
 
     /**
      * Crea un pannello contenente una tabella composta da due colonne,
      * la prima contenente il nome dell'informazione e la seconda l'informazione stessa.
      */
     public ReferenceInfoPanel() {
-        details = new DefaultTableModel(0, 2) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
+        super();
 
-        JTable detailsTable = new JTable(details);
-        detailsTable.setTableHeader(null);
-        detailsTable.setCellSelectionEnabled(true);
-        detailsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        textArea = new JTextArea();
+        textArea.setRows(10);
+        textArea.setEditable(false);
 
-        setViewportView(detailsTable);
+        setViewportView(textArea);
     }
 
     /**
@@ -47,21 +38,14 @@ public class ReferenceInfoPanel extends JScrollPane {
             return;
         }
 
-        List<BibliographicReferenceField> referenceInfo = reference.getReferenceFields();
-
-        details.setRowCount(referenceInfo.size());
-
-        for (int i = 0; i < referenceInfo.size(); i++) {
-            details.setValueAt(referenceInfo.get(i).getName(), i, 0);
-            details.setValueAt(referenceInfo.get(i).getValue(), i, 1);
-        }
+        textArea.setText(reference.getInfo());
     }
 
     /**
      * Rimuove il riferimento mostrato.
      */
     public void clear() {
-        details.setRowCount(0);
+        textArea.setText(null);
     }
 
 }

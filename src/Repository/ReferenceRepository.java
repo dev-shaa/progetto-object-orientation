@@ -1,11 +1,8 @@
 package Repository;
 
 import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import DAO.*;
-import Entities.*;
 import Entities.References.*;
 import Entities.References.OnlineResources.*;
 import Entities.References.PhysicalResources.*;
@@ -40,82 +37,42 @@ public class ReferenceRepository {
      *            controller per recuperare le categorie associate ai riferimenti
      * @throws IllegalArgumentException
      *             se {@code referenceDAO == null}, {@code authorDAO == null}, {@code tagDAO == null} o {@code categoryController == null}
-     * @see #setReferenceDAO(BibliographicReferenceDAO)
-     * @see #setAuthorDAO(AuthorDAO)
-     * @see #setTagDAO(TagDAO)
-     * @see #setCategoryRepository(CategoryRepository)
      */
     public ReferenceRepository(BibliographicReferenceDAO referenceDAO, AuthorDAO authorDAO, TagDAO tagDAO, CategoryRepository categoryRepository) {
         setReferenceDAO(referenceDAO);
         setCategoryRepository(categoryRepository);
         setAuthorDAO(authorDAO);
         setTagDAO(tagDAO);
+
+        forceNextRetrievalFromDatabase();
     }
 
-    /**
-     * Imposta la classe DAO per la gestione dei riferimenti nel database.
-     * <p>
-     * Il recupero successivo alla chiamata di questa funzione avverrà dal database.
-     * 
-     * @param referenceDAO
-     *            DAO dei riferimenti
-     * @throws IllegalArgumentException
-     *             se {@code referenceDAO == null}
-     */
-    public void setReferenceDAO(BibliographicReferenceDAO referenceDAO) {
+    private void setReferenceDAO(BibliographicReferenceDAO referenceDAO) {
         if (referenceDAO == null)
             throw new IllegalArgumentException("referenceDAO can't be null");
 
         this.referenceDAO = referenceDAO;
-        forceNextRetrievalFromDatabase();
     }
 
-    /**
-     * Imposta la classe DAO per recuperare gli autori dei riferimenti.
-     * 
-     * @param authorDAO
-     *            DAO degli autori
-     * @throws IllegalArgumentException
-     *             se {@code authorDAO == null}
-     */
-    public void setAuthorDAO(AuthorDAO authorDAO) {
+    private void setAuthorDAO(AuthorDAO authorDAO) {
         if (authorDAO == null)
             throw new IllegalArgumentException("authorDAO can't be null");
 
         this.authorDAO = authorDAO;
     }
 
-    /**
-     * Imposta la classe DAO per recuperare le parole chiave dei riferimenti.
-     * 
-     * @param tagDAO
-     *            DAO delle parole chiave
-     * @throws IllegalArgumentException
-     *             se {@code tagDAO == null}
-     */
-    public void setTagDAO(TagDAO tagDAO) {
+    private void setTagDAO(TagDAO tagDAO) {
         if (tagDAO == null)
             throw new IllegalArgumentException("tagDAO can't be null");
 
         this.tagDAO = tagDAO;
     }
 
-    /**
-     * Imposta il repository per recuperare le categorie associate ai riferimenti.
-     * <p>
-     * Il recupero successivo alla chiamata di questa funzione avverrà dal database.
-     * 
-     * @param categoryRepository
-     *            repository delle categorie
-     * @throws IllegalArgumentException
-     *             se {@code categoryRepository == null}
-     */
-    public void setCategoryRepository(CategoryRepository categoryRepository) {
+    private void setCategoryRepository(CategoryRepository categoryRepository) {
         if (categoryRepository == null)
             throw new IllegalArgumentException("categoryRepository can't be null");
 
         this.categoryRepository = categoryRepository;
-        forceNextRetrievalFromDatabase();
     }
 
     /**
@@ -127,62 +84,10 @@ public class ReferenceRepository {
      *             se il recupero non va a buon fine
      */
     public List<BibliographicReference> getAll() throws ReferenceDatabaseException {
-        if (needToRetrieveFromDatabase) {
-            try {
-                references = referenceDAO.getAll();
-
-                for (BibliographicReference reference : references) {
-                    reference.setCategories(categoryRepository.get(reference));
-                    reference.setAuthors(authorDAO.get(reference));
-                    reference.setTags(tagDAO.get(reference));
-                }
-
-                needToRetrieveFromDatabase = false;
-            } catch (DatabaseException e) {
-                throw new ReferenceDatabaseException(e.getMessage());
-            }
-        }
+        if (needToRetrieveFromDatabase)
+            retrieveFromDatabase();
 
         return references;
-    }
-
-    /**
-     * Restituisce tutti i riferimenti associati all'utente presenti in una categoria specificata.
-     * <p>
-     * Se {@code category == null}, verranno restituiti i riferimenti che non appartengono a nessuna categoria.
-     * 
-     * @param category
-     *            categoria in cui cercare i riferimenti
-     * @return lista dei riferimenti presenti in una categoria
-     * @throws ReferenceDatabaseException
-     *             se il recupero non va a buon fine
-     */
-    public List<BibliographicReference> get(Category category) throws ReferenceDatabaseException {
-        Predicate<BibliographicReference> categoryFilter = e -> e.isContainedIn(category);
-        return get(categoryFilter);
-    }
-
-    /**
-     * Restituisce tutti i riferimenti associati all'utente che corrispondono ai parametri di ricerca.
-     * 
-     * @param search
-     *            parametri di ricerca
-     * @return lista dei riferimenti corrispondenti alla ricerca
-     * @throws IllegalArgumentException
-     *             se {@code search == null}
-     * @throws ReferenceDatabaseException
-     *             se il recupero non va a buon fine
-     */
-    public List<BibliographicReference> get(Search search) throws ReferenceDatabaseException {
-        if (search == null)
-            throw new IllegalArgumentException("search can't be null");
-
-        Predicate<BibliographicReference> searchFilter = e -> e.wasPublishedBetween(search.getFrom(), search.getTo())
-                && e.wasWrittenBy(search.getAuthors())
-                && e.isTaggedWith(search.getTags())
-                && e.isContainedIn(search.getCategories());
-
-        return get(searchFilter);
     }
 
     /**
@@ -191,7 +96,7 @@ public class ReferenceRepository {
      * @param reference
      *            riferimento da rimuovere
      * @throws IllegalArgumentException
-     *             se {@code reference == null}
+     *             se {@code reference == null} o se non ha un ID
      * @throws ReferenceDatabaseException
      *             se la rimozione non è andata a buon fine
      */
@@ -199,17 +104,12 @@ public class ReferenceRepository {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
-        // rimuovi dal database
         referenceDAO.remove(reference);
-
-        // rimuovi dalla memoria locale
         references.remove(reference);
 
-        // rimovi dalle liste di rimandi degli altri riferimenti
         for (BibliographicReference referenceQuotingThis : references)
             referenceQuotingThis.getRelatedReferences().remove(reference);
 
-        // tutti i rimandi citati hanno un riferimento in meno che li pensa
         removeFromQuotationCount(reference);
     }
 
@@ -388,8 +288,20 @@ public class ReferenceRepository {
         needToRetrieveFromDatabase = true;
     }
 
-    private List<BibliographicReference> get(Predicate<BibliographicReference> filter) throws ReferenceDatabaseException {
-        return getAll().stream().filter(filter).collect(Collectors.toList());
+    private void retrieveFromDatabase() throws ReferenceDatabaseException {
+        try {
+            references = referenceDAO.getAll();
+
+            for (BibliographicReference reference : references) {
+                reference.setCategories(categoryRepository.get(reference));
+                reference.setAuthors(authorDAO.get(reference));
+                reference.setTags(tagDAO.get(reference));
+            }
+
+            needToRetrieveFromDatabase = false;
+        } catch (DatabaseException e) {
+            throw new ReferenceDatabaseException(e.getMessage());
+        }
     }
 
     private void saveToLocal(BibliographicReference reference) {

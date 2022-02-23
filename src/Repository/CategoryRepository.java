@@ -34,25 +34,11 @@ public class CategoryRepository {
      *             se {@code categoryDAO == null}
      */
     public CategoryRepository(CategoryDAO categoryDAO) {
-        setCategoryDAO(categoryDAO);
-
-        idToCategory = new HashMap<>();
-    }
-
-    /**
-     * Imposta la classe DAO per recuperare le categorie dal database.
-     * Il recupero successivo a questa funzione sarà dal database.
-     * 
-     * @param categoryDAO
-     *            classe DAO per il database
-     * @throws IllegalArgumentException
-     *             se {@code categoryDAO == null}
-     */
-    public void setCategoryDAO(CategoryDAO categoryDAO) {
         if (categoryDAO == null)
             throw new IllegalArgumentException("categoryDAO can't be null");
 
         this.categoryDAO = categoryDAO;
+        idToCategory = new HashMap<>();
 
         forceNextRetrievalFromDatabase();
     }

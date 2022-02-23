@@ -1,7 +1,6 @@
 package Entities.References.OnlineResources;
 
 import Entities.References.*;
-import java.util.List;
 
 /**
  * Classe che rappresenta un riferimento bibliografico a una risorsa online.
@@ -36,7 +35,7 @@ public abstract class OnlineResource extends BibliographicReference {
      *             se l'url è nullo o vuoto
      */
     public void setURL(String URL) {
-        if (!isStringNullOrEmpty(URL))
+        if (isStringNullOrEmpty(URL))
             throw new IllegalArgumentException("L'URL di una risorsa online non può essere nullo.");
 
         this.URL = URL;
@@ -53,12 +52,9 @@ public abstract class OnlineResource extends BibliographicReference {
     }
 
     @Override
-    public List<BibliographicReferenceField> getReferenceFields() {
-        List<BibliographicReferenceField> fields = super.getReferenceFields();
-
-        fields.add(new BibliographicReferenceField("URL", getURL()));
-
-        return fields;
+    public String getInfo() {
+        // TODO Auto-generated method stub
+        return super.getInfo();
     }
 
 }
