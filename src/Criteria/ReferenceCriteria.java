@@ -6,7 +6,8 @@ import java.util.List;
 import Entities.References.BibliographicReference;
 
 /**
- * TODO: commenta
+ * Interfaccia per implementare il Criteria Pattern sui riferimenti.
+ * https://www.tutorialspoint.com/design_pattern/filter_pattern.htm
  */
 public interface ReferenceCriteria {
 
@@ -17,6 +18,6 @@ public interface ReferenceCriteria {
      *            riferimenti da filtrare
      * @return una lista di elementi filtrati
      */
-    public List<BibliographicReference> get(Collection<? extends BibliographicReference> references);
+    public List<BibliographicReference> filter(Collection<? extends BibliographicReference> references);
 
 }

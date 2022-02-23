@@ -8,14 +8,14 @@ import Entities.Category;
 import Entities.References.BibliographicReference;
 
 /**
- * TODO: commenta
+ * Implementazione di {@code ReferenceCriteria} per filtrare i riferimenti presenti in una categoria.
  */
 public class ReferenceCriteriaCategory implements ReferenceCriteria {
 
     private Category category;
 
     /**
-     * TODO: commenta
+     * Crea un nuovo filtro con la categoria indicata.
      * 
      * @param category
      *            categoria con cui filtrare i riferimenti
@@ -25,7 +25,7 @@ public class ReferenceCriteriaCategory implements ReferenceCriteria {
     }
 
     @Override
-    public ArrayList<BibliographicReference> get(Collection<? extends BibliographicReference> references) {
+    public ArrayList<BibliographicReference> filter(Collection<? extends BibliographicReference> references) {
         if (references == null)
             return null;
 
