@@ -196,6 +196,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
 
             while (resultSet.next()) {
                 Category category = new Category(resultSet.getString("name"), null, resultSet.getInt("id"));
+
                 idToCategory.put(category.getID(), category);
                 nodeToParentID.put(category, resultSet.getInt("parent"));
             }
@@ -209,7 +210,6 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
 
             ArrayList<Category> categories = new ArrayList<>();
             categories.addAll(idToCategory.values());
-
             categories.trimToSize();
 
             return categories;
@@ -257,9 +257,8 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
 
             ArrayList<Integer> ids = new ArrayList<>();
 
-            while (resultSet.next()) {
+            while (resultSet.next())
                 ids.add(resultSet.getInt("category"));
-            }
 
             ids.trimToSize();
 

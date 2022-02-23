@@ -29,13 +29,15 @@ public class TagDAOPostgreSQL implements TagDAO {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
-        if (reference.getTags() == null || reference.getTags().isEmpty())
+        if (reference.getTags().isEmpty())
             return;
 
         Connection connection = null;
         PreparedStatement tagRemoveStatement = null;
         PreparedStatement tagInsertStatement = null;
         ResultSet resultSet = null;
+
+        // per aggiornare i tag associati a un riferimento è più semplice rimuoverli tutti e poi aggiungere i nuovi
 
         String tagRemoveCommand = "delete from tag where reference = ?";
         String tagInsertCommand = "insert into tag values(?, ?)";
@@ -114,6 +116,7 @@ public class TagDAOPostgreSQL implements TagDAO {
                 tags.add(new Tag(resultSet.getString("name")));
 
             tags.trimToSize();
+
             return tags;
         } catch (SQLException | DatabaseConnectionException e) {
             throw new TagDatabaseException("Impossibile recuperare le parole chiave del riferimento.");

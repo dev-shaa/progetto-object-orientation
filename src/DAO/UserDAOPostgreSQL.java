@@ -1,9 +1,9 @@
 package DAO;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import Controller.DatabaseController;
 import Entities.User;
@@ -29,15 +29,18 @@ public class UserDAOPostgreSQL implements UserDAO {
 			throw new IllegalArgumentException("user can't be null");
 
 		Connection connection = null;
-		Statement statement = null;
-		String command = "insert into user_app(name, password) values('" + user.getName() + "','" + user.getPassword() + "')";
+		PreparedStatement statement = null;
+		String command = "insert into user_app(name, password) values(?, ?)";
 
 		try {
 			connection = DatabaseController.getConnection();
-			statement = connection.createStatement();
-			statement.executeUpdate(command);
+			statement = connection.prepareStatement(command);
+
+			statement.setString(1, user.getName());
+			statement.setString(2, user.getPassword());
+
+			statement.executeUpdate();
 		} catch (SQLException | DatabaseConnectionException e) {
-			e.printStackTrace();
 			throw new UserDatabaseException("Impossibile registrare l'utente.");
 		} finally {
 			try {
@@ -64,16 +67,22 @@ public class UserDAOPostgreSQL implements UserDAO {
 			throw new IllegalArgumentException("user can't be null");
 
 		Connection connection = null;
-		Statement statement = null;
+		PreparedStatement statement = null;
 		ResultSet resultSet = null;
-		String query = "select * from user_app where name = '" + user.getName() + "' and password = '" + user.getPassword() + "'";
+		String query = "select * from user_app where name = ? and password = ?";
 
 		try {
 			connection = DatabaseController.getConnection();
-			statement = connection.createStatement();
-			resultSet = statement.executeQuery(query);
+			statement = connection.prepareStatement(query);
 
-			return resultSet.next(); // next() restituisce true se c'è il prossimo elemento
+			statement.setString(1, user.getName());
+			statement.setString(2, user.getPassword());
+
+			resultSet = statement.executeQuery();
+
+			boolean doesUserExist = resultSet.next();
+
+			return doesUserExist;
 		} catch (SQLException | DatabaseConnectionException e) {
 			e.printStackTrace();
 

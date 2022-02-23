@@ -36,10 +36,14 @@ public class AuthorDAOPostgreSQL implements AuthorDAO {
         // non specificandolo non è possibile usare "returning"
         // essendo la combinazione di nome e orcid univoca, almeno possiamo eseguire una query per recuperare l'id dell'autore
         String insertCommand = "insert into author(name, orcid) values (?, ?) on conflict do nothing";
+
+        // nota: per orcid usiamo "is not distinct" perchè potrebbe avere anche valore null
         String retrieveIDCommand = "select id from author where name = ? and orcid is not distinct from ?";
 
         try {
             connection = DatabaseController.getConnection();
+            connection.setAutoCommit(false);
+
             insertStatement = connection.prepareStatement(insertCommand);
             retrieveIDStatement = connection.prepareStatement(retrieveIDCommand);
 
@@ -53,8 +57,10 @@ public class AuthorDAOPostgreSQL implements AuthorDAO {
                 idResultSet = retrieveIDStatement.executeQuery();
 
                 if (idResultSet.next())
-                    author.setId(idResultSet.getInt("id"));
+                    author.setID(idResultSet.getInt("id"));
             }
+
+            connection.commit();
         } catch (SQLException | DatabaseConnectionException e) {
             try {
                 connection.rollback();
@@ -105,9 +111,8 @@ public class AuthorDAOPostgreSQL implements AuthorDAO {
 
             ArrayList<Author> authors = new ArrayList<>();
 
-            while (resultSet.next()) {
+            while (resultSet.next())
                 authors.add(new Author(resultSet.getString("name"), resultSet.getString("orcid")));
-            }
 
             authors.trimToSize();
             return authors;

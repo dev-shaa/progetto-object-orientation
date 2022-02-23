@@ -63,7 +63,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
 
             for (BibliographicReference reference : references) {
                 idToReference.put(reference.getID(), reference);
-                referenceToRelatedID.put(reference, getRelatedReferencesID(statement, resultSet, reference));
+                referenceToRelatedID.put(reference, getRelatedReferencesIDs(statement, resultSet, reference));
             }
 
             // ASSEGNAZIONE RIMANDI
@@ -80,6 +80,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
                 reference.setRelatedReferences(relatedReferences);
             }
 
+            references.trimToSize();
             return references;
         } catch (SQLException | DatabaseConnectionException e) {
             throw new ReferenceDatabaseException("Impossibile recuperare i riferimenti dell'utente.");
@@ -418,7 +419,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
             authorsInsertStatement = connection.prepareStatement(authorsInsertCommand);
             authorsInsertStatement.setInt(1, id);
             for (Author author : reference.getAuthors()) {
-                authorsInsertStatement.setInt(2, author.getId());
+                authorsInsertStatement.setInt(2, author.getID());
                 authorsInsertStatement.executeUpdate();
             }
 
@@ -654,20 +655,23 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         return sourceCodes;
     }
 
-    private List<Integer> getRelatedReferencesID(Statement statement, ResultSet resultSet, BibliographicReference reference) throws SQLException {
+    private List<Integer> getRelatedReferencesIDs(Statement statement, ResultSet resultSet, BibliographicReference reference) throws SQLException {
         if (statement == null || reference == null || reference.getID() == null)
             throw new IllegalArgumentException();
 
-        String relatedReferencesQuery = "select * from related_references where quoted_by = " + reference.getID();
-        ArrayList<Integer> relatedReferencesID = new ArrayList<>();
+        String relatedReferencesQuery = "select quotes from related_references where quoted_by = " + reference.getID();
+        ArrayList<Integer> relatedReferencesIDs = new ArrayList<>();
 
         resultSet = statement.executeQuery(relatedReferencesQuery);
-        while (resultSet.next())
-            relatedReferencesID.add(resultSet.getInt("quotes"));
 
-        relatedReferencesID.trimToSize();
-        return relatedReferencesID;
+        while (resultSet.next())
+            relatedReferencesIDs.add(resultSet.getInt("quotes"));
+
+        relatedReferencesIDs.trimToSize();
+        return relatedReferencesIDs;
     }
+
+    // #region UTILITIES
 
     private String getFormattedStringForQuery(String input) {
         return (input == null || input.isEmpty() || input.isBlank()) ? null : "'" + input + "'";
@@ -680,5 +684,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
     private String getFormattedLanguageForQuery(ReferenceLanguage language) {
         return getFormattedStringForQuery(language == ReferenceLanguage.NOTSPECIFIED ? null : language.name());
     }
+
+    // #endregion
 
 }
