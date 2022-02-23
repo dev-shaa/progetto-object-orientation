@@ -53,8 +53,8 @@ public class Article extends Publication {
 
     @Override
     public String getInfo() {
-        // TODO Auto-generated method stub
-        return super.getInfo();
+        return super.getInfo()
+                + "\nISSN: " + (getISSN() == null ? "" : getISSN());
     }
 
 }

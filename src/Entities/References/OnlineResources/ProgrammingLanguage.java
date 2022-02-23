@@ -5,7 +5,7 @@ package Entities.References.OnlineResources;
  */
 public enum ProgrammingLanguage {
 
-    C("C/C++"), CSHARP("C#"), JAVA("Java"), PYTHON("Python"), LUA("LUA"), FORTRAN("Fortran"), OTHER("Altro");
+    C("C/C++"), CSHARP("C#"), JAVA("Java"), PYTHON("Python"), LUA("LUA"), FORTRAN("Fortran"), OTHER("Altro"), NOTSPECIFIED("Non specificato");
 
     private String name;
 
@@ -23,13 +23,13 @@ public enum ProgrammingLanguage {
      * 
      * @param value
      *            nome dell'enum
-     * @return l'enum corrispondente al nome di input, {@code OTHER} se la stringa di input non corrisponde a nessun enum valido.
+     * @return l'enum corrispondente al nome di input, {@code NOTSPECIFIED} se la stringa di input non corrisponde a nessun enum valido.
      */
     public static ProgrammingLanguage getFromString(String value) {
         try {
             return valueOf(value);
         } catch (IllegalArgumentException | NullPointerException e) {
-            return OTHER;
+            return NOTSPECIFIED;
         }
     }
 

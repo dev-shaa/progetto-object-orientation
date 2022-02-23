@@ -16,6 +16,7 @@ public class Category {
      *            nome della categoria
      * @throws IllegalArgumentException
      *             se il nome non è valido
+     * @see #setName(String)
      */
     public Category(String name) {
         this(name, null);
@@ -30,6 +31,7 @@ public class Category {
      *            categoria genitore
      * @throws IllegalArgumentException
      *             se il nome non è valido
+     * @see #setName(String)
      */
     public Category(String name, Category parent) {
         this(name, parent, null);
@@ -46,6 +48,7 @@ public class Category {
      *            identificativo della categoria
      * @throws IllegalArgumentException
      *             se il nome non è valido
+     * @see #setName(String)
      */
     public Category(String name, Category parent, Integer id) {
         setName(name);
@@ -68,13 +71,12 @@ public class Category {
         if (obj == null || !(obj instanceof Category))
             return false;
 
+        // FIXME: e se due categorie non hanno un id?
         return String.valueOf(getID()).equals(String.valueOf(((Category) obj).getID()));
     }
 
     /**
      * Imposta l'identificativo della categoria.
-     * ATTENZIONE: dovrebbe essere chiamata solo durante la creazione di una nuova
-     * categoria, quindi la funzione è stata resa privata.
      * 
      * @param id
      *            identificativo della categoria
@@ -118,11 +120,12 @@ public class Category {
     }
 
     /**
-     * Imposta il genitore di questa categoria
+     * Imposta il genitore della categoria.
      * 
      * @param parent
      *            il genitore della categoria
      * @throws IllegalArgumentException
+     *             se viene a crearsi una dipendenza ciclica
      */
     public void setParent(Category parent) {
         if (parent != null && parent.isDescendantOf(this))
@@ -144,7 +147,7 @@ public class Category {
      * Controlla se questa categoria è discendente della categoria indicata.
      * 
      * @param category
-     * @return {@code true} se questa categoria è discendente
+     * @return {@code true} se questa categoria è discendente di {@code category}
      */
     public boolean isDescendantOf(Category category) {
         if (category == null)

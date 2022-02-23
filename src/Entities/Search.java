@@ -9,6 +9,7 @@ import Exceptions.Input.EmptySearchException;
  * Classe contenente i parametri di una ricerca.
  */
 public class Search {
+
     private Date from;
     private Date to;
     private Collection<? extends Tag> tags;

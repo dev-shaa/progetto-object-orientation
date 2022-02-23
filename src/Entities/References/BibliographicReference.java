@@ -60,14 +60,11 @@ public abstract class BibliographicReference {
 
         BibliographicReference reference = (BibliographicReference) obj;
 
-        return (getID() == null && reference == null) || (getID() != null && getID().equals(reference.getID()));
+        return (getID() == null && reference.getID() == null) || (getID() != null && getID().equals(reference.getID()));
     }
 
     /**
      * Imposta l'id del riferimento.
-     * <p>
-     * ATTENZIONE: dovrebbe essere usato solo quando viene salvato nel database.
-     * </p>
      * 
      * @param id
      *            id del riferimento
@@ -92,11 +89,10 @@ public abstract class BibliographicReference {
      * @param title
      *            titolo del riferimento
      * @throws IllegalArgumentException
-     *             se il titolo non è una stringa valida
-     * @see #isStringNullOrEmpty(String)
+     *             se il titolo è nullo o vuoto
      */
     public void setTitle(String title) {
-        if (!isTitleValid(title))
+        if (isStringNullOrEmpty(title))
             throw new IllegalArgumentException("Il titolo di un riferimento non può essere nullo o vuoto.");
 
         this.title = title.trim();
@@ -116,7 +112,7 @@ public abstract class BibliographicReference {
      * Imposta la data di pubblicazione del riferimento.
      * 
      * @param pubblicationDate
-     *            data di pubblicazione del riferimento ({@code null} se non è indicato)
+     *            data di pubblicazione del riferimento
      */
     public void setPubblicationDate(Date pubblicationDate) {
         this.pubblicationDate = pubblicationDate;
@@ -126,8 +122,7 @@ public abstract class BibliographicReference {
      * Restituisce la data di pubblicazione del riferimento.
      * 
      * @return
-     *         data di pubblicazione del riferimento ({@code null} se non è
-     *         indicata)
+     *         data di pubblicazione del riferimento ({@code null} se non è indicata)
      */
     public Date getPubblicationDate() {
         return pubblicationDate;
@@ -142,7 +137,7 @@ public abstract class BibliographicReference {
     public void setDOI(String DOI) {
         if (isStringNullOrEmpty(DOI))
             this.DOI = null;
-        else if (isDOIValid(DOI))
+        else if (doiPattern.matcher(DOI).matches())
             this.DOI = DOI.trim();
         else
             throw new IllegalArgumentException("Il DOI non è valido");
@@ -183,17 +178,17 @@ public abstract class BibliographicReference {
 
     /**
      * Imposta la lingua del riferimento.
+     * <p>
+     * Se {@code null}, viene impostata su {@code NOTSPECIFIED}
      * 
      * @param language
      *            lingua del riferimento
-     * @throws IllegalArgumentException
-     *             se {@code language == null}
      */
     public void setLanguage(ReferenceLanguage language) {
         if (language == null)
-            throw new IllegalArgumentException("La lingua del riferimento non può essere nulla.");
-
-        this.language = language;
+            this.language = ReferenceLanguage.NOTSPECIFIED;
+        else
+            this.language = language;
     }
 
     /**
@@ -373,22 +368,16 @@ public abstract class BibliographicReference {
      * @return stringa con le informazioni
      */
     public String getInfo() {
-        // FIXME:
+        // FIXME: implementa info
 
-        String info = "Titolo: %s\nDOI: %s";
-
-        info = String.format(info, getTitle(), getDOI());
-
-        return info;
-
-        // return "Titolo: " + getTitle()
-        // + "\nAutori: " + getAuthorsAsString()
-        // + "\nData di pubblicazione: " + getFormattedDate()
-        // + "\nDOI: " + getDOI()
-        // + "\nLingua: " + getLanguage()
-        // + "\nParole chiave: " + getTagsAsString()
-        // + "\nRimandi: " + getRelatedReferencesAsString()
-        // + "\nDescrizione: " + getDescription();
+        return "Titolo: " + getTitle()
+                + "\nAutori: " + getAuthorsAsString()
+                + "\nData di pubblicazione: " + getFormattedDate()
+                + "\nDOI: " + (getDOI() == null ? "" : getDOI())
+                + "\nLingua: " + getLanguage()
+                + "\nParole chiave: " + getTagsAsString()
+                + "\nRimandi: " + getRelatedReferencesAsString()
+                + "\nDescrizione: " + getDescription();
     }
 
     /**
@@ -400,19 +389,6 @@ public abstract class BibliographicReference {
      */
     protected boolean isStringNullOrEmpty(String string) {
         return string == null || string.isEmpty() || string.isBlank();
-    }
-
-    private boolean isTitleValid(String title) {
-        // si potrebbe chiamare direttamente la funzione sotto, ma metti caso che un giorno decidessimo di cambiare
-        // qual è il titolo valido
-        return !isStringNullOrEmpty(title);
-    }
-
-    private boolean isDOIValid(String doi) {
-        if (isStringNullOrEmpty(doi))
-            return true;
-
-        return doiPattern.matcher(doi).matches();
     }
 
 }

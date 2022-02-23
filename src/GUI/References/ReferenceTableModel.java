@@ -2,9 +2,7 @@ package GUI.References;
 
 import java.util.ArrayList;
 import java.util.Collection;
-
 import javax.swing.table.AbstractTableModel;
-
 import Entities.References.BibliographicReference;
 
 /**
@@ -38,12 +36,10 @@ public class ReferenceTableModel extends AbstractTableModel {
 
     @Override
     public String getColumnName(int column) {
-        String name = null;
-
         if (column >= 0 && column < columnNames.length)
-            name = columnNames[column];
-
-        return name;
+            return columnNames[column];
+        else
+            return super.getColumnName(column);
     }
 
     @Override
@@ -58,25 +54,20 @@ public class ReferenceTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int row, int column) {
-        Object value = null;
         BibliographicReference reference = getReferenceAt(row);
 
         switch (column) {
             case 0:
-                value = reference.getTitle();
-                break;
+                return reference.getTitle();
             case 1:
-                value = reference.getAuthorsAsString();
-                break;
+                return reference.getAuthorsAsString();
             case 2:
-                value = reference.getFormattedDate();
-                break;
+                return reference.getFormattedDate();
             case 3:
-                value = reference.getQuotationCount();
-                break;
+                return reference.getQuotationCount();
+            default:
+                return null;
         }
-
-        return value;
     }
 
     @Override

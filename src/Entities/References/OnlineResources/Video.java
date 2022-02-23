@@ -22,7 +22,7 @@ public class Video extends OnlineResource {
      * @see #setTitle(String)
      * @see #setURL(String)
      */
-    public Video(String title, String URL) throws IllegalArgumentException {
+    public Video(String title, String URL) {
         super(title, URL);
     }
 
@@ -124,6 +124,15 @@ public class Video extends OnlineResource {
      */
     public int getDuration() {
         return this.duration;
+    }
+
+    @Override
+    public String getInfo() {
+        return super.getInfo()
+                + "\nLarghezza: " + (getWidth() == 0 ? "" : getWidth())
+                + "\nAltezza: " + (getHeight() == 0 ? "" : getHeight())
+                + "\nFrequenza fotogrammi: " + (getFrameRate() == 0 ? "" : getFrameRate())
+                + "\nDurata: " + (getDuration() == 0 ? "" : getDuration());
     }
 
 }

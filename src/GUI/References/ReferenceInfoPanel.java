@@ -33,12 +33,10 @@ public class ReferenceInfoPanel extends JScrollPane {
      *            riferimento da mostrare
      */
     public void showReference(BibliographicReference reference) {
-        if (reference == null) {
+        if (reference == null)
             clear();
-            return;
-        }
-
-        textArea.setText(reference.getInfo());
+        else
+            textArea.setText(reference.getInfo());
     }
 
     /**

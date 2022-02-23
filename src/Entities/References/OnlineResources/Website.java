@@ -17,8 +17,13 @@ public class Website extends OnlineResource {
      * @see #setTitle(String)
      * @see #setURL(String)
      */
-    public Website(String title, String URL) throws IllegalArgumentException {
+    public Website(String title, String URL) {
         super(title, URL);
+    }
+
+    @Override
+    public String getInfo() {
+        return super.getInfo();
     }
 
 }

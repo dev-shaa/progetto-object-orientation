@@ -25,6 +25,11 @@ public class User {
         setPassword(password);
     }
 
+    @Override
+    public String toString() {
+        return getName();
+    }
+
     /**
      * Imposta il nome dell'utente.
      * <p>
@@ -37,7 +42,7 @@ public class User {
      */
     public void setName(String name) {
         if (!isNameValid(name))
-            throw new IllegalArgumentException("Il nome non può essere nullo o vuoto.");
+            throw new IllegalArgumentException("Il nome dell'utente non può essere nullo o vuoto.");
 
         this.name = name.trim();
     }
@@ -57,7 +62,7 @@ public class User {
      * @param password
      *            password dell'utente
      * @throws IllegalArgumentException
-     *             se la password è vuota
+     *             se la password è nulla o vuota
      */
     public void setPassword(String password) {
         if (!isPasswordValid(password))
@@ -73,11 +78,6 @@ public class User {
      */
     public String getPassword() {
         return password;
-    }
-
-    @Override
-    public String toString() {
-        return getName();
     }
 
     private boolean isNameValid(String name) {

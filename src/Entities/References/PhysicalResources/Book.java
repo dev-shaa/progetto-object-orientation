@@ -45,8 +45,8 @@ public class Book extends Publication {
 
     @Override
     public String getInfo() {
-        // TODO Auto-generated method stub
-        return super.getInfo();
+        return super.getInfo()
+                + "\nISBN: " + (getISBN() == null ? "" : getISBN());
     }
 
 }

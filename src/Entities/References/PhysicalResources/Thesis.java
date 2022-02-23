@@ -67,4 +67,10 @@ public class Thesis extends Publication {
         return this.faculty;
     }
 
+    @Override
+    public String getInfo() {
+        // TODO Auto-generated method stub
+        return super.getInfo();
+    }
+
 }

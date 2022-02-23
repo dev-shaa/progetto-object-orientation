@@ -61,17 +61,22 @@ public class Author {
 
     @Override
     public boolean equals(Object obj) {
+        // due autori sono uguali se hanno lo stesso nome e lo stesso orcid
+
         if (obj == this)
             return true;
 
         if (obj == null || !(obj instanceof Author))
             return false;
 
-        Author author = (Author) obj;
+        String thisName = getName();
+        String thisORCID = String.valueOf(getORCID());
 
-        // due autori sono uguali se hanno lo stesso nome e lo stesso orcid
+        Author otherAuthor = (Author) obj;
+        String otherName = otherAuthor.getName();
+        String otherORCID = String.valueOf(otherAuthor.getORCID());
 
-        return getName().equals(author.getName()) && ((getORCID() == null && author.getORCID() == null) || (getORCID() != null && getORCID().equals(author.getORCID())));
+        return thisName.equalsIgnoreCase(otherName) && thisORCID.equals(otherORCID);
     }
 
     /**
@@ -103,7 +108,7 @@ public class Author {
      */
     public void setName(String name) {
         if (isStringNullOrEmpty(name))
-            throw new IllegalArgumentException("Il nome non può essere vuoto");
+            throw new IllegalArgumentException("Il nome non può essere nullo o vuoto.");
 
         this.name = name.trim();
     }
@@ -132,7 +137,7 @@ public class Author {
         else if (orcidPattern.matcher(ORCID).matches())
             this.ORCID = ORCID.trim();
         else
-            throw new IllegalArgumentException("Codice ORCID non valido");
+            throw new IllegalArgumentException("Il codice ORCID non è valido.");
     }
 
     /**

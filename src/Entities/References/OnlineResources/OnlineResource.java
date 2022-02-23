@@ -53,8 +53,8 @@ public abstract class OnlineResource extends BibliographicReference {
 
     @Override
     public String getInfo() {
-        // TODO Auto-generated method stub
-        return super.getInfo();
+        return super.getInfo()
+                + "\nURL: " + getURL();
     }
 
 }

@@ -21,6 +21,8 @@ public class SourceCode extends OnlineResource {
      */
     public SourceCode(String title, String URL) {
         super(title, URL);
+
+        setProgrammingLanguage(ProgrammingLanguage.NOTSPECIFIED);
     }
 
     /**
@@ -46,6 +48,12 @@ public class SourceCode extends OnlineResource {
      */
     public ProgrammingLanguage getProgrammingLanguage() {
         return programmingLanguage;
+    }
+
+    @Override
+    public String getInfo() {
+        return super.getInfo() +
+                "\nLinguaggio di programmazione: " + getProgrammingLanguage();
     }
 
 }

@@ -97,8 +97,10 @@ public abstract class Publication extends BibliographicReference {
 
     @Override
     public String getInfo() {
-        // TODO Auto-generated method stub
-        return super.getInfo();
+        return super.getInfo()
+                + "\nPagine: " + (getPageCount() == 0 ? "" : getPageCount())
+                + "\nURL: " + (getURL() == null ? "" : getURL())
+                + "\nEditore: " + (getPublisher() == null ? "" : getPublisher());
     }
 
 }

@@ -76,4 +76,12 @@ public class Image extends OnlineResource {
     public int getHeight() {
         return this.height;
     }
+
+    @Override
+    public String getInfo() {
+        return super.getInfo()
+                + "\nLarghezza: " + (getWidth() == 0 ? "" : getWidth())
+                + "\nAltezza: " + (getHeight() == 0 ? "" : getHeight());
+    }
+
 }
