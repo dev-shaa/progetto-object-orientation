@@ -9,6 +9,8 @@ public abstract class OnlineResource extends BibliographicReference {
 
     private String URL;
 
+    private final int URL_MAX_LENGTH = 256;
+
     /**
      * Crea un nuovo riferimento a una risorsa online con il titolo e l'url indicati.
      * 
@@ -29,16 +31,16 @@ public abstract class OnlineResource extends BibliographicReference {
     /**
      * Imposta l'URL della risorsa online.
      * 
-     * @param URL
+     * @param url
      *            URL del riferimento
      * @throws IllegalArgumentException
-     *             se l'url è nullo o vuoto
+     *             se l'url è nullo, vuoto o più lungo di {@link #URL_MAX_LENGTH}
      */
-    public void setURL(String URL) {
-        if (isStringNullOrEmpty(URL))
-            throw new IllegalArgumentException("L'URL di una risorsa online non può essere nullo.");
-
-        this.URL = URL;
+    public void setURL(String url) {
+        if (isURLValid(url))
+            this.URL = url;
+        else
+            throw new IllegalArgumentException("L'URL di una risorsa online non può essere vuoto o più lungo di " + URL_MAX_LENGTH + " caratteri.");
     }
 
     /**
@@ -55,6 +57,10 @@ public abstract class OnlineResource extends BibliographicReference {
     public String getInfo() {
         return super.getInfo()
                 + "\nURL: " + getURL();
+    }
+
+    private boolean isURLValid(String url) {
+        return !isStringNullOrEmpty(url) && url.length() <= URL_MAX_LENGTH;
     }
 
 }

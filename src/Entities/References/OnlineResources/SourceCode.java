@@ -27,17 +27,17 @@ public class SourceCode extends OnlineResource {
 
     /**
      * Imposta il linguaggio di programmazione del codice.
+     * <p>
+     * Se {@code programmingLanguage == null}, viene impostato su {@code NOTSPECIFIED}.
      * 
      * @param programmingLanguage
      *            linguaggio di programmazione
-     * @throws IllegalArgumentException
-     *             se {@code programmingLanguage == null}
      */
     public void setProgrammingLanguage(ProgrammingLanguage programmingLanguage) {
         if (programmingLanguage == null)
-            throw new IllegalArgumentException("programmingLanguage can't be null");
-
-        this.programmingLanguage = programmingLanguage;
+            this.programmingLanguage = ProgrammingLanguage.NOTSPECIFIED;
+        else
+            this.programmingLanguage = programmingLanguage;
     }
 
     /**

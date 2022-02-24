@@ -28,7 +28,7 @@ public class ReferenceCriteriaSearch implements ReferenceCriteria {
      */
     public ReferenceCriteriaSearch(Search search) {
         if (search == null)
-            throw new IllegalArgumentException("search can't be null");
+            throw new IllegalArgumentException("search non può essere null.");
 
         this.search = search;
     }

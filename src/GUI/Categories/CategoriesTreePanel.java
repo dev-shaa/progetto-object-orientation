@@ -1,9 +1,8 @@
 package GUI.Categories;
 
-import java.util.ArrayList;
-
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
+import javax.swing.event.EventListenerList;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreeSelectionModel;
@@ -18,7 +17,7 @@ import GUI.Utilities.Tree.CustomTreeNode;
 public class CategoriesTreePanel extends JScrollPane {
 
     private JTree tree;
-    private ArrayList<CategorySelectionListener> selectionListeners;
+    private EventListenerList selectionListeners;
 
     /**
      * Crea un nuovo pannello vuoto.
@@ -37,6 +36,8 @@ public class CategoriesTreePanel extends JScrollPane {
     public CategoriesTreePanel(CustomTreeModel<Category> treeModel) {
         super();
 
+        selectionListeners = new EventListenerList();
+
         tree = new JTree();
         tree.setEditable(false);
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
@@ -44,7 +45,10 @@ public class CategoriesTreePanel extends JScrollPane {
 
             @Override
             public void valueChanged(TreeSelectionEvent e) {
-                notifyListeners();
+                if (getSelectedCategory() == null)
+                    fireCategoryDeselectionEvent();
+                else
+                    fireCategorySelectionEvent();
             }
 
         });
@@ -87,20 +91,12 @@ public class CategoriesTreePanel extends JScrollPane {
 
     /**
      * Aggiunge un listener all'evento di selezione di una categoria.
-     * Se {@code listener == null} o se è già registrato all'evento, non succede niente.
      * 
      * @param listener
      *            listener da aggiungere
      */
     public void addSelectionListener(CategorySelectionListener listener) {
-        if (listener == null)
-            return;
-
-        if (selectionListeners == null)
-            selectionListeners = new ArrayList<>();
-
-        if (!selectionListeners.contains(listener))
-            selectionListeners.add(listener);
+        selectionListeners.add(CategorySelectionListener.class, listener);
     }
 
     /**
@@ -110,8 +106,7 @@ public class CategoriesTreePanel extends JScrollPane {
      *            listener da rimuovere
      */
     public void removeSelectionListener(CategorySelectionListener listener) {
-        if (listener != null && selectionListeners != null)
-            selectionListeners.remove(listener);
+        selectionListeners.remove(CategorySelectionListener.class, listener);
     }
 
     @SuppressWarnings("unchecked")
@@ -119,17 +114,19 @@ public class CategoriesTreePanel extends JScrollPane {
         return (CustomTreeNode<Category>) tree.getLastSelectedPathComponent();
     }
 
-    private void notifyListeners() {
-        if (selectionListeners == null)
-            return;
+    private void fireCategorySelectionEvent() {
+        Category selectedCategory = getSelectedCategory();
+        CategorySelectionListener[] listeners = selectionListeners.getListeners(CategorySelectionListener.class);
 
-        if (getSelectedNode() == null) {
-            for (CategorySelectionListener categorySelectionListener : selectionListeners)
-                categorySelectionListener.onCategoryClearSelection();
-        } else {
-            for (CategorySelectionListener categorySelectionListener : selectionListeners)
-                categorySelectionListener.onCategorySelection(getSelectedCategory());
-        }
+        for (CategorySelectionListener listener : listeners)
+            listener.onCategorySelection(selectedCategory);
+    }
+
+    private void fireCategoryDeselectionEvent() {
+        CategorySelectionListener[] listeners = selectionListeners.getListeners(CategorySelectionListener.class);
+
+        for (CategorySelectionListener listener : listeners)
+            listener.onCategoryDeselection();
     }
 
 }

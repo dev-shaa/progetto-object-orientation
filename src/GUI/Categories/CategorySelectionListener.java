@@ -20,5 +20,5 @@ public interface CategorySelectionListener extends EventListener {
     /**
      * Invocato quando viene deselezionata una categoria.
      */
-    public void onCategoryClearSelection();
+    public void onCategoryDeselection();
 }

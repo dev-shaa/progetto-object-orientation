@@ -9,7 +9,7 @@ public class Article extends Publication {
 
     private String ISSN;
 
-    private final Pattern issnPattern = Pattern.compile("^ *[0-9]{4}-[0-9]{3}[0-9xX] *$");
+    private final Pattern ISSN_PATTERN = Pattern.compile("^ *[0-9]{4}-[0-9]{3}[0-9xX] *$");
 
     /**
      * Crea un nuovo riferimento a un articolo con il titolo indicato.
@@ -35,10 +35,10 @@ public class Article extends Publication {
     public void setISSN(String ISSN) {
         if (isStringNullOrEmpty(ISSN))
             this.ISSN = null;
-        else if (issnPattern.matcher(ISSN).matches())
+        else if (ISSN_PATTERN.matcher(ISSN).matches())
             this.ISSN = ISSN.trim();
         else
-            throw new IllegalArgumentException("Codice ISSN non valido");
+            throw new IllegalArgumentException("Il codice ISSN non valido.");
     }
 
     /**
