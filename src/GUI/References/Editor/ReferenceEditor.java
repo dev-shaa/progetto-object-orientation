@@ -76,11 +76,11 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
             }
         });
 
-        setCategoriesTree(categoriesTree);
-        setReferences(references);
-
         setupBaseFields();
         setDefaultValues();
+
+        setCategoriesTree(categoriesTree);
+        setReferences(references);
     }
 
     @Override
@@ -273,13 +273,18 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     }
 
     private void openReferencePicker() {
-        ArrayList<BibliographicReference> availableReferenceToQuote = new ArrayList<>(allReferences);
 
-        if (getRelatedReferenceValues() != null)
-            availableReferenceToQuote.removeAll(getRelatedReferenceValues());
+        ArrayList<BibliographicReference> availableReferenceToQuote = new ArrayList<>();
 
-        if (referenceToChange != null)
-            availableReferenceToQuote.remove(referenceToChange);
+        if (allReferences != null) {
+            availableReferenceToQuote.addAll(allReferences);
+
+            if (getRelatedReferenceValues() != null)
+                availableReferenceToQuote.removeAll(getRelatedReferenceValues());
+
+            if (referenceToChange != null)
+                availableReferenceToQuote.remove(referenceToChange);
+        }
 
         relatedReferencesPicker.setAvailableReferences(availableReferenceToQuote);
         relatedReferencesPicker.setVisible(true);
