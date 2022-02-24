@@ -69,8 +69,9 @@ public class Thesis extends Publication {
 
     @Override
     public String getInfo() {
-        // TODO Auto-generated method stub
-        return super.getInfo();
+        return super.getInfo()
+                + "\nUniversità: " + (getUniversity() == null ? "" : getUniversity())
+                + "\nFacoltà: " + (getFaculty() == null ? "" : getFaculty());
     }
 
 }

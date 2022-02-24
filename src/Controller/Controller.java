@@ -1,17 +1,24 @@
 package Controller;
 
+import java.util.Collection;
+
 import javax.swing.*;
 import com.formdev.flatlaf.*;
 
 import DAO.*;
 import GUI.*;
 import GUI.References.Editor.*;
+import GUI.Utilities.Tree.CustomTreeModel;
 import Repository.CategoryRepository;
 import Repository.ReferenceRepository;
 import Entities.*;
+import Entities.References.BibliographicReference;
 import Entities.References.OnlineResources.*;
 import Entities.References.OnlineResources.Image;
 import Entities.References.PhysicalResources.*;
+import Exceptions.Database.CategoryDatabaseException;
+import Exceptions.Database.DatabaseException;
+import Exceptions.Database.ReferenceDatabaseException;
 import Exceptions.Database.UserDatabaseException;
 
 /**
@@ -19,7 +26,7 @@ import Exceptions.Database.UserDatabaseException;
  */
 public class Controller {
 
-    private LoginPage loginFrame;
+    private LoginPage loginPage;
     private Homepage homepage;
 
     private ArticleEditor articleEditor;
@@ -40,24 +47,27 @@ public class Controller {
      */
     public Controller() {
         setupLookAndFeel();
+
+        loginPage = new LoginPage(this);
+        homepage = new Homepage(this);
+
         openLoginPage();
     }
 
-    /**
-     * Restituisce il repository dei riferimenti.
-     * 
-     * @return repository dei riferimenti
-     */
-    public ReferenceRepository getReferenceRepository() {
+    private void setupLookAndFeel() {
+        try {
+            UIManager.setLookAndFeel(new FlatLightLaf());
+        } catch (UnsupportedLookAndFeelException e) {
+            // vab, ci faremo bastare il look di default ¯\_(ツ)_/¯
+            e.printStackTrace();
+        }
+    }
+
+    private ReferenceRepository getReferenceRepository() {
         return referenceRepository;
     }
 
-    /**
-     * Restituisce il repository delle categorie.
-     * 
-     * @return repository delle categorie
-     */
-    public CategoryRepository getCategoryRepository() {
+    private CategoryRepository getCategoryRepository() {
         return categoryRepository;
     }
 
@@ -67,13 +77,7 @@ public class Controller {
 
         this.user = user;
 
-        CategoryDAO categoryDAO = new CategoryDAOPostgreSQL(getUser());
-        BibliographicReferenceDAO referenceDAO = new BibliographicReferenceDAOPostgreSQL(getUser());
-        AuthorDAO authorDAO = new AuthorDAOPostgreSQL();
-        TagDAO tagDAO = new TagDAOPostgreSQL();
-
-        categoryRepository = new CategoryRepository(categoryDAO);
-        referenceRepository = new ReferenceRepository(referenceDAO, authorDAO, tagDAO, categoryRepository);
+        setupRepositories();
     }
 
     /**
@@ -85,17 +89,22 @@ public class Controller {
         return user;
     }
 
+    private void setupRepositories() {
+        CategoryDAO categoryDAO = new CategoryDAOPostgreSQL(getUser());
+        BibliographicReferenceDAO referenceDAO = new BibliographicReferenceDAOPostgreSQL(getUser());
+        AuthorDAO authorDAO = new AuthorDAOPostgreSQL();
+        TagDAO tagDAO = new TagDAOPostgreSQL();
+
+        categoryRepository = new CategoryRepository(categoryDAO);
+        referenceRepository = new ReferenceRepository(referenceDAO, authorDAO, tagDAO, categoryRepository);
+    }
+
     /**
      * Apre la pagina di login.
      */
     public void openLoginPage() {
-        if (loginFrame == null)
-            loginFrame = new LoginPage(this);
-
-        loginFrame.setVisible(true);
-
-        if (homepage != null)
-            homepage.setVisible(false);
+        loginPage.setVisible(true);
+        homepage.setVisible(false);
     }
 
     /**
@@ -131,11 +140,21 @@ public class Controller {
     private void openHomePage(User user) {
         setUser(user);
 
-        if (homepage == null)
-            homepage = new Homepage(this);
+        loginPage.setVisible(false);
 
-        loginFrame.setVisible(false);
-        homepage.setVisible(true);
+        try {
+            CustomTreeModel<Category> categoriesTree = getCategoryRepository().getTree();
+            Collection<? extends BibliographicReference> references = getReferenceRepository().getAll();
+
+            homepage.setTreeModel(categoriesTree);
+            homepage.setReferences(references);
+
+            homepage.setNameToDisplay(user.getName());
+            homepage.setVisible(true);
+        } catch (DatabaseException e) {
+            // TODO: handle exception
+        }
+
     }
 
     /**
@@ -145,10 +164,26 @@ public class Controller {
      *            articolo da modificare (se {@code null}, viene aperto la creazione, altrimenti per la modifica)
      */
     public void openArticleEditor(Article article) {
-        if (articleEditor == null)
-            articleEditor = new ArticleEditor(getCategoryRepository(), getReferenceRepository());
+        if (articleEditor == null) {
+            articleEditor = new ArticleEditor(null, null);
 
-        articleEditor.setVisible(true, article);
+            articleEditor.addReferenceCreationListener(new ReferenceEditorListener<Article>() {
+
+                @Override
+                public void onReferenceCreation(Article newReference) {
+                    try {
+                        getReferenceRepository().save(newReference);
+                        articleEditor.setVisible(false);
+                        homepage.reloadReferences();
+                    } catch (IllegalArgumentException | ReferenceDatabaseException e) {
+                        articleEditor.showErrorMessage("Salvataggio non riuscito", e.getMessage());
+                    }
+                }
+
+            });
+        }
+
+        openReferenceEditor(articleEditor, article);
     }
 
     /**
@@ -158,10 +193,24 @@ public class Controller {
      *            libro da modificare (se {@code null}, viene aperto la creazione, altrimenti per la modifica)
      */
     public void openBookEditor(Book book) {
-        if (bookEditor == null)
-            bookEditor = new BookEditor(getCategoryRepository(), getReferenceRepository());
+        if (bookEditor == null) {
+            bookEditor = new BookEditor(null, null);
 
-        bookEditor.setVisible(true, book);
+            bookEditor.addReferenceCreationListener(new ReferenceEditorListener<Book>() {
+
+                @Override
+                public void onReferenceCreation(Book newReference) {
+                    try {
+                        getReferenceRepository().save(newReference);
+                        bookEditor.setVisible(false);
+                    } catch (IllegalArgumentException | ReferenceDatabaseException e) {
+                        bookEditor.showErrorMessage("Salvataggio non riuscito", e.getMessage());
+                    }
+                }
+
+            });
+        }
+
     }
 
     /**
@@ -171,10 +220,25 @@ public class Controller {
      *            tesi da modificare (se {@code null}, viene aperto la creazione, altrimenti per la modifica)
      */
     public void openThesisEditor(Thesis thesis) {
-        if (thesisEditor == null)
-            thesisEditor = new ThesisEditor(getCategoryRepository(), getReferenceRepository());
+        if (thesisEditor == null) {
+            thesisEditor = new ThesisEditor(null, null);
 
-        thesisEditor.setVisible(true, thesis);
+            thesisEditor.addReferenceCreationListener(new ReferenceEditorListener<Thesis>() {
+
+                @Override
+                public void onReferenceCreation(Thesis newReference) {
+                    try {
+                        getReferenceRepository().save(newReference);
+                        articleEditor.setVisible(false);
+                    } catch (IllegalArgumentException | ReferenceDatabaseException e) {
+                        // FIXME:
+                        // articleEditor.showErrorMessage("Salvataggio non riuscito", e.getMessage());
+                    }
+                }
+
+            });
+        }
+
     }
 
     /**
@@ -184,10 +248,10 @@ public class Controller {
      *            codice sorgente da modificare (se {@code null}, viene aperto la creazione, altrimenti per la modifica)
      */
     public void openSourceCodeEditor(SourceCode sourceCode) {
-        if (sourceCodeEditor == null)
-            sourceCodeEditor = new SourceCodeEditor(getCategoryRepository(), getReferenceRepository());
+        // if (sourceCodeEditor == null)
+        // sourceCodeEditor = new SourceCodeEditor(getCategoryRepository(), getReferenceRepository());
 
-        sourceCodeEditor.setVisible(true, sourceCode);
+        // sourceCodeEditor.setVisible(true, sourceCode);
     }
 
     /**
@@ -197,10 +261,10 @@ public class Controller {
      *            immagine da modificare (se {@code null}, viene aperto la creazione, altrimenti per la modifica)
      */
     public void openImageEditor(Image image) {
-        if (imageEditor == null)
-            imageEditor = new ImageEditor(getCategoryRepository(), getReferenceRepository());
+        // if (imageEditor == null)
+        // imageEditor = new ImageEditor(getCategoryRepository(), getReferenceRepository());
 
-        imageEditor.setVisible(true, image);
+        // imageEditor.setVisible(true, image);
     }
 
     /**
@@ -210,10 +274,10 @@ public class Controller {
      *            video da modificare (se {@code null}, viene aperto la creazione, altrimenti per la modifica)
      */
     public void openVideoEditor(Video video) {
-        if (videoEditor == null)
-            videoEditor = new VideoEditor(getCategoryRepository(), getReferenceRepository());
+        // if (videoEditor == null)
+        // videoEditor = new VideoEditor(getCategoryRepository(), getReferenceRepository());
 
-        videoEditor.setVisible(true, video);
+        // videoEditor.setVisible(true, video);
     }
 
     /**
@@ -223,18 +287,62 @@ public class Controller {
      *            sito web da modificare (se {@code null}, viene aperto la creazione, altrimenti per la modifica)
      */
     public void openWebsiteEditor(Website website) {
-        if (websiteEditor == null)
-            websiteEditor = new WebsiteEditor(getCategoryRepository(), getReferenceRepository());
+        // if (websiteEditor == null)
+        // websiteEditor = new WebsiteEditor(getCategoryRepository(), getReferenceRepository());
 
-        websiteEditor.setVisible(true, website);
+        // websiteEditor.setVisible(true, website);
     }
 
-    private void setupLookAndFeel() {
+    private <T extends BibliographicReference> void openReferenceEditor(ReferenceEditor<T> editor, T referenceToChange) {
         try {
-            UIManager.setLookAndFeel(new FlatLightLaf());
-        } catch (UnsupportedLookAndFeelException e) {
-            // vab, ci faremo bastare il look di default ¯\_(ツ)_/¯
-            e.printStackTrace();
+            CustomTreeModel<Category> categoriesTree = getCategoryRepository().getTree();
+            Collection<? extends BibliographicReference> references = getReferenceRepository().getAll();
+
+            editor.setCategoriesTree(categoriesTree);
+            editor.setReferences(references);
+            editor.setReferenceToChange(referenceToChange);
+            editor.setVisible(true);
+        } catch (DatabaseException e) {
+            // TODO: handle exception
+        }
+    }
+
+    /**
+     * FIXME:
+     * 
+     * @param category
+     */
+    public void addCategory(Category category) {
+        try {
+            getCategoryRepository().save(category);
+        } catch (IllegalArgumentException | CategoryDatabaseException e) {
+            homepage.showErrorMessage("Errore salvataggio categoria", e.getMessage());
+        }
+    }
+
+    public void updateCategory(Category category, String newName) {
+        try {
+            getCategoryRepository().update(category, newName);
+        } catch (CategoryDatabaseException | IllegalArgumentException e) {
+            homepage.showErrorMessage("Errore modifica categoria", e.getMessage());
+        }
+    }
+
+    public void removeCategory(Category category) {
+        try {
+            getCategoryRepository().remove(category);
+            getReferenceRepository().forceNextRetrievalFromDatabase();
+        } catch (CategoryDatabaseException e) {
+            homepage.showErrorMessage("Errore rimozione categoria", e.getMessage());
+        }
+    }
+
+    public void removeReference(BibliographicReference reference) {
+        try {
+            getReferenceRepository().remove(reference);
+            homepage.reloadReferences();
+        } catch (ReferenceDatabaseException e) {
+            homepage.showErrorMessage("Errore rimozione riferimento", e.getMessage());
         }
     }
 

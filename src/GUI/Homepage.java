@@ -5,8 +5,6 @@ import Entities.References.BibliographicReference;
 import Entities.References.OnlineResources.*;
 import Entities.References.OnlineResources.Image;
 import Entities.References.PhysicalResources.*;
-import Exceptions.Database.CategoryDatabaseException;
-import Exceptions.Database.ReferenceDatabaseException;
 import GUI.Categories.CategoriesTreePanel;
 import GUI.Categories.CategorySelectionListener;
 import GUI.References.*;
@@ -14,11 +12,13 @@ import GUI.Search.*;
 import GUI.Utilities.PopupButton;
 import GUI.Utilities.Tree.CustomTreeModel;
 import Controller.Controller;
+import Criteria.ReferenceCriteria;
 import Criteria.ReferenceCriteriaCategory;
 import Criteria.ReferenceCriteriaSearch;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Collection;
 import java.util.List;
 import java.awt.BorderLayout;
 import javax.swing.*;
@@ -43,10 +43,14 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
 
     private ReferenceListPanel referenceListPanel;
     private ReferenceInfoPanel referenceInfoPanel;
+    private PopupButton createReferenceButton;
     private JButton updateReferenceButton;
     private JButton removeReferenceButton;
 
     private SearchPanel referenceSearchPanel;
+
+    private Collection<? extends BibliographicReference> references;
+    private ReferenceCriteria lastReferenceCriteriaUsed;
 
     /**
      * Crea una nuova pagina principale con il controller indicato.
@@ -89,26 +93,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
 
     @Override
     public void setVisible(boolean b) {
-
-        // mostra un messaggio dopo l'apertura della finestra,
-        // se si è verificato un errore durante l'accesso al database
-
-        boolean failedToLoad = false;
-
         if (b) {
-            updateUserLabelText();
-
-            try {
-                CustomTreeModel<Category> tree = getController().getCategoryRepository().getTree();
-
-                categoriesTreePanel.setTreeModel(tree);
-                referenceSearchPanel.setCategoriesTree(tree);
-            } catch (CategoryDatabaseException e) {
-                categoriesTreePanel.setTreeModel(null);
-                referenceSearchPanel.setCategoriesTree(null);
-                failedToLoad = true;
-            }
-
             referenceListPanel.clear();
             referenceInfoPanel.clear();
             referenceSearchPanel.clear();
@@ -117,16 +102,6 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         }
 
         super.setVisible(b);
-
-        if (failedToLoad) {
-            String[] choices = { "Riprova", "Esci" };
-            int option = JOptionPane.showOptionDialog(this, "Si è verificato un errore durante il recupero dei dati dell'utente.", "Errore recupero", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null, choices, 0);
-
-            if (option == JOptionPane.YES_OPTION)
-                setVisible(true);
-            else
-                getController().openLoginPage();
-        }
     }
 
     /**
@@ -144,13 +119,43 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         this.controller = controller;
     }
 
-    /**
-     * Restituisce il controller della GUI.
-     * 
-     * @return controller
-     */
-    public Controller getController() {
+    private Controller getController() {
         return controller;
+    }
+
+    /**
+     * Imposta l'albero delle categorie dell'utente da mostrare.
+     * 
+     * @param categoriesTree
+     *            albero delle categorie
+     */
+    public void setTreeModel(CustomTreeModel<Category> categoriesTree) {
+        categoriesTreePanel.setTreeModel(categoriesTree);
+        referenceSearchPanel.setCategoriesTree(categoriesTree);
+    }
+
+    /**
+     * Imposta tutti i riferimenti dell'utente da mostrare.
+     * 
+     * @param references
+     *            riferimenti dell'utente
+     */
+    public void setReferences(Collection<? extends BibliographicReference> references) {
+        this.references = references;
+    }
+
+    private Collection<? extends BibliographicReference> getReferences() {
+        return references;
+    }
+
+    /**
+     * Imposta il nome da mostrare come messaggio di benvenuto.
+     * 
+     * @param name
+     *            nome da mostrare
+     */
+    public void setNameToDisplay(String name) {
+        userLabel.setText("<html>Benvenuto, <b>" + name + "</b></html>");
     }
 
     private void setupCloseOperation() {
@@ -159,9 +164,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                int confirmDialogBoxOption = JOptionPane.showConfirmDialog(null, "Sicuro di volere uscire?", "Esci", JOptionPane.YES_NO_OPTION);
-
-                if (confirmDialogBoxOption == JOptionPane.YES_OPTION)
+                if (askConfirmToUser("Esci", "Sicuro di voler uscire"))
                     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             }
         });
@@ -175,39 +178,53 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
 
         JToolBar toolbar = new JToolBar();
         toolbar.setFloatable(false);
+        categoriesPanel.add(toolbar, BorderLayout.NORTH);
 
         createCategoryButton = new JButton(new ImageIcon("images/folder_add.png"));
         createCategoryButton.setToolTipText("Crea nuova categoria");
         createCategoryButton.setEnabled(false);
         createCategoryButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                addCategory();
+                String name = getCategoryNameFromUser("Nuova categoria");
+
+                if (name != null) {
+                    Category parent = categoriesTreePanel.getSelectedCategory();
+                    Category newCategory = new Category(name, parent);
+                    getController().addCategory(newCategory);
+                }
             }
         });
+        toolbar.add(createCategoryButton);
 
         updateCategoryButton = new JButton(new ImageIcon("images/folder_edit.png"));
         updateCategoryButton.setToolTipText("Modifica categoria selezionata");
         updateCategoryButton.setEnabled(false);
         updateCategoryButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                changeCategory();
+                Category selectedCategory = categoriesTreePanel.getSelectedCategory();
+
+                if (selectedCategory != null) {
+                    String newName = getCategoryNameFromUser(selectedCategory.getName());
+
+                    if (newName != null)
+                        getController().updateCategory(selectedCategory, newName);
+                }
             }
         });
+        toolbar.add(updateCategoryButton);
 
         removeCategoryButton = new JButton(new ImageIcon("images/folder_delete.png"));
         removeCategoryButton.setToolTipText("Elimina categoria selezionata");
         removeCategoryButton.setEnabled(false);
         removeCategoryButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                removeCategory();
+                Category selectedCategory = categoriesTreePanel.getSelectedCategory();
+
+                if (selectedCategory != null && askConfirmToUser("Elimina categoria", "Sicuro di voler eliminare questa categoria?"))
+                    getController().removeCategory(selectedCategory);
             }
         });
-
-        toolbar.add(createCategoryButton);
-        toolbar.add(updateCategoryButton);
         toolbar.add(removeCategoryButton);
-
-        categoriesPanel.add(toolbar, BorderLayout.NORTH);
 
         categoriesTreePanel = new CategoriesTreePanel();
         categoriesTreePanel.addSelectionListener(this);
@@ -215,6 +232,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         categoriesPanel.add(categoriesTreePanel, BorderLayout.CENTER);
 
         return categoriesPanel;
+
     }
 
     private JPanel setupReferencesPanel() {
@@ -223,6 +241,83 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         referencePanel.setLayout(new BorderLayout(5, 5));
         referencePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
+        JToolBar toolbar = new JToolBar();
+        toolbar.setFloatable(false);
+        referencePanel.add(toolbar, BorderLayout.NORTH);
+
+        createReferenceButton = setupCreateReferenceButton();
+        toolbar.add(createReferenceButton);
+
+        updateReferenceButton = new JButton(new ImageIcon("images/file_edit.png"));
+        updateReferenceButton.setToolTipText("Modifica riferimento");
+        updateReferenceButton.setEnabled(false); // all'inizio teniamolo disattivato
+        updateReferenceButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                changeSelectedReference();
+            }
+        });
+        toolbar.add(updateReferenceButton);
+
+        removeReferenceButton = new JButton(new ImageIcon("images/file_remove.png"));
+        removeReferenceButton.setToolTipText("Elimina riferimento");
+        removeReferenceButton.setEnabled(false); // all'inizio teniamolo disattivato
+        removeReferenceButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                BibliographicReference selectedReference = referenceListPanel.getSelectedReference();
+
+                if (selectedReference != null && askConfirmToUser("Elimina riferimento", "Vuoi eliminare questo riferimento?")) {
+                    getController().removeReference(selectedReference);
+                }
+            }
+        });
+        toolbar.add(removeReferenceButton);
+
+        referenceInfoPanel = new ReferenceInfoPanel();
+        referenceListPanel = new ReferenceListPanel();
+        referenceListPanel.addReferenceSelectionListener(this);
+
+        JSplitPane referenceSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, referenceListPanel, referenceInfoPanel);
+        referenceSplitPane.setDividerSize(10);
+        referenceSplitPane.setResizeWeight(0.6f);
+
+        referencePanel.add(referenceSplitPane, BorderLayout.CENTER);
+
+        return referencePanel;
+    }
+
+    private JPanel setupUserInfoPanel() {
+        JPanel userInfoPanel = new JPanel();
+
+        Color darkGray = Color.decode("#24292f");
+
+        userInfoPanel.setLayout(new BorderLayout(5, 0));
+        userInfoPanel.setBorder(new EmptyBorder(15, 15, 15, 15));
+        userInfoPanel.setBackground(darkGray);
+
+        userLabel = new JLabel();
+        userLabel.setForeground(Color.WHITE);
+        userLabel.setIcon(new ImageIcon("images/bookmark_light.png"));
+
+        setNameToDisplay(null);
+        userInfoPanel.add(userLabel, BorderLayout.WEST);
+
+        logoutButton = new JButton(new ImageIcon("images/logout_white.png"));
+        logoutButton.setToolTipText("Esci");
+        logoutButton.setHorizontalAlignment(SwingConstants.RIGHT);
+        logoutButton.setBackground(darkGray);
+        logoutButton.setBorderPainted(false);
+        logoutButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                getController().openLoginPage();
+            }
+        });
+
+        userInfoPanel.add(logoutButton, BorderLayout.EAST);
+
+        return userInfoPanel;
+    }
+
+    private PopupButton setupCreateReferenceButton() {
         PopupButton createReferenceButton = new PopupButton(new ImageIcon("images/file_add.png"));
         createReferenceButton.setToolTipText("Crea riferimento");
 
@@ -283,135 +378,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         });
         createReferenceButton.addToPopupMenu(videoOption);
 
-        updateReferenceButton = new JButton(new ImageIcon("images/file_edit.png"));
-        updateReferenceButton.setToolTipText("Modifica riferimento");
-        updateReferenceButton.setEnabled(false); // all'inizio teniamolo disattivato
-        updateReferenceButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                changeSelectedReference();
-            }
-        });
-
-        removeReferenceButton = new JButton(new ImageIcon("images/file_remove.png"));
-        removeReferenceButton.setToolTipText("Elimina riferimento");
-        removeReferenceButton.setEnabled(false); // all'inizio teniamolo disattivato
-        removeReferenceButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                removeSelectedReference();
-            }
-        });
-
-        JToolBar toolbar = new JToolBar();
-        toolbar.setFloatable(false);
-        toolbar.add(createReferenceButton);
-        toolbar.add(updateReferenceButton);
-        toolbar.add(removeReferenceButton);
-        referencePanel.add(toolbar, BorderLayout.NORTH);
-
-        referenceInfoPanel = new ReferenceInfoPanel();
-        referenceListPanel = new ReferenceListPanel();
-        referenceListPanel.addReferenceSelectionListener(this);
-
-        JSplitPane referenceSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, referenceListPanel, referenceInfoPanel);
-        referenceSplitPane.setDividerSize(10);
-        referenceSplitPane.setResizeWeight(0.6f);
-
-        referencePanel.add(referenceSplitPane, BorderLayout.CENTER);
-
-        return referencePanel;
-    }
-
-    private JPanel setupUserInfoPanel() {
-        JPanel userInfoPanel = new JPanel();
-
-        Color darkGray = Color.decode("#24292f");
-
-        userInfoPanel.setLayout(new BorderLayout(5, 0));
-        userInfoPanel.setBorder(new EmptyBorder(15, 15, 15, 15));
-        userInfoPanel.setBackground(darkGray);
-
-        userLabel = new JLabel();
-        userLabel.setForeground(Color.WHITE);
-        userLabel.setIcon(new ImageIcon("images/bookmark_light.png"));
-
-        updateUserLabelText();
-        userInfoPanel.add(userLabel, BorderLayout.WEST);
-
-        logoutButton = new JButton(new ImageIcon("images/logout_white.png"));
-        logoutButton.setToolTipText("Esci");
-        logoutButton.setHorizontalAlignment(SwingConstants.RIGHT);
-        logoutButton.setBackground(darkGray);
-        logoutButton.setBorderPainted(false);
-        logoutButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                getController().openLoginPage();
-            }
-        });
-
-        userInfoPanel.add(logoutButton, BorderLayout.EAST);
-
-        return userInfoPanel;
-    }
-
-    private void updateUserLabelText() {
-        // il nome dell'utente lo mettiamo in grassetto
-        userLabel.setText("<html>Benvenuto, <b>" + getController().getUser() + "</b></html>");
-    }
-
-    private void addCategory() {
-        String newCategoryName = getCategoryNameFromUser("Nuova categoria");
-
-        if (newCategoryName == null)
-            return;
-
-        Category newCategory = new Category(newCategoryName, categoriesTreePanel.getSelectedCategory());
-
-        try {
-            getController().getCategoryRepository().save(newCategory);
-        } catch (CategoryDatabaseException | IllegalArgumentException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Errore salvataggio categoria", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private void changeCategory() {
-        Category selectedCategory = categoriesTreePanel.getSelectedCategory();
-
-        if (selectedCategory == null)
-            return;
-
-        String newName = getCategoryNameFromUser(selectedCategory.getName());
-
-        if (newName == null)
-            return;
-
-        try {
-            getController().getCategoryRepository().update(selectedCategory, newName);
-        } catch (CategoryDatabaseException | IllegalArgumentException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Errore modifica categoria", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private void removeCategory() {
-        Category selectedCategory = categoriesTreePanel.getSelectedCategory();
-
-        if (selectedCategory == null)
-            return;
-
-        int confirmDialogBoxOption = JOptionPane.showConfirmDialog(null, "Sicuro di voler eliminare questa categoria?", "Elimina categoria", JOptionPane.YES_NO_OPTION);
-
-        if (confirmDialogBoxOption != JOptionPane.YES_OPTION)
-            return;
-
-        try {
-            getController().getCategoryRepository().remove(selectedCategory);
-            getController().getReferenceRepository().forceNextRetrievalFromDatabase();
-        } catch (CategoryDatabaseException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Errore eliminazione categoria", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private String getCategoryNameFromUser(String defaultName) {
-        return (String) JOptionPane.showInputDialog(this, "Inserisci il nuovo nome della categoria", "Nuova categoria", JOptionPane.PLAIN_MESSAGE, null, null, defaultName);
+        return createReferenceButton;
     }
 
     @Override
@@ -420,15 +387,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         updateCategoryButton.setEnabled(category != null);
         removeCategoryButton.setEnabled(category != null);
 
-        try {
-            ReferenceCriteriaCategory categoryFilter = new ReferenceCriteriaCategory(category);
-            List<? extends BibliographicReference> references = categoryFilter.get(getController().getReferenceRepository().getAll());
-
-            referenceListPanel.setReferences(references);
-        } catch (ReferenceDatabaseException e) {
-            referenceListPanel.clear();
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Errore recupero riferimenti", JOptionPane.ERROR_MESSAGE);
-        }
+        setReferencesToShow(new ReferenceCriteriaCategory(category));
     }
 
     @Override
@@ -465,25 +424,6 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
             getController().openWebsiteEditor((Website) selectedReference);
     }
 
-    private void removeSelectedReference() {
-        BibliographicReference selectedReference = referenceListPanel.getSelectedReference();
-
-        if (selectedReference == null)
-            return;
-
-        int result = JOptionPane.showConfirmDialog(this, "Vuoi eliminare questo riferimento?", "Elimina riferimento", JOptionPane.YES_NO_OPTION);
-
-        if (result != JOptionPane.YES_OPTION)
-            return;
-
-        try {
-            getController().getReferenceRepository().remove(referenceListPanel.getSelectedReference());
-            referenceListPanel.removeSelectedReference();
-        } catch (ReferenceDatabaseException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Errore salvataggio riferimento", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
     @Override
     public void onReferenceSelection(BibliographicReference reference) {
         referenceInfoPanel.showReference(reference);
@@ -498,17 +438,49 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
     public void onSearch(Search search) {
         categoriesTreePanel.clearSelection();
 
-        try {
-            ReferenceCriteriaSearch searchFilter = new ReferenceCriteriaSearch(search);
-            List<? extends BibliographicReference> references = searchFilter.get(getController().getReferenceRepository().getAll());
+        setReferencesToShow(new ReferenceCriteriaSearch(search));
 
-            referenceListPanel.setReferences(references);
+        JOptionPane.showMessageDialog(this, "Riferimenti trovati: " + references.size(), "Risultati ricerca", JOptionPane.INFORMATION_MESSAGE);
+    }
 
-            JOptionPane.showMessageDialog(this, "Riferimenti trovati: " + references.size(), "Risultati ricerca", JOptionPane.INFORMATION_MESSAGE);
-        } catch (IllegalArgumentException | ReferenceDatabaseException e) {
-            referenceListPanel.clear();
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Errore recupero riferimenti", JOptionPane.ERROR_MESSAGE);
-        }
+    private boolean askConfirmToUser(String title, String message) {
+        int confirmDialogBoxOption = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
+        return confirmDialogBoxOption == JOptionPane.YES_OPTION;
+    }
+
+    private String getCategoryNameFromUser(String defaultName) {
+        return (String) JOptionPane.showInputDialog(this, "Inserisci il nuovo nome della categoria", "Nuova categoria", JOptionPane.PLAIN_MESSAGE, null, null, defaultName);
+    }
+
+    /**
+     * Mostra un messaggio di errore.
+     * 
+     * @param title
+     *            titolo della finestra di dialogo
+     * @param message
+     *            messaggio da mostrare
+     */
+    public void showErrorMessage(String title, String message) {
+        JOptionPane.showMessageDialog(this, message, title, JOptionPane.ERROR_MESSAGE);
+    }
+
+    /**
+     * Ricarica i riferimenti mostrati.
+     */
+    public void reloadReferences() {
+        if (lastReferenceCriteriaUsed == null)
+            return;
+
+        setReferencesToShow(lastReferenceCriteriaUsed);
+    }
+
+    private void setReferencesToShow(ReferenceCriteria criteria) {
+        if (criteria == null)
+            throw new IllegalArgumentException("criteria can't be null");
+
+        List<? extends BibliographicReference> filteredReferences = criteria.filter(getReferences());
+        referenceListPanel.setReferences(filteredReferences);
+        lastReferenceCriteriaUsed = criteria;
     }
 
 }

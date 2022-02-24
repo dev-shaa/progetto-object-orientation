@@ -273,7 +273,6 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     }
 
     private void openReferencePicker() {
-
         ArrayList<BibliographicReference> availableReferenceToQuote = new ArrayList<>();
 
         if (allReferences != null) {
@@ -295,7 +294,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
             T newReference = createNewReference();
             notifyListeners(newReference);
         } catch (InvalidInputException | IllegalArgumentException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Parametri inseriti non validi", JOptionPane.ERROR_MESSAGE);
+            showErrorMessage("Parametri inseriti non validi", e.getMessage());
         }
     }
 
@@ -358,6 +357,18 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     public void removeReferenceCreationListener(ReferenceEditorListener<T> listener) {
         if (listener != null && listeners != null)
             listeners.remove(listener);
+    }
+
+    /**
+     * Mostra un messaggio di errore.
+     * 
+     * @param title
+     *            titolo della finestra di dialogo
+     * @param message
+     *            messaggio da mostrare
+     */
+    public void showErrorMessage(String title, String message) {
+        JOptionPane.showMessageDialog(this, message, title, JOptionPane.ERROR_MESSAGE);
     }
 
     private void notifyListeners(T reference) {

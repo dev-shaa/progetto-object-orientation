@@ -32,7 +32,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
      * @throws IllegalArgumentException
      *             se {@code user == null}
      */
-    public BibliographicReferenceDAOPostgreSQL(User user) throws IllegalArgumentException {
+    public BibliographicReferenceDAOPostgreSQL(User user) {
         if (user == null)
             throw new IllegalArgumentException("user non può essere null");
 
@@ -281,7 +281,9 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
             throw new IllegalArgumentException("sourceCode can't be null");
 
         String url = getFormattedStringForQuery(sourceCode.getURL());
-        String programmingLanguage = getFormattedStringForQuery(sourceCode.getProgrammingLanguage().name());
+
+        ProgrammingLanguage language = sourceCode.getProgrammingLanguage();
+        String programmingLanguage = getFormattedStringForQuery(language == ProgrammingLanguage.NOTSPECIFIED ? null : language.name());
 
         String command = null;
 
