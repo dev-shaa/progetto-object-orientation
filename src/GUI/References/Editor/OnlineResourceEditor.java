@@ -40,10 +40,17 @@ public abstract class OnlineResourceEditor<T extends OnlineResource> extends Ref
     }
 
     @Override
-    protected void setFieldsInitialValues(T reference) {
-        super.setFieldsInitialValues(reference);
+    protected void setDefaultValues() {
+        super.setDefaultValues();
 
-        setURLValue(reference == null ? null : reference.getURL());
+        setURLValue(null);
+    }
+
+    @Override
+    protected void setReferenceValues(T reference) {
+        super.setReferenceValues(reference);
+
+        setURLValue(reference.getURL());
     }
 
     @Override

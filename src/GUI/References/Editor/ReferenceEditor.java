@@ -36,10 +36,11 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     private AuthorInputField authors;
     private PopupButtonList<BibliographicReference> relatedReferences;
     private ReferencePicker relatedReferencesPicker;
-
     private JPanel fieldPanel;
 
     private T referenceToChange;
+
+    private Collection<? extends BibliographicReference> allReferences;
 
     private final Dimension maximumSize = new Dimension(Integer.MAX_VALUE, 24);
     private final Dimension spacingSize = new Dimension(0, 10);
@@ -79,30 +80,13 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         setReferences(references);
 
         setupBaseFields();
+        setDefaultValues();
     }
 
     @Override
     public void setVisible(boolean b) {
-        setVisible(b, null);
-    }
-
-    /**
-     * Mostra o nasconde questo pannello a seconda del valore di {@code b}.
-     * <p>
-     * Se {@code b == true}, i campi di input verranno riempiti con i valori presenti in {@code reference}.
-     * 
-     * @param b
-     *            se {@code true} il pannello verrà mostrato e verrano riempiti i campi con i valori di {@code reference},
-     *            se {@code false} il pannello verrà nascosto
-     * @param referenceToChange
-     *            riferimento da modificare (può essere {@code null})
-     */
-    public void setVisible(boolean b, T referenceToChange) {
-        if (b) {
-            this.referenceToChange = referenceToChange;
-            setFieldsInitialValues(referenceToChange);
+        if (b)
             setLocationRelativeTo(null);
-        }
 
         super.setVisible(b);
     }
@@ -125,7 +109,22 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      *            possibili rimandi
      */
     public void setReferences(Collection<? extends BibliographicReference> references) {
-        relatedReferencesPicker.setReferences(references);
+        allReferences = references;
+    }
+
+    /**
+     * Imposta il riferimento da modificare.
+     * 
+     * @param referenceToChange
+     *            riferimento da modificare (se {@code null}, si intende che si vuole creare un nuovo riferimento)
+     */
+    public void setReferenceToChange(T referenceToChange) {
+        this.referenceToChange = referenceToChange;
+
+        if (referenceToChange == null)
+            setDefaultValues();
+        else
+            setReferenceValues(referenceToChange);
     }
 
     private void setupBaseFields() {
@@ -205,6 +204,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      */
     protected void setupSecondaryFields() {
         // serve solo come funzione per override e aggiungere altri componenti
+        // non serve metterla come abstract perchè magari non si vogliono aggiungere altri componenti
     }
 
     /**
@@ -235,52 +235,60 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     }
 
     /**
-     * Riempie i campi di input con i valori presenti nel riferimento passato.
-     * Se il riferimento è {@code null}, vengono svuotati.
+     * Imposta i valori predefiniti dei campi.
+     */
+    protected void setDefaultValues() {
+        setTitleValue(null);
+        setPubblicationDateValue(null);
+        setDOIValue(null);
+        setDescriptionValue(null);
+        setTagValues(null);
+        setLanguageValue(ReferenceLanguage.NOTSPECIFIED);
+        setRelatedReferences(null);
+        setAuthorValues(null);
+        setCategoryValues(null);
+    }
+
+    /**
+     * Imposta i valori presenti nei campi recuperandoli dal riferimento indicato.
      * 
      * @param reference
-     *            riferimento da cui prendere i valori (se {@code null}, i campi verrano resettati)
+     *            riferimento di cui impostare i campi
      */
-    protected void setFieldsInitialValues(T reference) {
+    protected void setReferenceValues(T reference) {
         if (reference == null) {
-            setTitleValue(null);
-            setPubblicationDateValue(null);
-            setDOIValue(null);
-            setDescriptionValue(null);
-            setTagValues(null);
-            setLanguageValue(ReferenceLanguage.NOTSPECIFIED);
-            setRelatedReferences(null);
-            setAuthorValues(null);
-            setCategoryValues(null);
-        } else {
-            setTitleValue(reference.getTitle());
-            setPubblicationDateValue(reference.getPubblicationDate());
-            setDOIValue(reference.getDOI());
-            setDescriptionValue(reference.getDescription());
-            setTagValues(reference.getTags());
-            setLanguageValue(reference.getLanguage());
-            setRelatedReferences(reference.getRelatedReferences());
-            setAuthorValues(reference.getAuthors());
-            setCategoryValues(reference.getCategories());
+            setDefaultValues();
+            return;
         }
+
+        setTitleValue(reference.getTitle());
+        setPubblicationDateValue(reference.getPubblicationDate());
+        setDOIValue(reference.getDOI());
+        setDescriptionValue(reference.getDescription());
+        setTagValues(reference.getTags());
+        setLanguageValue(reference.getLanguage());
+        setRelatedReferences(reference.getRelatedReferences());
+        setAuthorValues(reference.getAuthors());
+        setCategoryValues(reference.getCategories());
     }
 
     private void openReferencePicker() {
-        List<BibliographicReference> referencesToExclude = new ArrayList<>();
+        ArrayList<BibliographicReference> availableReferenceToQuote = new ArrayList<>(allReferences);
 
         if (getRelatedReferenceValues() != null)
-            referencesToExclude.addAll(getRelatedReferenceValues());
+            availableReferenceToQuote.removeAll(getRelatedReferenceValues());
 
         if (referenceToChange != null)
-            referencesToExclude.add(referenceToChange);
+            availableReferenceToQuote.remove(referenceToChange);
 
-        relatedReferencesPicker.setVisible(true, referencesToExclude);
+        relatedReferencesPicker.setAvailableReferences(availableReferenceToQuote);
+        relatedReferencesPicker.setVisible(true);
     }
 
     private void save() {
         try {
-            T reference = createNewReference();
-            notifyListeners(reference);
+            T newReference = createNewReference();
+            notifyListeners(newReference);
         } catch (InvalidInputException | IllegalArgumentException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Parametri inseriti non validi", JOptionPane.ERROR_MESSAGE);
         }

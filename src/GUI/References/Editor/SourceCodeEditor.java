@@ -37,10 +37,17 @@ public class SourceCodeEditor extends OnlineResourceEditor<SourceCode> {
     }
 
     @Override
-    protected void setFieldsInitialValues(SourceCode reference) {
-        super.setFieldsInitialValues(reference);
+    protected void setDefaultValues() {
+        super.setDefaultValues();
 
-        setProgrammingLanguageValue(reference == null ? ProgrammingLanguage.OTHER : reference.getProgrammingLanguage());
+        setProgrammingLanguageValue(ProgrammingLanguage.NOTSPECIFIED);
+    }
+
+    @Override
+    protected void setReferenceValues(SourceCode reference) {
+        super.setReferenceValues(reference);
+
+        setProgrammingLanguageValue(reference.getProgrammingLanguage());
     }
 
     @Override

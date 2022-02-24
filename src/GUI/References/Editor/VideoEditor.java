@@ -32,20 +32,23 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
     }
 
     @Override
-    protected void setFieldsInitialValues(Video reference) {
-        super.setFieldsInitialValues(reference);
+    protected void setDefaultValues() {
+        super.setDefaultValues();
 
-        if (reference == null) {
-            setWidthValue(0);
-            setHeightValue(0);
-            setFrameRateValue(0);
-            setDurationValue(0);
-        } else {
-            setWidthValue(reference.getWidth());
-            setHeightValue(reference.getHeight());
-            setFrameRateValue(reference.getFrameRate());
-            setDurationValue(reference.getDuration());
-        }
+        setWidthValue(0);
+        setHeightValue(0);
+        setFrameRateValue(0);
+        setDurationValue(0);
+    }
+
+    @Override
+    protected void setReferenceValues(Video reference) {
+        super.setReferenceValues(reference);
+
+        setWidthValue(reference.getWidth());
+        setHeightValue(reference.getHeight());
+        setFrameRateValue(reference.getFrameRate());
+        setDurationValue(reference.getDuration());
     }
 
     @Override

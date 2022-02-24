@@ -40,16 +40,19 @@ public class ThesisEditor extends PublicationEditor<Thesis> {
     }
 
     @Override
-    protected void setFieldsInitialValues(Thesis reference) {
-        super.setFieldsInitialValues(reference);
+    protected void setDefaultValues() {
+        super.setDefaultValues();
 
-        if (reference == null) {
-            setUniversityValue(null);
-            setFacultyValue(null);
-        } else {
-            setUniversityValue(reference.getUniversity());
-            setFacultyValue(reference.getFaculty());
-        }
+        setUniversityValue(null);
+        setFacultyValue(null);
+    }
+
+    @Override
+    protected void setReferenceValues(Thesis reference) {
+        super.setReferenceValues(reference);
+
+        setUniversityValue(reference.getUniversity());
+        setFacultyValue(reference.getFaculty());
     }
 
     @Override

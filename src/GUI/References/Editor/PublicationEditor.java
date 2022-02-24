@@ -47,18 +47,21 @@ public abstract class PublicationEditor<T extends Publication> extends Reference
     }
 
     @Override
-    protected void setFieldsInitialValues(T reference) {
-        super.setFieldsInitialValues(reference);
+    protected void setDefaultValues() {
+        super.setDefaultValues();
 
-        if (reference == null) {
-            setPageCountValue(0);
-            setURLValue(null);
-            setPublisherValue(null);
-        } else {
-            setPageCountValue(reference.getPageCount());
-            setURLValue(reference.getURL());
-            setPublisherValue(reference.getPublisher());
-        }
+        setPageCountValue(0);
+        setURLValue(null);
+        setPublisherValue(null);
+    }
+
+    @Override
+    protected void setReferenceValues(T reference) {
+        super.setReferenceValues(reference);
+
+        setPageCountValue(reference.getPageCount());
+        setURLValue(reference.getURL());
+        setPublisherValue(reference.getPublisher());
     }
 
     @Override
