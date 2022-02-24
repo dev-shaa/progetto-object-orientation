@@ -65,7 +65,7 @@ public class Category {
 
     @Override
     public boolean equals(Object obj) {
-        // due categorie sono uguali se hanno lo stesso id
+        // due categorie sono uguali se hanno lo stesso nome e lo stesso genitore
 
         if (obj == this)
             return true;
@@ -73,8 +73,12 @@ public class Category {
         if (obj == null || !(obj instanceof Category))
             return false;
 
-        // FIXME: e se due categorie non hanno un id?
-        return String.valueOf(getID()).equals(String.valueOf(((Category) obj).getID()));
+        Category parent = getParent();
+        Category otherCategory = (Category) obj;
+        Category otherCategoryParent = otherCategory.getParent();
+
+        return getName().equalsIgnoreCase(otherCategory.getName())
+                && (parent == null && otherCategoryParent == null) || (parent != null && parent.equals(otherCategoryParent));
     }
 
     /**

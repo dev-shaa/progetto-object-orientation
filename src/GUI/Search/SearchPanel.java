@@ -2,8 +2,9 @@ package GUI.Search;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
 import javax.swing.*;
+import javax.swing.event.EventListenerList;
+
 import com.toedter.calendar.JDateChooser;
 import Entities.Category;
 import Entities.Search;
@@ -25,10 +26,9 @@ public class SearchPanel extends JPanel {
     private JDateChooser dateFrom;
     private JDateChooser dateTo;
     private JButton searchButton;
-
     private JPanel searchPanel;
 
-    private ArrayList<SearchListener> searchListeners;
+    private EventListenerList searchListeners;
 
     private final Dimension maximumSize = new Dimension(Integer.MAX_VALUE, 24);
     private final float alignment = Container.LEFT_ALIGNMENT;
@@ -48,6 +48,8 @@ public class SearchPanel extends JPanel {
      */
     public SearchPanel(CustomTreeModel<Category> categoriesTree) {
         super();
+
+        searchListeners = new EventListenerList();
 
         setLayout(new BorderLayout(5, 5));
         setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -85,7 +87,7 @@ public class SearchPanel extends JPanel {
         searchButton.setMaximumSize(new Dimension(100, 32));
         searchButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                notifyListeners();
+                fireSearchEvent();
             }
         });
         searchPanel.add(searchButton);
@@ -116,34 +118,36 @@ public class SearchPanel extends JPanel {
 
     /**
      * Aggiunge un listener all'evento di ricerca.
-     * Se {@code listener == null} o se è già registrato, non viene aggiunto.
      * 
      * @param listener
      *            listener da aggiungere
      */
     public void addSearchListener(SearchListener listener) {
-        if (listener == null)
-            return;
-
-        if (searchListeners == null)
-            searchListeners = new ArrayList<>(1);
-
-        if (!searchListeners.contains(listener))
-            searchListeners.add(listener);
+        searchListeners.add(SearchListener.class, listener);
     }
 
     /**
      * Rimuove un listener dall'evento di ricerca.
-     * Se {@code listener == null} o se non è registrato, non esegue nulla.
      * 
      * @param listener
      *            listener da rimuovere
      */
     public void removeSearchListener(SearchListener listener) {
-        if (listener == null || searchListeners == null)
-            return;
+        searchListeners.remove(SearchListener.class, listener);
+    }
 
-        searchListeners.remove(listener);
+    private void fireSearchEvent() {
+        try {
+            Search search = getSearch();
+            SearchListener[] listeners = searchListeners.getListeners(SearchListener.class);
+
+            for (SearchListener listener : listeners)
+                listener.onSearch(search);
+
+            clear();
+        } catch (InvalidInputException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
     }
 
     private void addFieldComponent(String label, JComponent component, String tooltip) {
@@ -160,19 +164,6 @@ public class SearchPanel extends JPanel {
 
         searchPanel.add(component);
         searchPanel.add(Box.createVerticalStrut(5));
-    }
-
-    private void notifyListeners() {
-        try {
-            Search search = getSearch();
-
-            for (SearchListener listener : searchListeners)
-                listener.onSearch(search);
-
-            clear();
-        } catch (InvalidInputException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
-        }
     }
 
     private Search getSearch() throws EmptySearchException, InvalidInputException {

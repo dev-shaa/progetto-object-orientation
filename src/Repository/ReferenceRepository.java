@@ -1,6 +1,7 @@
 package Repository;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import DAO.*;
 import Entities.References.*;
@@ -10,8 +11,6 @@ import Exceptions.Database.*;
 
 /**
  * Repository per gestire il recupero, l'inserimento, la rimozione e la modifica di riferimenti.
- * <p>
- * Serve per non doversi sempre interfacciarsi col database per recuperare le categorie.
  */
 public class ReferenceRepository {
 
@@ -36,7 +35,7 @@ public class ReferenceRepository {
      * @param categoryRepository
      *            controller per recuperare le categorie associate ai riferimenti
      * @throws IllegalArgumentException
-     *             se {@code referenceDAO == null}, {@code authorDAO == null}, {@code tagDAO == null} o {@code categoryController == null}
+     *             se {@code referenceDAO == null}, {@code authorDAO == null}, {@code tagDAO == null} o {@code categoryRepository == null}
      */
     public ReferenceRepository(BibliographicReferenceDAO referenceDAO, AuthorDAO authorDAO, TagDAO tagDAO, CategoryRepository categoryRepository) {
         setReferenceDAO(referenceDAO);
@@ -124,15 +123,30 @@ public class ReferenceRepository {
      *             se il salvataggio non è andato a buon fine
      */
     public void save(Article reference) throws ReferenceDatabaseException {
+        Callable<Void> articleDAOSave = new Callable<Void>() {
+
+            @Override
+            public Void call() throws ReferenceDatabaseException {
+                referenceDAO.save(reference);
+                return null;
+            }
+
+        };
+
+        save(reference, articleDAOSave);
+    }
+
+    // FIXME:
+    private void save(BibliographicReference reference, Callable<Void> daoSaveFunction) throws ReferenceDatabaseException {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
         try {
             authorDAO.save(reference.getAuthors());
-            referenceDAO.save(reference);
+            daoSaveFunction.call();
             tagDAO.save(reference);
             saveToLocal(reference);
-        } catch (DatabaseException e) {
+        } catch (Exception e) {
             throw new ReferenceDatabaseException(e.getMessage());
         }
     }
@@ -148,17 +162,17 @@ public class ReferenceRepository {
      *             se il salvataggio non è andato a buon fine
      */
     public void save(Book reference) throws ReferenceDatabaseException {
-        if (reference == null)
-            throw new IllegalArgumentException("reference can't be null");
+        Callable<Void> bookDAOSave = new Callable<Void>() {
 
-        try {
-            authorDAO.save(reference.getAuthors());
-            referenceDAO.save(reference);
-            tagDAO.save(reference);
-            saveToLocal(reference);
-        } catch (DatabaseException e) {
-            throw new ReferenceDatabaseException(e.getMessage());
-        }
+            @Override
+            public Void call() throws ReferenceDatabaseException {
+                referenceDAO.save(reference);
+                return null;
+            }
+
+        };
+
+        save(reference, bookDAOSave);
     }
 
     /**

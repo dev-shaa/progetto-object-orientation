@@ -26,7 +26,9 @@ public abstract class BibliographicReference {
     private List<BibliographicReference> relatedReferences;
     private int quotationCount;
 
-    private final Pattern doiPattern = Pattern.compile("^ *10\\.[0-9]{4,}\\/\\w{1,}(\\.\\w{1,}){1,} *$");
+    private final int TITLE_MAX_LENGTH = 256;
+    private final int DESCRIPTION_MAX_LENGTH = 1024;
+    private final Pattern DOI_PATTERN = Pattern.compile("^ *10\\.[0-9]{4,}\\/\\w{1,}(\\.\\w{1,}){1,} *$");
     private final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd");
 
     /**
@@ -92,10 +94,10 @@ public abstract class BibliographicReference {
      *             se il titolo è nullo o vuoto
      */
     public void setTitle(String title) {
-        if (isStringNullOrEmpty(title))
-            throw new IllegalArgumentException("Il titolo di un riferimento non può essere nullo o vuoto.");
-
-        this.title = title.trim();
+        if (isTitleValid(title))
+            this.title = title;
+        else
+            throw new IllegalArgumentException("Il titolo non può essere vuoto o più lungo di " + TITLE_MAX_LENGTH + " caratteri.");
     }
 
     /**
@@ -137,7 +139,7 @@ public abstract class BibliographicReference {
     public void setDOI(String DOI) {
         if (isStringNullOrEmpty(DOI))
             this.DOI = null;
-        else if (doiPattern.matcher(DOI).matches())
+        else if (DOI_PATTERN.matcher(DOI).matches())
             this.DOI = DOI.trim();
         else
             throw new IllegalArgumentException("Il DOI non è valido");
@@ -158,12 +160,15 @@ public abstract class BibliographicReference {
      * 
      * @param description
      *            descrizione del riferimento
+     * @throws IllegalArgumentException
+     *             se la lunghezza della descrizione è maggiore di 1024 caratteri
      */
     public void setDescription(String description) {
-        if (isStringNullOrEmpty(description))
-            this.description = null;
-        else
-            this.description = description;
+        if (!isDescriptionValid(description))
+            throw new IllegalArgumentException("Il titolo non può essere vuoto o più lungo di " + DESCRIPTION_MAX_LENGTH + " caratteri.");
+
+        // FIXME: imposta a null
+        this.description = description;
     }
 
     /**
@@ -368,27 +373,33 @@ public abstract class BibliographicReference {
      * @return stringa con le informazioni
      */
     public String getInfo() {
-        // FIXME: implementa info
-
         return "Titolo: " + getTitle()
                 + "\nAutori: " + getAuthorsAsString()
-                + "\nData di pubblicazione: " + getFormattedDate()
+                + "\nData di pubblicazione: " + (getFormattedDate() == null ? "" : getFormattedDate())
                 + "\nDOI: " + (getDOI() == null ? "" : getDOI())
                 + "\nLingua: " + getLanguage()
                 + "\nParole chiave: " + getTagsAsString()
                 + "\nRimandi: " + getRelatedReferencesAsString()
-                + "\nDescrizione: " + getDescription();
+                + "\nDescrizione: " + (getDescription() == null ? "" : getDescription());
     }
 
     /**
      * Controlla se la stringa è nulla o vuota
      * 
-     * @param string
+     * @param name
      *            stringa da controllare
      * @return {@code true} se {@code string == null}, {@code string.isEmpty()} o {@code string.isBlank()}
      */
-    protected boolean isStringNullOrEmpty(String string) {
-        return string == null || string.isEmpty() || string.isBlank();
+    protected boolean isStringNullOrEmpty(String name) {
+        return name == null || name.isEmpty() || name.isBlank();
+    }
+
+    private boolean isTitleValid(String title) {
+        return !isStringNullOrEmpty(title) && title.length() <= TITLE_MAX_LENGTH;
+    }
+
+    private boolean isDescriptionValid(String description) {
+        return description == null || description.length() <= DESCRIPTION_MAX_LENGTH;
     }
 
 }

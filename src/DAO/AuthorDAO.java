@@ -31,5 +31,4 @@ public interface AuthorDAO {
 	 *             se il recupero non va a buon fine
 	 */
 	public List<Author> get(BibliographicReference reference) throws AuthorDatabaseException;
-
 }

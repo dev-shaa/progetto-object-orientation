@@ -1,10 +1,10 @@
 package GUI.References.Picker;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import javax.swing.*;
+import javax.swing.event.EventListenerList;
 
 import Criteria.ReferenceCriteriaCategory;
 import Entities.Category;
@@ -29,7 +29,7 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
     private JButton confirmButton;
 
     private Collection<? extends BibliographicReference> selectableReferences;
-    private ArrayList<ReferencePickerListener> pickerListeners;
+    private EventListenerList pickerListeners;
 
     /**
      * Crea una nuova finestra di dialogo vuota.
@@ -48,6 +48,8 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
      */
     public ReferencePicker(CustomTreeModel<Category> categoriesTree, Collection<? extends BibliographicReference> selectableReferences) {
         super();
+
+        pickerListeners = new EventListenerList();
 
         setTitle("Seleziona riferimento");
         setModal(true);
@@ -74,7 +76,7 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
         confirmButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                notifyListeners();
+                firePickEvent();
             }
         });
 
@@ -133,48 +135,36 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
     }
 
     @Override
-    public void onCategoryClearSelection() {
+    public void onCategoryDeselection() {
         referencesPanel.clear();
     }
 
     /**
      * Aggiunge un listener all'evento di selezione di un riferimento.
-     * Se {@code listener == null} o se è già registrato all'evento, non succede niente.
      * 
      * @param listener
      *            listener da aggiungere
      */
     public void addReferencePickerListener(ReferencePickerListener listener) {
-        if (listener == null)
-            return;
-
-        if (pickerListeners == null)
-            pickerListeners = new ArrayList<>(3);
-
-        if (pickerListeners.contains(listener))
-            return;
-
-        pickerListeners.add(listener);
+        pickerListeners.add(ReferencePickerListener.class, listener);
     }
 
     /**
      * Rimuove un listener dall'evento di selezione di un riferimento.
-     * Se {@code listener == null}, non succede niente.
      * 
      * @param listener
      *            listener da rimuovere
      */
     public void removeReferencePickerListener(ReferencePickerListener listener) {
-        if (listener != null && pickerListeners != null)
-            pickerListeners.remove(listener);
+        pickerListeners.remove(ReferencePickerListener.class, listener);
     }
 
-    private void notifyListeners() {
-        if (pickerListeners == null)
-            return;
+    private void firePickEvent() {
+        BibliographicReference selectedReference = referencesPanel.getSelectedReference();
+        ReferencePickerListener[] listeners = pickerListeners.getListeners(ReferencePickerListener.class);
 
-        for (ReferencePickerListener listener : pickerListeners)
-            listener.onReferencePick(referencesPanel.getSelectedReference());
+        for (ReferencePickerListener listener : listeners)
+            listener.onReferencePick(selectedReference);
 
         setVisible(false);
     }

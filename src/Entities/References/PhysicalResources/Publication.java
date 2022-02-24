@@ -11,6 +11,9 @@ public abstract class Publication extends BibliographicReference {
     private String URL;
     private String publisher;
 
+    private final int URL_MAX_LENGTH = 256;
+    private final int PUBLISHER_MAX_LENGTH = 128;
+
     /**
      * Crea un nuovo riferimento a una pubblicazione con il titolo indicato.
      * 
@@ -52,14 +55,14 @@ public abstract class Publication extends BibliographicReference {
     /**
      * Imposta l'URL del riferimento
      * 
-     * @param URL
+     * @param url
      *            URL del riferimento
      */
-    public void setURL(String URL) {
-        if (isStringNullOrEmpty(URL))
-            this.URL = null;
+    public void setURL(String url) {
+        if (isURLValid(url))
+            this.URL = url;
         else
-            this.URL = URL;
+            throw new IllegalArgumentException("L'url non può essere più lungo di " + URL_MAX_LENGTH + " caratteri.");
     }
 
     /**
@@ -79,10 +82,10 @@ public abstract class Publication extends BibliographicReference {
      *            editore della pubblicazione
      */
     public void setPublisher(String publisher) {
-        if (isStringNullOrEmpty(publisher))
-            this.publisher = null;
-        else
+        if (isPublisherValid(publisher))
             this.publisher = publisher;
+        else
+            throw new IllegalArgumentException("L'editore non può essere più lungo di " + PUBLISHER_MAX_LENGTH + " caratteri.");
     }
 
     /**
@@ -101,6 +104,14 @@ public abstract class Publication extends BibliographicReference {
                 + "\nPagine: " + (getPageCount() == 0 ? "" : getPageCount())
                 + "\nURL: " + (getURL() == null ? "" : getURL())
                 + "\nEditore: " + (getPublisher() == null ? "" : getPublisher());
+    }
+
+    private boolean isURLValid(String url) {
+        return url == null || url.length() <= URL_MAX_LENGTH;
+    }
+
+    private boolean isPublisherValid(String publisher) {
+        return publisher == null || publisher.length() <= PUBLISHER_MAX_LENGTH;
     }
 
 }

@@ -9,7 +9,7 @@ public enum ProgrammingLanguage {
 
     private String name;
 
-    ProgrammingLanguage(String name) {
+    private ProgrammingLanguage(String name) {
         this.name = name;
     }
 

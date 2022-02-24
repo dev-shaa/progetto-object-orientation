@@ -8,6 +8,9 @@ public class Thesis extends Publication {
     private String university;
     private String faculty;
 
+    private final int UNIVERSITY_MAX_LENGTH = 128;
+    private final int FACULTY_MAX_LENGTH = 128;
+
     /**
      * Crea un nuovo riferimento a una tesi con il titolo indicato.
      * 
@@ -28,10 +31,10 @@ public class Thesis extends Publication {
      *            università della tesi
      */
     public void setUniversity(String university) {
-        if (isStringNullOrEmpty(university))
-            this.university = null;
-        else
+        if (isUniversityValid(university))
             this.university = university;
+        else
+            throw new IllegalArgumentException("La facoltà non può essere più lunga di " + FACULTY_MAX_LENGTH + " caratteri.");
     }
 
     /**
@@ -51,10 +54,10 @@ public class Thesis extends Publication {
      *            facoltà della tesi
      */
     public void setFaculty(String faculty) {
-        if (isStringNullOrEmpty(faculty))
-            this.faculty = null;
-        else
+        if (isFacultyValid(faculty))
             this.faculty = faculty;
+        else
+            throw new IllegalArgumentException("La facoltà non può essere più lunga di " + FACULTY_MAX_LENGTH + " caratteri.");
     }
 
     /**
@@ -72,6 +75,14 @@ public class Thesis extends Publication {
         return super.getInfo()
                 + "\nUniversità: " + (getUniversity() == null ? "" : getUniversity())
                 + "\nFacoltà: " + (getFaculty() == null ? "" : getFaculty());
+    }
+
+    private boolean isUniversityValid(String university) {
+        return university == null || university.length() <= UNIVERSITY_MAX_LENGTH;
+    }
+
+    private boolean isFacultyValid(String faculty) {
+        return faculty == null || faculty.length() <= FACULTY_MAX_LENGTH;
     }
 
 }

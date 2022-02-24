@@ -164,7 +164,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                if (askConfirmToUser("Esci", "Sicuro di voler uscire"))
+                if (askConfirmToUser("Esci", "Sicuro di voler uscire?"))
                     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             }
         });
@@ -391,7 +391,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
     }
 
     @Override
-    public void onCategoryClearSelection() {
+    public void onCategoryDeselection() {
         createCategoryButton.setEnabled(false);
         updateCategoryButton.setEnabled(false);
         removeCategoryButton.setEnabled(false);
@@ -405,8 +405,6 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
 
         if (selectedReference == null)
             return;
-
-        categoriesTreePanel.clearSelection();
 
         if (selectedReference instanceof Article)
             getController().openArticleEditor((Article) selectedReference);
@@ -439,8 +437,6 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         categoriesTreePanel.clearSelection();
 
         setReferencesToShow(new ReferenceCriteriaSearch(search));
-
-        JOptionPane.showMessageDialog(this, "Riferimenti trovati: " + references.size(), "Risultati ricerca", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private boolean askConfirmToUser(String title, String message) {

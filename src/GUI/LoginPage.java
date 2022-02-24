@@ -105,7 +105,7 @@ public class LoginPage extends JFrame {
 	private void register() {
 		try {
 			User user = getUserFromFields();
-			controller.login(user);
+			controller.registerUser(user);
 		} catch (IllegalArgumentException | UserDatabaseException e) {
 			JOptionPane.showMessageDialog(this, e.getMessage(), "Errore registrazione utente", JOptionPane.ERROR_MESSAGE);
 		}

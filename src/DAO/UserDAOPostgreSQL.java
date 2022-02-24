@@ -80,12 +80,8 @@ public class UserDAOPostgreSQL implements UserDAO {
 
 			resultSet = statement.executeQuery();
 
-			boolean doesUserExist = resultSet.next();
-
-			return doesUserExist;
+			return resultSet.next();
 		} catch (SQLException | DatabaseConnectionException e) {
-			e.printStackTrace();
-
 			throw new UserDatabaseException("Impossibile controllare se l'utente esiste.");
 		} finally {
 			try {

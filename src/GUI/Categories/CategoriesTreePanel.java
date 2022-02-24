@@ -45,7 +45,7 @@ public class CategoriesTreePanel extends JScrollPane {
 
             @Override
             public void valueChanged(TreeSelectionEvent e) {
-                if (getSelectedCategory() == null)
+                if (getSelectedNode() == null)
                     fireCategoryDeselectionEvent();
                 else
                     fireCategorySelectionEvent();

@@ -261,7 +261,6 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
                 ids.add(resultSet.getInt("category"));
 
             ids.trimToSize();
-
             return ids;
         } catch (SQLException | DatabaseConnectionException e) {
             throw new CategoryDatabaseException("Impossibile recuperare le categorie dell'utente.");

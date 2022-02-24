@@ -101,5 +101,4 @@ public interface BibliographicReferenceDAO {
      *             se il salvataggio non va a buon fine
      */
     public void save(Website website) throws ReferenceDatabaseException;
-
 }

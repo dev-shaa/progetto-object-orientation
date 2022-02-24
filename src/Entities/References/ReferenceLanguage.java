@@ -4,6 +4,7 @@ package Entities.References;
  * Lingua di un riferimento.
  */
 public enum ReferenceLanguage {
+
     ITALIAN("Italiano"), ENGLISH("Inglese"), FRENCH("Francese"), GERMAN("Tedesco"), SPANISH("Spagnolo"), RUSSIAN("Russo"), JAPANESE("Giapponese"), CHINESE("Cinese"), ARAB("Arabo"), NOTSPECIFIED("Non specificato");
 
     private String name;
