@@ -38,7 +38,7 @@ public class AuthorDAOPostgreSQL implements AuthorDAO {
         String insertCommand = "insert into author(name, orcid) values (?, ?) on conflict do nothing";
 
         // nota: per orcid usiamo "is not distinct" perchè potrebbe avere anche valore null
-        String retrieveIDCommand = "select id from author where name = ? and orcid is not distinct from ?";
+        String retrieveIDCommand = "select id from author where lower(name) = lower(?) and orcid is not distinct from ?";
 
         try {
             connection = ConnectionController.getConnection();
@@ -111,8 +111,13 @@ public class AuthorDAOPostgreSQL implements AuthorDAO {
 
             ArrayList<Author> authors = new ArrayList<>();
 
-            while (resultSet.next())
-                authors.add(new Author(resultSet.getString("name"), resultSet.getString("orcid")));
+            while (resultSet.next()) {
+                String name = resultSet.getString("name");
+                String orcid = resultSet.getString("orcid");
+                int id = resultSet.getInt("id");
+
+                authors.add(new Author(name, orcid, id));
+            }
 
             authors.trimToSize();
             return authors;

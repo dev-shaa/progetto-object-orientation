@@ -8,6 +8,9 @@ public class User {
     private String name;
     private String password;
 
+    private final int NAME_MAX_LENGTH = 128;
+    private final int PASSWORD_MAX_LENGTH = 64;
+
     /**
      * Crea un nuovo utente con il nome e la password indicati.
      * 
@@ -41,10 +44,12 @@ public class User {
      *             se {@code name} è nullo o vuoto
      */
     public void setName(String name) {
-        if (!isNameValid(name))
-            throw new IllegalArgumentException("Il nome dell'utente non può essere nullo o vuoto.");
+        name = name.trim();
 
-        this.name = name.trim();
+        if (isNameValid(name))
+            this.name = name;
+        else
+            throw new IllegalArgumentException("Il nome dell'utente non può essere vuoto o più lungo di " + NAME_MAX_LENGTH + " caratteri.");
     }
 
     /**
@@ -65,10 +70,10 @@ public class User {
      *             se la password è nulla o vuota
      */
     public void setPassword(String password) {
-        if (!isPasswordValid(password))
-            throw new IllegalArgumentException("La password non può essere vuota.");
-
-        this.password = password;
+        if (isPasswordValid(password))
+            this.password = password;
+        else
+            throw new IllegalArgumentException("La password non può essere vuota o più lunga di " + PASSWORD_MAX_LENGTH + " caratteri.");
     }
 
     /**
@@ -81,11 +86,11 @@ public class User {
     }
 
     private boolean isNameValid(String name) {
-        return name != null && !name.isEmpty() && !name.isBlank();
+        return name != null && !name.isEmpty() && !name.isBlank() && name.length() <= NAME_MAX_LENGTH;
     }
 
     private boolean isPasswordValid(String password) {
-        return password != null && !password.isEmpty() && !password.isBlank();
+        return password != null && !password.isEmpty() && !password.isBlank() && password.length() <= PASSWORD_MAX_LENGTH;
     }
 
 }

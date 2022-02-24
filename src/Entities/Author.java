@@ -11,7 +11,8 @@ public class Author {
     private String name;
     private String ORCID;
 
-    private final Pattern orcidPattern = Pattern.compile("^ *[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9x] *$");
+    private final int NAME_MAX_LENGTH = 256;
+    private final Pattern ORCID_PATTERN = Pattern.compile("^ *[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9x] *$");
 
     /**
      * Crea un nuovo autore con il nome e l'ORCID dati.
@@ -104,13 +105,15 @@ public class Author {
      * @param name
      *            nome dell'autore
      * @throws IllegalArgumentException
-     *             se {@code name} è nullo o vuoto
+     *             se {@code name} è nullo, vuoto o più lungo di {@link #NAME_MAX_LENGTH}
      */
     public void setName(String name) {
-        if (isStringNullOrEmpty(name))
-            throw new IllegalArgumentException("Il nome non può essere nullo o vuoto.");
+        name = name.trim();
 
-        this.name = name.trim();
+        if (isNameValid(name))
+            this.name = name;
+        else
+            throw new IllegalArgumentException("Il nome non può essere vuoto o più lungo di " + NAME_MAX_LENGTH + " caratteri.");
     }
 
     /**
@@ -132,9 +135,11 @@ public class Author {
      *             se la stringa di input non rispetta il pattern del codice ORCID
      */
     public void setORCID(String ORCID) {
+        ORCID = ORCID.trim();
+
         if (isStringNullOrEmpty(ORCID))
             this.ORCID = null;
-        else if (orcidPattern.matcher(ORCID).matches())
+        else if (ORCID_PATTERN.matcher(ORCID).matches())
             this.ORCID = ORCID.trim();
         else
             throw new IllegalArgumentException("Il codice ORCID non è valido.");
@@ -152,6 +157,10 @@ public class Author {
 
     private boolean isStringNullOrEmpty(String string) {
         return string == null || string.isEmpty() || string.isBlank();
+    }
+
+    private boolean isNameValid(String name) {
+        return !isStringNullOrEmpty(name) && name.length() <= NAME_MAX_LENGTH;
     }
 
 }

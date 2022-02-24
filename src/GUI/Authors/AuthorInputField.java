@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.awt.*;
 import java.awt.event.*;
-
 import javax.swing.*;
-
 import Entities.Author;
 import Exceptions.Input.InvalidAuthorInputException;
 
@@ -19,9 +17,10 @@ public class AuthorInputField extends JPanel {
     private ArrayList<JTextField> otherAuthorsFields;
 
     private final Dimension maximumTextFieldSize = new Dimension(Integer.MAX_VALUE, 24);
+    private final ImageIcon addAuthorIcon = new ImageIcon("images/button_add.png");
     private final ImageIcon removeAuthorIcon = new ImageIcon("images/button_remove.png");
-    private final String textTooltip = "Autore del riferimento.\n"
-            + "È possibile specificare l'ORCID mettendolo tra parentesi quadre."
+    private final String textTooltip = "Un autore del riferimento."
+            + "\nÈ possibile specificare l'ORCID mettendolo tra parentesi quadre."
             + "\nEsempio: \"Mario Rossi [0000-0000-0000-0000]\"";
 
     /**
@@ -63,10 +62,9 @@ public class AuthorInputField extends JPanel {
      * @return lista di autori
      */
     public ArrayList<Author> getAuthors() throws InvalidAuthorInputException {
-        ArrayList<Author> authors = new ArrayList<>(otherAuthorsFields.size() + 1);
+        ArrayList<Author> authors = new ArrayList<>(otherAuthorsFields.size() + 1); // +1 perchè c'è il campo iniziale
 
         Author firstAuthor = getAuthorFromString(firstAuthorField.getText());
-
         if (firstAuthor != null)
             authors.add(firstAuthor);
 
@@ -78,7 +76,6 @@ public class AuthorInputField extends JPanel {
         }
 
         authors.trimToSize();
-
         return authors;
     }
 
@@ -88,9 +85,7 @@ public class AuthorInputField extends JPanel {
     public void clear() {
         otherAuthorsFields.clear();
         removeAll();
-
         addFirstAuthorField();
-
         revalidate();
     }
 
@@ -101,7 +96,7 @@ public class AuthorInputField extends JPanel {
         firstAuthorField = new JTextField();
         firstAuthorField.setToolTipText(textTooltip);
 
-        JButton addButton = new JButton(new ImageIcon("images/button_add.png"));
+        JButton addButton = new JButton(addAuthorIcon);
         addButton.setToolTipText("Aggiungi autore");
 
         authorPanel.add(firstAuthorField, BorderLayout.CENTER);
@@ -112,7 +107,6 @@ public class AuthorInputField extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 addAuthorField(null);
-
                 thisPanel.revalidate();
             }
         });
@@ -145,7 +139,6 @@ public class AuthorInputField extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 otherAuthorsFields.remove(textField);
-
                 thisPanel.remove(authorPanel);
                 thisPanel.remove(spacing);
                 thisPanel.revalidate();
@@ -156,6 +149,7 @@ public class AuthorInputField extends JPanel {
         add(spacing);
     }
 
+    // FIXME: è migliorabile
     private Author getAuthorFromString(String string) throws InvalidAuthorInputException {
         if (string == null || string.isEmpty() || string.isBlank())
             return null;

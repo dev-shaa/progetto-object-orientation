@@ -9,6 +9,8 @@ public class Category {
     private String name;
     private Category parent;
 
+    private final int NAME_MAX_LENGTH = 64;
+
     /**
      * Crea una categoria con un nome e nessun genitore.
      * 
@@ -101,13 +103,15 @@ public class Category {
      * @param name
      *            nome della categoria
      * @throws IllegalArgumentException
-     *             se il nome è nullo o vuoto
+     *             se il nome è nullo, vuoto o più lungo di {@link #NAME_MAX_LENGTH}
      */
     public void setName(String name) {
+        name = name.trim();
+
         if (isNameValid(name))
-            this.name = name.trim();
+            this.name = name;
         else
-            throw new IllegalArgumentException("Il nome della categoria non può essere nullo.");
+            throw new IllegalArgumentException("Il nome non può essere nullo o più lungo di " + NAME_MAX_LENGTH + " caratteri.");
     }
 
     /**
@@ -166,7 +170,7 @@ public class Category {
     }
 
     private boolean isNameValid(String name) {
-        return name != null && !name.isEmpty() && !name.isBlank();
+        return name != null && !name.isEmpty() && !name.isBlank() && name.length() <= NAME_MAX_LENGTH;
     }
 
 }
