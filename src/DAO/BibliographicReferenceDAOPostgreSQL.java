@@ -1,18 +1,15 @@
 package DAO;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.function.Function;
 
 import Controller.ConnectionController;
 import Entities.*;
 import Entities.References.*;
 import Entities.References.OnlineResources.*;
 import Entities.References.PhysicalResources.*;
-import Exceptions.Database.DatabaseConnectionException;
 import Exceptions.Database.ReferenceDatabaseException;
 
 /**
@@ -45,32 +42,34 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         Statement statement = null;
         ResultSet resultSet = null;
 
-        ArrayList<BibliographicReference> references = new ArrayList<>();
+        ArrayList<BibliographicReference> allReferences = new ArrayList<>();
         HashMap<Integer, BibliographicReference> idToReference = new HashMap<>();
-        HashMap<BibliographicReference, Collection<Integer>> referenceToRelatedID = new HashMap<>();
+        HashMap<BibliographicReference, Collection<Integer>> referenceToRelatedReferencesIDs = new HashMap<>();
 
         try {
             connection = ConnectionController.getConnection();
             statement = connection.createStatement();
 
-            references.addAll(getArticles(statement, resultSet));
-            references.addAll(getBooks(statement, resultSet));
-            references.addAll(getThesis(statement, resultSet));
-            references.addAll(getImages(statement, resultSet));
-            references.addAll(getWebsites(statement, resultSet));
-            references.addAll(getVideos(statement, resultSet));
-            references.addAll(getSourceCodes(statement, resultSet));
+            allReferences.addAll(getArticles(statement, resultSet));
+            allReferences.addAll(getBooks(statement, resultSet));
+            allReferences.addAll(getThesis(statement, resultSet));
+            allReferences.addAll(getImages(statement, resultSet));
+            allReferences.addAll(getWebsites(statement, resultSet));
+            allReferences.addAll(getVideos(statement, resultSet));
+            allReferences.addAll(getSourceCodes(statement, resultSet));
 
-            for (BibliographicReference reference : references) {
+            for (BibliographicReference reference : allReferences) {
                 idToReference.put(reference.getID(), reference);
-                referenceToRelatedID.put(reference, getRelatedReferencesIDs(statement, resultSet, reference));
+
+                List<Integer> relatedReferencesIDs = getRelatedReferencesIDs(statement, resultSet, reference);
+                referenceToRelatedReferencesIDs.put(reference, relatedReferencesIDs);
             }
 
             // ASSEGNAZIONE RIMANDI
-            for (BibliographicReference reference : references) {
+            for (BibliographicReference reference : allReferences) {
                 ArrayList<BibliographicReference> relatedReferences = new ArrayList<>();
 
-                for (Integer referenceID : referenceToRelatedID.get(reference)) {
+                for (Integer referenceID : referenceToRelatedReferencesIDs.get(reference)) {
                     BibliographicReference relatedReference = idToReference.get(referenceID);
                     relatedReferences.add(relatedReference);
                     relatedReference.setQuotationCount(relatedReference.getQuotationCount() + 1);
@@ -80,9 +79,9 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
                 reference.setRelatedReferences(relatedReferences);
             }
 
-            references.trimToSize();
-            return references;
-        } catch (SQLException | DatabaseConnectionException e) {
+            allReferences.trimToSize();
+            return allReferences;
+        } catch (Exception e) {
             throw new ReferenceDatabaseException("Impossibile recuperare i riferimenti dell'utente.");
         } finally {
             try {
@@ -138,68 +137,64 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws IllegalArgumentException
-     *             se {@code article == null}
-     */
     @Override
     public void save(Article article) throws ReferenceDatabaseException {
         if (article == null)
-            throw new IllegalArgumentException("article can't be null");
+            return;
 
         String pageCount = article.getPageCount() == 0 ? null : String.valueOf(article.getPageCount());
         String url = getFormattedStringForQuery(article.getURL());
         String publisher = getFormattedStringForQuery(article.getPublisher());
         String issn = getFormattedStringForQuery(article.getISSN());
 
-        String command = null;
+        Function<Integer, String> insertCommandGetter = new Function<Integer, String>() {
+            @Override
+            public String apply(Integer id) {
+                return "insert into article(id, page_count, url, publisher, issn) values(" + id + "," + pageCount + "," + url + "," + publisher + "," + issn + ")";
+            }
+        };
 
-        if (article.getID() == null)
-            command = "insert into article(id, page_count, url, publisher, issn) values(?," + pageCount + "," + url + "," + publisher + "," + issn + ")";
-        else
-            command = "update article set page_count = " + pageCount + ", url = " + url + ", publisher = " + publisher + ", issn = " + issn + " where id = ?";
+        Function<Integer, String> updateCommandGetter = new Function<Integer, String>() {
+            @Override
+            public String apply(Integer id) {
+                return "update article set page_count = " + pageCount + ", url = " + url + ", publisher = " + publisher + ", issn = " + issn + " where id = " + id;
+            }
+        };
 
-        save(article, command);
+        save(article, insertCommandGetter, updateCommandGetter);
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws IllegalArgumentException
-     *             se {@code book == null}
-     */
     @Override
     public void save(Book book) throws ReferenceDatabaseException {
         if (book == null)
-            throw new IllegalArgumentException("book can't be null");
+            return;
 
         String pageCount = getFormattedStringForQuery(book.getPageCount() == 0 ? null : String.valueOf(book.getPageCount()));
         String url = getFormattedStringForQuery(book.getURL());
         String publisher = getFormattedStringForQuery(book.getPublisher());
         String isbn = getFormattedStringForQuery(book.getISBN());
 
-        String command = null;
+        Function<Integer, String> insertCommandGetter = new Function<Integer, String>() {
+            @Override
+            public String apply(Integer id) {
+                return "insert into book(id, page_count, url, publisher, isbn) values(" + id + "," + pageCount + "," + url + "," + publisher + "," + isbn + ")";
+            }
+        };
 
-        if (book.getID() == null)
-            command = "insert into book(id, page_count, url, publisher, isbn) values(?," + pageCount + "," + url + "," + publisher + "," + isbn + ")";
-        else
-            command = "update book set page_count = " + pageCount + ", url = " + url + ", publisher = " + publisher + ", isbn = " + isbn + " where id = ?";
+        Function<Integer, String> updateCommandGetter = new Function<Integer, String>() {
+            @Override
+            public String apply(Integer id) {
+                return "update book set page_count = " + pageCount + ", url = " + url + ", publisher = " + publisher + ", isbn = " + isbn + " where id = " + id;
+            }
+        };
 
-        save(book, command);
+        save(book, insertCommandGetter, updateCommandGetter);
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws IllegalArgumentException
-     *             se {@code thesis == null}
-     */
     @Override
     public void save(Thesis thesis) throws ReferenceDatabaseException {
         if (thesis == null)
-            throw new IllegalArgumentException("thesis can't be null");
+            return;
 
         String pageCount = getFormattedStringForQuery(thesis.getPageCount() == 0 ? null : String.valueOf(thesis.getPageCount()));
         String url = getFormattedStringForQuery(thesis.getURL());
@@ -207,51 +202,53 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         String university = getFormattedStringForQuery(thesis.getUniversity());
         String faculty = getFormattedStringForQuery(thesis.getFaculty());
 
-        String command = null;
+        Function<Integer, String> insertCommandGetter = new Function<Integer, String>() {
+            @Override
+            public String apply(Integer id) {
+                return "insert into thesis(id, page_count, url, publisher, university, faculty) values(" + id + "," + pageCount + "," + url + "," + publisher + "," + university + "," + faculty + ")";
+            }
+        };
 
-        if (thesis.getID() == null)
-            command = "insert into thesis(id, page_count, url, publisher, university, faculty) values(?," + pageCount + "," + url + "," + publisher + "," + university + "," + faculty + ")";
-        else
-            command = "update thesis set page_count = " + pageCount + ", url = " + url + ", publisher = " + publisher + ", university = " + university + ", faculty = " + faculty + " where id = ?";
+        Function<Integer, String> updateCommandGetter = new Function<Integer, String>() {
+            @Override
+            public String apply(Integer id) {
+                return "update thesis set page_count = " + pageCount + ", url = " + url + ", publisher = " + publisher + ", university = " + university + ", faculty = " + faculty + " where id = " + id;
+            }
+        };
 
-        save(thesis, command);
+        save(thesis, insertCommandGetter, updateCommandGetter);
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws IllegalArgumentException
-     *             se {@code image == null}
-     */
     @Override
     public void save(Image image) throws ReferenceDatabaseException {
         if (image == null)
-            throw new IllegalArgumentException("image can't be null");
+            return;
 
         String url = getFormattedStringForQuery(image.getURL());
         String width = getFormattedStringForQuery(image.getWidth() == 0 ? null : String.valueOf(image.getWidth()));
         String height = getFormattedStringForQuery(image.getHeight() == 0 ? null : String.valueOf(image.getHeight()));
 
-        String command = null;
+        Function<Integer, String> insertCommandGetter = new Function<Integer, String>() {
+            @Override
+            public String apply(Integer id) {
+                return "insert into image(id, url, width, height) values(" + id + "," + url + "," + width + "," + height + ")";
+            }
+        };
 
-        if (image.getID() == null)
-            command = "insert into image(id, url, width, height) values(?," + url + "," + width + "," + height + ")";
-        else
-            command = "update image set url = " + url + ", width = " + width + ", height = " + height + " where id = ?";
+        Function<Integer, String> updateCommandGetter = new Function<Integer, String>() {
+            @Override
+            public String apply(Integer id) {
+                return "update image set url = " + url + ", width = " + width + ", height = " + height + " where id = " + id;
+            }
+        };
 
-        save(image, command);
+        save(image, insertCommandGetter, updateCommandGetter);
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws IllegalArgumentException
-     *             se {@code video == null}
-     */
     @Override
     public void save(Video video) throws ReferenceDatabaseException {
         if (video == null)
-            throw new IllegalArgumentException("video can't be null");
+            return;
 
         String url = getFormattedStringForQuery(video.getURL());
         String width = video.getWidth() == 0 ? null : String.valueOf(video.getWidth());
@@ -259,74 +256,79 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         String framerate = video.getFrameRate() == 0 ? null : String.valueOf(video.getFrameRate());
         String duration = video.getDuration() == 0 ? null : String.valueOf(video.getDuration());
 
-        String command = null;
+        Function<Integer, String> insertCommandGetter = new Function<Integer, String>() {
+            @Override
+            public String apply(Integer id) {
+                return "insert into video(id, url, width, height, framerate, duration) values(" + id + "," + url + "," + width + "," + height + "," + framerate + "," + duration + ")";
+            }
+        };
 
-        if (video.getID() == null)
-            command = "insert into video(id, url, width, height, framerate, duration) values(?," + url + "," + width + "," + height + "," + framerate + "," + duration + ")";
-        else
-            command = "update video set url = " + url + ", width = " + width + ", height = " + height + ", framerate = " + framerate + ", duration = " + duration + " where id = ?";
+        Function<Integer, String> updateCommandGetter = new Function<Integer, String>() {
+            @Override
+            public String apply(Integer id) {
+                return "update video set url = " + url + ", width = " + width + ", height = " + height + ", framerate = " + framerate + ", duration = " + duration + " where id = " + id;
+            }
+        };
 
-        save(video, command);
+        save(video, insertCommandGetter, updateCommandGetter);
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws IllegalArgumentException
-     *             se {@code sourceCode == null}
-     */
     @Override
     public void save(SourceCode sourceCode) throws ReferenceDatabaseException {
         if (sourceCode == null)
-            throw new IllegalArgumentException("sourceCode can't be null");
+            return;
 
+        String programmingLanguage = getFormattedProgrammingLanguageForQuery(sourceCode.getProgrammingLanguage());
         String url = getFormattedStringForQuery(sourceCode.getURL());
 
-        ProgrammingLanguage language = sourceCode.getProgrammingLanguage();
-        String programmingLanguage = getFormattedStringForQuery(language == ProgrammingLanguage.NOTSPECIFIED ? null : language.name());
+        Function<Integer, String> insertCommandGetter = new Function<Integer, String>() {
+            @Override
+            public String apply(Integer id) {
+                return "insert into source_code(id, url, programming_language) values(" + id + "," + url + "," + programmingLanguage + ")";
+            }
+        };
 
-        String command = null;
+        Function<Integer, String> updateCommandGetter = new Function<Integer, String>() {
+            @Override
+            public String apply(Integer id) {
+                return "update source_code set url = " + url + ", programming_language = " + programmingLanguage + " where id = " + id;
+            }
+        };
 
-        if (sourceCode.getID() == null)
-            command = "insert into source_code(id, url, programming_language) values(?," + url + "," + programmingLanguage + ")";
-        else
-            command = "update source_code set url = " + url + ", programming_language = " + programmingLanguage + " where id = ?";
-
-        save(sourceCode, command);
+        save(sourceCode, insertCommandGetter, updateCommandGetter);
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws IllegalArgumentException
-     *             se {@code website == null}
-     */
     @Override
     public void save(Website website) throws ReferenceDatabaseException {
         if (website == null)
-            throw new IllegalArgumentException("website can't be null");
+            return;
 
         String url = getFormattedStringForQuery(website.getURL());
 
-        String command = null;
+        Function<Integer, String> insertCommandGetter = new Function<Integer, String>() {
+            @Override
+            public String apply(Integer id) {
+                return "insert into website(id, url) values(" + id + "," + url + ")";
+            }
+        };
 
-        if (website.getID() == null)
-            command = "insert into website(id, url) values(? ," + url + ")";
-        else
-            command = "update website set url = " + url + " where id = ?";
+        Function<Integer, String> updateCommandGetter = new Function<Integer, String>() {
+            @Override
+            public String apply(Integer id) {
+                return "update website set url = " + url + " where id = " + id;
+            }
+        };
 
-        save(website, command);
+        save(website, insertCommandGetter, updateCommandGetter);
     }
 
-    // UTILITIES
-
-    private void save(BibliographicReference reference, String subReferenceCommand) throws ReferenceDatabaseException {
+    private void save(BibliographicReference reference, Function<Integer, String> insertCommandGetterForSubclass, Function<Integer, String> updateCommandGetterForSubclass) throws ReferenceDatabaseException {
         if (reference == null)
             return;
 
         Connection connection = null;
         PreparedStatement referenceStatement = null;
-        PreparedStatement subReferenceStatement = null;
+        Statement referenceSubclassStatement = null;
         PreparedStatement relatedReferenceRemoveStatement = null;
         PreparedStatement relatedReferenceInsertStatement = null;
         PreparedStatement categoriesRemoveStatement = null;
@@ -371,28 +373,29 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
             // se l'id è nullo, abbiamo inserito un nuovo riferimento, quindi dobbiamo recuperare la chiave appena generata
             // però non lo impostiamo subito, perchè se le istruzioni successive falliscono viene eseguito il rollback
             // quindi avremo un id che nel database non corrisponde a niente
-            int id = reference.getID() == null ? 0 : reference.getID();
+            Integer referenceID = reference.getID();
 
-            if (reference.getID() == null) {
+            referenceSubclassStatement = connection.createStatement();
+
+            if (referenceID == null) {
                 resultSet = referenceStatement.getGeneratedKeys();
 
                 if (resultSet.next()) {
-                    id = resultSet.getInt(1);
+                    referenceID = resultSet.getInt(1);
+                    referenceSubclassStatement.executeUpdate(insertCommandGetterForSubclass.apply(referenceID));
                 }
+            } else {
+                referenceSubclassStatement.executeUpdate(updateCommandGetterForSubclass.apply(referenceID));
             }
-
-            subReferenceStatement = connection.prepareStatement(subReferenceCommand);
-            subReferenceStatement.setInt(1, id);
-            subReferenceStatement.executeUpdate();
 
             // per inserire i rimandi è meglio rimuovere prima tutte le associazioni e aggiungere quelle nuove
 
             relatedReferenceRemoveStatement = connection.prepareStatement(relatedReferenceRemoveCommand);
-            relatedReferenceRemoveStatement.setInt(1, id);
+            relatedReferenceRemoveStatement.setInt(1, referenceID);
             relatedReferenceRemoveStatement.executeUpdate();
 
             relatedReferenceInsertStatement = connection.prepareStatement(relatedReferenceInsertCommand);
-            relatedReferenceInsertStatement.setInt(1, id);
+            relatedReferenceInsertStatement.setInt(1, referenceID);
             for (BibliographicReference relatedReference : reference.getRelatedReferences()) {
                 relatedReferenceInsertStatement.setInt(2, relatedReference.getID());
                 relatedReferenceInsertStatement.executeUpdate();
@@ -401,11 +404,11 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
             // idem per le categorie
 
             categoriesRemoveStatement = connection.prepareStatement(categoriesRemoveCommand);
-            categoriesRemoveStatement.setInt(1, id);
+            categoriesRemoveStatement.setInt(1, referenceID);
             categoriesRemoveStatement.executeUpdate();
 
             categoriesInsertStatement = connection.prepareStatement(categoriesInsertCommand);
-            categoriesInsertStatement.setInt(2, id);
+            categoriesInsertStatement.setInt(2, referenceID);
 
             for (Category category : reference.getCategories()) {
                 categoriesInsertStatement.setInt(1, category.getID());
@@ -415,11 +418,11 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
             // idem per gli autori
 
             authorsRemoveStatement = connection.prepareStatement(authorsRemoveCommand);
-            authorsRemoveStatement.setInt(1, id);
+            authorsRemoveStatement.setInt(1, referenceID);
             authorsRemoveStatement.executeUpdate();
 
             authorsInsertStatement = connection.prepareStatement(authorsInsertCommand);
-            authorsInsertStatement.setInt(1, id);
+            authorsInsertStatement.setInt(1, referenceID);
             for (Author author : reference.getAuthors()) {
                 authorsInsertStatement.setInt(2, author.getID());
                 authorsInsertStatement.executeUpdate();
@@ -429,9 +432,9 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
 
             // l'id lo mettiamo alla fine, in questo modo siamo sicuri che sia andato tutto bene prima
             // e quindi abbiamo un id valido
-            reference.setID(id);
+            reference.setID(referenceID);
 
-        } catch (SQLException | DatabaseConnectionException e) {
+        } catch (Exception e) {
             try {
                 connection.rollback();
             } catch (Exception r) {
@@ -462,8 +465,8 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
                 if (relatedReferenceRemoveStatement != null)
                     relatedReferenceRemoveStatement.close();
 
-                if (subReferenceStatement != null)
-                    subReferenceStatement.close();
+                if (referenceSubclassStatement != null)
+                    referenceSubclassStatement.close();
 
                 if (referenceStatement != null)
                     referenceStatement.close();
@@ -685,6 +688,10 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
 
     private String getFormattedLanguageForQuery(ReferenceLanguage language) {
         return getFormattedStringForQuery(language == ReferenceLanguage.NOTSPECIFIED ? null : language.name());
+    }
+
+    private String getFormattedProgrammingLanguageForQuery(ProgrammingLanguage programmingLanguage) {
+        return getFormattedStringForQuery(programmingLanguage == ProgrammingLanguage.NOTSPECIFIED ? null : programmingLanguage.name());
     }
 
     // #endregion
