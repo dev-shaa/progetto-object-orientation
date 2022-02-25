@@ -20,7 +20,6 @@ public class ReferenceRepository {
     private CategoryRepository categoryRepository;
 
     private List<BibliographicReference> references;
-
     private boolean needToRetrieveFromDatabase;
 
     /**
@@ -75,6 +74,13 @@ public class ReferenceRepository {
     }
 
     /**
+     * Impone che, al prossimo recupero, i riferimenti vengano recuperati di nuovo direttamente dal database.
+     */
+    public void forceNextRetrievalFromDatabase() {
+        needToRetrieveFromDatabase = true;
+    }
+
+    /**
      * Restituisce tutti i riferimenti associati all'utente che sta usando l'applicazione.
      * 
      * @return
@@ -123,32 +129,15 @@ public class ReferenceRepository {
      *             se il salvataggio non è andato a buon fine
      */
     public void save(Article reference) throws ReferenceDatabaseException {
-        Callable<Void> articleDAOSave = new Callable<Void>() {
-
+        Callable<Void> daoSaveCallable = new Callable<Void>() {
             @Override
             public Void call() throws ReferenceDatabaseException {
                 referenceDAO.save(reference);
                 return null;
             }
-
         };
 
-        save(reference, articleDAOSave);
-    }
-
-    // FIXME:
-    private void save(BibliographicReference reference, Callable<Void> daoSaveFunction) throws ReferenceDatabaseException {
-        if (reference == null)
-            throw new IllegalArgumentException("reference can't be null");
-
-        try {
-            authorDAO.save(reference.getAuthors());
-            daoSaveFunction.call();
-            tagDAO.save(reference);
-            saveToLocal(reference);
-        } catch (Exception e) {
-            throw new ReferenceDatabaseException(e.getMessage());
-        }
+        save(reference, daoSaveCallable);
     }
 
     /**
@@ -162,17 +151,15 @@ public class ReferenceRepository {
      *             se il salvataggio non è andato a buon fine
      */
     public void save(Book reference) throws ReferenceDatabaseException {
-        Callable<Void> bookDAOSave = new Callable<Void>() {
-
+        Callable<Void> daoSaveCallable = new Callable<Void>() {
             @Override
             public Void call() throws ReferenceDatabaseException {
                 referenceDAO.save(reference);
                 return null;
             }
-
         };
 
-        save(reference, bookDAOSave);
+        save(reference, daoSaveCallable);
     }
 
     /**
@@ -186,17 +173,15 @@ public class ReferenceRepository {
      *             se il salvataggio non è andato a buon fine
      */
     public void save(Thesis reference) throws ReferenceDatabaseException {
-        if (reference == null)
-            throw new IllegalArgumentException("reference can't be null");
+        Callable<Void> daoSaveCallable = new Callable<Void>() {
+            @Override
+            public Void call() throws ReferenceDatabaseException {
+                referenceDAO.save(reference);
+                return null;
+            }
+        };
 
-        try {
-            authorDAO.save(reference.getAuthors());
-            referenceDAO.save(reference);
-            tagDAO.save(reference);
-            saveToLocal(reference);
-        } catch (DatabaseException e) {
-            throw new ReferenceDatabaseException(e.getMessage());
-        }
+        save(reference, daoSaveCallable);
     }
 
     /**
@@ -210,17 +195,15 @@ public class ReferenceRepository {
      *             se il salvataggio non è andato a buon fine
      */
     public void save(Image reference) throws ReferenceDatabaseException {
-        if (reference == null)
-            throw new IllegalArgumentException("reference can't be null");
+        Callable<Void> daoSaveCallable = new Callable<Void>() {
+            @Override
+            public Void call() throws ReferenceDatabaseException {
+                referenceDAO.save(reference);
+                return null;
+            }
+        };
 
-        try {
-            authorDAO.save(reference.getAuthors());
-            referenceDAO.save(reference);
-            tagDAO.save(reference);
-            saveToLocal(reference);
-        } catch (DatabaseException e) {
-            throw new ReferenceDatabaseException(e.getMessage());
-        }
+        save(reference, daoSaveCallable);
     }
 
     /**
@@ -234,17 +217,15 @@ public class ReferenceRepository {
      *             se il salvataggio non è andato a buon fine
      */
     public void save(SourceCode reference) throws ReferenceDatabaseException {
-        if (reference == null)
-            throw new IllegalArgumentException("reference can't be null");
+        Callable<Void> daoSaveCallable = new Callable<Void>() {
+            @Override
+            public Void call() throws ReferenceDatabaseException {
+                referenceDAO.save(reference);
+                return null;
+            }
+        };
 
-        try {
-            authorDAO.save(reference.getAuthors());
-            referenceDAO.save(reference);
-            tagDAO.save(reference);
-            saveToLocal(reference);
-        } catch (AuthorDatabaseException | TagDatabaseException e) {
-            throw new ReferenceDatabaseException(e.getMessage());
-        }
+        save(reference, daoSaveCallable);
     }
 
     /**
@@ -258,17 +239,15 @@ public class ReferenceRepository {
      *             se il salvataggio non è andato a buon fine
      */
     public void save(Video reference) throws ReferenceDatabaseException {
-        if (reference == null)
-            throw new IllegalArgumentException("reference can't be null");
+        Callable<Void> daoSaveCallable = new Callable<Void>() {
+            @Override
+            public Void call() throws ReferenceDatabaseException {
+                referenceDAO.save(reference);
+                return null;
+            }
+        };
 
-        try {
-            authorDAO.save(reference.getAuthors());
-            referenceDAO.save(reference);
-            tagDAO.save(reference);
-            saveToLocal(reference);
-        } catch (AuthorDatabaseException | TagDatabaseException e) {
-            throw new ReferenceDatabaseException(e.getMessage());
-        }
+        save(reference, daoSaveCallable);
     }
 
     /**
@@ -282,24 +261,29 @@ public class ReferenceRepository {
      *             se il salvataggio non è andato a buon fine
      */
     public void save(Website reference) throws ReferenceDatabaseException {
+        Callable<Void> daoSaveCallable = new Callable<Void>() {
+            @Override
+            public Void call() throws ReferenceDatabaseException {
+                referenceDAO.save(reference);
+                return null;
+            }
+        };
+
+        save(reference, daoSaveCallable);
+    }
+
+    private void save(BibliographicReference reference, Callable<Void> daoSaveFunction) throws ReferenceDatabaseException {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
         try {
             authorDAO.save(reference.getAuthors());
-            referenceDAO.save(reference);
+            daoSaveFunction.call();
             tagDAO.save(reference);
             saveToLocal(reference);
-        } catch (AuthorDatabaseException | TagDatabaseException e) {
+        } catch (Exception e) {
             throw new ReferenceDatabaseException(e.getMessage());
         }
-    }
-
-    /**
-     * Impone che, al prossimo recupero, i riferimenti vengano recuperati di nuovo direttamente dal database.
-     */
-    public void forceNextRetrievalFromDatabase() {
-        needToRetrieveFromDatabase = true;
     }
 
     private void retrieveFromDatabase() throws ReferenceDatabaseException {
@@ -319,7 +303,7 @@ public class ReferenceRepository {
     }
 
     private void saveToLocal(BibliographicReference reference) {
-        int index = references.indexOf(reference);
+        int index = findIndexOfReferenceWithSameID(reference);
 
         if (index == -1) {
             references.add(reference);
@@ -358,6 +342,19 @@ public class ReferenceRepository {
             if (index != -1)
                 reference.getRelatedReferences().set(index, newReference);
         }
+    }
+
+    private int findIndexOfReferenceWithSameID(BibliographicReference reference) {
+        int index = -1;
+
+        for (int i = 0; i < references.size(); i++) {
+            if (references.get(i).getID().equals(reference.getID())) {
+                index = i;
+                break;
+            }
+        }
+
+        return index;
     }
 
 }

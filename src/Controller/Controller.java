@@ -382,7 +382,6 @@ public class Controller {
             websiteEditor = new WebsiteEditor(null, null);
 
             websiteEditor.addReferenceCreationListener(new ReferenceEditorListener<Website>() {
-
                 @Override
                 public void onReferenceCreation(Website newReference) {
                     try {
@@ -393,7 +392,6 @@ public class Controller {
                         websiteEditor.showErrorMessage("Salvataggio non riuscito", e.getMessage());
                     }
                 }
-
             });
         }
 
