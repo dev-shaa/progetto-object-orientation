@@ -12,7 +12,7 @@ import GUI.Utilities.Tree.CustomTreeModel;
 import GUI.Utilities.Tree.CustomTreeNode;
 
 /**
- * Pannello che mostra un albero delle categorie.
+ * Un pannello che mostra un albero delle categorie.
  */
 public class CategoriesTreePanel extends JScrollPane {
 
@@ -95,7 +95,7 @@ public class CategoriesTreePanel extends JScrollPane {
      * @param listener
      *            listener da aggiungere
      */
-    public void addSelectionListener(CategorySelectionListener listener) {
+    public void addCategorySelectionListener(CategorySelectionListener listener) {
         selectionListeners.add(CategorySelectionListener.class, listener);
     }
 
@@ -105,15 +105,23 @@ public class CategoriesTreePanel extends JScrollPane {
      * @param listener
      *            listener da rimuovere
      */
-    public void removeSelectionListener(CategorySelectionListener listener) {
+    public void removeCategorySelectionListener(CategorySelectionListener listener) {
         selectionListeners.remove(CategorySelectionListener.class, listener);
     }
 
+    /**
+     * Restituisce l'ultimo nodo selezionato.
+     * 
+     * @return ultimo nodo selezionato
+     */
     @SuppressWarnings("unchecked")
     private CustomTreeNode<Category> getSelectedNode() {
         return (CustomTreeNode<Category>) tree.getLastSelectedPathComponent();
     }
 
+    /**
+     * Notifica gli ascoltatori dell'evento di selezione di un nodo.
+     */
     private void fireCategorySelectionEvent() {
         Category selectedCategory = getSelectedCategory();
         CategorySelectionListener[] listeners = selectionListeners.getListeners(CategorySelectionListener.class);
@@ -122,6 +130,9 @@ public class CategoriesTreePanel extends JScrollPane {
             listener.onCategorySelection(selectedCategory);
     }
 
+    /**
+     * Notifica gli ascoltatori dell'evento di deselezione di un nodo.
+     */
     private void fireCategoryDeselectionEvent() {
         CategorySelectionListener[] listeners = selectionListeners.getListeners(CategorySelectionListener.class);
 

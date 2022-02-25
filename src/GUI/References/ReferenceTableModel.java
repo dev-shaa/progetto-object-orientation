@@ -19,27 +19,16 @@ public class ReferenceTableModel extends AbstractTableModel {
      * Crea un nuovo modello vuoto.
      */
     public ReferenceTableModel() {
-        this(null);
-    }
-
-    /**
-     * Crea un nuovo modello inserendo i riferimenti passati.
-     * 
-     * @param references
-     *            riferimenti da mostrare
-     */
-    public ReferenceTableModel(Collection<? extends BibliographicReference> references) {
         super();
         this.references = new ArrayList<>();
-        setReferences(references);
     }
 
     @Override
-    public String getColumnName(int column) {
-        if (column >= 0 && column < columnNames.length)
-            return columnNames[column];
+    public String getColumnName(int index) {
+        if (index >= 0 && index < columnNames.length)
+            return columnNames[index];
         else
-            return super.getColumnName(column);
+            return super.getColumnName(index);
     }
 
     @Override
@@ -71,7 +60,7 @@ public class ReferenceTableModel extends AbstractTableModel {
     }
 
     @Override
-    public boolean isCellEditable(int rowIndex, int columnIndex) {
+    public boolean isCellEditable(int row, int column) {
         return false;
     }
 

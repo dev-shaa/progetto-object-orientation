@@ -12,7 +12,7 @@ import GUI.Utilities.Tree.CustomTreeModel;
 import GUI.Utilities.Tree.CustomTreeNode;
 
 /**
- * Controller per gestire il recupero, l'inserimento, la rimozione e la modifica di categorie.
+ * Repository per gestire il recupero, l'inserimento, la rimozione e la modifica di categorie.
  */
 public class CategoryRepository {
 
@@ -34,26 +34,36 @@ public class CategoryRepository {
      *             se {@code categoryDAO == null}
      */
     public CategoryRepository(CategoryDAO categoryDAO) {
+        setCategoryDAO(categoryDAO);
+
+        idToCategory = new HashMap<>();
+    }
+
+    /**
+     * Imposta il DAO delle categorie.
+     * <p>
+     * Il recupero successivo a questa funzione avverrà dal database.
+     * 
+     * @param categoryDAO
+     *            DAO delle categorie
+     * @throws IllegalArgumentException
+     *             se {@code categoryDAO == null}
+     */
+    public void setCategoryDAO(CategoryDAO categoryDAO) {
         if (categoryDAO == null)
             throw new IllegalArgumentException("categoryDAO can't be null");
 
         this.categoryDAO = categoryDAO;
-        idToCategory = new HashMap<>();
-
         forceNextRetrievalFromDatabase();
     }
 
     /**
-     * Salva una categoria.
-     * <p>
-     * Il modello dell'albero delle categorie verrà aggiornato.
+     * Salva una categoria, inserendola anche nell'albero corrente.
      * 
-     * @param name
-     *            nome della nuova categoria
-     * @param parent
-     *            nodo genitore della categoria
+     * @param category
+     *            categoria da salvare
      * @throws IllegalArgumentException
-     *             se il nome della categoria non è valido
+     *             se {@code category == null}
      * @throws CategoryDatabaseException
      *             se il salvataggio non va a buon fine
      */
@@ -76,7 +86,7 @@ public class CategoryRepository {
      * Se il nuovo nome è uguale al precedente, non verrà effettuato alcun cambiamento.
      * 
      * @param category
-     *            nodo di cui modificare la categoria
+     *            categoria da modificare
      * @param newName
      *            nuovo nome della categoria
      * @throws IllegalArgumentException
@@ -90,7 +100,7 @@ public class CategoryRepository {
 
         String oldName = category.getName();
 
-        if (oldName.equals(newName))
+        if (oldName.equalsIgnoreCase(newName))
             return;
 
         category.setName(newName); // se il nome non è valido lancia una IllegalArgumentException
@@ -104,12 +114,12 @@ public class CategoryRepository {
     }
 
     /**
-     * Rimuove una categoria dal database.
+     * Rimuove una categoria.
      * 
      * @param category
-     *            nodo della categoria da rimuovere
+     *            categoria da rimuovere
      * @throws IllegalArgumentException
-     *             se {@code categoryNode == null} o se la categoria associata al nodo è nulla
+     *             se {@code category == null} o se la categoria associata al nodo è nulla
      * @throws CategoryDatabaseException
      *             se la rimozione non va a buon fine
      */
@@ -125,8 +135,7 @@ public class CategoryRepository {
     /**
      * Recupera tutte le categorie dell'utente.
      * <p>
-     * Dopo essere state recuperate una prima volta, le categorie rimangono in memoria
-     * in modo da evitare di dover creare nuove connessioni col database.
+     * Dopo essere state recuperate una prima volta, le categorie rimangono in memoria.
      * <p>
      * Il recupero dal database viene eseguito la prima volta dopo aver cambiato il DAO usato con {@link #setCategoryDAO(CategoryDAO)}, ma
      * è possibile forzarlo chiamando prima {@link #forceNextRetrievalFromDatabase()}.
@@ -134,8 +143,6 @@ public class CategoryRepository {
      * @return lista con le categorie dell'utente.
      * @throws CategoryDatabaseException
      *             se il recupero delle categorie dal database non va a buon fine
-     * 
-     * @see #forceNextRetrievalFromDatabase()
      */
     public List<Category> getAll() throws CategoryDatabaseException {
         if (needToRetrieveFromDatabase)
@@ -151,7 +158,7 @@ public class CategoryRepository {
      *            riferimento di cui recuperare le categorie
      * @return lista con le categorie associate al riferimento
      * @throws CategoryDatabaseException
-     *             se il recupero delle categorie dal database non va a buon fine
+     *             se il recupero delle categorie non va a buon fine
      */
     public List<Category> get(BibliographicReference reference) throws CategoryDatabaseException {
         if (needToRetrieveFromDatabase)
@@ -171,7 +178,7 @@ public class CategoryRepository {
      * Restituisce le categorie dell'utente in forma di albero.
      * 
      * @return
-     *         albero delle categorie dell'utente
+     *         albero delle categorie
      * @throws CategoryDatabaseException
      *             se il recupero non va a buon fine
      */
@@ -212,6 +219,12 @@ public class CategoryRepository {
         treeNeedsUpdate = true;
     }
 
+    /**
+     * Recupera tutte le categorie dell'utente dal database.
+     * 
+     * @throws CategoryDatabaseException
+     *             se il recupero non va a buon fine
+     */
     private void retrieveFromDatabase() throws CategoryDatabaseException {
         idToCategory.clear();
         categories = categoryDAO.getAll();

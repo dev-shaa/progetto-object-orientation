@@ -15,5 +15,4 @@ public interface ReferenceSelectionListener extends EventListener {
      *            riferimento selezionato
      */
     public void onReferenceSelection(BibliographicReference reference);
-
 }

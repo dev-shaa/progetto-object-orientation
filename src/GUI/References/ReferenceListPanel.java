@@ -1,12 +1,12 @@
 package GUI.References;
 
 import Entities.References.*;
-import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.EventListenerList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -19,27 +19,14 @@ public class ReferenceListPanel extends JScrollPane {
 
     private JTable referencesTable;
     private ReferenceTableModel referencesTableModel;
-
-    private ArrayList<ReferenceSelectionListener> selectionListeners;
+    private EventListenerList referenceSelectionListeners;
 
     /**
-     * Crea un nuovo pannello.
+     * Crea un nuovo pannello vuoto.
      */
     public ReferenceListPanel() {
-        referencesTableModel = new ReferenceTableModel();
-
-        referencesTable = new JTable(referencesTableModel);
-        referencesTable.setAutoCreateRowSorter(true);
-        referencesTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        referencesTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting())
-                    notifyListeners();
-            }
-        });
-
-        setViewportView(referencesTable);
+        setupReferencesTable();
+        referenceSelectionListeners = new EventListenerList();
     }
 
     /**
@@ -88,16 +75,7 @@ public class ReferenceListPanel extends JScrollPane {
      *            listener da aggiungere
      */
     public void addReferenceSelectionListener(ReferenceSelectionListener listener) {
-        if (listener == null)
-            return;
-
-        if (selectionListeners == null)
-            selectionListeners = new ArrayList<>();
-
-        if (selectionListeners.contains(listener))
-            return;
-
-        selectionListeners.add(listener);
+        referenceSelectionListeners.add(ReferenceSelectionListener.class, listener);
     }
 
     /**
@@ -107,21 +85,45 @@ public class ReferenceListPanel extends JScrollPane {
      *            listener da rimuovere
      */
     public void removeReferenceSelectionListener(ReferenceSelectionListener listener) {
-        if (listener == null || selectionListeners == null)
-            return;
-
-        selectionListeners.remove(listener);
+        referenceSelectionListeners.remove(ReferenceSelectionListener.class, listener);
     }
 
+    /**
+     * Inizializza la tabella dei riferimenti.
+     */
+    private void setupReferencesTable() {
+        referencesTableModel = new ReferenceTableModel();
+
+        referencesTable = new JTable(referencesTableModel);
+        referencesTable.setAutoCreateRowSorter(true);
+        referencesTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        referencesTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting())
+                    fireSelectionEvent();
+            }
+        });
+
+        setViewportView(referencesTable);
+    }
+
+    /**
+     * Restituisce l'indice del riferimento selezionato.
+     * 
+     * @return indice del riferimento selezionato
+     */
     private int getSelectedReferenceIndex() {
         return referencesTable.convertRowIndexToModel(referencesTable.getSelectedRow());
     }
 
-    private void notifyListeners() {
-        if (selectionListeners == null)
-            return;
+    /**
+     * Notifica gli ascoltatori dell'evento di selezione di un riferimento.
+     */
+    private void fireSelectionEvent() {
+        ReferenceSelectionListener[] listeners = referenceSelectionListeners.getListeners(ReferenceSelectionListener.class);
 
-        for (ReferenceSelectionListener listener : selectionListeners) {
+        for (ReferenceSelectionListener listener : listeners) {
             listener.onReferenceSelection(getSelectedReference());
         }
     }
