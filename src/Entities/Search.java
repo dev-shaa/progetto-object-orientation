@@ -18,6 +18,7 @@ public class Search {
 
     /**
      * Crea una nuova ricerca dai termini indicati.
+     * <p>
      * Almeno un valore deve essere diverso da {@code null}.
      * 
      * @param from
@@ -29,17 +30,17 @@ public class Search {
      * @param categories
      *            categorie della ricerca
      * @throws EmptySearchException
-     *             se tutti gli elementi sono {@code null} (in caso di array anche se hanno lunghezza 0)
+     *             se tutti gli elementi sono {@code null} (in caso di liste anche se hanno lunghezza 0)
      */
     public Search(Date from, Date to, Collection<? extends Tag> tags, Collection<? extends Category> categories, Collection<? extends Author> authors) throws EmptySearchException {
         if (areAllTermsNull(from, to, tags, categories, authors))
             throw new EmptySearchException("Almeno un elemento di ricerca deve essere specificato");
 
-        setFrom(from);
-        setTo(to);
-        setTags(tags);
-        setCategories(categories);
-        setAuthors(authors);
+        this.from = from;
+        this.to = to;
+        this.tags = tags;
+        this.categories = categories;
+        this.authors = authors;
     }
 
     /**
@@ -53,16 +54,6 @@ public class Search {
     }
 
     /**
-     * Imposta gli autori di questa ricerca.
-     * 
-     * @param categories
-     *            autori di ricerca
-     */
-    public void setAuthors(Collection<? extends Author> authors) {
-        this.authors = authors;
-    }
-
-    /**
      * Restituisce le categorie specificate in questa ricerca.
      * 
      * @return
@@ -70,16 +61,6 @@ public class Search {
      */
     public Collection<? extends Category> getCategories() {
         return categories;
-    }
-
-    /**
-     * Imposta le categorie di questa ricerca.
-     * 
-     * @param categories
-     *            categorie di ricerca
-     */
-    private void setCategories(Collection<? extends Category> categories) {
-        this.categories = categories;
     }
 
     /**
@@ -93,16 +74,6 @@ public class Search {
     }
 
     /**
-     * Imposta la data di inizio dell'intervallo di ricerca.
-     * 
-     * @param from
-     *            data di inizio dell'intervallo
-     */
-    private void setFrom(Date from) {
-        this.from = from;
-    }
-
-    /**
      * Restituisce la data di fine dell'intervallo di ricerca.
      * 
      * @return
@@ -110,16 +81,6 @@ public class Search {
      */
     public Date getTo() {
         return to;
-    }
-
-    /**
-     * Imposta la data di fine dell'intervallo di ricerca.
-     * 
-     * @param to
-     *            data di fine dell'intervallo
-     */
-    private void setTo(Date to) {
-        this.to = to;
     }
 
     /**
@@ -133,15 +94,20 @@ public class Search {
     }
 
     /**
-     * Imposta le parole chiave di questa ricerca.
+     * Controlla che tutti i termini della ricerca non siano nulli.
      * 
+     * @param from
+     *            data di inizio dell'intervallo
+     * @param to
+     *            data di fine dell'intervallo
      * @param tags
-     *            parole chiave della ricerca
+     *            parole chiave da cercare
+     * @param categories
+     *            categorie in cui cercare
+     * @param authors
+     *            autori da crcare
+     * @return {@code true} se tutti i termini sono nulli (anche se le liste sono vuote)
      */
-    private void setTags(Collection<? extends Tag> tags) {
-        this.tags = tags;
-    }
-
     private boolean areAllTermsNull(Date from, Date to, Collection<? extends Tag> tags, Collection<? extends Category> categories, Collection<? extends Author> authors) {
         return from == null && to == null && (tags == null || tags.isEmpty()) && (categories == null || categories.isEmpty()) && (authors == null || authors.isEmpty());
     }

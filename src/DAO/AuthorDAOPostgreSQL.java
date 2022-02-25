@@ -16,11 +16,6 @@ import Exceptions.Database.DatabaseConnectionException;
  */
 public class AuthorDAOPostgreSQL implements AuthorDAO {
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @implNote se {@code authors == null || authors.isEmpty()} non esegue nulla
-     */
     @Override
     public void save(Collection<? extends Author> authors) throws AuthorDatabaseException {
         if (authors == null || authors.isEmpty())

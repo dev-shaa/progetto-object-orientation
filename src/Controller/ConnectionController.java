@@ -2,7 +2,6 @@ package Controller;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-
 import Exceptions.Database.DatabaseConnectionException;
 
 /**
@@ -24,8 +23,7 @@ public class ConnectionController {
 	public static Connection getConnection() throws DatabaseConnectionException {
 		try {
 			Class.forName("org.postgresql.Driver");
-			Connection connection = DriverManager.getConnection(connectionURL, connectionUser, connectionPassword);
-			return connection;
+			return DriverManager.getConnection(connectionURL, connectionUser, connectionPassword);
 		} catch (Exception e) {
 			throw new DatabaseConnectionException("Impossibile stabilire una connessione al database.");
 		}

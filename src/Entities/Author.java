@@ -108,10 +108,8 @@ public class Author {
      *             se {@code name} è nullo, vuoto o più lungo di {@link #NAME_MAX_LENGTH}
      */
     public void setName(String name) {
-        name = name.trim();
-
         if (isNameValid(name))
-            this.name = name;
+            this.name = name.trim();
         else
             throw new IllegalArgumentException("Il nome non può essere vuoto o più lungo di " + NAME_MAX_LENGTH + " caratteri.");
     }
@@ -140,7 +138,7 @@ public class Author {
         else if (ORCID_PATTERN.matcher(ORCID).matches())
             this.ORCID = ORCID.trim();
         else
-            throw new IllegalArgumentException("Il codice ORCID non è valido.");
+            throw new IllegalArgumentException("Il codice ORCID non rispetta il pattern corretto.");
     }
 
     /**
@@ -153,10 +151,24 @@ public class Author {
         return ORCID;
     }
 
+    /**
+     * Controlla se una stringa è nulla o vuota.
+     * 
+     * @param string
+     *            stringa da controllare
+     * @return {@code true} se {@code string == null || string.isEmpty() || string.isBlank()}
+     */
     private boolean isStringNullOrEmpty(String string) {
         return string == null || string.isEmpty() || string.isBlank();
     }
 
+    /**
+     * Controlla se un nome è valido.
+     * 
+     * @param name
+     *            nome da controllare
+     * @return {@code true} se il nome non è vuoto e se la sua lunghezza è minore di {@link #NAME_MAX_LENGTH}
+     */
     private boolean isNameValid(String name) {
         return !isStringNullOrEmpty(name) && name.length() <= NAME_MAX_LENGTH;
     }

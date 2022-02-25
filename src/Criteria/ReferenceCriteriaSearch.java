@@ -1,10 +1,8 @@
 package Criteria;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-
 import Entities.Author;
 import Entities.Category;
 import Entities.Search;
@@ -14,7 +12,7 @@ import Entities.References.BibliographicReference;
 /**
  * Implementazione di {@code ReferenceCriteria} per filtrare i riferimenti corrispondenti a una ricerca.
  */
-public class ReferenceCriteriaSearch implements ReferenceCriteria {
+public class ReferenceCriteriaSearch extends ReferenceCriteria {
 
     private Search search;
 
@@ -34,19 +32,11 @@ public class ReferenceCriteriaSearch implements ReferenceCriteria {
     }
 
     @Override
-    public ArrayList<BibliographicReference> filter(Collection<? extends BibliographicReference> references) {
-        if (references == null)
-            return null;
-
-        ArrayList<BibliographicReference> filteredReferences = new ArrayList<>();
-
-        for (BibliographicReference reference : references) {
-            if (doesReferenceMatch(reference))
-                filteredReferences.add(reference);
-        }
-
-        filteredReferences.trimToSize();
-        return filteredReferences;
+    protected boolean doesReferenceMatch(BibliographicReference reference) {
+        return wasReferencePublishedBetween(reference, search.getFrom(), search.getTo())
+                && wasReferenceWrittenBy(reference, search.getAuthors())
+                && isReferenceTaggedWith(reference, search.getTags())
+                && isReferenceContainedIn(reference, search.getCategories());
     }
 
     private boolean wasReferencePublishedAfter(BibliographicReference reference, Date date) {
@@ -90,13 +80,6 @@ public class ReferenceCriteriaSearch implements ReferenceCriteria {
     private boolean isReferenceContainedIn(BibliographicReference reference, Collection<? extends Category> categories) {
         List<Category> referenceCategories = reference.getCategories();
         return (categories == null && referenceCategories.isEmpty()) || referenceCategories.containsAll(categories);
-    }
-
-    private boolean doesReferenceMatch(BibliographicReference reference) {
-        return wasReferencePublishedBetween(reference, search.getFrom(), search.getTo())
-                && wasReferenceWrittenBy(reference, search.getAuthors())
-                && isReferenceTaggedWith(reference, search.getTags())
-                && isReferenceContainedIn(reference, search.getCategories());
     }
 
 }

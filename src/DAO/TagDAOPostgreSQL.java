@@ -3,7 +3,6 @@ package DAO;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
 import Controller.ConnectionController;
 import Entities.Tag;
 import Entities.References.BibliographicReference;
@@ -25,7 +24,7 @@ public class TagDAOPostgreSQL implements TagDAO {
      * @implNote se al riferimento non sono associate parole chiave, non esegue nulla
      */
     @Override
-    public void save(BibliographicReference reference) throws TagDatabaseException {
+    public void saveTagsOf(BibliographicReference reference) throws TagDatabaseException {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
@@ -93,7 +92,7 @@ public class TagDAOPostgreSQL implements TagDAO {
      *             se {@code reference == null} o se {@code reference} non ha un ID
      */
     @Override
-    public List<Tag> get(BibliographicReference reference) throws TagDatabaseException {
+    public List<Tag> getTagsOf(BibliographicReference reference) throws TagDatabaseException {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 

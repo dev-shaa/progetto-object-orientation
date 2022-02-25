@@ -47,13 +47,10 @@ public class Tag {
      *             se il nome è nullo o vuoto
      */
     public void setName(String name) {
-        name = name.trim().toLowerCase();
-
         if (isNameValid(name))
-            this.name = name;
+            this.name = name.trim().toLowerCase();
         else
             throw new IllegalArgumentException("Il nome della parola chiave non può essere vuoto o più lungo di " + NAME_MAX_LENGTH + " caratteri.");
-
     }
 
     /**
@@ -66,6 +63,13 @@ public class Tag {
         return name;
     }
 
+    /**
+     * Controlla se un nome è valido.
+     * 
+     * @param name
+     *            nome da controllare
+     * @return {@code true} se il nome non è nullo, vuoto o più lungo di {@link #NAME_MAX_LENGTH}
+     */
     private boolean isNameValid(String name) {
         return name != null && !name.isEmpty() && !name.isBlank() && name.length() <= NAME_MAX_LENGTH;
     }

@@ -1,15 +1,14 @@
 package Criteria;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-
 import Entities.References.BibliographicReference;
 
 /**
- * Interfaccia per implementare il Criteria Pattern sui riferimenti.
+ * Classe astratta per implementare il Criteria Pattern sui riferimenti.
  * https://www.tutorialspoint.com/design_pattern/filter_pattern.htm
  */
-public interface ReferenceCriteria {
+public abstract class ReferenceCriteria {
 
     /**
      * Restituisce una lista di riferimenti che corrispondono ai criteri di filtri.
@@ -18,6 +17,27 @@ public interface ReferenceCriteria {
      *            riferimenti da filtrare
      * @return una lista di elementi filtrati
      */
-    public List<BibliographicReference> filter(Collection<? extends BibliographicReference> references);
+    public ArrayList<BibliographicReference> filter(Collection<? extends BibliographicReference> references) {
+        if (references == null)
+            return null;
 
+        ArrayList<BibliographicReference> filteredReferences = new ArrayList<>();
+
+        for (BibliographicReference reference : references) {
+            if (doesReferenceMatch(reference))
+                filteredReferences.add(reference);
+        }
+
+        filteredReferences.trimToSize();
+        return filteredReferences;
+    }
+
+    /**
+     * Controlla se il riferimento corrisponde ai filtri.
+     * 
+     * @param reference
+     *            riferimento da controllare
+     * @return {@code true} se il riferimento corrisponde ai filtri
+     */
+    protected abstract boolean doesReferenceMatch(BibliographicReference reference);
 }

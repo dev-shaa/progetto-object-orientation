@@ -19,7 +19,7 @@ public interface TagDAO {
      * @throws TagDatabaseException
      *             se l'inserimento non va a buon fine
      */
-    public void save(BibliographicReference reference) throws TagDatabaseException;
+    public void saveTagsOf(BibliographicReference reference) throws TagDatabaseException;
 
     /**
      * Restituisce tutte le parole chiave associate a un riferimento.
@@ -30,5 +30,5 @@ public interface TagDAO {
      * @throws TagDatabaseException
      *             se il recupero non va a buon fine
      */
-    public List<Tag> get(BibliographicReference reference) throws TagDatabaseException;
+    public List<Tag> getTagsOf(BibliographicReference reference) throws TagDatabaseException;
 }

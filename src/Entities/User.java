@@ -44,10 +44,8 @@ public class User {
      *             se {@code name} è nullo o vuoto
      */
     public void setName(String name) {
-        name = name.trim();
-
         if (isNameValid(name))
-            this.name = name;
+            this.name = name.trim();
         else
             throw new IllegalArgumentException("Il nome dell'utente non può essere vuoto o più lungo di " + NAME_MAX_LENGTH + " caratteri.");
     }
@@ -85,10 +83,24 @@ public class User {
         return password;
     }
 
+    /**
+     * Controlla se un nome è valido.
+     * 
+     * @param name
+     *            nome da controllare
+     * @return {@code true} se il nome non è nullo, vuoto o più lungo di {@link #NAME_MAX_LENGTH}
+     */
     private boolean isNameValid(String name) {
         return name != null && !name.isEmpty() && !name.isBlank() && name.length() <= NAME_MAX_LENGTH;
     }
 
+    /**
+     * Controlla se una password è valida.
+     * 
+     * @param name
+     *            nome da controllare
+     * @return {@code true} se la password non è nulla, vuota o più lunga di {@link #PASSWORD_MAX_LENGTH}
+     */
     private boolean isPasswordValid(String password) {
         return password != null && !password.isEmpty() && !password.isBlank() && password.length() <= PASSWORD_MAX_LENGTH;
     }

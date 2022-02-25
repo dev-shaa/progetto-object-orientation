@@ -78,7 +78,7 @@ public class Category {
         Category otherCategoryParent = otherCategory.getParent();
 
         return getName().equalsIgnoreCase(otherCategory.getName())
-                && (parent == null && otherCategoryParent == null) || (parent != null && parent.equals(otherCategoryParent));
+                && ((parent == null && otherCategoryParent == null) || (parent != null && parent.equals(otherCategoryParent)));
     }
 
     /**
