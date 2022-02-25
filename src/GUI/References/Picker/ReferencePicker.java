@@ -32,21 +32,9 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
     private EventListenerList pickerListeners;
 
     /**
-     * Crea una nuova finestra di dialogo vuota.
+     * Crea una nuova finestra di dialogo.
      */
     public ReferencePicker() {
-        this(null, null);
-    }
-
-    /**
-     * Crea una nuova finestra di dialogo in cui è possibile scegliere un riferimento.
-     * 
-     * @param categoriesTree
-     *            albero delle categorie che è possibile selezionare
-     * @param selectableReferences
-     *            tutti i riferimenti che è possibile selezionare
-     */
-    public ReferencePicker(CustomTreeModel<Category> categoriesTree, Collection<? extends BibliographicReference> selectableReferences) {
         super();
 
         pickerListeners = new EventListenerList();
@@ -60,7 +48,7 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
         setContentPane(contentPane);
 
         categoriesPanel = new CategoriesTreePanel();
-        categoriesPanel.addSelectionListener(this);
+        categoriesPanel.addCategorySelectionListener(this);
 
         referencesPanel = new ReferenceListPanel();
         referencesPanel.addReferenceSelectionListener(this);
@@ -85,9 +73,6 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
 
         buttonPanel.add(confirmButton);
         contentPane.add(buttonPanel, BorderLayout.SOUTH);
-
-        setCategoriesTree(categoriesTree);
-        setAvailableReferences(selectableReferences);
     }
 
     @Override
@@ -96,6 +81,7 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
             categoriesPanel.clearSelection();
             referencesPanel.clear();
             setLocationRelativeTo(null);
+            revalidate();
         }
 
         super.setVisible(b);
@@ -127,8 +113,8 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
     }
 
     @Override
-    public void onCategorySelection(Category category) {
-        ReferenceCriteriaCategory categoryFilter = new ReferenceCriteriaCategory(category);
+    public void onCategorySelection(Category selectedCategory) {
+        ReferenceCriteriaCategory categoryFilter = new ReferenceCriteriaCategory(selectedCategory);
         List<? extends BibliographicReference> referencesToShow = categoryFilter.filter(selectableReferences);
 
         referencesPanel.setReferences(referencesToShow);
@@ -159,6 +145,9 @@ public class ReferencePicker extends JDialog implements CategorySelectionListene
         pickerListeners.remove(ReferencePickerListener.class, listener);
     }
 
+    /**
+     * Notifica gli ascoltatori dell'evento di selezione di un riferimento.
+     */
     private void firePickEvent() {
         BibliographicReference selectedReference = referencesPanel.getSelectedReference();
         ReferencePickerListener[] listeners = pickerListeners.getListeners(ReferencePickerListener.class);

@@ -4,7 +4,6 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.EventListenerList;
-
 import com.toedter.calendar.JDateChooser;
 import Entities.Category;
 import Entities.Search;
@@ -48,9 +47,58 @@ public class SearchPanel extends JPanel {
      */
     public SearchPanel(CustomTreeModel<Category> categoriesTree) {
         super();
-
+        setup(categoriesTree);
         searchListeners = new EventListenerList();
+    }
 
+    /**
+     * Imposta l'albero delle categorie selezionabili (può essere {@code null}).
+     * 
+     * @param categoriesTree
+     *            albero delle categorie selezionabili
+     */
+    public void setCategoriesTree(CustomTreeModel<Category> categoriesTree) {
+        categories.setTreeModel(categoriesTree);
+    }
+
+    /**
+     * Reimposta i campi di ricerca.
+     */
+    public void clear() {
+        tags.clear();
+        authors.clear();
+        categories.getCheckboxTree().clearSelection();
+        dateFrom.setDate(null);
+        dateTo.setDate(null);
+    }
+
+    /**
+     * Aggiunge un listener all'evento di ricerca.
+     * 
+     * @param listener
+     *            listener da aggiungere
+     */
+    public void addSearchListener(SearchListener listener) {
+        searchListeners.add(SearchListener.class, listener);
+    }
+
+    /**
+     * Rimuove un listener dall'evento di ricerca.
+     * 
+     * @param listener
+     *            listener da rimuovere
+     */
+    public void removeSearchListener(SearchListener listener) {
+        searchListeners.remove(SearchListener.class, listener);
+    }
+
+    /**
+     * Inizializza il pannello.
+     * 
+     * @param treeModel
+     *            albero delle categorie
+     */
+    private void setup(CustomTreeModel<Category> treeModel) {
         setLayout(new BorderLayout(5, 5));
         setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
@@ -62,7 +110,7 @@ public class SearchPanel extends JPanel {
 
         tags = new TagInputField();
         authors = new AuthorInputField();
-        categories = new PopupCheckboxTree<>(categoriesTree);
+        categories = new PopupCheckboxTree<>();
         dateFrom = new JDateChooser();
         dateTo = new JDateChooser();
 
@@ -97,45 +145,8 @@ public class SearchPanel extends JPanel {
     }
 
     /**
-     * Imposta l'albero delle categorie selezionabili.
-     * 
-     * @param categoriesTree
+     * Notifica gli ascoltatori dell'evento di ricerca.
      */
-    public void setCategoriesTree(CustomTreeModel<Category> categoriesTree) {
-        categories.setTreeModel(categoriesTree);
-    }
-
-    /**
-     * Resetta i campi di ricerca.
-     */
-    public void clear() {
-        tags.clear();
-        authors.clear();
-        categories.getCheckboxTree().clearSelection();
-        dateFrom.setDate(null);
-        dateTo.setDate(null);
-    }
-
-    /**
-     * Aggiunge un listener all'evento di ricerca.
-     * 
-     * @param listener
-     *            listener da aggiungere
-     */
-    public void addSearchListener(SearchListener listener) {
-        searchListeners.add(SearchListener.class, listener);
-    }
-
-    /**
-     * Rimuove un listener dall'evento di ricerca.
-     * 
-     * @param listener
-     *            listener da rimuovere
-     */
-    public void removeSearchListener(SearchListener listener) {
-        searchListeners.remove(SearchListener.class, listener);
-    }
-
     private void fireSearchEvent() {
         try {
             Search search = getSearch();
@@ -150,6 +161,16 @@ public class SearchPanel extends JPanel {
         }
     }
 
+    /**
+     * Aggiunge un campo al pannello di ricerca.
+     * 
+     * @param label
+     *            Etichetta del campo
+     * @param component
+     *            componente da aggiungere
+     * @param tooltip
+     *            tooltip da aggiungere
+     */
     private void addFieldComponent(String label, JComponent component, String tooltip) {
         JLabel labelField = new JLabel(label);
         labelField.setMaximumSize(maximumSize);
@@ -166,6 +187,15 @@ public class SearchPanel extends JPanel {
         searchPanel.add(Box.createVerticalStrut(5));
     }
 
+    /**
+     * Restituisce la ricerca creata dai campi.
+     * 
+     * @return ricerca eseguita
+     * @throws EmptySearchException
+     *             se la ricerca ha tutti i campi vuoti
+     * @throws InvalidInputException
+     *             se l'utente non ha inserito dei valori corretti
+     */
     private Search getSearch() throws EmptySearchException, InvalidInputException {
         return new Search(dateFrom.getDate(), dateTo.getDate(), tags.getTags(), categories.getCheckboxTree().getSelectedItems(), authors.getAuthors());
     }

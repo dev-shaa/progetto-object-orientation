@@ -24,7 +24,7 @@ public class AuthorInputField extends JPanel {
             + "\nEsempio: \"Mario Rossi [0000-0000-0000-0000]\"";
 
     /**
-     * Crea un nuovo {@code AuthorInputField}.
+     * Crea un nuovo {@code AuthorInputField} con un solo campo iniziale.
      */
     public AuthorInputField() {
         super();
@@ -48,7 +48,7 @@ public class AuthorInputField extends JPanel {
         if (authors == null || authors.isEmpty())
             return;
 
-        firstAuthorField.setText(getStringFromAuthor(authors.get(0)));
+        firstAuthorField.setText(getStringFromAuthor(authors.get(0))); // il primo campo dobbiamo impostarlo a parte
 
         for (int i = 1; i < authors.size(); i++)
             addAuthorField(authors.get(i));
@@ -60,6 +60,8 @@ public class AuthorInputField extends JPanel {
      * Restituisce gli autori inseriti dall'utente.
      * 
      * @return lista di autori
+     * @throws InvalidAuthorInputException
+     *             se l'utente ha inserito dei valori errati
      */
     public ArrayList<Author> getAuthors() throws InvalidAuthorInputException {
         ArrayList<Author> authors = new ArrayList<>(otherAuthorsFields.size() + 1); // +1 perchè c'è il campo iniziale
@@ -89,6 +91,12 @@ public class AuthorInputField extends JPanel {
         revalidate();
     }
 
+    /**
+     * Aggiunge il primo campo obbligatorio.
+     * <p>
+     * Cambia dagli altri perchè non ha un pulsante per rimuoverlo,
+     * ma per aggiungere gli altri.
+     */
     private void addFirstAuthorField() {
         JPanel authorPanel = new JPanel(new BorderLayout(0, 0));
         authorPanel.setMaximumSize(maximumTextFieldSize);
@@ -115,6 +123,12 @@ public class AuthorInputField extends JPanel {
         add(Box.createVerticalStrut(10));
     }
 
+    /**
+     * Aggiunge un altro campo per un autore.
+     * 
+     * @param author
+     *            eventuale autore di cui impostare il nome
+     */
     private void addAuthorField(Author author) {
         JPanel authorPanel = new JPanel(new BorderLayout(0, 0));
         authorPanel.setMaximumSize(maximumTextFieldSize);
@@ -149,7 +163,16 @@ public class AuthorInputField extends JPanel {
         add(spacing);
     }
 
-    // FIXME: è migliorabile
+    /**
+     * Restituisce un autore a partire da una stringa.
+     * 
+     * @param string
+     *            stringa di input
+     * @return
+     *         autore con il nome e l'orcid indicati nella stringa
+     * @throws InvalidAuthorInputException
+     *             se la stringa di input non è valida per creare un autore
+     */
     private Author getAuthorFromString(String string) throws InvalidAuthorInputException {
         if (string == null || string.isEmpty() || string.isBlank())
             return null;
@@ -172,6 +195,13 @@ public class AuthorInputField extends JPanel {
         }
     }
 
+    /**
+     * Recupera una stringa valida per il campo di input da un autore.
+     * 
+     * @param author
+     *            autore da convertire
+     * @return una stringa valida per l'input, {@code null} se {@code author == null}
+     */
     private String getStringFromAuthor(Author author) {
         if (author == null)
             return null;

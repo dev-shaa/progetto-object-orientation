@@ -35,7 +35,7 @@ public class TagInputField extends JTextField {
         if (tags == null || tags.isEmpty())
             clear();
         else
-            setText(tags.toString().substring(1, tags.toString().lastIndexOf(']')));
+            setText(convertListToString(tags));
     }
 
     /**
@@ -69,10 +69,24 @@ public class TagInputField extends JTextField {
     }
 
     /**
-     * Reimposta il campo.
+     * Reimposta il campo di input.
      */
     public void clear() {
         setText(null);
+    }
+
+    /**
+     * Converte una lista di parole chiave in una stringa.
+     * 
+     * @param tags
+     *            parole chiave da convertire
+     * @return stringa di parole chiave, separate da virgola
+     */
+    private String convertListToString(List<Tag> tags) {
+        if (tags == null)
+            return null;
+
+        return tags.toString().substring(1, tags.toString().lastIndexOf(']'));
     }
 
 }
