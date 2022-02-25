@@ -29,12 +29,11 @@ public class PopupCheckboxTree<T extends Object> extends PopupButton {
         super("Premi per selezionare");
 
         setTreeModel(treeModel);
-
         addToPopupMenu(checkboxTree);
     }
 
     /**
-     * Imposta l'albero da mostrare
+     * Imposta l'albero da mostrare.
      * 
      * @param treeModel
      *            modello dell'albero da mostrare
@@ -42,7 +41,6 @@ public class PopupCheckboxTree<T extends Object> extends PopupButton {
     public void setTreeModel(CustomTreeModel<T> treeModel) {
         if (checkboxTree == null) {
             checkboxTree = new CheckboxTree<T>(treeModel);
-
             checkboxTree.setToggleClickCount(0);
             checkboxTree.setEditable(false);
             checkboxTree.setRootVisible(false);

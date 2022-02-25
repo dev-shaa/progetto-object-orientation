@@ -28,32 +28,30 @@ public class PopupButtonList<T extends Object> extends PopupButton {
     /**
      * Imposta gli elementi presenti nella lista.
      * <p>
-     * Se la lista è nulla, vengono solo rimossi quelli già esistenti.
+     * Se la lista è nulla, ha lo stesso effetto di {@link #clear()}.
      * 
      * @param items
      *            elementi da aggiungere
      */
     public void setItems(Collection<? extends T> items) {
-        this.items.clear();
-        removeAllFromPopupMenu();
+        clear();
 
-        if (items == null)
-            return;
-
-        for (T item : items)
-            addItem(item);
+        if (items != null) {
+            for (T item : items)
+                addItem(item);
+        }
     }
 
     /**
      * Aggiunge un elemento alla lista.
      * <p>
-     * Se l'elemento è nullo o già contenuto, non viene eseguito nulla.
+     * Se l'elemento è nullo, non viene eseguito nulla.
      * 
      * @param item
      *            elemento da aggiungere
      */
     public void addItem(T item) {
-        if (item == null || items.contains(item))
+        if (item == null)
             return;
 
         JPanel panel = new JPanel(new BorderLayout(10, 0));
@@ -85,6 +83,14 @@ public class PopupButtonList<T extends Object> extends PopupButton {
      */
     public ArrayList<T> getItems() {
         return items;
+    }
+
+    /**
+     * Rimuove tutti i campi.
+     */
+    public void clear() {
+        items.clear();
+        removeAllFromPopupMenu();
     }
 
 }

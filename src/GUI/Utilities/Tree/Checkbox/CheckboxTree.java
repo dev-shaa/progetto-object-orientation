@@ -1,10 +1,8 @@
 package GUI.Utilities.Tree.Checkbox;
 
 import java.util.ArrayList;
-
 import javax.swing.JTree;
 import javax.swing.tree.*;
-
 import GUI.Utilities.Tree.CustomTreeModel;
 import GUI.Utilities.Tree.CustomTreeNode;
 
@@ -22,12 +20,10 @@ public class CheckboxTree<T extends Object> extends JTree {
      *            modello dell'albero da mostrare
      */
     public CheckboxTree(CustomTreeModel<T> newModel) {
-        super(newModel);
-
-        treeModel = newModel;
-
+        super();
         super.setCellRenderer(new CheckboxTreeRenderer());
         super.setSelectionModel(new CheckboxTreeSelectionModel());
+        setModel(newModel);
     }
 
     /**
@@ -49,6 +45,9 @@ public class CheckboxTree<T extends Object> extends JTree {
         this.treeModel = newModel;
     }
 
+    /**
+     * FUNZIONE DISATTIVATA
+     */
     @Override
     public void setSelectionModel(TreeSelectionModel selectionModel) {
         // non fare niente
@@ -68,9 +67,8 @@ public class CheckboxTree<T extends Object> extends JTree {
 
         ArrayList<T> selectedItems = new ArrayList<>(selectedPaths.length);
 
-        for (TreePath path : selectedPaths) {
+        for (TreePath path : selectedPaths)
             selectedItems.add(((CustomTreeNode<T>) path.getLastPathComponent()).getUserObject());
-        }
 
         return selectedItems;
     }
@@ -87,11 +85,10 @@ public class CheckboxTree<T extends Object> extends JTree {
 
         CustomTreeNode<T> node = treeModel.findNode(item);
 
-        if (node == null)
-            return;
-
-        TreePath path = new TreePath(treeModel.getPathToRoot(node));
-        getSelectionModel().addSelectionPath(path);
+        if (node != null) {
+            TreePath path = new TreePath(treeModel.getPathToRoot(node));
+            getSelectionModel().addSelectionPath(path);
+        }
     }
 
 }

@@ -6,13 +6,10 @@ import javax.swing.*;
 
 /**
  * Un {@code JButton} che, quando premuto, apre un menu popup.
- * <p>
- * Se vuoto, mostra un {@code JLabel} di avviso.
  */
 public class PopupButton extends JButton {
 
     private JPopupMenu popupMenu;
-    private JMenuItem emptyPopupLabel;
 
     /**
      * Crea un pulsante senza testo o icona.
@@ -60,23 +57,17 @@ public class PopupButton extends JButton {
                 onPopupOpen();
             }
         });
-
-        emptyPopupLabel = new JMenuItem("Nessun elemento");
-        emptyPopupLabel.setEnabled(false);
-        addToPopupMenu(emptyPopupLabel);
     }
 
     /**
-     * Aggiunge un elemento al menu popup, se non è null.
+     * Aggiunge un elemento al menu popup, se non è nullo.
      * 
      * @param component
      *            elemento da aggiungere
      */
     public void addToPopupMenu(Component component) {
-        if (component != null) {
-            popupMenu.remove(emptyPopupLabel);
+        if (component != null)
             popupMenu.add(component);
-        }
     }
 
     /**
@@ -86,17 +77,11 @@ public class PopupButton extends JButton {
      *            componente da rimuovere
      */
     public void removeFromPopupMenu(Component component) {
-        if (component == null)
-            return;
-
-        popupMenu.remove(component);
-
-        if (popupMenu.getComponentCount() == 0) {
-            addToPopupMenu(emptyPopupLabel);
+        if (component != null) {
+            popupMenu.remove(component);
+            popupMenu.pack();
+            popupMenu.revalidate();
         }
-
-        popupMenu.pack();
-        popupMenu.revalidate();
     }
 
     /**
@@ -104,8 +89,6 @@ public class PopupButton extends JButton {
      */
     public void removeAllFromPopupMenu() {
         popupMenu.removeAll();
-
-        addToPopupMenu(emptyPopupLabel);
     }
 
     /**

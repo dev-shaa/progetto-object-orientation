@@ -47,7 +47,7 @@ public class Video extends OnlineResource {
      * @return
      *         larghezza del video
      */
-    public Integer getWidth() {
+    public int getWidth() {
         return this.width;
     }
 
@@ -72,7 +72,7 @@ public class Video extends OnlineResource {
      * @return
      *         altezza del video
      */
-    public Integer getHeight() {
+    public int getHeight() {
         return this.height;
     }
 
