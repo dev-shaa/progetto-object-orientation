@@ -50,21 +50,6 @@ public abstract class BibliographicReference {
         return getTitle();
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        // due riferimenti sono uguali se hanno lo stesso id
-
-        if (obj == this)
-            return true;
-
-        if (obj == null || !(obj instanceof BibliographicReference))
-            return false;
-
-        BibliographicReference reference = (BibliographicReference) obj;
-
-        return (getID() == null && reference.getID() == null) || (getID() != null && getID().equals(reference.getID()));
-    }
-
     /**
      * Imposta l'id del riferimento.
      * 
@@ -164,10 +149,11 @@ public abstract class BibliographicReference {
      *             se la lunghezza della descrizione è maggiore di 1024 caratteri
      */
     public void setDescription(String description) {
+        description = description.trim();
+
         if (!isDescriptionValid(description))
             throw new IllegalArgumentException("Il titolo non può essere vuoto o più lungo di " + DESCRIPTION_MAX_LENGTH + " caratteri.");
 
-        // FIXME: imposta a null
         this.description = description;
     }
 
@@ -394,10 +380,21 @@ public abstract class BibliographicReference {
         return name == null || name.isEmpty() || name.isBlank();
     }
 
+    /**
+     * TODO: commenta
+     * 
+     * @param title
+     * @return
+     */
     private boolean isTitleValid(String title) {
         return !isStringNullOrEmpty(title) && title.length() <= TITLE_MAX_LENGTH;
     }
 
+    /**
+     * 
+     * @param description
+     * @return
+     */
     private boolean isDescriptionValid(String description) {
         return description == null || description.length() <= DESCRIPTION_MAX_LENGTH;
     }

@@ -4,7 +4,6 @@ import Entities.Category;
 import Entities.References.BibliographicReference;
 import Entities.References.OnlineResources.OnlineResource;
 import Exceptions.Input.InvalidInputException;
-import Exceptions.Input.RequiredFieldMissingException;
 import GUI.Utilities.Tree.CustomTreeModel;
 import java.util.Collection;
 import javax.swing.JTextField;
@@ -66,13 +65,8 @@ public abstract class OnlineResourceEditor<T extends OnlineResource> extends Ref
         this.URL.setText(URL);
     }
 
-    private String getURLValue() throws RequiredFieldMissingException {
-        String newURL = URL.getText().trim();
-
-        if (newURL == null || newURL.isEmpty() || newURL.isBlank())
-            throw new RequiredFieldMissingException("L'URL di una risorsa online non può essere nullo.");
-
-        return newURL;
+    private String getURLValue() {
+        return URL.getText().trim();
     }
 
 }

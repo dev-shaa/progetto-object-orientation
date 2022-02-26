@@ -40,27 +40,19 @@ public class CustomTreeModel<T extends Object> extends DefaultTreeModel {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void setRoot(TreeNode root) throws IllegalArgumentException {
-        try {
-            super.setRoot((CustomTreeNode<T>) root);
-        } catch (ClassCastException e) {
-            throw new IllegalArgumentException("root is not a valid type of node for this tree");
-        }
+    public void setRoot(TreeNode root) {
+        super.setRoot((CustomTreeNode<T>) root);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public void insertNodeInto(MutableTreeNode newChild, MutableTreeNode parent, int index) throws IllegalArgumentException {
-        try {
-            CustomTreeNode<T> _child = (CustomTreeNode<T>) newChild;
-            CustomTreeNode<T> _parent = (CustomTreeNode<T>) parent;
-            super.insertNodeInto(_child, _parent, index);
+    public void insertNodeInto(MutableTreeNode newChild, MutableTreeNode parent, int index) {
+        CustomTreeNode<T> _child = (CustomTreeNode<T>) newChild;
+        CustomTreeNode<T> _parent = (CustomTreeNode<T>) parent;
+        super.insertNodeInto(_child, _parent, index);
 
-            itemToNode.put(_child.getUserObject(), _child);
-            reload(_parent);
-        } catch (ClassCastException e) {
-            throw new IllegalArgumentException("newChild or parent are not a valid type of node for this tree");
-        }
+        itemToNode.put(_child.getUserObject(), _child);
+        reload(_parent);
     }
 
     /**
@@ -71,8 +63,19 @@ public class CustomTreeModel<T extends Object> extends DefaultTreeModel {
      * @param parent
      *            genitore a cui aggiungere il nodo
      */
-    public void addNode(CustomTreeNode<T> newChild, CustomTreeNode<T> parent) {
+    public void add(CustomTreeNode<T> newChild, CustomTreeNode<T> parent) {
         insertNodeInto(newChild, parent, parent.getChildCount());
+    }
+
+    /**
+     * Rimuove un nodo.
+     * 
+     * @param node
+     *            nodo da rimuovere
+     */
+    public void remove(CustomTreeNode<T> node) {
+        removeNodeFromParent(node);
+        itemToNode.remove(node.getUserObject());
     }
 
     /**

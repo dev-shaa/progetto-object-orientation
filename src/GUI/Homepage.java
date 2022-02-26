@@ -63,9 +63,73 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
      */
     public Homepage(Controller controller) {
         super();
-
         setController(controller);
+        setup();
+    }
 
+    /**
+     * Imposta il controller della pagina principale.
+     * 
+     * @param controller
+     *            controller della GUI
+     * @throws IllegalArgumentException
+     *             se {@code controller == null}
+     */
+    public void setController(Controller controller) {
+        if (controller == null)
+            throw new IllegalArgumentException("controller can't be null");
+
+        this.controller = controller;
+    }
+
+    @Override
+    public void setVisible(boolean b) {
+        if (b) {
+            referenceListPanel.clear();
+            referenceInfoPanel.clear();
+            referenceSearchPanel.clear();
+
+            setLocationRelativeTo(null);
+        }
+
+        super.setVisible(b);
+    }
+
+    /**
+     * Imposta l'albero delle categorie dell'utente da mostrare.
+     * 
+     * @param categoriesTree
+     *            albero delle categorie
+     */
+    public void setCategoriesTreeModel(CustomTreeModel<Category> categoriesTree) {
+        categoriesTreePanel.setTreeModel(categoriesTree);
+        referenceSearchPanel.setCategoriesTree(categoriesTree);
+    }
+
+    /**
+     * Imposta tutti i riferimenti dell'utente da mostrare.
+     * 
+     * @param references
+     *            riferimenti dell'utente
+     */
+    public void setReferences(Collection<? extends BibliographicReference> references) {
+        this.references = references;
+    }
+
+    /**
+     * Imposta il nome da mostrare come messaggio di benvenuto.
+     * 
+     * @param name
+     *            nome da mostrare
+     */
+    public void setNameToDisplay(String name) {
+        userLabel.setText("<html>Benvenuto, <b>" + name + "</b></html>");
+    }
+
+    /**
+     * Inizializza la pagina.
+     */
+    private void setup() {
         setTitle("Pagina principale");
         setMinimumSize(new Dimension(400, 400));
         setSize(800, 600);
@@ -91,73 +155,9 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         contentPane.add(splitPane, BorderLayout.CENTER);
     }
 
-    @Override
-    public void setVisible(boolean b) {
-        if (b) {
-            referenceListPanel.clear();
-            referenceInfoPanel.clear();
-            referenceSearchPanel.clear();
-
-            setLocationRelativeTo(null);
-        }
-
-        super.setVisible(b);
-    }
-
     /**
-     * Imposta il controller della GUI.
-     * 
-     * @param controller
-     *            controller della GUI
-     * @throws IllegalArgumentException
-     *             se {@code controller == null}
+     * Imposta l'operazione di chiusura.
      */
-    public void setController(Controller controller) {
-        if (controller == null)
-            throw new IllegalArgumentException("controller can't be null");
-
-        this.controller = controller;
-    }
-
-    private Controller getController() {
-        return controller;
-    }
-
-    /**
-     * Imposta l'albero delle categorie dell'utente da mostrare.
-     * 
-     * @param categoriesTree
-     *            albero delle categorie
-     */
-    public void setTreeModel(CustomTreeModel<Category> categoriesTree) {
-        categoriesTreePanel.setTreeModel(categoriesTree);
-        referenceSearchPanel.setCategoriesTree(categoriesTree);
-    }
-
-    /**
-     * Imposta tutti i riferimenti dell'utente da mostrare.
-     * 
-     * @param references
-     *            riferimenti dell'utente
-     */
-    public void setReferences(Collection<? extends BibliographicReference> references) {
-        this.references = references;
-    }
-
-    private Collection<? extends BibliographicReference> getReferences() {
-        return references;
-    }
-
-    /**
-     * Imposta il nome da mostrare come messaggio di benvenuto.
-     * 
-     * @param name
-     *            nome da mostrare
-     */
-    public void setNameToDisplay(String name) {
-        userLabel.setText("<html>Benvenuto, <b>" + name + "</b></html>");
-    }
-
     private void setupCloseOperation() {
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
@@ -170,6 +170,11 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         });
     }
 
+    /**
+     * Inizializza il pannello delle categorie.
+     * 
+     * @return pannello inizializzato
+     */
     private JPanel setupCategoriesPanel() {
         JPanel categoriesPanel = new JPanel();
 
@@ -190,7 +195,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
                 if (name != null) {
                     Category parent = categoriesTreePanel.getSelectedCategory();
                     Category newCategory = new Category(name, parent);
-                    getController().addCategory(newCategory);
+                    controller.addCategory(newCategory);
                 }
             }
         });
@@ -207,7 +212,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
                     String newName = getCategoryNameFromUser(selectedCategory.getName());
 
                     if (newName != null)
-                        getController().updateCategory(selectedCategory, newName);
+                        controller.updateCategory(selectedCategory, newName);
                 }
             }
         });
@@ -221,20 +226,24 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
                 Category selectedCategory = categoriesTreePanel.getSelectedCategory();
 
                 if (selectedCategory != null && askConfirmToUser("Elimina categoria", "Sicuro di voler eliminare questa categoria?"))
-                    getController().removeCategory(selectedCategory);
+                    controller.removeCategory(selectedCategory);
             }
         });
         toolbar.add(removeCategoryButton);
 
         categoriesTreePanel = new CategoriesTreePanel();
-        categoriesTreePanel.addSelectionListener(this);
+        categoriesTreePanel.addCategorySelectionListener(this);
 
         categoriesPanel.add(categoriesTreePanel, BorderLayout.CENTER);
 
         return categoriesPanel;
-
     }
 
+    /**
+     * Inizializza il pannello dei riferimenti.
+     * 
+     * @return pannello inizializzato
+     */
     private JPanel setupReferencesPanel() {
         JPanel referencePanel = new JPanel();
 
@@ -266,7 +275,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
                 BibliographicReference selectedReference = referenceListPanel.getSelectedReference();
 
                 if (selectedReference != null && askConfirmToUser("Elimina riferimento", "Vuoi eliminare questo riferimento?")) {
-                    getController().removeReference(selectedReference);
+                    controller.removeReference(selectedReference);
                 }
             }
         });
@@ -285,6 +294,11 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         return referencePanel;
     }
 
+    /**
+     * Inizializza il pannello delle informazioni dell'utente.
+     * 
+     * @return pannello inizializzato
+     */
     private JPanel setupUserInfoPanel() {
         JPanel userInfoPanel = new JPanel();
 
@@ -308,7 +322,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         logoutButton.setBorderPainted(false);
         logoutButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                getController().openLoginPage();
+                controller.logout();
             }
         });
 
@@ -317,6 +331,11 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         return userInfoPanel;
     }
 
+    /**
+     * Inizializza il pulsante per l'apertura degli editor.
+     * 
+     * @return pulsante inizializzato
+     */
     private PopupButton setupCreateReferenceButton() {
         PopupButton createReferenceButton = new PopupButton(new ImageIcon("images/file_add.png"));
         createReferenceButton.setToolTipText("Crea riferimento");
@@ -324,7 +343,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         JMenuItem articleOption = new JMenuItem("Articolo");
         articleOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                getController().openArticleEditor(null);
+                controller.openArticleEditor(null);
             }
         });
         createReferenceButton.addToPopupMenu(articleOption);
@@ -332,7 +351,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         JMenuItem bookOption = new JMenuItem("Libro");
         bookOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                getController().openBookEditor(null);
+                controller.openBookEditor(null);
             }
         });
         createReferenceButton.addToPopupMenu(bookOption);
@@ -340,7 +359,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         JMenuItem thesisOption = new JMenuItem("Tesi");
         thesisOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                getController().openThesisEditor(null);
+                controller.openThesisEditor(null);
             }
         });
         createReferenceButton.addToPopupMenu(thesisOption);
@@ -349,7 +368,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         JMenuItem websiteOption = new JMenuItem("Sito web");
         websiteOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                getController().openWebsiteEditor(null);
+                controller.openWebsiteEditor(null);
             }
         });
         createReferenceButton.addToPopupMenu(websiteOption);
@@ -357,7 +376,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         JMenuItem sourceCodeOption = new JMenuItem("Codice sorgente");
         sourceCodeOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                getController().openSourceCodeEditor(null);
+                controller.openSourceCodeEditor(null);
             }
         });
         createReferenceButton.addToPopupMenu(sourceCodeOption);
@@ -365,7 +384,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         JMenuItem imageOption = new JMenuItem("Immagine");
         imageOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                getController().openImageEditor(null);
+                controller.openImageEditor(null);
             }
         });
         createReferenceButton.addToPopupMenu(imageOption);
@@ -373,7 +392,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         JMenuItem videoOption = new JMenuItem("Video");
         videoOption.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                getController().openVideoEditor(null);
+                controller.openVideoEditor(null);
             }
         });
         createReferenceButton.addToPopupMenu(videoOption);
@@ -407,19 +426,19 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
             return;
 
         if (selectedReference instanceof Article)
-            getController().openArticleEditor((Article) selectedReference);
+            controller.openArticleEditor((Article) selectedReference);
         else if (selectedReference instanceof Book)
-            getController().openBookEditor((Book) selectedReference);
+            controller.openBookEditor((Book) selectedReference);
         else if (selectedReference instanceof Image)
-            getController().openImageEditor((Image) selectedReference);
+            controller.openImageEditor((Image) selectedReference);
         else if (selectedReference instanceof SourceCode)
-            getController().openSourceCodeEditor((SourceCode) selectedReference);
+            controller.openSourceCodeEditor((SourceCode) selectedReference);
         else if (selectedReference instanceof Thesis)
-            getController().openThesisEditor((Thesis) selectedReference);
+            controller.openThesisEditor((Thesis) selectedReference);
         else if (selectedReference instanceof Video)
-            getController().openVideoEditor((Video) selectedReference);
+            controller.openVideoEditor((Video) selectedReference);
         else if (selectedReference instanceof Website)
-            getController().openWebsiteEditor((Website) selectedReference);
+            controller.openWebsiteEditor((Website) selectedReference);
     }
 
     @Override
@@ -435,15 +454,30 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
     @Override
     public void onSearch(Search search) {
         categoriesTreePanel.clearSelection();
-
         setReferencesToShow(new ReferenceCriteriaSearch(search));
     }
 
+    /**
+     * Apre una finestra di dialogo per chiedere all'utente conferma di un'azione.
+     * 
+     * @param title
+     *            titolo della finestra
+     * @param message
+     *            messaggio della finestra
+     * @return {@code true} se l'utente ha premuto il tasto di conferma
+     */
     private boolean askConfirmToUser(String title, String message) {
         int confirmDialogBoxOption = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
         return confirmDialogBoxOption == JOptionPane.YES_OPTION;
     }
 
+    /**
+     * Apre una finestra di dialogo per chiedere all'utente il nome per una categoria.
+     * 
+     * @param defaultName
+     *            nome da mostrare inizialmente
+     * @return nome inserito, {@code null} se ha annullato l'operazione
+     */
     private String getCategoryNameFromUser(String defaultName) {
         return (String) JOptionPane.showInputDialog(this, "Inserisci il nuovo nome della categoria", "Nuova categoria", JOptionPane.PLAIN_MESSAGE, null, null, defaultName);
     }
@@ -461,7 +495,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
     }
 
     /**
-     * Ricarica i riferimenti mostrati.
+     * Ricarica gli ultimi riferimenti mostrati.
      */
     public void reloadReferences() {
         if (lastReferenceCriteriaUsed == null)
@@ -470,11 +504,17 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         setReferencesToShow(lastReferenceCriteriaUsed);
     }
 
+    /**
+     * Imposta i riferimenti da mostrare.
+     * 
+     * @param criteria
+     *            filtro dei riferimenti da mostrare
+     */
     private void setReferencesToShow(ReferenceCriteria criteria) {
         if (criteria == null)
             throw new IllegalArgumentException("criteria can't be null");
 
-        List<? extends BibliographicReference> filteredReferences = criteria.filter(getReferences());
+        List<? extends BibliographicReference> filteredReferences = criteria.filter(references);
         referenceListPanel.setReferences(filteredReferences);
         lastReferenceCriteriaUsed = criteria;
     }

@@ -54,7 +54,7 @@ public class PopupButton extends JButton {
         addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                onPopupOpen();
+                openPopup();
             }
         });
     }
@@ -99,10 +99,18 @@ public class PopupButton extends JButton {
     }
 
     /**
+     * Apre il menu popup.
+     */
+    private void openPopup() {
+        popupMenu.show(this, 0, getHeight());
+        onPopupOpen();
+    }
+
+    /**
      * Invocato quando viene premuto sul tasto per mostrare il menu popup.
      */
     protected void onPopupOpen() {
-        popupMenu.show(this, 0, getHeight());
+        // vuoto
     }
 
 }

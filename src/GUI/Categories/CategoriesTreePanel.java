@@ -6,7 +6,6 @@ import javax.swing.event.EventListenerList;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreeSelectionModel;
-
 import Entities.Category;
 import GUI.Utilities.Tree.CustomTreeModel;
 import GUI.Utilities.Tree.CustomTreeNode;

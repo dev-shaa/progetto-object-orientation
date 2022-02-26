@@ -1,24 +1,17 @@
 package Controller;
 
-import java.util.Collection;
-
 import javax.swing.*;
 import com.formdev.flatlaf.*;
-
 import DAO.*;
 import GUI.*;
 import GUI.References.Editor.*;
-import GUI.Utilities.Tree.CustomTreeModel;
 import Repository.CategoryRepository;
 import Repository.ReferenceRepository;
 import Entities.*;
 import Entities.References.BibliographicReference;
 import Entities.References.OnlineResources.*;
 import Entities.References.PhysicalResources.*;
-import Exceptions.Database.CategoryDatabaseException;
-import Exceptions.Database.DatabaseException;
 import Exceptions.Database.ReferenceDatabaseException;
-import Exceptions.Database.UserDatabaseException;
 
 /**
  * Controller dell'applicazione.
@@ -27,7 +20,6 @@ public class Controller {
 
     private LoginPage loginPage;
     private Homepage homepage;
-
     private ArticleEditor articleEditor;
     private BookEditor bookEditor;
     private ThesisEditor thesisEditor;
@@ -37,7 +29,6 @@ public class Controller {
     private WebsiteEditor websiteEditor;
 
     private User user;
-
     private CategoryRepository categoryRepository;
     private ReferenceRepository referenceRepository;
 
@@ -53,6 +44,9 @@ public class Controller {
         openLoginPage();
     }
 
+    /**
+     * Imposta lo stile dell'applicazione.
+     */
     private void setupLookAndFeel() {
         try {
             UIManager.setLookAndFeel(new FlatLightLaf());
@@ -62,30 +56,28 @@ public class Controller {
         }
     }
 
-    private ReferenceRepository getReferenceRepository() {
-        return referenceRepository;
-    }
-
-    private CategoryRepository getCategoryRepository() {
-        return categoryRepository;
-    }
-
+    /**
+     * Imposta l'utente che sta usando l'applicazione.
+     * 
+     * @param user
+     *            utente da impostare
+     * @throws IllegalArgumentException
+     *             se {@code user == null}
+     */
     private void setUser(User user) {
         if (user == null)
             throw new IllegalArgumentException("user non può essere nullo.");
 
         this.user = user;
-
         setupRepositories();
     }
 
-    private User getUser() {
-        return user;
-    }
-
+    /**
+     * Inizializza i repository da usare.
+     */
     private void setupRepositories() {
-        CategoryDAO categoryDAO = new CategoryDAOPostgreSQL(getUser());
-        BibliographicReferenceDAO referenceDAO = new BibliographicReferenceDAOPostgreSQL(getUser());
+        CategoryDAO categoryDAO = new CategoryDAOPostgreSQL(user);
+        BibliographicReferenceDAO referenceDAO = new BibliographicReferenceDAOPostgreSQL(user);
         AuthorDAO authorDAO = new AuthorDAOPostgreSQL();
         TagDAO tagDAO = new TagDAOPostgreSQL();
 
@@ -94,106 +86,76 @@ public class Controller {
     }
 
     /**
+     * Esegue la registrazione di un utente.
+     * <p>
+     * In caso di errore, mostra un messaggio nella pagina di login.
+     * 
+     * @param user
+     *            utente che tenta di eseguire la registrazione
+     */
+    public void register(User user) {
+        UserDAO userDAO = new UserDAOPostgreSQL();
+
+        try {
+            userDAO.register(user);
+            openHomePage(user);
+        } catch (Exception e) {
+            loginPage.showErrorMessage("Errore registrazione", e.getMessage());
+        }
+    }
+
+    /**
+     * Esegue l'accesso per un utente.
+     * <p>
+     * In caso di errore, mostra un messaggio nella pagina di login.
+     * 
+     * @param user
+     *            utente che tenta di accedere
+     */
+    public void login(User user) {
+        UserDAO userDAO = new UserDAOPostgreSQL();
+
+        try {
+            if (userDAO.doesUserExist(user))
+                openHomePage(user);
+            else
+                loginPage.showErrorMessage("Errore accesso", "Impossibile accedere: nome o password errati.");
+        } catch (Exception e) {
+            loginPage.showErrorMessage("Errore accesso", e.getMessage());
+        }
+    }
+
+    /**
+     * Esegue il logout.
+     */
+    public void logout() {
+        openLoginPage();
+    }
+
+    /**
      * Apre la pagina di login.
      */
-    public void openLoginPage() {
+    private void openLoginPage() {
         loginPage.setVisible(true);
         homepage.setVisible(false);
     }
 
     /**
-     * TODO: commenta
+     * Apre la pagina principale dell'applicazione.
      * 
      * @param user
-     * @throws UserDatabaseException
+     *            utente che ha eseguito l'accesso
      */
-    public void registerUser(User user) throws UserDatabaseException {
-        UserDAO userDAO = new UserDAOPostgreSQL();
-        userDAO.register(user);
-        openHomePage(user);
-    }
-
-    /**
-     * TODO: commenta
-     * 
-     * @param user
-     * @return
-     * @throws UserDatabaseException
-     */
-    public boolean login(User user) throws UserDatabaseException {
-        UserDAO userDAO = new UserDAOPostgreSQL();
-
-        if (!userDAO.doesUserExist(user))
-            return false;
-
-        openHomePage(user);
-
-        return true;
-    }
-
     private void openHomePage(User user) {
-        setUser(user);
-
-        loginPage.setVisible(false);
-
         try {
-            CustomTreeModel<Category> categoriesTree = getCategoryRepository().getTree();
-            Collection<? extends BibliographicReference> references = getReferenceRepository().getAll();
-
-            homepage.setTreeModel(categoriesTree);
-            homepage.setReferences(references);
-
+            setUser(user);
+            homepage.setCategoriesTreeModel(categoryRepository.getTree());
+            homepage.setReferences(referenceRepository.getAll());
             homepage.setNameToDisplay(user.getName());
             homepage.setVisible(true);
-        } catch (DatabaseException e) {
+            loginPage.setVisible(false);
+        } catch (Exception e) {
             // TODO: handle exception
-        }
-
-    }
-
-    /**
-     * Aggiunge una categoria.
-     * 
-     * @param category
-     *            categoria da aggiungere
-     */
-    public void addCategory(Category category) {
-        try {
-            getCategoryRepository().save(category);
-        } catch (IllegalArgumentException | CategoryDatabaseException e) {
-            homepage.showErrorMessage("Errore salvataggio categoria", e.getMessage());
-        }
-    }
-
-    /**
-     * Aggiorna una categoria.
-     * 
-     * @param category
-     *            categoria da aggiornare
-     * @param newName
-     *            nuovo nome della categoria
-     */
-    public void updateCategory(Category category, String newName) {
-        try {
-            getCategoryRepository().update(category, newName);
-        } catch (CategoryDatabaseException | IllegalArgumentException e) {
-            homepage.showErrorMessage("Errore modifica categoria", e.getMessage());
-        }
-    }
-
-    /**
-     * Rimuove una categoria.
-     * 
-     * @param category
-     *            categoria da rimuovere
-     */
-    public void removeCategory(Category category) {
-        try {
-            getCategoryRepository().remove(category);
-            getReferenceRepository().forceNextRetrievalFromDatabase(); // FIXME: effettivamente poi non viene più chiamato
-            homepage.setReferences(getReferenceRepository().getAll()); // FIXME: opzione temporanea
-        } catch (DatabaseException e) {
-            homepage.showErrorMessage("Errore rimozione categoria", e.getMessage());
         }
     }
 
@@ -207,12 +169,12 @@ public class Controller {
         if (articleEditor == null) {
             articleEditor = new ArticleEditor(null, null);
 
-            articleEditor.addReferenceCreationListener(new ReferenceEditorListener<Article>() {
+            articleEditor.addReferenceEditorListener(new ReferenceEditorListener<Article>() {
 
                 @Override
                 public void onReferenceCreation(Article newReference) {
                     try {
-                        getReferenceRepository().save(newReference);
+                        referenceRepository.save(newReference);
                         articleEditor.setVisible(false);
                         homepage.reloadReferences();
                     } catch (IllegalArgumentException | ReferenceDatabaseException e) {
@@ -236,12 +198,12 @@ public class Controller {
         if (bookEditor == null) {
             bookEditor = new BookEditor(null, null);
 
-            bookEditor.addReferenceCreationListener(new ReferenceEditorListener<Book>() {
+            bookEditor.addReferenceEditorListener(new ReferenceEditorListener<Book>() {
 
                 @Override
                 public void onReferenceCreation(Book newReference) {
                     try {
-                        getReferenceRepository().save(newReference);
+                        referenceRepository.save(newReference);
                         bookEditor.setVisible(false);
                         homepage.reloadReferences();
                     } catch (IllegalArgumentException | ReferenceDatabaseException e) {
@@ -265,12 +227,12 @@ public class Controller {
         if (thesisEditor == null) {
             thesisEditor = new ThesisEditor(null, null);
 
-            thesisEditor.addReferenceCreationListener(new ReferenceEditorListener<Thesis>() {
+            thesisEditor.addReferenceEditorListener(new ReferenceEditorListener<Thesis>() {
 
                 @Override
                 public void onReferenceCreation(Thesis newReference) {
                     try {
-                        getReferenceRepository().save(newReference);
+                        referenceRepository.save(newReference);
                         thesisEditor.setVisible(false);
                         homepage.reloadReferences();
                     } catch (IllegalArgumentException | ReferenceDatabaseException e) {
@@ -294,12 +256,12 @@ public class Controller {
         if (sourceCodeEditor == null) {
             sourceCodeEditor = new SourceCodeEditor(null, null);
 
-            sourceCodeEditor.addReferenceCreationListener(new ReferenceEditorListener<SourceCode>() {
+            sourceCodeEditor.addReferenceEditorListener(new ReferenceEditorListener<SourceCode>() {
 
                 @Override
                 public void onReferenceCreation(SourceCode newReference) {
                     try {
-                        getReferenceRepository().save(newReference);
+                        referenceRepository.save(newReference);
                         sourceCodeEditor.setVisible(false);
                         homepage.reloadReferences();
                     } catch (IllegalArgumentException | ReferenceDatabaseException e) {
@@ -323,12 +285,12 @@ public class Controller {
         if (imageEditor == null) {
             imageEditor = new ImageEditor(null, null);
 
-            imageEditor.addReferenceCreationListener(new ReferenceEditorListener<Image>() {
+            imageEditor.addReferenceEditorListener(new ReferenceEditorListener<Image>() {
 
                 @Override
                 public void onReferenceCreation(Image newReference) {
                     try {
-                        getReferenceRepository().save(newReference);
+                        referenceRepository.save(newReference);
                         imageEditor.setVisible(false);
                         homepage.reloadReferences();
                     } catch (IllegalArgumentException | ReferenceDatabaseException e) {
@@ -352,12 +314,12 @@ public class Controller {
         if (videoEditor == null) {
             videoEditor = new VideoEditor(null, null);
 
-            videoEditor.addReferenceCreationListener(new ReferenceEditorListener<Video>() {
+            videoEditor.addReferenceEditorListener(new ReferenceEditorListener<Video>() {
 
                 @Override
                 public void onReferenceCreation(Video newReference) {
                     try {
-                        getReferenceRepository().save(newReference);
+                        referenceRepository.save(newReference);
                         videoEditor.setVisible(false);
                         homepage.reloadReferences();
                     } catch (IllegalArgumentException | ReferenceDatabaseException e) {
@@ -381,11 +343,11 @@ public class Controller {
         if (websiteEditor == null) {
             websiteEditor = new WebsiteEditor(null, null);
 
-            websiteEditor.addReferenceCreationListener(new ReferenceEditorListener<Website>() {
+            websiteEditor.addReferenceEditorListener(new ReferenceEditorListener<Website>() {
                 @Override
                 public void onReferenceCreation(Website newReference) {
                     try {
-                        getReferenceRepository().save(newReference);
+                        referenceRepository.save(newReference);
                         websiteEditor.setVisible(false);
                         homepage.reloadReferences();
                     } catch (IllegalArgumentException | ReferenceDatabaseException e) {
@@ -398,32 +360,87 @@ public class Controller {
         openReferenceEditor(websiteEditor, website);
     }
 
+    /**
+     * Apre un editor di un tipo di riferimento.
+     * 
+     * @param <T>
+     *            tipo del riferimento da creare o modificare
+     * @param editor
+     *            editor del riferimento
+     * @param referenceToChange
+     *            riferimento da cambiare (può essere {@code null})
+     */
     private <T extends BibliographicReference> void openReferenceEditor(ReferenceEditor<T> editor, T referenceToChange) {
         try {
-            CustomTreeModel<Category> categoriesTree = getCategoryRepository().getTree();
-            Collection<? extends BibliographicReference> references = getReferenceRepository().getAll();
-
-            editor.setCategoriesTree(categoriesTree);
-            editor.setReferences(references);
+            editor.setCategoriesTree(categoryRepository.getTree());
+            editor.setReferences(referenceRepository.getAll());
             editor.setReferenceToChange(referenceToChange);
             editor.setVisible(true);
-        } catch (DatabaseException e) {
+        } catch (Exception e) {
             homepage.showErrorMessage("Impossibile aprire editor riferimenti", "Si è verificato un errore nell'apertura dell'editor.");
         }
     }
 
     /**
      * Rimuove un riferimento.
+     * <p>
+     * In caso si verifichi un errore, mostra un messaggio di errore nella homepage.
      * 
      * @param reference
      *            riferimento da rimuovere
      */
     public void removeReference(BibliographicReference reference) {
         try {
-            getReferenceRepository().remove(reference);
+            referenceRepository.remove(reference);
             homepage.reloadReferences();
-        } catch (ReferenceDatabaseException e) {
+        } catch (Exception e) {
             homepage.showErrorMessage("Errore rimozione riferimento", e.getMessage());
+        }
+    }
+
+    /**
+     * Aggiunge una categoria.
+     * 
+     * @param category
+     *            categoria da aggiungere
+     */
+    public void addCategory(Category category) {
+        try {
+            categoryRepository.save(category);
+        } catch (Exception e) {
+            homepage.showErrorMessage("Errore salvataggio categoria", e.getMessage());
+        }
+    }
+
+    /**
+     * Aggiorna una categoria.
+     * 
+     * @param category
+     *            categoria da aggiornare
+     * @param newName
+     *            nuovo nome della categoria
+     */
+    public void updateCategory(Category category, String newName) {
+        try {
+            categoryRepository.update(category, newName);
+        } catch (Exception e) {
+            homepage.showErrorMessage("Errore modifica categoria", e.getMessage());
+        }
+    }
+
+    /**
+     * Rimuove una categoria.
+     * 
+     * @param category
+     *            categoria da rimuovere
+     */
+    public void removeCategory(Category category) {
+        try {
+            categoryRepository.remove(category);
+            referenceRepository.forceNextRetrievalFromDatabase();
+            homepage.setReferences(referenceRepository.getAll());
+        } catch (Exception e) {
+            homepage.showErrorMessage("Errore rimozione categoria", e.getMessage());
         }
     }
 

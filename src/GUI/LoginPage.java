@@ -1,7 +1,7 @@
 package GUI;
 
 import Entities.*;
-import Exceptions.Database.UserDatabaseException;
+import Exceptions.Input.InvalidInputException;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -26,7 +26,6 @@ import java.awt.event.ActionListener;
 public class LoginPage extends JFrame {
 
 	private Controller controller;
-
 	private JTextField usernameField;
 	private JPasswordField passwordField;
 
@@ -40,51 +39,7 @@ public class LoginPage extends JFrame {
 	 */
 	public LoginPage(Controller controller) {
 		setController(controller);
-
-		setTitle("Login");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
-		setLocationRelativeTo(null);
-		setResizable(false);
-
-		JPanel contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(null);
-		setContentPane(contentPane);
-
-		usernameField = new JTextField();
-		usernameField.setBounds(140, 64, 250, 24);
-		contentPane.add(usernameField);
-
-		passwordField = new JPasswordField();
-		passwordField.setBounds(140, 143, 250, 24);
-		contentPane.add(passwordField);
-
-		JLabel usernameLabel = new JLabel("Nome Utente", JLabel.RIGHT);
-		usernameLabel.setBounds(34, 64, 96, 24);
-		contentPane.add(usernameLabel);
-
-		JLabel passwordLabel = new JLabel("Password", JLabel.RIGHT);
-		passwordLabel.setBounds(34, 143, 96, 24);
-		contentPane.add(passwordLabel);
-
-		JButton registerButton = new JButton("Registrati");
-		registerButton.setBounds(214, 213, 85, 24);
-		registerButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				register();
-			}
-		});
-		contentPane.add(registerButton);
-
-		JButton accessButton = new JButton("Accedi");
-		accessButton.setBounds(330, 213, 85, 24);
-		accessButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				login();
-			}
-		});
-		contentPane.add(accessButton);
+		setup();
 	}
 
 	/**
@@ -102,30 +57,124 @@ public class LoginPage extends JFrame {
 		this.controller = controller;
 	}
 
+	/**
+	 * Inizializza la schermata.
+	 */
+	private void setup() {
+		setTitle("Login");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 450, 300);
+		setLocationRelativeTo(null);
+		setResizable(false);
+
+		JPanel contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setLayout(null);
+		setContentPane(contentPane);
+
+		setupUsernameField();
+		setupPasswordField();
+		setupButtons();
+	}
+
+	/**
+	 * Inizializza il campo del nome utente.
+	 */
+	private void setupUsernameField() {
+		JLabel usernameLabel = new JLabel("Nome Utente", JLabel.RIGHT);
+		usernameLabel.setBounds(34, 64, 96, 24);
+		getContentPane().add(usernameLabel);
+
+		usernameField = new JTextField();
+		usernameField.setBounds(140, 64, 250, 24);
+		getContentPane().add(usernameField);
+	}
+
+	/**
+	 * Inizializza il campo della password.
+	 */
+	private void setupPasswordField() {
+		JLabel passwordLabel = new JLabel("Password", JLabel.RIGHT);
+		passwordLabel.setBounds(34, 143, 96, 24);
+		getContentPane().add(passwordLabel);
+
+		passwordField = new JPasswordField();
+		passwordField.setBounds(140, 143, 250, 24);
+		getContentPane().add(passwordField);
+	}
+
+	/**
+	 * Inizializza i pulsanti per registrarsi e accedere.
+	 */
+	private void setupButtons() {
+		JButton registerButton = new JButton("Registrati");
+		registerButton.setBounds(214, 213, 85, 24);
+		registerButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				register();
+			}
+		});
+		getContentPane().add(registerButton);
+
+		JButton accessButton = new JButton("Accedi");
+		accessButton.setBounds(330, 213, 85, 24);
+		accessButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				login();
+			}
+		});
+		getContentPane().add(accessButton);
+	}
+
+	/**
+	 * Esegue la registrazione.
+	 */
 	private void register() {
 		try {
 			User user = getUserFromFields();
-			controller.registerUser(user);
-		} catch (IllegalArgumentException | UserDatabaseException e) {
-			JOptionPane.showMessageDialog(this, e.getMessage(), "Errore registrazione utente", JOptionPane.ERROR_MESSAGE);
+			controller.register(user);
+		} catch (InvalidInputException e) {
+			showErrorMessage("Errore registrazione", e.getMessage());
 		}
 	}
 
+	/**
+	 * Esegue l'accesso.
+	 */
 	private void login() {
 		try {
 			User user = getUserFromFields();
-
-			if (!controller.login(user))
-				JOptionPane.showMessageDialog(this, "Impossibile accedere: nome o password errati.", "Errore accesso utente", JOptionPane.ERROR_MESSAGE);
-		} catch (IllegalArgumentException | UserDatabaseException e) {
-			JOptionPane.showMessageDialog(this, e.getMessage(), "Errore accesso utente", JOptionPane.ERROR_MESSAGE);
+			controller.login(user);
+		} catch (InvalidInputException e) {
+			showErrorMessage("Errore accesso", e.getMessage());
 		}
 	}
 
-	private User getUserFromFields() {
-		String username = usernameField.getText();
-		String password = new String(passwordField.getPassword());
-		return new User(username, password);
+	/**
+	 * Crea un utente a partire dall'input inserito dall'utente.
+	 * 
+	 * @return utente che prova ad accedere o registrarsi
+	 * @throws IllegalArgumentException
+	 *             se il nome o la password inseriti non sono validi
+	 */
+	private User getUserFromFields() throws InvalidInputException {
+		try {
+			String username = usernameField.getText();
+			String password = new String(passwordField.getPassword());
+			return new User(username, password);
+		} catch (IllegalArgumentException e) {
+			throw new InvalidInputException(e.getMessage());
+		}
+	}
+
+	/**
+	 * TODO: commenta
+	 * 
+	 * @param title
+	 * @param message
+	 */
+	public void showErrorMessage(String title, String message) {
+		JOptionPane.showMessageDialog(this, title, message, JOptionPane.ERROR_MESSAGE);
 	}
 
 }

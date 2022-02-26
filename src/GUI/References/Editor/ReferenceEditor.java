@@ -9,7 +9,6 @@ import GUI.Utilities.*;
 import GUI.Utilities.Tree.CustomTreeModel;
 import Exceptions.Input.InvalidAuthorInputException;
 import Exceptions.Input.InvalidInputException;
-import Exceptions.Input.RequiredFieldMissingException;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -41,12 +40,11 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     private T referenceToChange;
 
     private Collection<? extends BibliographicReference> allReferences;
+    private ArrayList<ReferenceEditorListener<T>> listeners;
 
     private final Dimension maximumSize = new Dimension(Integer.MAX_VALUE, 24);
     private final Dimension spacingSize = new Dimension(0, 10);
     private final float alignment = Container.LEFT_ALIGNMENT;
-
-    private ArrayList<ReferenceEditorListener<T>> listeners;
 
     /**
      * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento.
@@ -127,6 +125,9 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
             setReferenceValues(referenceToChange);
     }
 
+    /**
+     * Inizializza i campi comuni a tutti i tipi di riferimento.
+     */
     private void setupBaseFields() {
         fieldPanel = new JPanel();
         fieldPanel.setLayout(new BoxLayout(fieldPanel, BoxLayout.PAGE_AXIS));
@@ -192,7 +193,12 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         confirmButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                save();
+                try {
+                    T newReference = createNewReference();
+                    notifyListeners(newReference);
+                } catch (InvalidInputException | IllegalArgumentException ex) {
+                    showErrorMessage("Parametri inseriti non validi", ex.getMessage());
+                }
             }
         });
 
@@ -272,6 +278,9 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         setCategoryValues(reference.getCategories());
     }
 
+    /**
+     * Apre una finestra di dialogo per selezionare un rimando.
+     */
     private void openReferencePicker() {
         ArrayList<BibliographicReference> availableReferenceToQuote = new ArrayList<>();
 
@@ -287,15 +296,6 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
 
         relatedReferencesPicker.setAvailableReferences(availableReferenceToQuote);
         relatedReferencesPicker.setVisible(true);
-    }
-
-    private void save() {
-        try {
-            T newReference = createNewReference();
-            notifyListeners(newReference);
-        } catch (InvalidInputException | IllegalArgumentException e) {
-            showErrorMessage("Parametri inseriti non validi", e.getMessage());
-        }
     }
 
     /**
@@ -337,7 +337,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      * @param listener
      *            ascoltatore da aggiungere
      */
-    public void addReferenceCreationListener(ReferenceEditorListener<T> listener) {
+    public void addReferenceEditorListener(ReferenceEditorListener<T> listener) {
         if (listener == null)
             return;
 
@@ -354,7 +354,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      * @param listener
      *            ascoltatore da rimuovere
      */
-    public void removeReferenceCreationListener(ReferenceEditorListener<T> listener) {
+    public void removeReferenceEditorListener(ReferenceEditorListener<T> listener) {
         if (listener != null && listeners != null)
             listeners.remove(listener);
     }
@@ -385,13 +385,8 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         title.setText(text);
     }
 
-    private String getTitleValue() throws RequiredFieldMissingException {
-        String referenceTitle = title.getText().trim();
-
-        if (referenceTitle == null || referenceTitle.isEmpty() || referenceTitle.isBlank())
-            throw new RequiredFieldMissingException("Il titolo del riferimento non può essere nullo.");
-
-        return referenceTitle;
+    private String getTitleValue() {
+        return title.getText().trim();
     }
 
     private void setPubblicationDateValue(Date date) {

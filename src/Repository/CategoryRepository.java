@@ -77,7 +77,7 @@ public class CategoryRepository {
 
         CustomTreeNode<Category> node = new CustomTreeNode<Category>(category);
         CustomTreeNode<Category> parentNode = treeModel.findNode(category.getParent());
-        treeModel.addNode(node, parentNode);
+        treeModel.add(node, parentNode);
     }
 
     /**
@@ -129,7 +129,7 @@ public class CategoryRepository {
 
         categoryDAO.remove(category);
         idToCategory.remove(category.getID());
-        treeModel.removeNodeFromParent(treeModel.findNode(category));
+        treeModel.remove(treeModel.findNode(category));
     }
 
     /**
@@ -202,7 +202,7 @@ public class CategoryRepository {
                 CustomTreeNode<Category> node = categoryToNode.get(category);
                 CustomTreeNode<Category> parent = categoryToNode.get(category.getParent());
 
-                treeModel.addNode(node, parent);
+                treeModel.add(node, parent);
             }
 
             treeNeedsUpdate = false;
