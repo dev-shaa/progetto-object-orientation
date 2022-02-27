@@ -29,7 +29,7 @@ public abstract class BibliographicReference {
     private final int TITLE_MAX_LENGTH = 256;
     private final int DESCRIPTION_MAX_LENGTH = 1024;
     private final Pattern DOI_PATTERN = Pattern.compile("^ *10\\.[0-9]{4,}\\/\\w{1,}(\\.\\w{1,}){1,} *$");
-    private final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd");
+    private final DateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
 
     /**
      * Crea un nuovo riferimento con il titolo indicato.
@@ -381,19 +381,22 @@ public abstract class BibliographicReference {
     }
 
     /**
-     * TODO: commenta
+     * Controlla se il titolo è valido.
      * 
      * @param title
-     * @return
+     *            titolo da controllare
+     * @return {@code true} se il titolo non è vuoto e la lunghezza non è maggiore di {@link #TITLE_MAX_LENGTH}
      */
     private boolean isTitleValid(String title) {
         return !isStringNullOrEmpty(title) && title.length() <= TITLE_MAX_LENGTH;
     }
 
     /**
+     * Controlla se la descrizione è valida.
      * 
      * @param description
-     * @return
+     *            descrizione da controllare
+     * @return {@code true} se il titolo non è vuoto e la lunghezza non è maggiore di {@link #DESCRIPTION_MAX_LENGTH}
      */
     private boolean isDescriptionValid(String description) {
         return description == null || description.length() <= DESCRIPTION_MAX_LENGTH;

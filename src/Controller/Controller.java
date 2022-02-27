@@ -5,6 +5,8 @@ import com.formdev.flatlaf.*;
 import DAO.*;
 import GUI.*;
 import GUI.References.Editor.*;
+import GUI.References.Editor.OnlineResource.*;
+import GUI.References.Editor.Publication.*;
 import Repository.CategoryRepository;
 import Repository.ReferenceRepository;
 import Entities.*;
