@@ -3,7 +3,6 @@ package GUI.References.Editor;
 import Entities.*;
 import Entities.References.*;
 import GUI.Authors.AuthorInputField;
-import GUI.References.Picker.*;
 import GUI.Tags.TagInputField;
 import GUI.Utilities.*;
 import GUI.Utilities.Tree.CustomTreeModel;
@@ -31,15 +30,13 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     private JDateChooser pubblicationDate;
     private JComboBox<ReferenceLanguage> language;
     private PopupCheckboxTree<Category> categories;
+    private DefaultListModel<BibliographicReference> referenceListModel;
+    private JList<BibliographicReference> relatedReferencesList;
     private TagInputField tags;
     private AuthorInputField authors;
-    private PopupButtonList<BibliographicReference> relatedReferences;
-    private ReferencePicker relatedReferencesPicker;
     private JPanel fieldPanel;
 
     private T referenceToChange;
-
-    private Collection<? extends BibliographicReference> allReferences;
     private ArrayList<ReferenceEditorListener<T>> listeners;
 
     private final Dimension maximumSize = new Dimension(Integer.MAX_VALUE, 24);
@@ -63,30 +60,15 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         setModal(true);
         setSize(500, 700);
         setResizable(false);
+        setLocationRelativeTo(null);
 
         listeners = new ArrayList<>(1);
-
-        relatedReferencesPicker = new ReferencePicker();
-        relatedReferencesPicker.addReferencePickerListener(new ReferencePickerListener() {
-            @Override
-            public void onReferencePick(BibliographicReference reference) {
-                addRelatedReference(reference);
-            }
-        });
 
         setupBaseFields();
         setDefaultValues();
 
         setCategoriesTree(categoriesTree);
         setReferences(references);
-    }
-
-    @Override
-    public void setVisible(boolean b) {
-        if (b)
-            setLocationRelativeTo(null);
-
-        super.setVisible(b);
     }
 
     /**
@@ -97,7 +79,6 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      */
     public void setCategoriesTree(CustomTreeModel<Category> categoriesTree) {
         categories.setTreeModel(categoriesTree);
-        relatedReferencesPicker.setCategoriesTree(categoriesTree);
     }
 
     /**
@@ -107,7 +88,10 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      *            possibili rimandi
      */
     public void setReferences(Collection<? extends BibliographicReference> references) {
-        allReferences = references;
+        referenceListModel.clear();
+
+        if (references != null)
+            referenceListModel.addAll(references);
     }
 
     /**
@@ -156,23 +140,13 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         language = new JComboBox<>(ReferenceLanguage.values());
         addFieldComponent(language, "Lingua", "Lingua del riferimento.");
 
-        relatedReferences = new PopupButtonList<>("Premi per vedere i rimandi");
+        referenceListModel = new DefaultListModel<>();
+        relatedReferencesList = new JList<>(referenceListModel);
 
-        JButton addRelatedReference = new JButton(new ImageIcon("images/button_add.png"));
-        addRelatedReference.setBorderPainted(false);
-        addRelatedReference.setBackground(new Color(0, 0, 0, 0));
-        addRelatedReference.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                openReferencePicker();
-            }
-        });
+        relatedReferencesList.setLayoutOrientation(JList.VERTICAL);
+        relatedReferencesList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
-        JPanel relatedReferencesPanel = new JPanel(new BorderLayout(10, 0));
-        relatedReferencesPanel.add(relatedReferences, BorderLayout.CENTER);
-        relatedReferencesPanel.add(addRelatedReference, BorderLayout.EAST);
-
-        addFieldComponent(relatedReferencesPanel, "Rimandi", "Riferimenti menzionati all'interno del testo.");
+        addFieldComponent(relatedReferencesList, "Rimandi", null);
 
         // gli altri campi li mettiamo prima della descrizione e del tasto di conferma
         setupSecondaryFields();
@@ -276,26 +250,6 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         setRelatedReferences(reference.getRelatedReferences());
         setAuthorValues(reference.getAuthors());
         setCategoryValues(reference.getCategories());
-    }
-
-    /**
-     * Apre una finestra di dialogo per selezionare un rimando.
-     */
-    private void openReferencePicker() {
-        ArrayList<BibliographicReference> availableReferenceToQuote = new ArrayList<>();
-
-        if (allReferences != null) {
-            availableReferenceToQuote.addAll(allReferences);
-
-            if (getRelatedReferenceValues() != null)
-                availableReferenceToQuote.removeAll(getRelatedReferenceValues());
-
-            if (referenceToChange != null)
-                availableReferenceToQuote.remove(referenceToChange);
-        }
-
-        relatedReferencesPicker.setAvailableReferences(availableReferenceToQuote);
-        relatedReferencesPicker.setVisible(true);
     }
 
     /**
@@ -450,15 +404,24 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     }
 
     private void setRelatedReferences(List<BibliographicReference> references) {
-        relatedReferences.setItems(references);
+        relatedReferencesList.clearSelection();
+
+        if (references != null) {
+            for (BibliographicReference reference : references) {
+                addRelatedReference(reference);
+            }
+        }
     }
 
     private void addRelatedReference(BibliographicReference reference) {
-        relatedReferences.addItem(reference);
+        int index = referenceListModel.indexOf(reference);
+
+        if (index != -1)
+            relatedReferencesList.addSelectionInterval(index, index);
     }
 
     private List<BibliographicReference> getRelatedReferenceValues() {
-        return relatedReferences.getItems();
+        return relatedReferencesList.getSelectedValuesList();
     }
 
     // #endregion
