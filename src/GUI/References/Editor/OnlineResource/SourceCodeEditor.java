@@ -1,4 +1,4 @@
-package GUI.References.Editor;
+package GUI.References.Editor.OnlineResource;
 
 import Entities.References.OnlineResources.SourceCode;
 import Entities.Category;

@@ -1,9 +1,10 @@
-package GUI.References.Editor;
+package GUI.References.Editor.OnlineResource;
 
 import Entities.Category;
 import Entities.References.BibliographicReference;
 import Entities.References.OnlineResources.OnlineResource;
 import Exceptions.Input.InvalidInputException;
+import GUI.References.Editor.ReferenceEditor;
 import GUI.Utilities.Tree.CustomTreeModel;
 import java.util.Collection;
 import javax.swing.JTextField;
