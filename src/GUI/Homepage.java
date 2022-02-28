@@ -7,7 +7,7 @@ import Entities.References.OnlineResources.Image;
 import Entities.References.PhysicalResources.*;
 import GUI.Categories.CategoriesTreePanel;
 import GUI.Categories.CategorySelectionListener;
-import GUI.References.*;
+import GUI.References.List.*;
 import GUI.Search.*;
 import GUI.Utilities.PopupButton;
 import GUI.Utilities.Tree.CustomTreeModel;
@@ -42,7 +42,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
     private JButton removeCategoryButton;
 
     private ReferenceListPanel referenceListPanel;
-    private ReferenceInfoPanel referenceInfoPanel;
+    private JTextArea referenceInfoTextArea;
     private PopupButton createReferenceButton;
     private JButton updateReferenceButton;
     private JButton removeReferenceButton;
@@ -86,8 +86,8 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
     public void setVisible(boolean b) {
         if (b) {
             referenceListPanel.clear();
-            referenceInfoPanel.clear();
             referenceSearchPanel.clear();
+            referenceInfoTextArea.setText(null);
 
             setLocationRelativeTo(null);
         }
@@ -281,11 +281,15 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         });
         toolbar.add(removeReferenceButton);
 
-        referenceInfoPanel = new ReferenceInfoPanel();
+        referenceInfoTextArea = new JTextArea();
+        referenceInfoTextArea.setRows(10);
+        referenceInfoTextArea.setEditable(false);
+        JScrollPane referenceInfoScrollPane = new JScrollPane(referenceInfoTextArea);
+
         referenceListPanel = new ReferenceListPanel();
         referenceListPanel.addReferenceSelectionListener(this);
 
-        JSplitPane referenceSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, referenceListPanel, referenceInfoPanel);
+        JSplitPane referenceSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, referenceListPanel, referenceInfoScrollPane);
         referenceSplitPane.setDividerSize(10);
         referenceSplitPane.setResizeWeight(0.6f);
 
@@ -416,7 +420,33 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         removeCategoryButton.setEnabled(false);
 
         referenceListPanel.clear();
-        referenceInfoPanel.clear();
+        referenceInfoTextArea.setText(null);
+    }
+
+    @Override
+    public void onReferenceSelection(BibliographicReference reference) {
+        referenceInfoTextArea.setText(reference == null ? null : reference.getInfo());
+
+        // se non è selezionato un riferimento, disattiviamo i pulsanti di modifica e rimozione
+        boolean shouldButtonsBeEnabled = reference != null;
+        updateReferenceButton.setEnabled(shouldButtonsBeEnabled);
+        removeReferenceButton.setEnabled(shouldButtonsBeEnabled);
+    }
+
+    @Override
+    public void onSearch(Search search) {
+        categoriesTreePanel.clearSelection();
+        setReferencesToShow(new ReferenceCriteriaSearch(search));
+    }
+
+    /**
+     * Ricarica gli ultimi riferimenti mostrati.
+     */
+    public void reloadReferences() {
+        if (lastReferenceCriteriaUsed == null)
+            return;
+
+        setReferencesToShow(lastReferenceCriteriaUsed);
     }
 
     private void changeSelectedReference() {
@@ -441,75 +471,15 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
             controller.openWebsiteEditor((Website) selectedReference);
     }
 
-    @Override
-    public void onReferenceSelection(BibliographicReference reference) {
-        referenceInfoPanel.showReference(reference);
-
-        // se non è selezionato un riferimento, disattiviamo i pulsanti di modifica e rimozione
-        boolean shouldButtonsBeEnabled = reference != null;
-        updateReferenceButton.setEnabled(shouldButtonsBeEnabled);
-        removeReferenceButton.setEnabled(shouldButtonsBeEnabled);
+    private String getCategoryNameFromUser(String defaultName) {
+        return (String) JOptionPane.showInputDialog(this, "Inserisci il nuovo nome della categoria", "Nuova categoria", JOptionPane.PLAIN_MESSAGE, null, null, defaultName);
     }
 
-    @Override
-    public void onSearch(Search search) {
-        categoriesTreePanel.clearSelection();
-        setReferencesToShow(new ReferenceCriteriaSearch(search));
-    }
-
-    /**
-     * Apre una finestra di dialogo per chiedere all'utente conferma di un'azione.
-     * 
-     * @param title
-     *            titolo della finestra
-     * @param message
-     *            messaggio della finestra
-     * @return {@code true} se l'utente ha premuto il tasto di conferma
-     */
     private boolean askConfirmToUser(String title, String message) {
         int confirmDialogBoxOption = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
         return confirmDialogBoxOption == JOptionPane.YES_OPTION;
     }
 
-    /**
-     * Apre una finestra di dialogo per chiedere all'utente il nome per una categoria.
-     * 
-     * @param defaultName
-     *            nome da mostrare inizialmente
-     * @return nome inserito, {@code null} se ha annullato l'operazione
-     */
-    private String getCategoryNameFromUser(String defaultName) {
-        return (String) JOptionPane.showInputDialog(this, "Inserisci il nuovo nome della categoria", "Nuova categoria", JOptionPane.PLAIN_MESSAGE, null, null, defaultName);
-    }
-
-    /**
-     * Mostra un messaggio di errore.
-     * 
-     * @param title
-     *            titolo della finestra di dialogo
-     * @param message
-     *            messaggio da mostrare
-     */
-    public void showErrorMessage(String title, String message) {
-        JOptionPane.showMessageDialog(this, message, title, JOptionPane.ERROR_MESSAGE);
-    }
-
-    /**
-     * Ricarica gli ultimi riferimenti mostrati.
-     */
-    public void reloadReferences() {
-        if (lastReferenceCriteriaUsed == null)
-            return;
-
-        setReferencesToShow(lastReferenceCriteriaUsed);
-    }
-
-    /**
-     * Imposta i riferimenti da mostrare.
-     * 
-     * @param criteria
-     *            filtro dei riferimenti da mostrare
-     */
     private void setReferencesToShow(ReferenceCriteria criteria) {
         if (criteria == null)
             throw new IllegalArgumentException("criteria can't be null");

@@ -102,7 +102,7 @@ public class Controller {
             userDAO.register(user);
             openHomePage(user);
         } catch (Exception e) {
-            loginPage.showErrorMessage("Errore registrazione", e.getMessage());
+            MessageDisplayer.showErrorMessage("Errore registrazione", e.getMessage());
         }
     }
 
@@ -121,9 +121,9 @@ public class Controller {
             if (userDAO.doesUserExist(user))
                 openHomePage(user);
             else
-                loginPage.showErrorMessage("Errore accesso", "Impossibile accedere: nome o password errati.");
+                MessageDisplayer.showErrorMessage("Errore accesso", "Impossibile accedere: nome o password errati.");
         } catch (Exception e) {
-            loginPage.showErrorMessage("Errore accesso", e.getMessage());
+            MessageDisplayer.showErrorMessage("Errore accesso", e.getMessage());
         }
     }
 
@@ -180,7 +180,7 @@ public class Controller {
                         articleEditor.setVisible(false);
                         homepage.reloadReferences();
                     } catch (IllegalArgumentException | ReferenceDatabaseException e) {
-                        articleEditor.showErrorMessage("Salvataggio non riuscito", e.getMessage());
+                        MessageDisplayer.showErrorMessage("Salvataggio non riuscito", e.getMessage());
                     }
                 }
 
@@ -209,7 +209,7 @@ public class Controller {
                         bookEditor.setVisible(false);
                         homepage.reloadReferences();
                     } catch (IllegalArgumentException | ReferenceDatabaseException e) {
-                        bookEditor.showErrorMessage("Salvataggio non riuscito", e.getMessage());
+                        MessageDisplayer.showErrorMessage("Salvataggio non riuscito", e.getMessage());
                     }
                 }
 
@@ -238,7 +238,7 @@ public class Controller {
                         thesisEditor.setVisible(false);
                         homepage.reloadReferences();
                     } catch (IllegalArgumentException | ReferenceDatabaseException e) {
-                        thesisEditor.showErrorMessage("Salvataggio non riuscito", e.getMessage());
+                        MessageDisplayer.showErrorMessage("Salvataggio non riuscito", e.getMessage());
                     }
                 }
 
@@ -267,7 +267,7 @@ public class Controller {
                         sourceCodeEditor.setVisible(false);
                         homepage.reloadReferences();
                     } catch (IllegalArgumentException | ReferenceDatabaseException e) {
-                        sourceCodeEditor.showErrorMessage("Salvataggio non riuscito", e.getMessage());
+                        MessageDisplayer.showErrorMessage("Salvataggio non riuscito", e.getMessage());
                     }
                 }
 
@@ -296,7 +296,7 @@ public class Controller {
                         imageEditor.setVisible(false);
                         homepage.reloadReferences();
                     } catch (IllegalArgumentException | ReferenceDatabaseException e) {
-                        imageEditor.showErrorMessage("Salvataggio non riuscito", e.getMessage());
+                        MessageDisplayer.showErrorMessage("Salvataggio non riuscito", e.getMessage());
                     }
                 }
 
@@ -325,7 +325,7 @@ public class Controller {
                         videoEditor.setVisible(false);
                         homepage.reloadReferences();
                     } catch (IllegalArgumentException | ReferenceDatabaseException e) {
-                        videoEditor.showErrorMessage("Salvataggio non riuscito", e.getMessage());
+                        MessageDisplayer.showErrorMessage("Salvataggio non riuscito", e.getMessage());
                     }
                 }
 
@@ -353,7 +353,7 @@ public class Controller {
                         websiteEditor.setVisible(false);
                         homepage.reloadReferences();
                     } catch (IllegalArgumentException | ReferenceDatabaseException e) {
-                        websiteEditor.showErrorMessage("Salvataggio non riuscito", e.getMessage());
+                        MessageDisplayer.showErrorMessage("Salvataggio non riuscito", e.getMessage());
                     }
                 }
             });
@@ -379,7 +379,7 @@ public class Controller {
             editor.setReferenceToChange(referenceToChange);
             editor.setVisible(true);
         } catch (Exception e) {
-            homepage.showErrorMessage("Impossibile aprire editor riferimenti", "Si è verificato un errore nell'apertura dell'editor.");
+            MessageDisplayer.showErrorMessage("Impossibile aprire editor riferimenti", "Si è verificato un errore nell'apertura dell'editor.");
         }
     }
 
@@ -396,7 +396,7 @@ public class Controller {
             referenceRepository.remove(reference);
             homepage.reloadReferences();
         } catch (Exception e) {
-            homepage.showErrorMessage("Errore rimozione riferimento", e.getMessage());
+            MessageDisplayer.showErrorMessage("Errore rimozione riferimento", e.getMessage());
         }
     }
 
@@ -410,7 +410,7 @@ public class Controller {
         try {
             categoryRepository.save(category);
         } catch (Exception e) {
-            homepage.showErrorMessage("Errore salvataggio categoria", e.getMessage());
+            MessageDisplayer.showErrorMessage("Errore salvataggio categoria", e.getMessage());
         }
     }
 
@@ -426,7 +426,7 @@ public class Controller {
         try {
             categoryRepository.update(category, newName);
         } catch (Exception e) {
-            homepage.showErrorMessage("Errore modifica categoria", e.getMessage());
+            MessageDisplayer.showErrorMessage("Errore modifica categoria", e.getMessage());
         }
     }
 
@@ -442,7 +442,7 @@ public class Controller {
             referenceRepository.forceNextRetrievalFromDatabase();
             homepage.setReferences(referenceRepository.getAll());
         } catch (Exception e) {
-            homepage.showErrorMessage("Errore rimozione categoria", e.getMessage());
+            MessageDisplayer.showErrorMessage("Errore rimozione categoria", e.getMessage());
         }
     }
 

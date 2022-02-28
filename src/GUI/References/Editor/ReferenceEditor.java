@@ -2,6 +2,7 @@ package GUI.References.Editor;
 
 import Entities.*;
 import Entities.References.*;
+import GUI.MessageDisplayer;
 import GUI.Authors.AuthorInputField;
 import GUI.Tags.TagInputField;
 import GUI.Utilities.*;
@@ -306,18 +307,6 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     }
 
     /**
-     * Mostra un messaggio di errore.
-     * 
-     * @param title
-     *            titolo della finestra di dialogo
-     * @param message
-     *            messaggio da mostrare
-     */
-    public void showErrorMessage(String title, String message) {
-        JOptionPane.showMessageDialog(this, message, title, JOptionPane.ERROR_MESSAGE);
-    }
-
-    /**
      * Notifica gli ascoltatori dell'evento di creazione di un riferimento.
      * 
      * @param reference
@@ -330,7 +319,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
             for (ReferenceEditorListener<T> listener : listeners)
                 listener.onReferenceCreation(newReference);
         } catch (InvalidInputException | IllegalArgumentException ex) {
-            showErrorMessage("Parametri inseriti non validi", ex.getMessage());
+            MessageDisplayer.showErrorMessage("Parametri inseriti non validi", ex.getMessage());
         }
     }
 

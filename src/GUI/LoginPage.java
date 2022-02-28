@@ -1,20 +1,10 @@
 package GUI;
 
+import Controller.Controller;
 import Entities.*;
 import Exceptions.Input.InvalidInputException;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-
-import Controller.Controller;
-
-import javax.swing.JTextField;
-import javax.swing.JPasswordField;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -134,7 +124,7 @@ public class LoginPage extends JFrame {
 			User user = getUserFromFields();
 			controller.register(user);
 		} catch (InvalidInputException e) {
-			showErrorMessage("Errore registrazione", e.getMessage());
+			MessageDisplayer.showErrorMessage("Errore registrazione", e.getMessage());
 		}
 	}
 
@@ -146,7 +136,7 @@ public class LoginPage extends JFrame {
 			User user = getUserFromFields();
 			controller.login(user);
 		} catch (InvalidInputException e) {
-			showErrorMessage("Errore accesso", e.getMessage());
+			MessageDisplayer.showErrorMessage("Errore accesso", e.getMessage());
 		}
 	}
 
@@ -165,16 +155,6 @@ public class LoginPage extends JFrame {
 		} catch (IllegalArgumentException e) {
 			throw new InvalidInputException(e.getMessage());
 		}
-	}
-
-	/**
-	 * TODO: commenta
-	 * 
-	 * @param title
-	 * @param message
-	 */
-	public void showErrorMessage(String title, String message) {
-		JOptionPane.showMessageDialog(this, title, message, JOptionPane.ERROR_MESSAGE);
 	}
 
 }
