@@ -39,11 +39,11 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     private EventListenerList creationListeners = new EventListenerList();
 
     private final Dimension maximumSize = new Dimension(Integer.MAX_VALUE, 24);
-    private final Dimension spacingSize = new Dimension(0, 10);
     private final float alignment = Container.LEFT_ALIGNMENT;
 
     /**
-     * TODO: commenta
+     * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento,
+     * ma senza categorie o rimandi selezionabili.
      * 
      * @param title
      *            titolo della finestra
@@ -116,9 +116,17 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
             setReferenceValues(referenceToChange);
     }
 
-    /**
-     * Inizializza i campi comuni a tutti i tipi di riferimento.
-     */
+    @Override
+    public void setVisible(boolean b) {
+        if (b) {
+            // FIXME:
+            if (referenceToChange != null)
+                referenceListModel.add(referenceListModel.size(), referenceToChange);
+        }
+
+        super.setVisible(b);
+    }
+
     private void setupBaseFields() {
         fieldPanel = new JPanel();
         fieldPanel.setLayout(new BoxLayout(fieldPanel, BoxLayout.PAGE_AXIS));
@@ -217,7 +225,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
 
         fieldPanel.add(labelField);
         fieldPanel.add(component);
-        fieldPanel.add(Box.createRigidArea(spacingSize));
+        fieldPanel.add(Box.createVerticalStrut(10));
     }
 
     /**
@@ -287,7 +295,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     /**
      * Restituisce un nuovo riferimento da riempire.
      * 
-     * @return istanza vuota da riempire
+     * @return istanza vuota da riempire, non nulla
      */
     protected abstract T getNewInstance();
 
@@ -311,12 +319,6 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         creationListeners.remove(ReferenceEditorListener.class, listener);
     }
 
-    /**
-     * Notifica gli ascoltatori dell'evento di creazione di un riferimento.
-     * 
-     * @param reference
-     *            riferimento creato
-     */
     @SuppressWarnings("unchecked")
     private void fireReferenceCreationEvent(T newReference) {
         ReferenceEditorListener<T>[] listeners = (ReferenceEditorListener<T>[]) creationListeners.getListeners(ReferenceEditorListener.class);
@@ -399,9 +401,8 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         relatedReferencesList.clearSelection();
 
         if (references != null) {
-            for (BibliographicReference reference : references) {
+            for (BibliographicReference reference : references)
                 addRelatedReference(reference);
-            }
         }
     }
 

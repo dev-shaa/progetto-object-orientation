@@ -147,18 +147,12 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         String publisher = getFormattedStringForQuery(article.getPublisher());
         String issn = getFormattedStringForQuery(article.getISSN());
 
-        Function<Integer, String> insertCommandGetter = new Function<Integer, String>() {
-            @Override
-            public String apply(Integer id) {
-                return "insert into article(id, page_count, url, publisher, issn) values(" + id + "," + pageCount + "," + url + "," + publisher + "," + issn + ")";
-            }
+        Function<Integer, String> insertCommandGetter = (id) -> {
+            return "insert into article(id, page_count, url, publisher, issn) values(" + id + "," + pageCount + "," + url + "," + publisher + "," + issn + ")";
         };
 
-        Function<Integer, String> updateCommandGetter = new Function<Integer, String>() {
-            @Override
-            public String apply(Integer id) {
-                return "update article set page_count = " + pageCount + ", url = " + url + ", publisher = " + publisher + ", issn = " + issn + " where id = " + id;
-            }
+        Function<Integer, String> updateCommandGetter = (id) -> {
+            return "update article set page_count = " + pageCount + ", url = " + url + ", publisher = " + publisher + ", issn = " + issn + " where id = " + id;
         };
 
         save(article, insertCommandGetter, updateCommandGetter);
@@ -174,18 +168,12 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         String publisher = getFormattedStringForQuery(book.getPublisher());
         String isbn = getFormattedStringForQuery(book.getISBN());
 
-        Function<Integer, String> insertCommandGetter = new Function<Integer, String>() {
-            @Override
-            public String apply(Integer id) {
-                return "insert into book(id, page_count, url, publisher, isbn) values(" + id + "," + pageCount + "," + url + "," + publisher + "," + isbn + ")";
-            }
+        Function<Integer, String> insertCommandGetter = (id) -> {
+            return "insert into book(id, page_count, url, publisher, isbn) values(" + id + "," + pageCount + "," + url + "," + publisher + "," + isbn + ")";
         };
 
-        Function<Integer, String> updateCommandGetter = new Function<Integer, String>() {
-            @Override
-            public String apply(Integer id) {
-                return "update book set page_count = " + pageCount + ", url = " + url + ", publisher = " + publisher + ", isbn = " + isbn + " where id = " + id;
-            }
+        Function<Integer, String> updateCommandGetter = (id) -> {
+            return "update book set page_count = " + pageCount + ", url = " + url + ", publisher = " + publisher + ", isbn = " + isbn + " where id = " + id;
         };
 
         save(book, insertCommandGetter, updateCommandGetter);
@@ -202,18 +190,12 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         String university = getFormattedStringForQuery(thesis.getUniversity());
         String faculty = getFormattedStringForQuery(thesis.getFaculty());
 
-        Function<Integer, String> insertCommandGetter = new Function<Integer, String>() {
-            @Override
-            public String apply(Integer id) {
-                return "insert into thesis(id, page_count, url, publisher, university, faculty) values(" + id + "," + pageCount + "," + url + "," + publisher + "," + university + "," + faculty + ")";
-            }
+        Function<Integer, String> insertCommandGetter = (id) -> {
+            return "insert into thesis(id, page_count, url, publisher, university, faculty) values(" + id + "," + pageCount + "," + url + "," + publisher + "," + university + "," + faculty + ")";
         };
 
-        Function<Integer, String> updateCommandGetter = new Function<Integer, String>() {
-            @Override
-            public String apply(Integer id) {
-                return "update thesis set page_count = " + pageCount + ", url = " + url + ", publisher = " + publisher + ", university = " + university + ", faculty = " + faculty + " where id = " + id;
-            }
+        Function<Integer, String> updateCommandGetter = (id) -> {
+            return "update thesis set page_count = " + pageCount + ", url = " + url + ", publisher = " + publisher + ", university = " + university + ", faculty = " + faculty + " where id = " + id;
         };
 
         save(thesis, insertCommandGetter, updateCommandGetter);
@@ -228,18 +210,12 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         String width = getFormattedStringForQuery(image.getWidth() == 0 ? null : String.valueOf(image.getWidth()));
         String height = getFormattedStringForQuery(image.getHeight() == 0 ? null : String.valueOf(image.getHeight()));
 
-        Function<Integer, String> insertCommandGetter = new Function<Integer, String>() {
-            @Override
-            public String apply(Integer id) {
-                return "insert into image(id, url, width, height) values(" + id + "," + url + "," + width + "," + height + ")";
-            }
+        Function<Integer, String> insertCommandGetter = (id) -> {
+            return "insert into image(id, url, width, height) values(" + id + "," + url + "," + width + "," + height + ")";
         };
 
-        Function<Integer, String> updateCommandGetter = new Function<Integer, String>() {
-            @Override
-            public String apply(Integer id) {
-                return "update image set url = " + url + ", width = " + width + ", height = " + height + " where id = " + id;
-            }
+        Function<Integer, String> updateCommandGetter = (id) -> {
+            return "update image set url = " + url + ", width = " + width + ", height = " + height + " where id = " + id;
         };
 
         save(image, insertCommandGetter, updateCommandGetter);
@@ -256,18 +232,12 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         String framerate = video.getFrameRate() == 0 ? null : String.valueOf(video.getFrameRate());
         String duration = video.getDuration() == 0 ? null : String.valueOf(video.getDuration());
 
-        Function<Integer, String> insertCommandGetter = new Function<Integer, String>() {
-            @Override
-            public String apply(Integer id) {
-                return "insert into video(id, url, width, height, framerate, duration) values(" + id + "," + url + "," + width + "," + height + "," + framerate + "," + duration + ")";
-            }
+        Function<Integer, String> insertCommandGetter = (id) -> {
+            return "insert into video(id, url, width, height, framerate, duration) values(" + id + "," + url + "," + width + "," + height + "," + framerate + "," + duration + ")";
         };
 
-        Function<Integer, String> updateCommandGetter = new Function<Integer, String>() {
-            @Override
-            public String apply(Integer id) {
-                return "update video set url = " + url + ", width = " + width + ", height = " + height + ", framerate = " + framerate + ", duration = " + duration + " where id = " + id;
-            }
+        Function<Integer, String> updateCommandGetter = (id) -> {
+            return "update video set url = " + url + ", width = " + width + ", height = " + height + ", framerate = " + framerate + ", duration = " + duration + " where id = " + id;
         };
 
         save(video, insertCommandGetter, updateCommandGetter);
@@ -281,7 +251,6 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         String programmingLanguage = getFormattedProgrammingLanguageForQuery(sourceCode.getProgrammingLanguage());
         String url = getFormattedStringForQuery(sourceCode.getURL());
 
-        // TODO: esegui per tutti
         Function<Integer, String> insertCommandGetter = (id) -> {
             return "insert into source_code(id, url, programming_language) values(" + id + "," + url + "," + programmingLanguage + ")";
         };
@@ -300,18 +269,12 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
 
         String url = getFormattedStringForQuery(website.getURL());
 
-        Function<Integer, String> insertCommandGetter = new Function<Integer, String>() {
-            @Override
-            public String apply(Integer id) {
-                return "insert into website(id, url) values(" + id + "," + url + ")";
-            }
+        Function<Integer, String> insertCommandGetter = (id) -> {
+            return "insert into website(id, url) values(" + id + "," + url + ")";
         };
 
-        Function<Integer, String> updateCommandGetter = new Function<Integer, String>() {
-            @Override
-            public String apply(Integer id) {
-                return "update website set url = " + url + " where id = " + id;
-            }
+        Function<Integer, String> updateCommandGetter = (id) -> {
+            return "update website set url = " + url + " where id = " + id;
         };
 
         save(website, insertCommandGetter, updateCommandGetter);

@@ -18,9 +18,11 @@ public abstract class OnlineResourceEditor<T extends OnlineResource> extends Ref
     private JTextField URL;
 
     /**
-     * TODO: commenta
-     * 
+     * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a una risorsa online,
+     * ma senza categorie o rimandi selezionabili.
+     *
      * @param title
+     *            titolo della finestra
      */
     public OnlineResourceEditor(String title) {
         this(title, null, null);
@@ -45,30 +47,25 @@ public abstract class OnlineResourceEditor<T extends OnlineResource> extends Ref
         super.setupSecondaryFields();
 
         URL = new JTextField();
-
         addFieldComponent(URL, "URL (obbligatorio)", "URL della risorsa online.");
     }
 
     @Override
     protected void setDefaultValues() {
         super.setDefaultValues();
-
         setURLValue(null);
     }
 
     @Override
     protected void setReferenceValues(T reference) {
         super.setReferenceValues(reference);
-
         setURLValue(reference.getURL());
     }
 
     @Override
     protected T createNewReference() throws InvalidInputException {
         T reference = super.createNewReference();
-
         reference.setURL(getURLValue());
-
         return reference;
     }
 

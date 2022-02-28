@@ -14,7 +14,8 @@ import java.util.Collection;
 public class WebsiteEditor extends OnlineResourceEditor<Website> {
 
     /**
-     * TODO: commenta
+     * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a un sito web,
+     * ma senza categorie o rimandi selezionabili.
      */
     public WebsiteEditor() {
         this(null, null);

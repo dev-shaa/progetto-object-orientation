@@ -1,7 +1,6 @@
 package Entities;
 
 import java.util.regex.Pattern;
-import Utilities.StringUtilities;
 
 /**
  * Classe che rappresenta l'autore di un riferimento bibliografico.
@@ -136,7 +135,7 @@ public class Author {
      *             se la stringa di input non rispetta il pattern del codice ORCID
      */
     public void setORCID(String ORCID) {
-        if (StringUtilities.isStringNullOrEmpty(ORCID))
+        if (ORCID != null && !ORCID.isEmpty() && !ORCID.isBlank())
             this.ORCID = null;
         else if (ORCID_PATTERN.matcher(ORCID).matches())
             this.ORCID = ORCID.trim();
@@ -155,8 +154,7 @@ public class Author {
     }
 
     private boolean isNameValid(String name) {
-        // return !StringUtilities.isStringNullOrEmpty(name) && name.length() <= NAME_MAX_LENGTH;
-        return !StringUtilities.isStringNullOrEmpty(name) && StringUtilities.isStringShorterThan(name, NAME_MAX_LENGTH);
+        return name != null && !name.isEmpty() && !name.isBlank() && name.length() <= NAME_MAX_LENGTH;
     }
 
 }

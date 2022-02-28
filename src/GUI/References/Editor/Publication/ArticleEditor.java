@@ -5,7 +5,6 @@ import Entities.References.BibliographicReference;
 import Entities.References.PhysicalResources.Article;
 import Exceptions.Input.InvalidInputException;
 import Utilities.Tree.CustomTreeModel;
-
 import java.util.Collection;
 import javax.swing.JTextField;
 
@@ -17,8 +16,8 @@ public class ArticleEditor extends PublicationEditor<Article> {
     private JTextField ISSN;
 
     /**
-     * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a un articolo.
-     * TODO: commenta
+     * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a un articolo,
+     * ma senza categorie o rimandi selezionabili.
      */
     public ArticleEditor() {
         this(null, null);
@@ -47,14 +46,12 @@ public class ArticleEditor extends PublicationEditor<Article> {
     @Override
     protected void setDefaultValues() {
         super.setDefaultValues();
-
         setISSNValue(null);
     }
 
     @Override
     protected void setReferenceValues(Article reference) {
         super.setReferenceValues(reference);
-
         setISSNValue(reference.getISSN());
     }
 
@@ -66,9 +63,7 @@ public class ArticleEditor extends PublicationEditor<Article> {
     @Override
     protected Article createNewReference() throws InvalidInputException {
         Article reference = super.createNewReference();
-
         reference.setISSN(getISSNValue());
-
         return reference;
     }
 

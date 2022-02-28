@@ -18,7 +18,8 @@ public class ThesisEditor extends PublicationEditor<Thesis> {
     private JTextField faculty;
 
     /**
-     * TODO: commenta
+     * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a una tesi,
+     * ma senza categorie o rimandi selezionabili.
      */
     public ThesisEditor() {
         this(null, null);
@@ -41,9 +42,9 @@ public class ThesisEditor extends PublicationEditor<Thesis> {
         super.setupSecondaryFields();
 
         university = new JTextField();
-        faculty = new JTextField();
-
         addFieldComponent(university, "Università", "Università della tesi.");
+
+        faculty = new JTextField();
         addFieldComponent(faculty, "Facoltà", "Facoltà dell'università.");
     }
 

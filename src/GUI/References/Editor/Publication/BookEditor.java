@@ -17,7 +17,8 @@ public class BookEditor extends PublicationEditor<Book> {
     private JTextField ISBN;
 
     /**
-     * TODO: commenta
+     * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a un libro,
+     * ma senza categorie o rimandi selezionabili.
      */
     public BookEditor() {
         this(null, null);
@@ -46,14 +47,12 @@ public class BookEditor extends PublicationEditor<Book> {
     @Override
     protected void setDefaultValues() {
         super.setDefaultValues();
-
         setISBNValue(null);
     }
 
     @Override
     protected void setReferenceValues(Book reference) {
         super.setReferenceValues(reference);
-
         setISBNValue(reference.getISBN());
     }
 
@@ -65,9 +64,7 @@ public class BookEditor extends PublicationEditor<Book> {
     @Override
     protected Book createNewReference() throws InvalidInputException {
         Book reference = super.createNewReference();
-
         reference.setISBN(getISBNValue());
-
         return reference;
     }
 

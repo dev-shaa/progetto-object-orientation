@@ -6,7 +6,6 @@ import Entities.References.BibliographicReference;
 import Entities.References.OnlineResources.ProgrammingLanguage;
 import Exceptions.Input.InvalidInputException;
 import Utilities.Tree.CustomTreeModel;
-
 import java.util.Collection;
 import javax.swing.JComboBox;
 
@@ -18,7 +17,8 @@ public class SourceCodeEditor extends OnlineResourceEditor<SourceCode> {
     private JComboBox<ProgrammingLanguage> programmingLanguage;
 
     /**
-     * TODO: commenta
+     * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a codice sorgente,
+     * ma senza categorie o rimandi selezionabili.
      */
     public SourceCodeEditor() {
         this(null, null);
@@ -47,14 +47,12 @@ public class SourceCodeEditor extends OnlineResourceEditor<SourceCode> {
     @Override
     protected void setDefaultValues() {
         super.setDefaultValues();
-
         setProgrammingLanguageValue(ProgrammingLanguage.NOTSPECIFIED);
     }
 
     @Override
     protected void setReferenceValues(SourceCode reference) {
         super.setReferenceValues(reference);
-
         setProgrammingLanguageValue(reference.getProgrammingLanguage());
     }
 
@@ -66,9 +64,7 @@ public class SourceCodeEditor extends OnlineResourceEditor<SourceCode> {
     @Override
     protected SourceCode createNewReference() throws InvalidInputException {
         SourceCode reference = super.createNewReference();
-
         reference.setProgrammingLanguage(getProgrammingLanguageValue());
-
         return reference;
     }
 

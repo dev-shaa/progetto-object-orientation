@@ -19,7 +19,8 @@ public class ImageEditor extends OnlineResourceEditor<Image> {
     private JSpinner height;
 
     /**
-     * TODO: commenta
+     * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a un'immagine,
+     * ma senza categorie o rimandi selezionabili.
      */
     public ImageEditor() {
         this(null, null);
@@ -42,9 +43,9 @@ public class ImageEditor extends OnlineResourceEditor<Image> {
         super.setupSecondaryFields();
 
         width = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
-        height = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
-
         addFieldComponent(width, "Larghezza", "Larghezza dell'immagine.");
+
+        height = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
         addFieldComponent(height, "Altezza", "Altezza dell'immagine.");
     }
 

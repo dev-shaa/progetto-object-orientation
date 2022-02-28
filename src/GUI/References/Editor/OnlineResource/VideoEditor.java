@@ -21,7 +21,8 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
     private JSpinner duration;
 
     /**
-     * TODO: commenta
+     * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a un video,
+     * ma senza categorie o rimandi selezionabili.
      */
     public VideoEditor() {
         this(null, null);
@@ -64,13 +65,15 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
         super.setupSecondaryFields();
 
         width = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
-        height = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
-        frameRate = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
-        duration = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
-
         addFieldComponent(width, "Larghezza", "Largezza del video.");
+
+        height = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
         addFieldComponent(height, "Altezza", "Altezza del video.");
+
+        frameRate = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
         addFieldComponent(frameRate, "Frequenza", "Numero di fotogrammi al secondo del video.");
+
+        duration = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
         addFieldComponent(duration, "Durata", "Durata del video (in secondi).");
     }
 
