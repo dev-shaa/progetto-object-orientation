@@ -1,4 +1,4 @@
-package GUI.Utilities.Tree.Checkbox;
+package GUI.Utilities.CheckboxTree;
 
 import java.awt.Component;
 import java.awt.BorderLayout;

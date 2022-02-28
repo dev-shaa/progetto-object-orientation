@@ -1,5 +1,7 @@
 package Entities;
 
+import Utilities.StringUtilities;
+
 /**
  * Classe che rappresenta una parola chiave di un riferimento.
  */
@@ -71,7 +73,7 @@ public class Tag {
      * @return {@code true} se il nome non è nullo, vuoto o più lungo di {@link #NAME_MAX_LENGTH}
      */
     private boolean isNameValid(String name) {
-        return name != null && !name.isEmpty() && !name.isBlank() && name.length() <= NAME_MAX_LENGTH;
+        return !StringUtilities.isStringNullOrEmpty(name) && name.length() <= NAME_MAX_LENGTH;
     }
 
 }

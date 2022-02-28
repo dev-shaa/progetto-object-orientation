@@ -380,24 +380,10 @@ public abstract class BibliographicReference {
         return name == null || name.isEmpty() || name.isBlank();
     }
 
-    /**
-     * Controlla se il titolo è valido.
-     * 
-     * @param title
-     *            titolo da controllare
-     * @return {@code true} se il titolo non è vuoto e la lunghezza non è maggiore di {@link #TITLE_MAX_LENGTH}
-     */
     private boolean isTitleValid(String title) {
         return !isStringNullOrEmpty(title) && title.length() <= TITLE_MAX_LENGTH;
     }
 
-    /**
-     * Controlla se la descrizione è valida.
-     * 
-     * @param description
-     *            descrizione da controllare
-     * @return {@code true} se il titolo non è vuoto e la lunghezza non è maggiore di {@link #DESCRIPTION_MAX_LENGTH}
-     */
     private boolean isDescriptionValid(String description) {
         return description == null || description.length() <= DESCRIPTION_MAX_LENGTH;
     }

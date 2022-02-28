@@ -1,5 +1,7 @@
 package Entities;
 
+import Utilities.StringUtilities;
+
 /**
  * La classe {@code Category} rappresenta un modo di raggruppare riferimenti bibliografici che condividono delle caratteristiche comuni.
  */
@@ -174,7 +176,7 @@ public class Category {
     }
 
     private boolean isNameValid(String name) {
-        return name != null && !name.isEmpty() && !name.isBlank() && name.length() <= NAME_MAX_LENGTH;
+        return !StringUtilities.isStringNullOrEmpty(name) && name.length() <= NAME_MAX_LENGTH;
     }
 
 }

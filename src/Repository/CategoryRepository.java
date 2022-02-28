@@ -8,8 +8,8 @@ import DAO.CategoryDAO;
 import Entities.Category;
 import Entities.References.BibliographicReference;
 import Exceptions.Database.CategoryDatabaseException;
-import GUI.Utilities.Tree.CustomTreeModel;
-import GUI.Utilities.Tree.CustomTreeNode;
+import Utilities.Tree.CustomTreeModel;
+import Utilities.Tree.CustomTreeNode;
 
 /**
  * Repository per gestire il recupero, l'inserimento, la rimozione e la modifica di categorie.
@@ -35,14 +35,13 @@ public class CategoryRepository {
      */
     public CategoryRepository(CategoryDAO categoryDAO) {
         setCategoryDAO(categoryDAO);
-
         idToCategory = new HashMap<>();
     }
 
     /**
      * Imposta il DAO delle categorie.
      * <p>
-     * Il recupero successivo a questa funzione avverrà dal database.
+     * Questa funzione chiama anche {@link #forceNextRetrievalFromDatabase()}.
      * 
      * @param categoryDAO
      *            DAO delle categorie
@@ -72,18 +71,17 @@ public class CategoryRepository {
             throw new IllegalArgumentException("category can't be null");
 
         categoryDAO.save(category);
-
         idToCategory.put(category.getID(), category);
 
-        CustomTreeNode<Category> node = new CustomTreeNode<Category>(category);
-        CustomTreeNode<Category> parentNode = treeModel.findNode(category.getParent());
-        treeModel.add(node, parentNode);
+        if (treeModel != null) {
+            CustomTreeNode<Category> node = new CustomTreeNode<Category>(category);
+            CustomTreeNode<Category> parentNode = treeModel.findNode(category.getParent());
+            treeModel.add(node, parentNode);
+        }
     }
 
     /**
      * Aggiorna il nome della categoria.
-     * <p>
-     * Se il nuovo nome è uguale al precedente, non verrà effettuato alcun cambiamento.
      * 
      * @param category
      *            categoria da modificare
@@ -99,10 +97,6 @@ public class CategoryRepository {
             throw new IllegalArgumentException("category can't be null");
 
         String oldName = category.getName();
-
-        if (oldName.equalsIgnoreCase(newName))
-            return;
-
         category.setName(newName); // se il nome non è valido lancia una IllegalArgumentException
 
         try {
@@ -129,7 +123,9 @@ public class CategoryRepository {
 
         categoryDAO.remove(category);
         idToCategory.remove(category.getID());
-        treeModel.remove(treeModel.findNode(category));
+
+        if (treeModel != null)
+            treeModel.remove(treeModel.findNode(category));
     }
 
     /**
@@ -219,12 +215,6 @@ public class CategoryRepository {
         treeNeedsUpdate = true;
     }
 
-    /**
-     * Recupera tutte le categorie dell'utente dal database.
-     * 
-     * @throws CategoryDatabaseException
-     *             se il recupero non va a buon fine
-     */
     private void retrieveFromDatabase() throws CategoryDatabaseException {
         idToCategory.clear();
         categories = categoryDAO.getAll();

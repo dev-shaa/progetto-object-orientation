@@ -5,7 +5,8 @@ import Entities.Category;
 import Entities.References.BibliographicReference;
 import Entities.References.OnlineResources.ProgrammingLanguage;
 import Exceptions.Input.InvalidInputException;
-import GUI.Utilities.Tree.CustomTreeModel;
+import Utilities.Tree.CustomTreeModel;
+
 import java.util.Collection;
 import javax.swing.JComboBox;
 
@@ -15,6 +16,13 @@ import javax.swing.JComboBox;
 public class SourceCodeEditor extends OnlineResourceEditor<SourceCode> {
 
     private JComboBox<ProgrammingLanguage> programmingLanguage;
+
+    /**
+     * TODO: commenta
+     */
+    public SourceCodeEditor() {
+        this(null, null);
+    }
 
     /**
      * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a codice sorgente.

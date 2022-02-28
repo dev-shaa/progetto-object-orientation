@@ -4,13 +4,21 @@ import Entities.Category;
 import Entities.References.BibliographicReference;
 import Entities.References.OnlineResources.Website;
 import Exceptions.Input.InvalidInputException;
-import GUI.Utilities.Tree.CustomTreeModel;
+import Utilities.Tree.CustomTreeModel;
+
 import java.util.Collection;
 
 /**
  * Finestra di dialogo per la creazione o modifica di un riferimento a un sito web.
  */
 public class WebsiteEditor extends OnlineResourceEditor<Website> {
+
+    /**
+     * TODO: commenta
+     */
+    public WebsiteEditor() {
+        this(null, null);
+    }
 
     /**
      * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a un sito web.

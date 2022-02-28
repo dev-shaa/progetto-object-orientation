@@ -124,7 +124,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
             statement.setString(1, category.getName());
             statement.setInt(2, category.getID());
 
-            statement.executeUpdate(command);
+            statement.executeUpdate();
         } catch (SQLException | DatabaseConnectionException e) {
             throw new CategoryDatabaseException("Impossibile modificare questa categoria.");
         } finally {

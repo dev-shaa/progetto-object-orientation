@@ -1,4 +1,4 @@
-package GUI.Utilities.Tree;
+package Utilities.Tree;
 
 import java.util.Vector;
 import java.util.Enumeration;

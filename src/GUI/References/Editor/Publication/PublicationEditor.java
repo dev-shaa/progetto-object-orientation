@@ -5,7 +5,8 @@ import Entities.References.BibliographicReference;
 import Entities.References.PhysicalResources.Publication;
 import Exceptions.Input.InvalidInputException;
 import GUI.References.Editor.ReferenceEditor;
-import GUI.Utilities.Tree.CustomTreeModel;
+import Utilities.Tree.CustomTreeModel;
+
 import java.util.Collection;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
@@ -19,6 +20,16 @@ public abstract class PublicationEditor<T extends Publication> extends Reference
     private JSpinner pageCount;
     private JTextField URL;
     private JTextField publisher;
+
+    /**
+     * TODO: commenta
+     * 
+     * @param title
+     *            titolo della finestra
+     */
+    public PublicationEditor(String title) {
+        this(title, null, null);
+    }
 
     /**
      * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a una pubblicazione.

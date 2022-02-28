@@ -4,7 +4,8 @@ import Entities.Category;
 import Entities.References.BibliographicReference;
 import Entities.References.PhysicalResources.Book;
 import Exceptions.Input.InvalidInputException;
-import GUI.Utilities.Tree.CustomTreeModel;
+import Utilities.Tree.CustomTreeModel;
+
 import java.util.Collection;
 import javax.swing.JTextField;
 
@@ -14,6 +15,13 @@ import javax.swing.JTextField;
 public class BookEditor extends PublicationEditor<Book> {
 
     private JTextField ISBN;
+
+    /**
+     * TODO: commenta
+     */
+    public BookEditor() {
+        this(null, null);
+    }
 
     /**
      * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a un libro.

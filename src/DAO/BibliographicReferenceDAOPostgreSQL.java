@@ -281,18 +281,13 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         String programmingLanguage = getFormattedProgrammingLanguageForQuery(sourceCode.getProgrammingLanguage());
         String url = getFormattedStringForQuery(sourceCode.getURL());
 
-        Function<Integer, String> insertCommandGetter = new Function<Integer, String>() {
-            @Override
-            public String apply(Integer id) {
-                return "insert into source_code(id, url, programming_language) values(" + id + "," + url + "," + programmingLanguage + ")";
-            }
+        // TODO: esegui per tutti
+        Function<Integer, String> insertCommandGetter = (id) -> {
+            return "insert into source_code(id, url, programming_language) values(" + id + "," + url + "," + programmingLanguage + ")";
         };
 
-        Function<Integer, String> updateCommandGetter = new Function<Integer, String>() {
-            @Override
-            public String apply(Integer id) {
-                return "update source_code set url = " + url + ", programming_language = " + programmingLanguage + " where id = " + id;
-            }
+        Function<Integer, String> updateCommandGetter = (id) -> {
+            return "update source_code set url = " + url + ", programming_language = " + programmingLanguage + " where id = " + id;
         };
 
         save(sourceCode, insertCommandGetter, updateCommandGetter);
@@ -423,18 +418,6 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         }
     }
 
-    /**
-     * Inserisce nel database le associazioni tra riferimento e rimandi.
-     * 
-     * @param connection
-     *            connessione da usare
-     * @param id
-     *            id del riferimento che si sta inserendo
-     * @param relatedReferences
-     *            rimandi da associare
-     * @throws SQLException
-     *             se si verifica un errore
-     */
     private void insertRelatedReferences(Connection connection, int id, Collection<? extends BibliographicReference> relatedReferences) throws SQLException {
         PreparedStatement removeStatement = null;
         PreparedStatement insertStatement = null;
@@ -462,18 +445,6 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         }
     }
 
-    /**
-     * Inserisce nel database le associazioni tra riferimento e categorie.
-     * 
-     * @param connection
-     *            connessione da usare
-     * @param id
-     *            id del riferimento che si sta inserendo
-     * @param categories
-     *            categorie da associare
-     * @throws SQLException
-     *             se si verifica un errore
-     */
     private void insertCategories(Connection connection, int id, Collection<Category> categories) throws SQLException {
         PreparedStatement removeStatement = null;
         PreparedStatement insertStatement = null;
@@ -501,18 +472,6 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         }
     }
 
-    /**
-     * Inserisce nel database le associazioni tra riferimento e autori.
-     * 
-     * @param connection
-     *            connessione da usare
-     * @param id
-     *            id del riferimento che si sta inserendo
-     * @param authors
-     *            autori da associare
-     * @throws SQLException
-     *             se si verifica un errore
-     */
     private void insertAuthors(Connection connection, int id, Collection<Author> authors) throws SQLException {
         PreparedStatement removeStatement = null;
         PreparedStatement insertStatement = null;
@@ -540,17 +499,6 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         }
     }
 
-    /**
-     * Restituisce tutti gli articoli dell'utente dal database.
-     * 
-     * @param statement
-     *            statement da usare per il recupero
-     * @param resultSet
-     *            resultset da usare per il recupero
-     * @return lista con gli articoli dell'utente
-     * @throws SQLException
-     *             se si verifica un errore
-     */
     private List<Article> getArticles(Statement statement, ResultSet resultSet) throws SQLException {
         String referenceQuery = "select * from bibliographic_reference natural join article where owner = '" + user.getName() + "'";
 
@@ -732,19 +680,6 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         return sourceCodes;
     }
 
-    /**
-     * Restituisce gli identificativi dei rimandi di un riferimento.
-     * 
-     * @param statement
-     *            statement da usare per il recupero
-     * @param resultSet
-     *            resultset da usare per il recupero
-     * @param reference
-     *            riferimento di cui recuperare i rimandi
-     * @return lista con gli identificativi dei rimandi
-     * @throws SQLException
-     *             se si verifica un errore
-     */
     private List<Integer> getRelatedReferencesIDs(Statement statement, ResultSet resultSet, BibliographicReference reference) throws SQLException {
         if (statement == null || reference == null || reference.getID() == null)
             throw new IllegalArgumentException();
@@ -771,23 +706,10 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         return date == null ? null : new java.sql.Date(date.getTime());
     }
 
-    /**
-     * Converte la lingua di un riferimento in una stringa inseribile nel database.
-     * 
-     * @param language
-     *            lingua del riferimento
-     * @return stringa inseribile in un database
-     */
     private String getFormattedLanguageForQuery(ReferenceLanguage language) {
         return getFormattedStringForQuery(language == ReferenceLanguage.NOTSPECIFIED ? null : language.name());
     }
 
-    /**
-     * TODO: commenta
-     * 
-     * @param programmingLanguage
-     * @return
-     */
     private String getFormattedProgrammingLanguageForQuery(ProgrammingLanguage programmingLanguage) {
         return getFormattedStringForQuery(programmingLanguage == ProgrammingLanguage.NOTSPECIFIED ? null : programmingLanguage.name());
     }

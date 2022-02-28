@@ -4,7 +4,8 @@ import Entities.Category;
 import Entities.References.BibliographicReference;
 import Entities.References.PhysicalResources.Thesis;
 import Exceptions.Input.InvalidInputException;
-import GUI.Utilities.Tree.CustomTreeModel;
+import Utilities.Tree.CustomTreeModel;
+
 import java.util.Collection;
 import javax.swing.JTextField;
 
@@ -15,6 +16,13 @@ public class ThesisEditor extends PublicationEditor<Thesis> {
 
     private JTextField university;
     private JTextField faculty;
+
+    /**
+     * TODO: commenta
+     */
+    public ThesisEditor() {
+        this(null, null);
+    }
 
     /**
      * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a una tesi.

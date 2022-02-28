@@ -9,11 +9,11 @@ import GUI.References.Editor.OnlineResource.*;
 import GUI.References.Editor.Publication.*;
 import Repository.CategoryRepository;
 import Repository.ReferenceRepository;
+import Utilities.Functions.CheckedConsumer;
 import Entities.*;
 import Entities.References.BibliographicReference;
 import Entities.References.OnlineResources.*;
 import Entities.References.PhysicalResources.*;
-import Exceptions.Database.ReferenceDatabaseException;
 
 /**
  * Controller dell'applicazione.
@@ -46,9 +46,6 @@ public class Controller {
         openLoginPage();
     }
 
-    /**
-     * Imposta lo stile dell'applicazione.
-     */
     private void setupLookAndFeel() {
         try {
             UIManager.setLookAndFeel(new FlatLightLaf());
@@ -58,14 +55,6 @@ public class Controller {
         }
     }
 
-    /**
-     * Imposta l'utente che sta usando l'applicazione.
-     * 
-     * @param user
-     *            utente da impostare
-     * @throws IllegalArgumentException
-     *             se {@code user == null}
-     */
     private void setUser(User user) {
         if (user == null)
             throw new IllegalArgumentException("user non può essere nullo.");
@@ -74,9 +63,6 @@ public class Controller {
         setupRepositories();
     }
 
-    /**
-     * Inizializza i repository da usare.
-     */
     private void setupRepositories() {
         CategoryDAO categoryDAO = new CategoryDAOPostgreSQL(user);
         BibliographicReferenceDAO referenceDAO = new BibliographicReferenceDAOPostgreSQL(user);
@@ -134,20 +120,11 @@ public class Controller {
         openLoginPage();
     }
 
-    /**
-     * Apre la pagina di login.
-     */
     private void openLoginPage() {
         loginPage.setVisible(true);
         homepage.setVisible(false);
     }
 
-    /**
-     * Apre la pagina principale dell'applicazione.
-     * 
-     * @param user
-     *            utente che ha eseguito l'accesso
-     */
     private void openHomePage(User user) {
         try {
             setUser(user);
@@ -157,7 +134,7 @@ public class Controller {
             homepage.setVisible(true);
             loginPage.setVisible(false);
         } catch (Exception e) {
-            // TODO: handle exception
+            MessageDisplayer.showErrorMessage("Errore apertura", "Impossibile caricare i dati dell'utente.");
         }
     }
 
@@ -169,22 +146,8 @@ public class Controller {
      */
     public void openArticleEditor(Article article) {
         if (articleEditor == null) {
-            articleEditor = new ArticleEditor(null, null);
-
-            articleEditor.addReferenceEditorListener(new ReferenceEditorListener<Article>() {
-
-                @Override
-                public void onReferenceCreation(Article newReference) {
-                    try {
-                        referenceRepository.save(newReference);
-                        articleEditor.setVisible(false);
-                        homepage.reloadReferences();
-                    } catch (IllegalArgumentException | ReferenceDatabaseException e) {
-                        MessageDisplayer.showErrorMessage("Salvataggio non riuscito", e.getMessage());
-                    }
-                }
-
-            });
+            articleEditor = new ArticleEditor();
+            setupReferenceEditor(articleEditor, (x) -> referenceRepository.save(x));
         }
 
         openReferenceEditor(articleEditor, article);
@@ -198,22 +161,8 @@ public class Controller {
      */
     public void openBookEditor(Book book) {
         if (bookEditor == null) {
-            bookEditor = new BookEditor(null, null);
-
-            bookEditor.addReferenceEditorListener(new ReferenceEditorListener<Book>() {
-
-                @Override
-                public void onReferenceCreation(Book newReference) {
-                    try {
-                        referenceRepository.save(newReference);
-                        bookEditor.setVisible(false);
-                        homepage.reloadReferences();
-                    } catch (IllegalArgumentException | ReferenceDatabaseException e) {
-                        MessageDisplayer.showErrorMessage("Salvataggio non riuscito", e.getMessage());
-                    }
-                }
-
-            });
+            bookEditor = new BookEditor();
+            setupReferenceEditor(bookEditor, (x) -> referenceRepository.save(x));
         }
 
         openReferenceEditor(bookEditor, book);
@@ -227,22 +176,8 @@ public class Controller {
      */
     public void openThesisEditor(Thesis thesis) {
         if (thesisEditor == null) {
-            thesisEditor = new ThesisEditor(null, null);
-
-            thesisEditor.addReferenceEditorListener(new ReferenceEditorListener<Thesis>() {
-
-                @Override
-                public void onReferenceCreation(Thesis newReference) {
-                    try {
-                        referenceRepository.save(newReference);
-                        thesisEditor.setVisible(false);
-                        homepage.reloadReferences();
-                    } catch (IllegalArgumentException | ReferenceDatabaseException e) {
-                        MessageDisplayer.showErrorMessage("Salvataggio non riuscito", e.getMessage());
-                    }
-                }
-
-            });
+            thesisEditor = new ThesisEditor();
+            setupReferenceEditor(thesisEditor, (x) -> referenceRepository.save(x));
         }
 
         openReferenceEditor(thesisEditor, thesis);
@@ -256,22 +191,8 @@ public class Controller {
      */
     public void openSourceCodeEditor(SourceCode sourceCode) {
         if (sourceCodeEditor == null) {
-            sourceCodeEditor = new SourceCodeEditor(null, null);
-
-            sourceCodeEditor.addReferenceEditorListener(new ReferenceEditorListener<SourceCode>() {
-
-                @Override
-                public void onReferenceCreation(SourceCode newReference) {
-                    try {
-                        referenceRepository.save(newReference);
-                        sourceCodeEditor.setVisible(false);
-                        homepage.reloadReferences();
-                    } catch (IllegalArgumentException | ReferenceDatabaseException e) {
-                        MessageDisplayer.showErrorMessage("Salvataggio non riuscito", e.getMessage());
-                    }
-                }
-
-            });
+            sourceCodeEditor = new SourceCodeEditor();
+            setupReferenceEditor(sourceCodeEditor, (x) -> referenceRepository.save(x));
         }
 
         openReferenceEditor(sourceCodeEditor, sourceCode);
@@ -285,22 +206,8 @@ public class Controller {
      */
     public void openImageEditor(Image image) {
         if (imageEditor == null) {
-            imageEditor = new ImageEditor(null, null);
-
-            imageEditor.addReferenceEditorListener(new ReferenceEditorListener<Image>() {
-
-                @Override
-                public void onReferenceCreation(Image newReference) {
-                    try {
-                        referenceRepository.save(newReference);
-                        imageEditor.setVisible(false);
-                        homepage.reloadReferences();
-                    } catch (IllegalArgumentException | ReferenceDatabaseException e) {
-                        MessageDisplayer.showErrorMessage("Salvataggio non riuscito", e.getMessage());
-                    }
-                }
-
-            });
+            imageEditor = new ImageEditor();
+            setupReferenceEditor(imageEditor, (x) -> referenceRepository.save(x));
         }
 
         openReferenceEditor(imageEditor, image);
@@ -314,22 +221,8 @@ public class Controller {
      */
     public void openVideoEditor(Video video) {
         if (videoEditor == null) {
-            videoEditor = new VideoEditor(null, null);
-
-            videoEditor.addReferenceEditorListener(new ReferenceEditorListener<Video>() {
-
-                @Override
-                public void onReferenceCreation(Video newReference) {
-                    try {
-                        referenceRepository.save(newReference);
-                        videoEditor.setVisible(false);
-                        homepage.reloadReferences();
-                    } catch (IllegalArgumentException | ReferenceDatabaseException e) {
-                        MessageDisplayer.showErrorMessage("Salvataggio non riuscito", e.getMessage());
-                    }
-                }
-
-            });
+            videoEditor = new VideoEditor();
+            setupReferenceEditor(videoEditor, (x) -> referenceRepository.save(x));
         }
 
         openReferenceEditor(videoEditor, video);
@@ -343,36 +236,17 @@ public class Controller {
      */
     public void openWebsiteEditor(Website website) {
         if (websiteEditor == null) {
-            websiteEditor = new WebsiteEditor(null, null);
-
-            websiteEditor.addReferenceEditorListener(new ReferenceEditorListener<Website>() {
-                @Override
-                public void onReferenceCreation(Website newReference) {
-                    try {
-                        referenceRepository.save(newReference);
-                        websiteEditor.setVisible(false);
-                        homepage.reloadReferences();
-                    } catch (IllegalArgumentException | ReferenceDatabaseException e) {
-                        MessageDisplayer.showErrorMessage("Salvataggio non riuscito", e.getMessage());
-                    }
-                }
-            });
+            websiteEditor = new WebsiteEditor();
+            setupReferenceEditor(websiteEditor, (x) -> referenceRepository.save(x));
         }
 
         openReferenceEditor(websiteEditor, website);
     }
 
-    /**
-     * Apre un editor di un tipo di riferimento.
-     * 
-     * @param <T>
-     *            tipo del riferimento da creare o modificare
-     * @param editor
-     *            editor del riferimento
-     * @param referenceToChange
-     *            riferimento da cambiare (può essere {@code null})
-     */
     private <T extends BibliographicReference> void openReferenceEditor(ReferenceEditor<T> editor, T referenceToChange) {
+        if (editor == null)
+            throw new IllegalArgumentException("Editor to open can't be null");
+
         try {
             editor.setCategoriesTree(categoryRepository.getTree());
             editor.setReferences(referenceRepository.getAll());
@@ -381,6 +255,24 @@ public class Controller {
         } catch (Exception e) {
             MessageDisplayer.showErrorMessage("Impossibile aprire editor riferimenti", "Si è verificato un errore nell'apertura dell'editor.");
         }
+    }
+
+    private <T extends BibliographicReference> void setupReferenceEditor(ReferenceEditor<T> editor, CheckedConsumer<T> saveMethod) {
+        if (editor == null || saveMethod == null)
+            throw new IllegalArgumentException();
+
+        editor.addReferenceEditorListener(new ReferenceEditorListener<T>() {
+            @Override
+            public void onReferenceCreation(T newReference) {
+                try {
+                    saveMethod.call(newReference);
+                    editor.setVisible(false);
+                    homepage.reloadReferences();
+                } catch (Exception e) {
+                    MessageDisplayer.showErrorMessage("Salvataggio non riuscito", e.getMessage());
+                }
+            }
+        });
     }
 
     /**

@@ -2,7 +2,6 @@ package DAO;
 
 import java.sql.*;
 import java.util.*;
-
 import Controller.ConnectionController;
 import Entities.Author;
 import Entities.References.BibliographicReference;

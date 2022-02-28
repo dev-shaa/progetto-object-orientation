@@ -1,10 +1,11 @@
-package GUI.Utilities.Tree.Checkbox;
+package GUI.Utilities.CheckboxTree;
 
 import java.util.ArrayList;
 import javax.swing.JTree;
 import javax.swing.tree.*;
-import GUI.Utilities.Tree.CustomTreeModel;
-import GUI.Utilities.Tree.CustomTreeNode;
+
+import Utilities.Tree.CustomTreeModel;
+import Utilities.Tree.CustomTreeNode;
 
 /**
  * Un'estensione di {@code JTree} con nodi di tipo checkbox, con la possibilità di selezionare e recuperare gli elementi selezionati.

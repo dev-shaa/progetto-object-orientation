@@ -1,6 +1,7 @@
 package Entities;
 
 import java.util.regex.Pattern;
+import Utilities.StringUtilities;
 
 /**
  * Classe che rappresenta l'autore di un riferimento bibliografico.
@@ -126,6 +127,8 @@ public class Author {
 
     /**
      * Imposta il codice ORCID dell'autore.
+     * <p>
+     * Può essere {@code null}.
      * 
      * @param ORCID
      *            ORCID dell'autore
@@ -133,7 +136,7 @@ public class Author {
      *             se la stringa di input non rispetta il pattern del codice ORCID
      */
     public void setORCID(String ORCID) {
-        if (isStringNullOrEmpty(ORCID))
+        if (StringUtilities.isStringNullOrEmpty(ORCID))
             this.ORCID = null;
         else if (ORCID_PATTERN.matcher(ORCID).matches())
             this.ORCID = ORCID.trim();
@@ -151,26 +154,9 @@ public class Author {
         return ORCID;
     }
 
-    /**
-     * Controlla se una stringa è nulla o vuota.
-     * 
-     * @param string
-     *            stringa da controllare
-     * @return {@code true} se {@code string == null || string.isEmpty() || string.isBlank()}
-     */
-    private boolean isStringNullOrEmpty(String string) {
-        return string == null || string.isEmpty() || string.isBlank();
-    }
-
-    /**
-     * Controlla se un nome è valido.
-     * 
-     * @param name
-     *            nome da controllare
-     * @return {@code true} se il nome non è vuoto e se la sua lunghezza è minore di {@link #NAME_MAX_LENGTH}
-     */
     private boolean isNameValid(String name) {
-        return !isStringNullOrEmpty(name) && name.length() <= NAME_MAX_LENGTH;
+        // return !StringUtilities.isStringNullOrEmpty(name) && name.length() <= NAME_MAX_LENGTH;
+        return !StringUtilities.isStringNullOrEmpty(name) && StringUtilities.isStringShorterThan(name, NAME_MAX_LENGTH);
     }
 
 }

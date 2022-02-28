@@ -1,13 +1,13 @@
 package Repository;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
-
 import DAO.*;
 import Entities.References.*;
 import Entities.References.OnlineResources.*;
 import Entities.References.PhysicalResources.*;
 import Exceptions.Database.*;
+import Utilities.Functions.Procedure;
 
 /**
  * Repository per gestire il recupero, l'inserimento, la rimozione e la modifica di riferimenti.
@@ -41,6 +41,8 @@ public class ReferenceRepository {
         setCategoryRepository(categoryRepository);
         setAuthorDAO(authorDAO);
         setTagDAO(tagDAO);
+
+        references = new ArrayList<>(0); // array vuoto per essere sicuri di non dover gestire valori null
     }
 
     /**
@@ -159,179 +161,108 @@ public class ReferenceRepository {
     /**
      * Salva un riferimento ad articolo nel database, creandolo o aggiornandolo se già esiste.
      * 
-     * @param reference
+     * @param article
      *            riferimento da aggiungere o modificare
      * @throws IllegalArgumentException
      *             se {@code reference == null}
      * @throws ReferenceDatabaseException
      *             se il salvataggio non è andato a buon fine
      */
-    public void save(Article reference) throws ReferenceDatabaseException {
-        Callable<Void> daoSaveCallable = new Callable<Void>() {
-            @Override
-            public Void call() throws ReferenceDatabaseException {
-                referenceDAO.save(reference);
-                return null;
-            }
-        };
-
-        save(reference, daoSaveCallable);
+    public void save(Article article) throws ReferenceDatabaseException {
+        save(article, () -> referenceDAO.save(article));
     }
 
     /**
      * Salva un riferimento a libro nel database, creandolo o aggiornandolo se già esiste.
      * 
-     * @param reference
+     * @param book
      *            riferimento da aggiungere o modificare
      * @throws IllegalArgumentException
      *             se {@code reference == null}
      * @throws ReferenceDatabaseException
      *             se il salvataggio non è andato a buon fine
      */
-    public void save(Book reference) throws ReferenceDatabaseException {
-        Callable<Void> daoSaveCallable = new Callable<Void>() {
-            @Override
-            public Void call() throws ReferenceDatabaseException {
-                referenceDAO.save(reference);
-                return null;
-            }
-        };
-
-        save(reference, daoSaveCallable);
+    public void save(Book book) throws ReferenceDatabaseException {
+        save(book, () -> referenceDAO.save(book));
     }
 
     /**
      * Salva un riferimento a tesi nel database, creandolo o aggiornandolo se già esiste.
      * 
-     * @param reference
+     * @param thesis
      *            riferimento da aggiungere o modificare
      * @throws IllegalArgumentException
      *             se {@code reference == null}
      * @throws ReferenceDatabaseException
      *             se il salvataggio non è andato a buon fine
      */
-    public void save(Thesis reference) throws ReferenceDatabaseException {
-        Callable<Void> daoSaveCallable = new Callable<Void>() {
-            @Override
-            public Void call() throws ReferenceDatabaseException {
-                referenceDAO.save(reference);
-                return null;
-            }
-        };
-
-        save(reference, daoSaveCallable);
+    public void save(Thesis thesis) throws ReferenceDatabaseException {
+        save(thesis, () -> referenceDAO.save(thesis));
     }
 
     /**
      * Salva un riferimento a immagine nel database, creandolo o aggiornandolo se già esiste.
      * 
-     * @param reference
+     * @param image
      *            riferimento da aggiungere o modificare
      * @throws IllegalArgumentException
      *             se {@code reference == null}
      * @throws ReferenceDatabaseException
      *             se il salvataggio non è andato a buon fine
      */
-    public void save(Image reference) throws ReferenceDatabaseException {
-        Callable<Void> daoSaveCallable = new Callable<Void>() {
-            @Override
-            public Void call() throws ReferenceDatabaseException {
-                referenceDAO.save(reference);
-                return null;
-            }
-        };
-
-        save(reference, daoSaveCallable);
-    }
-
-    /**
-     * Salva un riferimento a codice sorgente nel database, creandolo o aggiornandolo se già esiste.
-     * 
-     * @param reference
-     *            riferimento da aggiungere o modificare
-     * @throws IllegalArgumentException
-     *             se {@code reference == null}
-     * @throws ReferenceDatabaseException
-     *             se il salvataggio non è andato a buon fine
-     */
-    public void save(SourceCode reference) throws ReferenceDatabaseException {
-        Callable<Void> daoSaveCallable = new Callable<Void>() {
-            @Override
-            public Void call() throws ReferenceDatabaseException {
-                referenceDAO.save(reference);
-                return null;
-            }
-        };
-
-        save(reference, daoSaveCallable);
+    public void save(Image image) throws ReferenceDatabaseException {
+        save(image, () -> referenceDAO.save(image));
     }
 
     /**
      * Salva un riferimento a video nel database, creandolo o aggiornandolo se già esiste.
      * 
-     * @param reference
+     * @param video
      *            riferimento da aggiungere o modificare
      * @throws IllegalArgumentException
      *             se {@code reference == null}
      * @throws ReferenceDatabaseException
      *             se il salvataggio non è andato a buon fine
      */
-    public void save(Video reference) throws ReferenceDatabaseException {
-        Callable<Void> daoSaveCallable = new Callable<Void>() {
-            @Override
-            public Void call() throws ReferenceDatabaseException {
-                referenceDAO.save(reference);
-                return null;
-            }
-        };
+    public void save(Video video) throws ReferenceDatabaseException {
+        save(video, () -> referenceDAO.save(video));
+    }
 
-        save(reference, daoSaveCallable);
+    /**
+     * Salva un riferimento a codice sorgente nel database, creandolo o aggiornandolo se già esiste.
+     * 
+     * @param sourceCode
+     *            riferimento da aggiungere o modificare
+     * @throws IllegalArgumentException
+     *             se {@code reference == null}
+     * @throws ReferenceDatabaseException
+     *             se il salvataggio non è andato a buon fine
+     */
+    public void save(SourceCode sourceCode) throws ReferenceDatabaseException {
+        save(sourceCode, () -> referenceDAO.save(sourceCode));
     }
 
     /**
      * Salva un riferimento a sito web nel database, creandolo o aggiornandolo se già esiste.
      * 
-     * @param reference
+     * @param website
      *            riferimento da aggiungere o modificare
      * @throws IllegalArgumentException
      *             se {@code reference == null}
      * @throws ReferenceDatabaseException
      *             se il salvataggio non è andato a buon fine
      */
-    public void save(Website reference) throws ReferenceDatabaseException {
-        Callable<Void> daoSaveCallable = new Callable<Void>() {
-            @Override
-            public Void call() throws ReferenceDatabaseException {
-                referenceDAO.save(reference);
-                return null;
-            }
-        };
-
-        save(reference, daoSaveCallable);
+    public void save(Website website) throws ReferenceDatabaseException {
+        save(website, () -> referenceDAO.save(website));
     }
 
-    /**
-     * Salva un riferimento.
-     * <p>
-     * Si occupa di gestire le funzioni comuni a tutti i tipi di riferimento,
-     * chiamando poi la funzione di salvataggio specifica per il tipo di riferimento.
-     * 
-     * @param reference
-     *            riferimento da salvare
-     * @param daoSaveFunction
-     *            funzione per salvare con il DAO
-     * @throws IllegalArgumentException
-     *             se {@code reference == null}
-     * @throws ReferenceDatabaseException
-     *             se il salvataggio non va a buon fine
-     */
-    private void save(BibliographicReference reference, Callable<Void> daoSaveFunction) throws ReferenceDatabaseException {
+    private void save(BibliographicReference reference, Procedure daoSave) throws ReferenceDatabaseException {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
         try {
             authorDAO.save(reference.getAuthors());
-            daoSaveFunction.call();
+            daoSave.execute();
             tagDAO.saveTagsOf(reference);
             saveToLocal(reference);
         } catch (Exception e) {
@@ -339,12 +270,6 @@ public class ReferenceRepository {
         }
     }
 
-    /**
-     * Recupera tutti i riferimenti dell'utente dal database.
-     * 
-     * @throws ReferenceDatabaseException
-     *             se il recupero non va a buon fine
-     */
     private void retrieveFromDatabase() throws ReferenceDatabaseException {
         try {
             references = referenceDAO.getAll();
@@ -361,35 +286,23 @@ public class ReferenceRepository {
         }
     }
 
-    /**
-     * Salva un riferimento in memoria locale.
-     * 
-     * @param reference
-     *            riferimento da salvare
-     */
-    private void saveToLocal(BibliographicReference reference) {
-        int index = findIndexOfReferenceWithSameID(references, reference.getID());
+    private void saveToLocal(BibliographicReference newReference) {
+        int index = findIndexOfReferenceWithSameID(references, newReference.getID());
+
+        // sostituiamo il riferimento con lo stesso id, se c'è
 
         if (index == -1) {
-            references.add(reference);
+            references.add(newReference);
         } else {
-            // se è già contenuta nell'elenco vuol dire che stiamo aggiornando il riferimento
-            // conviene prima rimuoverlo dal conteggio delle citazioni ricevute e poi aggiornarlo di nuovo
-
-            references.set(index, reference);
-            replaceInRelatedReferences(reference);
-            decreaseQuotationCountForRelatedReferencesOf(reference);
+            BibliographicReference oldReference = references.get(index);
+            decreaseQuotationCountForRelatedReferencesOf(oldReference);
+            replaceInRelatedReferences(oldReference, newReference);
+            references.set(index, newReference);
         }
 
-        increaseQuotationCountForRelatedReferencesOf(reference);
+        increaseQuotationCountForRelatedReferencesOf(newReference);
     }
 
-    /**
-     * Incrementa il conteggio delle citazioni ricevute per i rimandi di un riferimento.
-     * 
-     * @param reference
-     *            riferimento da cui recuperare i rimandi
-     */
     private void increaseQuotationCountForRelatedReferencesOf(BibliographicReference reference) {
         if (reference == null)
             return;
@@ -398,12 +311,6 @@ public class ReferenceRepository {
             relatedReference.setQuotationCount(relatedReference.getQuotationCount() + 1);
     }
 
-    /**
-     * Diminuisce il conteggio delle citazioni ricevute per i rimandi di un riferimento.
-     * 
-     * @param reference
-     *            riferimento da cui recuperare i rimandi
-     */
     private void decreaseQuotationCountForRelatedReferencesOf(BibliographicReference reference) {
         if (reference == null)
             return;
@@ -412,28 +319,15 @@ public class ReferenceRepository {
             relatedReference.setQuotationCount(relatedReference.getQuotationCount() - 1);
     }
 
-    /**
-     * Sostituisce il riferimento con lo stesso id di quello indicato dai rimandi degli altri riferimenti in memoria.
-     * 
-     * @param newReference
-     *            riferimento da inserire al posto di quello vecchio
-     */
-    private void replaceInRelatedReferences(BibliographicReference newReference) {
+    private void replaceInRelatedReferences(BibliographicReference oldReference, BibliographicReference newReference) {
         for (BibliographicReference reference : references) {
-            int index = findIndexOfReferenceWithSameID(reference.getRelatedReferences(), newReference.getID());
+            int index = reference.getRelatedReferences().indexOf(oldReference);
 
             if (index != -1)
                 reference.getRelatedReferences().set(index, newReference);
         }
     }
 
-    /**
-     * Trova l'indice del riferimento con l'id indicato.
-     * 
-     * @param id
-     *            id del riferimento da cercare
-     * @return l'indice del riferimento, {@value -1} se non è presente
-     */
     private int findIndexOfReferenceWithSameID(List<BibliographicReference> references, Integer id) {
         int index = -1;
 

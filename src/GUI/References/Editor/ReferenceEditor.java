@@ -5,17 +5,17 @@ import Entities.References.*;
 import GUI.MessageDisplayer;
 import GUI.Authors.AuthorInputField;
 import GUI.Tags.TagInputField;
-import GUI.Utilities.*;
-import GUI.Utilities.Tree.CustomTreeModel;
+import GUI.Utilities.CheckboxTree.PopupCheckboxTree;
+import Utilities.Tree.CustomTreeModel;
 import Exceptions.Input.InvalidAuthorInputException;
 import Exceptions.Input.InvalidInputException;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import javax.swing.*;
+import javax.swing.event.EventListenerList;
 import com.toedter.calendar.JDateChooser;
 
 /**
@@ -36,11 +36,21 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     private JPanel fieldPanel;
 
     private T referenceToChange;
-    private ArrayList<ReferenceEditorListener<T>> listeners;
+    private EventListenerList creationListeners = new EventListenerList();
 
     private final Dimension maximumSize = new Dimension(Integer.MAX_VALUE, 24);
     private final Dimension spacingSize = new Dimension(0, 10);
     private final float alignment = Container.LEFT_ALIGNMENT;
+
+    /**
+     * TODO: commenta
+     * 
+     * @param title
+     *            titolo della finestra
+     */
+    public ReferenceEditor(String title) {
+        this(title, null, null);
+    }
 
     /**
      * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento.
@@ -60,8 +70,6 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         setSize(500, 700);
         setResizable(false);
         setLocationRelativeTo(null);
-
-        listeners = new ArrayList<>(1);
 
         setupBaseFields();
         setDefaultValues();
@@ -165,7 +173,12 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         confirmButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                fireReferenceCreationEvent();
+                try {
+                    T newReference = createNewReference();
+                    fireReferenceCreationEvent(newReference);
+                } catch (InvalidInputException | IllegalArgumentException ex) {
+                    MessageDisplayer.showErrorMessage("Parametri inseriti non validi", ex.getMessage());
+                }
             }
         });
 
@@ -285,14 +298,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      *            ascoltatore da aggiungere
      */
     public void addReferenceEditorListener(ReferenceEditorListener<T> listener) {
-        if (listener == null)
-            return;
-
-        if (listeners == null)
-            listeners = new ArrayList<>(3);
-
-        if (!listeners.contains(listener))
-            listeners.add(listener);
+        creationListeners.add(ReferenceEditorListener.class, listener);
     }
 
     /**
@@ -302,8 +308,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      *            ascoltatore da rimuovere
      */
     public void removeReferenceEditorListener(ReferenceEditorListener<T> listener) {
-        if (listener != null && listeners != null)
-            listeners.remove(listener);
+        creationListeners.remove(ReferenceEditorListener.class, listener);
     }
 
     /**
@@ -312,15 +317,12 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      * @param reference
      *            riferimento creato
      */
-    private void fireReferenceCreationEvent() {
-        try {
-            T newReference = createNewReference();
+    @SuppressWarnings("unchecked")
+    private void fireReferenceCreationEvent(T newReference) {
+        ReferenceEditorListener<T>[] listeners = (ReferenceEditorListener<T>[]) creationListeners.getListeners(ReferenceEditorListener.class);
 
-            for (ReferenceEditorListener<T> listener : listeners)
-                listener.onReferenceCreation(newReference);
-        } catch (InvalidInputException | IllegalArgumentException ex) {
-            MessageDisplayer.showErrorMessage("Parametri inseriti non validi", ex.getMessage());
-        }
+        for (ReferenceEditorListener<T> listener : listeners)
+            listener.onReferenceCreation(newReference);
     }
 
     // #region VALUES GETTER/SETTER

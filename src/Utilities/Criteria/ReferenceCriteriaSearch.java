@@ -1,4 +1,4 @@
-package Criteria;
+package Utilities.Criteria;
 
 import java.util.Collection;
 import java.util.Date;

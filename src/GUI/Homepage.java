@@ -10,11 +10,11 @@ import GUI.Categories.CategorySelectionListener;
 import GUI.References.List.*;
 import GUI.Search.*;
 import GUI.Utilities.PopupButton;
-import GUI.Utilities.Tree.CustomTreeModel;
+import Utilities.Criteria.Criteria;
+import Utilities.Criteria.ReferenceCriteriaCategory;
+import Utilities.Criteria.ReferenceCriteriaSearch;
+import Utilities.Tree.CustomTreeModel;
 import Controller.Controller;
-import Criteria.ReferenceCriteria;
-import Criteria.ReferenceCriteriaCategory;
-import Criteria.ReferenceCriteriaSearch;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -50,7 +50,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
     private SearchPanel referenceSearchPanel;
 
     private Collection<? extends BibliographicReference> references;
-    private ReferenceCriteria lastReferenceCriteriaUsed;
+    private Criteria<BibliographicReference> lastReferenceCriteriaUsed;
 
     /**
      * Crea una nuova pagina principale con il controller indicato.
@@ -59,7 +59,6 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
      *            controller della GUI
      * @throws IllegalArgumentException
      *             se {@code controller == null}
-     * @see #setController(Controller)
      */
     public Homepage(Controller controller) {
         super();
@@ -88,7 +87,6 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
             referenceListPanel.clear();
             referenceSearchPanel.clear();
             referenceInfoTextArea.setText(null);
-
             setLocationRelativeTo(null);
         }
 
@@ -126,9 +124,6 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         userLabel.setText("<html>Benvenuto, <b>" + name + "</b></html>");
     }
 
-    /**
-     * Inizializza la pagina.
-     */
     private void setup() {
         setTitle("Pagina principale");
         setMinimumSize(new Dimension(400, 400));
@@ -155,9 +150,6 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         contentPane.add(splitPane, BorderLayout.CENTER);
     }
 
-    /**
-     * Imposta l'operazione di chiusura.
-     */
     private void setupCloseOperation() {
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
@@ -170,11 +162,6 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         });
     }
 
-    /**
-     * Inizializza il pannello delle categorie.
-     * 
-     * @return pannello inizializzato
-     */
     private JPanel setupCategoriesPanel() {
         JPanel categoriesPanel = new JPanel();
 
@@ -239,11 +226,6 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         return categoriesPanel;
     }
 
-    /**
-     * Inizializza il pannello dei riferimenti.
-     * 
-     * @return pannello inizializzato
-     */
     private JPanel setupReferencesPanel() {
         JPanel referencePanel = new JPanel();
 
@@ -298,11 +280,6 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         return referencePanel;
     }
 
-    /**
-     * Inizializza il pannello delle informazioni dell'utente.
-     * 
-     * @return pannello inizializzato
-     */
     private JPanel setupUserInfoPanel() {
         JPanel userInfoPanel = new JPanel();
 
@@ -335,11 +312,6 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         return userInfoPanel;
     }
 
-    /**
-     * Inizializza il pulsante per l'apertura degli editor.
-     * 
-     * @return pulsante inizializzato
-     */
     private PopupButton setupCreateReferenceButton() {
         PopupButton createReferenceButton = new PopupButton(new ImageIcon("images/file_add.png"));
         createReferenceButton.setToolTipText("Crea riferimento");
@@ -350,7 +322,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
                 controller.openArticleEditor(null);
             }
         });
-        createReferenceButton.addToPopupMenu(articleOption);
+        createReferenceButton.add(articleOption);
 
         JMenuItem bookOption = new JMenuItem("Libro");
         bookOption.addActionListener(new ActionListener() {
@@ -358,7 +330,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
                 controller.openBookEditor(null);
             }
         });
-        createReferenceButton.addToPopupMenu(bookOption);
+        createReferenceButton.add(bookOption);
 
         JMenuItem thesisOption = new JMenuItem("Tesi");
         thesisOption.addActionListener(new ActionListener() {
@@ -366,8 +338,8 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
                 controller.openThesisEditor(null);
             }
         });
-        createReferenceButton.addToPopupMenu(thesisOption);
-        createReferenceButton.addPopupSeparator();
+        createReferenceButton.add(thesisOption);
+        createReferenceButton.addSeparator();
 
         JMenuItem websiteOption = new JMenuItem("Sito web");
         websiteOption.addActionListener(new ActionListener() {
@@ -375,7 +347,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
                 controller.openWebsiteEditor(null);
             }
         });
-        createReferenceButton.addToPopupMenu(websiteOption);
+        createReferenceButton.add(websiteOption);
 
         JMenuItem sourceCodeOption = new JMenuItem("Codice sorgente");
         sourceCodeOption.addActionListener(new ActionListener() {
@@ -383,7 +355,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
                 controller.openSourceCodeEditor(null);
             }
         });
-        createReferenceButton.addToPopupMenu(sourceCodeOption);
+        createReferenceButton.add(sourceCodeOption);
 
         JMenuItem imageOption = new JMenuItem("Immagine");
         imageOption.addActionListener(new ActionListener() {
@@ -391,7 +363,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
                 controller.openImageEditor(null);
             }
         });
-        createReferenceButton.addToPopupMenu(imageOption);
+        createReferenceButton.add(imageOption);
 
         JMenuItem videoOption = new JMenuItem("Video");
         videoOption.addActionListener(new ActionListener() {
@@ -399,7 +371,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
                 controller.openVideoEditor(null);
             }
         });
-        createReferenceButton.addToPopupMenu(videoOption);
+        createReferenceButton.add(videoOption);
 
         return createReferenceButton;
     }
@@ -410,7 +382,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         updateCategoryButton.setEnabled(category != null);
         removeCategoryButton.setEnabled(category != null);
 
-        setReferencesToShow(new ReferenceCriteriaCategory(category));
+        filterShownReferences(new ReferenceCriteriaCategory(category));
     }
 
     @Override
@@ -436,7 +408,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
     @Override
     public void onSearch(Search search) {
         categoriesTreePanel.clearSelection();
-        setReferencesToShow(new ReferenceCriteriaSearch(search));
+        filterShownReferences(new ReferenceCriteriaSearch(search));
     }
 
     /**
@@ -446,7 +418,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         if (lastReferenceCriteriaUsed == null)
             return;
 
-        setReferencesToShow(lastReferenceCriteriaUsed);
+        filterShownReferences(lastReferenceCriteriaUsed);
     }
 
     private void changeSelectedReference() {
@@ -480,7 +452,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         return confirmDialogBoxOption == JOptionPane.YES_OPTION;
     }
 
-    private void setReferencesToShow(ReferenceCriteria criteria) {
+    private void filterShownReferences(Criteria<BibliographicReference> criteria) {
         if (criteria == null)
             throw new IllegalArgumentException("criteria can't be null");
 

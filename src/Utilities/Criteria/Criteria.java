@@ -1,4 +1,4 @@
-package Criteria;
+package Utilities.Criteria;
 
 import java.util.ArrayList;
 import java.util.Collection;

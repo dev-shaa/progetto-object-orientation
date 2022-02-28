@@ -4,7 +4,8 @@ import Entities.Category;
 import Entities.References.BibliographicReference;
 import Entities.References.OnlineResources.Video;
 import Exceptions.Input.InvalidInputException;
-import GUI.Utilities.Tree.CustomTreeModel;
+import Utilities.Tree.CustomTreeModel;
+
 import java.util.Collection;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
@@ -18,6 +19,13 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
     private JSpinner height;
     private JSpinner frameRate;
     private JSpinner duration;
+
+    /**
+     * TODO: commenta
+     */
+    public VideoEditor() {
+        this(null, null);
+    }
 
     /**
      * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento a un video.

@@ -93,21 +93,6 @@ public class Search {
         return tags;
     }
 
-    /**
-     * Controlla che tutti i termini della ricerca non siano nulli.
-     * 
-     * @param from
-     *            data di inizio dell'intervallo
-     * @param to
-     *            data di fine dell'intervallo
-     * @param tags
-     *            parole chiave da cercare
-     * @param categories
-     *            categorie in cui cercare
-     * @param authors
-     *            autori da crcare
-     * @return {@code true} se tutti i termini sono nulli (anche se le liste sono vuote)
-     */
     private boolean areAllTermsNull(Date from, Date to, Collection<? extends Tag> tags, Collection<? extends Category> categories, Collection<? extends Author> authors) {
         return from == null && to == null && (tags == null || tags.isEmpty()) && (categories == null || categories.isEmpty()) && (authors == null || authors.isEmpty());
     }
