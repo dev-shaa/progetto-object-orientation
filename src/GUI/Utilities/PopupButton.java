@@ -59,42 +59,27 @@ public class PopupButton extends JButton {
         });
     }
 
-    /**
-     * Aggiunge un elemento al menu popup, se non è nullo.
-     * 
-     * @param component
-     *            elemento da aggiungere
-     */
-    public void addToPopupMenu(Component component) {
-        if (component != null)
-            popupMenu.add(component);
+    @Override
+    public Component add(Component comp) {
+        return popupMenu.add(comp);
     }
 
-    /**
-     * Rimuove un elemento dal menu popup.
-     * 
-     * @param component
-     *            componente da rimuovere
-     */
-    public void removeFromPopupMenu(Component component) {
-        if (component != null) {
-            popupMenu.remove(component);
-            popupMenu.pack();
-            popupMenu.revalidate();
-        }
+    @Override
+    public void remove(Component comp) {
+        popupMenu.remove(comp);
+        popupMenu.pack();
+        popupMenu.revalidate();
     }
 
-    /**
-     * Rimuove tutti gli elementi dal menu popup.
-     */
-    public void removeAllFromPopupMenu() {
+    @Override
+    public void removeAll() {
         popupMenu.removeAll();
     }
 
     /**
      * Aggiunge un separatore al menu popup.
      */
-    public void addPopupSeparator() {
+    public void addSeparator() {
         popupMenu.addSeparator();
     }
 
@@ -102,14 +87,14 @@ public class PopupButton extends JButton {
      * Apre il menu popup.
      */
     private void openPopup() {
+        beforePopupOpen();
         popupMenu.show(this, 0, getHeight());
-        onPopupOpen();
     }
 
     /**
      * Invocato quando viene premuto sul tasto per mostrare il menu popup.
      */
-    protected void onPopupOpen() {
+    protected void beforePopupOpen() {
         // vuoto
     }
 
