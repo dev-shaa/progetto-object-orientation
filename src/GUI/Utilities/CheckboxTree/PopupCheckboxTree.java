@@ -1,7 +1,6 @@
 package GUI.Utilities.CheckboxTree;
 
 import java.awt.Dimension;
-
 import GUI.Utilities.PopupButton;
 import Utilities.Tree.CustomTreeModel;
 
@@ -28,7 +27,12 @@ public class PopupCheckboxTree<T extends Object> extends PopupButton {
     public PopupCheckboxTree(CustomTreeModel<T> treeModel) {
         super("Premi per selezionare");
 
-        setTreeModel(treeModel);
+        checkboxTree = new CheckboxTree<T>(treeModel);
+        checkboxTree.setToggleClickCount(0);
+        checkboxTree.setEditable(false);
+        checkboxTree.setRootVisible(false);
+        checkboxTree.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+
         add(checkboxTree);
     }
 
@@ -39,15 +43,7 @@ public class PopupCheckboxTree<T extends Object> extends PopupButton {
      *            modello dell'albero da mostrare
      */
     public void setTreeModel(CustomTreeModel<T> treeModel) {
-        if (checkboxTree == null) {
-            checkboxTree = new CheckboxTree<T>(treeModel);
-            checkboxTree.setToggleClickCount(0);
-            checkboxTree.setEditable(false);
-            checkboxTree.setRootVisible(false);
-            checkboxTree.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
-        } else {
-            checkboxTree.setModel(treeModel);
-        }
+        checkboxTree.setModel(treeModel);
     }
 
     /**

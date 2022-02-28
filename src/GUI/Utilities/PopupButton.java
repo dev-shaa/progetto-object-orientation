@@ -1,7 +1,6 @@
 package GUI.Utilities;
 
 import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
 
 /**
@@ -48,15 +47,8 @@ public class PopupButton extends JButton {
      */
     public PopupButton(String text, Icon icon) {
         super(text, icon);
-
         popupMenu = new JPopupMenu();
-
-        addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                openPopup();
-            }
-        });
+        addActionListener((e) -> openPopup());
     }
 
     @Override

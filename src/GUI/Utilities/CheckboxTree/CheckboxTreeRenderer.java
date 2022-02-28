@@ -20,10 +20,10 @@ public class CheckboxTreeRenderer extends JPanel implements TreeCellRenderer {
     public CheckboxTreeRenderer() {
         super();
 
-        checkBox = new JCheckBox();
+        setOpaque(false); // altrimenti il testo ha uno sfondo di colore diverso quando selezionato
+        setLayout(new BorderLayout()); // altrimenti i nodi vengono troppo spaziati
 
-        setOpaque(false);
-        setLayout(new BorderLayout());
+        checkBox = new JCheckBox();
         add(checkBox, BorderLayout.CENTER);
     }
 
@@ -31,7 +31,6 @@ public class CheckboxTreeRenderer extends JPanel implements TreeCellRenderer {
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
         checkBox.setSelected(selected);
         checkBox.setText(String.valueOf(value));
-        checkBox.setOpaque(false);
 
         return this;
     }

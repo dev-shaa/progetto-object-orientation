@@ -3,7 +3,6 @@ package GUI.Utilities.CheckboxTree;
 import java.util.ArrayList;
 import javax.swing.JTree;
 import javax.swing.tree.*;
-
 import Utilities.Tree.CustomTreeModel;
 import Utilities.Tree.CustomTreeNode;
 
@@ -28,14 +27,6 @@ public class CheckboxTree<T extends Object> extends JTree {
     }
 
     /**
-     * FUNZIONE DISATTIVATA, CHIAMARE {@link #setModel(CustomTreeModel)}
-     */
-    @Override
-    public void setModel(TreeModel newModel) {
-        // non fare niente
-    }
-
-    /**
      * Imposta il modello dell'albero da mostrare.
      * 
      * @param newModel
@@ -44,14 +35,6 @@ public class CheckboxTree<T extends Object> extends JTree {
     public void setModel(CustomTreeModel<T> newModel) {
         super.setModel(newModel);
         this.treeModel = newModel;
-    }
-
-    /**
-     * FUNZIONE DISATTIVATA
-     */
-    @Override
-    public void setSelectionModel(TreeSelectionModel selectionModel) {
-        // non fare niente
     }
 
     /**

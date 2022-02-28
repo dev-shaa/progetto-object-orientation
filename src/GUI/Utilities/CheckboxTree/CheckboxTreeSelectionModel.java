@@ -42,8 +42,7 @@ public class CheckboxTreeSelectionModel extends DefaultTreeSelectionModel {
         if (path == null || isPathSelected(path))
             return;
 
-        addPathVisually(path);
-
+        addAncestorPaths(path);
         selectedPaths.add(path);
     }
 
@@ -53,7 +52,6 @@ public class CheckboxTreeSelectionModel extends DefaultTreeSelectionModel {
             return;
 
         removeChildrenPaths(path);
-
         addSelectionPath(path.getParentPath());
     }
 
@@ -76,17 +74,16 @@ public class CheckboxTreeSelectionModel extends DefaultTreeSelectionModel {
         selectedPaths.clear();
     }
 
-    private void addPathVisually(TreePath path) {
-        if (path == null)
-            return;
+    private void addAncestorPaths(TreePath path) {
+        // questa funzione seleziona tutti i percorsi dalla radice fino a path
+        // ma non li aggiunge effettivamente alla lista di nodi selezionati
+        // è solo per un aspetto visivo
 
-        // è stata selezionato il percorso di un nodo figlio,
-        // quindi dobbiamo rimuovere questo percorso da quelli effettivamente selezionati
-        selectedPaths.remove(path);
-
-        addPathVisually(path.getParentPath());
-
-        super.addSelectionPath(path);
+        while (path != null) {
+            selectedPaths.remove(path);
+            super.addSelectionPath(path);
+            path = path.getParentPath();
+        }
     }
 
     private void removeChildrenPaths(TreePath path) {
@@ -95,9 +92,8 @@ public class CheckboxTreeSelectionModel extends DefaultTreeSelectionModel {
 
         Enumeration<? extends TreeNode> children = ((MutableTreeNode) path.getLastPathComponent()).children();
 
-        while (children.hasMoreElements()) {
+        while (children.hasMoreElements())
             removeSelectionPath(path.pathByAddingChild(children.nextElement()));
-        }
 
         super.removeSelectionPath(path);
         selectedPaths.remove(path);
