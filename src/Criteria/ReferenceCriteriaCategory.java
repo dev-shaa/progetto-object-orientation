@@ -8,7 +8,7 @@ import Entities.References.BibliographicReference;
 /**
  * Implementazione di {@code ReferenceCriteria} per filtrare i riferimenti presenti in una categoria.
  */
-public class ReferenceCriteriaCategory extends ReferenceCriteria {
+public class ReferenceCriteriaCategory extends Criteria<BibliographicReference> {
 
     private Category category;
 
@@ -23,7 +23,7 @@ public class ReferenceCriteriaCategory extends ReferenceCriteria {
     }
 
     @Override
-    protected boolean doesReferenceMatch(BibliographicReference reference) {
+    protected boolean doesItemMatch(BibliographicReference reference) {
         List<Category> categories = reference.getCategories();
         return (category == null && categories.isEmpty()) || categories.contains(category);
     }

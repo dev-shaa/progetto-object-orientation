@@ -12,7 +12,7 @@ import Entities.References.BibliographicReference;
 /**
  * Implementazione di {@code ReferenceCriteria} per filtrare i riferimenti corrispondenti a una ricerca.
  */
-public class ReferenceCriteriaSearch extends ReferenceCriteria {
+public class ReferenceCriteriaSearch extends Criteria<BibliographicReference> {
 
     private Search search;
 
@@ -32,7 +32,7 @@ public class ReferenceCriteriaSearch extends ReferenceCriteria {
     }
 
     @Override
-    protected boolean doesReferenceMatch(BibliographicReference reference) {
+    protected boolean doesItemMatch(BibliographicReference reference) {
         return wasReferencePublishedBetween(reference, search.getFrom(), search.getTo())
                 && wasReferenceWrittenBy(reference, search.getAuthors())
                 && isReferenceTaggedWith(reference, search.getTags())
