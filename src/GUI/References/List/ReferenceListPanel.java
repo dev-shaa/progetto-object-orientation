@@ -88,9 +88,6 @@ public class ReferenceListPanel extends JScrollPane {
         referenceSelectionListeners.remove(ReferenceSelectionListener.class, listener);
     }
 
-    /**
-     * Inizializza la tabella dei riferimenti.
-     */
     private void setupReferencesTable() {
         referencesTableModel = new ReferenceTableModel();
 
@@ -101,30 +98,22 @@ public class ReferenceListPanel extends JScrollPane {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting())
-                    fireSelectionEvent();
+                    fireSelectionEvent(getSelectedReference());
             }
         });
 
         setViewportView(referencesTable);
     }
 
-    /**
-     * Restituisce l'indice del riferimento selezionato.
-     * 
-     * @return indice del riferimento selezionato
-     */
     private int getSelectedReferenceIndex() {
         return referencesTable.convertRowIndexToModel(referencesTable.getSelectedRow());
     }
 
-    /**
-     * Notifica gli ascoltatori dell'evento di selezione di un riferimento.
-     */
-    private void fireSelectionEvent() {
+    private void fireSelectionEvent(BibliographicReference selectedReference) {
         ReferenceSelectionListener[] listeners = referenceSelectionListeners.getListeners(ReferenceSelectionListener.class);
 
         for (ReferenceSelectionListener listener : listeners) {
-            listener.onReferenceSelection(getSelectedReference());
+            listener.onReferenceSelection(selectedReference);
         }
     }
 

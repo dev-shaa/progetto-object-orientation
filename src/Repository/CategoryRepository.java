@@ -3,7 +3,6 @@ package Repository;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import DAO.CategoryDAO;
 import Entities.Category;
 import Entities.References.BibliographicReference;
@@ -113,13 +112,13 @@ public class CategoryRepository {
      * @param category
      *            categoria da rimuovere
      * @throws IllegalArgumentException
-     *             se {@code category == null} o se la categoria associata al nodo è nulla
+     *             se {@code category} non ha un id associato
      * @throws CategoryDatabaseException
      *             se la rimozione non va a buon fine
      */
     public void remove(Category category) throws CategoryDatabaseException {
         if (category == null)
-            throw new IllegalArgumentException("category can't be null");
+            return;
 
         categoryDAO.remove(category);
         idToCategory.remove(category.getID());
@@ -190,10 +189,11 @@ public class CategoryRepository {
             HashMap<Category, CustomTreeNode<Category>> categoryToNode = new HashMap<>();
             categoryToNode.put(null, root);
 
-            for (Category category : categories) {
+            // mappa prima tutti i nodi
+            for (Category category : categories)
                 categoryToNode.put(category, new CustomTreeNode<Category>(category));
-            }
 
+            // associa i genitori dei nodi
             for (Category category : categories) {
                 CustomTreeNode<Category> node = categoryToNode.get(category);
                 CustomTreeNode<Category> parent = categoryToNode.get(category.getParent());

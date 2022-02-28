@@ -41,15 +41,13 @@ public class CategoriesTreePanel extends JScrollPane {
         tree.setEditable(false);
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         tree.addTreeSelectionListener(new TreeSelectionListener() {
-
             @Override
             public void valueChanged(TreeSelectionEvent e) {
                 if (getSelectedNode() == null)
                     fireCategoryDeselectionEvent();
                 else
-                    fireCategorySelectionEvent();
+                    fireCategorySelectionEvent(getSelectedCategory());
             }
-
         });
 
         setTreeModel(treeModel);
@@ -108,30 +106,18 @@ public class CategoriesTreePanel extends JScrollPane {
         selectionListeners.remove(CategorySelectionListener.class, listener);
     }
 
-    /**
-     * Restituisce l'ultimo nodo selezionato.
-     * 
-     * @return ultimo nodo selezionato
-     */
     @SuppressWarnings("unchecked")
     private CustomTreeNode<Category> getSelectedNode() {
         return (CustomTreeNode<Category>) tree.getLastSelectedPathComponent();
     }
 
-    /**
-     * Notifica gli ascoltatori dell'evento di selezione di un nodo.
-     */
-    private void fireCategorySelectionEvent() {
-        Category selectedCategory = getSelectedCategory();
+    private void fireCategorySelectionEvent(Category selectedCategory) {
         CategorySelectionListener[] listeners = selectionListeners.getListeners(CategorySelectionListener.class);
 
         for (CategorySelectionListener listener : listeners)
             listener.onCategorySelection(selectedCategory);
     }
 
-    /**
-     * Notifica gli ascoltatori dell'evento di deselezione di un nodo.
-     */
     private void fireCategoryDeselectionEvent() {
         CategorySelectionListener[] listeners = selectionListeners.getListeners(CategorySelectionListener.class);
 
