@@ -1,7 +1,10 @@
-package GUI;
+package Utilities;
 
 import javax.swing.JOptionPane;
 
+/**
+ * TODO: commenta
+ */
 public class MessageDisplayer {
 
     /**

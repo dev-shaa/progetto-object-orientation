@@ -9,6 +9,7 @@ import GUI.References.Editor.OnlineResource.*;
 import GUI.References.Editor.Publication.*;
 import Repository.CategoryRepository;
 import Repository.ReferenceRepository;
+import Utilities.MessageDisplayer;
 import Utilities.Functions.CheckedConsumer;
 import Entities.*;
 import Entities.References.BibliographicReference;
@@ -130,7 +131,6 @@ public class Controller {
             setUser(user);
             homepage.setCategoriesTreeModel(categoryRepository.getTree());
             homepage.setReferences(referenceRepository.getAll());
-            homepage.setNameToDisplay(user.getName());
             homepage.setVisible(true);
             loginPage.setVisible(false);
         } catch (Exception e) {
