@@ -3,6 +3,7 @@ package DAO;
 import java.sql.*;
 import java.util.*;
 import Controller.ConnectionController;
+import Controller.CustomConnection;
 import Entities.Author;
 import Exceptions.Database.AuthorDatabaseException;
 import Exceptions.Database.DatabaseConnectionException;
@@ -19,7 +20,7 @@ public class AuthorDAOPostgreSQL implements AuthorDAO {
         if (authors == null || authors.isEmpty())
             return;
 
-        Connection connection = null;
+        CustomConnection connection = null;
         PreparedStatement insertStatement = null;
         PreparedStatement retrieveIDStatement = null;
         ResultSet idResultSet = null;
@@ -35,7 +36,6 @@ public class AuthorDAOPostgreSQL implements AuthorDAO {
 
         try {
             connection = ConnectionController.getConnection();
-            connection.setAutoCommit(false);
 
             insertStatement = connection.prepareStatement(insertCommand);
             retrieveIDStatement = connection.prepareStatement(retrieveIDCommand);
@@ -83,7 +83,7 @@ public class AuthorDAOPostgreSQL implements AuthorDAO {
 
     @Override
     public List<Author> get(int referenceID) throws AuthorDatabaseException {
-        Connection connection = null;
+        CustomConnection connection = null;
         Statement statement = null;
         ResultSet resultSet = null;
         String query = "select * from author_reference_association join author on author = id where reference = " + referenceID;

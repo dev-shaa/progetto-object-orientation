@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.function.Function;
 
 import Controller.ConnectionController;
+import Controller.CustomConnection;
 import Entities.*;
 import Entities.References.*;
 import Entities.References.OnlineResources.*;
@@ -38,7 +39,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
 
     @Override
     public List<BibliographicReference> getAll() throws ReferenceDatabaseException {
-        Connection connection = null;
+        CustomConnection connection = null;
         Statement statement = null;
         ResultSet resultSet = null;
 
@@ -114,7 +115,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         if (reference.getID() == null)
             throw new IllegalArgumentException("reference doesn't have an ID");
 
-        Connection connection = null;
+        CustomConnection connection = null;
         Statement statement = null;
         String command = "delete from bibliographic_reference where id = " + reference.getID();
 
@@ -284,7 +285,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         if (reference == null)
             return;
 
-        Connection connection = null;
+        CustomConnection connection = null;
         PreparedStatement referenceStatement = null;
         Statement referenceSubclassStatement = null;
         ResultSet resultSet = null;
@@ -369,7 +370,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         }
     }
 
-    private void insertRelatedReferences(Connection connection, int id, Collection<? extends BibliographicReference> relatedReferences) throws SQLException {
+    private void insertRelatedReferences(CustomConnection connection, int id, Collection<? extends BibliographicReference> relatedReferences) throws SQLException {
         PreparedStatement removeStatement = null;
         PreparedStatement insertStatement = null;
 
@@ -396,7 +397,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         }
     }
 
-    private void insertCategories(Connection connection, int id, Collection<Category> categories) throws SQLException {
+    private void insertCategories(CustomConnection connection, int id, Collection<Category> categories) throws SQLException {
         PreparedStatement removeStatement = null;
         PreparedStatement insertStatement = null;
         String removeCommand = "delete from category_reference_association where reference = ?";
@@ -423,7 +424,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         }
     }
 
-    private void insertAuthors(Connection connection, int id, Collection<Author> authors) throws SQLException {
+    private void insertAuthors(CustomConnection connection, int id, Collection<Author> authors) throws SQLException {
         PreparedStatement removeStatement = null;
         PreparedStatement insertStatement = null;
         String removeCommand = "delete from author_reference_association where reference = ?";

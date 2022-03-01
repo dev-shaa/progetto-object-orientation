@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import Controller.ConnectionController;
+import Controller.CustomConnection;
 import Entities.Tag;
 import Exceptions.Database.DatabaseConnectionException;
 import Exceptions.Database.TagDatabaseException;
@@ -21,7 +22,7 @@ public class TagDAOPostgreSQL implements TagDAO {
         if (tags == null || tags.isEmpty())
             return;
 
-        Connection connection = null;
+        CustomConnection connection = null;
         PreparedStatement tagRemoveStatement = null;
         PreparedStatement tagInsertStatement = null;
         ResultSet resultSet = null;
@@ -77,7 +78,7 @@ public class TagDAOPostgreSQL implements TagDAO {
 
     @Override
     public List<Tag> getAll(int referenceID) throws TagDatabaseException {
-        Connection connection = null;
+        CustomConnection connection = null;
         Statement statement = null;
         ResultSet resultSet = null;
         String command = "select name from tag where reference = " + referenceID;

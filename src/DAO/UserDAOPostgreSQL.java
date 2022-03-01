@@ -1,11 +1,8 @@
 package DAO;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
+import java.sql.*;
 import Controller.ConnectionController;
+import Controller.CustomConnection;
 import Entities.User;
 import Exceptions.Database.DatabaseConnectionException;
 import Exceptions.Database.UserDatabaseException;
@@ -28,7 +25,7 @@ public class UserDAOPostgreSQL implements UserDAO {
 		if (user == null)
 			throw new IllegalArgumentException("user can't be null");
 
-		Connection connection = null;
+		CustomConnection connection = null;
 		PreparedStatement statement = null;
 		String command = "insert into user_app(name, password) values(?, ?)";
 
@@ -66,7 +63,7 @@ public class UserDAOPostgreSQL implements UserDAO {
 		if (user == null)
 			throw new IllegalArgumentException("user can't be null");
 
-		Connection connection = null;
+		CustomConnection connection = null;
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 		String query = "select * from user_app where name = ? and password = ?";

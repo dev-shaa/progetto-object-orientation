@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.sql.*;
 import Controller.ConnectionController;
+import Controller.CustomConnection;
 import Entities.*;
 import Exceptions.Database.CategoryDatabaseException;
 import Exceptions.Database.DatabaseConnectionException;
@@ -44,7 +45,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
         if (category == null)
             throw new IllegalArgumentException("category can't be null");
 
-        Connection connection = null;
+        CustomConnection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
 
@@ -107,7 +108,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
         if (category.getID() == null)
             throw new IllegalArgumentException("category doesn't have an ID");
 
-        Connection connection = null;
+        CustomConnection connection = null;
         PreparedStatement statement = null;
         String command = "update category set name = ? where id = ?";
 
@@ -148,7 +149,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
         if (category.getID() == null)
             throw new IllegalArgumentException("category doesn't have an ID");
 
-        Connection connection = null;
+        CustomConnection connection = null;
         Statement statement = null;
         String command = "delete from category where id = " + category.getID();
 
@@ -174,7 +175,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
 
     @Override
     public List<Category> getAll() throws CategoryDatabaseException {
-        Connection connection = null;
+        CustomConnection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         String query = "select * from category where owner = ?";
@@ -227,7 +228,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
 
     @Override
     public List<Integer> getIDs(int referenceID) throws CategoryDatabaseException {
-        Connection connection = null;
+        CustomConnection connection = null;
         Statement statement = null;
         ResultSet resultSet = null;
         String query = "select category from category_reference_association where reference = " + referenceID;
