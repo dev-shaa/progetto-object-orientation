@@ -1,7 +1,6 @@
 package GUI.Search;
 
 import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.EventListenerList;
 import com.toedter.calendar.JDateChooser;
@@ -129,21 +128,20 @@ public class SearchPanel extends JPanel {
         searchButton.setIcon(new ImageIcon("images/search.png"));
         searchButton.setAlignmentX(JButton.LEFT_ALIGNMENT);
         searchButton.setMaximumSize(new Dimension(100, 32));
-        searchButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    Search search = getSearch();
-                    fireSearchEvent(search);
-                    clear();
-                } catch (InvalidInputException ex) {
-                    MessageDisplayer.showErrorMessage("Errore ricerca", ex.getMessage());
-                }
-            }
-        });
+        searchButton.addActionListener((e) -> search());
         searchPanel.add(searchButton);
 
-        add(new JLabel("<html><b>Ricerca riferimenti</b></html>"), BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
+    }
+
+    private void search() {
+        try {
+            Search search = getSearch();
+            fireSearchEvent(search);
+            clear();
+        } catch (InvalidInputException ex) {
+            MessageDisplayer.showErrorMessage("Errore ricerca", ex.getMessage());
+        }
     }
 
     private void fireSearchEvent(Search search) {

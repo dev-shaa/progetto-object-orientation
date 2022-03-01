@@ -3,6 +3,8 @@ package GUI;
 import Controller.Controller;
 import Entities.*;
 import Exceptions.Input.InvalidInputException;
+import Utilities.MessageDisplayer;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.event.ActionEvent;

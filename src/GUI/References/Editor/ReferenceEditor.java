@@ -2,10 +2,10 @@ package GUI.References.Editor;
 
 import Entities.*;
 import Entities.References.*;
-import GUI.MessageDisplayer;
 import GUI.Authors.AuthorInputField;
 import GUI.Tags.TagInputField;
 import GUI.Utilities.CheckboxTree.PopupCheckboxTree;
+import Utilities.MessageDisplayer;
 import Utilities.Tree.CustomTreeModel;
 import Exceptions.Input.InvalidAuthorInputException;
 import Exceptions.Input.InvalidInputException;
@@ -36,6 +36,8 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     private JPanel fieldPanel;
 
     private T referenceToChange;
+    private Collection<? extends BibliographicReference> references;
+
     private EventListenerList creationListeners = new EventListenerList();
 
     private final Dimension maximumSize = new Dimension(Integer.MAX_VALUE, 24);
@@ -95,10 +97,8 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      *            possibili rimandi
      */
     public void setReferences(Collection<? extends BibliographicReference> references) {
-        referenceListModel.clear();
+        this.references = references;
 
-        if (references != null)
-            referenceListModel.addAll(references);
     }
 
     /**
@@ -119,9 +119,14 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     @Override
     public void setVisible(boolean b) {
         if (b) {
-            // FIXME:
+            // i rimandi selezionabili sono tutti tranne il riferimento da cambiare
+            referenceListModel.clear();
+
+            if (references != null)
+                referenceListModel.addAll(references);
+
             if (referenceToChange != null)
-                referenceListModel.add(referenceListModel.size(), referenceToChange);
+                referenceListModel.removeElement(referenceToChange);
         }
 
         super.setVisible(b);
@@ -141,7 +146,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         addFieldComponent(tags, "Parole chiave", null);
 
         DOI = new JTextField();
-        addFieldComponent(DOI, "DOI", "Codice identificativo DOI del riferimento.");
+        addFieldComponent(DOI, "DOI", "Codice identificativo DOI del riferimento.\nEsempio: \"10.1234/567.89\".");
 
         authors = new AuthorInputField();
         addFieldComponent(authors, "Autori", null);
@@ -155,15 +160,16 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         language = new JComboBox<>(ReferenceLanguage.values());
         addFieldComponent(language, "Lingua", "Lingua del riferimento.");
 
+        // gli altri campi li mettiamo prima della descrizione e del tasto di conferma
+        setupSecondaryFields();
+
         referenceListModel = new DefaultListModel<>();
         relatedReferencesList = new JList<>(referenceListModel);
         relatedReferencesList.setLayoutOrientation(JList.VERTICAL);
         relatedReferencesList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-
-        addFieldComponent(relatedReferencesList, "Rimandi", null);
-
-        // gli altri campi li mettiamo prima della descrizione e del tasto di conferma
-        setupSecondaryFields();
+        relatedReferencesList.setVisibleRowCount(5);
+        JScrollPane listScrollPane = new JScrollPane(relatedReferencesList);
+        addFieldComponent(listScrollPane, "Rimandi", null);
 
         JLabel descriptionLabel = new JLabel("Descrizione");
         descriptionLabel.setMaximumSize(maximumSize);

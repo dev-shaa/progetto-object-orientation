@@ -9,10 +9,7 @@ import GUI.Categories.CategoriesTreePanel;
 import GUI.Categories.CategorySelectionListener;
 import GUI.References.List.*;
 import GUI.Search.*;
-import GUI.Utilities.PopupButton;
-import Utilities.Criteria.Criteria;
-import Utilities.Criteria.ReferenceCriteriaCategory;
-import Utilities.Criteria.ReferenceCriteriaSearch;
+import Utilities.Criteria.*;
 import Utilities.Tree.CustomTreeModel;
 import Controller.Controller;
 
@@ -22,7 +19,6 @@ import java.util.Collection;
 import java.util.List;
 import java.awt.BorderLayout;
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 
 /**
  * Pagina principale dell'applicativo.
@@ -33,21 +29,16 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
 
     private Controller controller;
 
-    private JLabel userLabel;
-    private JButton logoutButton;
+    private JMenuItem createCategoryButton;
+    private JMenuItem updateCategoryButton;
+    private JMenuItem removeCategoryButton;
+    private JMenuItem updateReferenceButton;
+    private JMenuItem removeReferenceButton;
 
     private CategoriesTreePanel categoriesTreePanel;
-    private JButton createCategoryButton;
-    private JButton updateCategoryButton;
-    private JButton removeCategoryButton;
-
     private ReferenceListPanel referenceListPanel;
-    private JTextArea referenceInfoTextArea;
-    private PopupButton createReferenceButton;
-    private JButton updateReferenceButton;
-    private JButton removeReferenceButton;
-
     private SearchPanel referenceSearchPanel;
+    private JTextArea referenceInfoTextArea;
 
     private Collection<? extends BibliographicReference> references;
     private Criteria<BibliographicReference> lastReferenceCriteriaUsed;
@@ -114,38 +105,32 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         this.references = references;
     }
 
-    /**
-     * Imposta il nome da mostrare come messaggio di benvenuto.
-     * 
-     * @param name
-     *            nome da mostrare
-     */
-    public void setNameToDisplay(String name) {
-        userLabel.setText("<html>Benvenuto, <b>" + name + "</b></html>");
-    }
-
     private void setup() {
         setTitle("Pagina principale");
         setMinimumSize(new Dimension(400, 400));
         setSize(800, 600);
         setupCloseOperation();
 
-        JPanel contentPane = new JPanel();
-        contentPane.setLayout(new BorderLayout(5, 5));
-        setContentPane(contentPane);
+        setJMenuBar(setupMenuBar());
 
-        contentPane.add(setupUserInfoPanel(), BorderLayout.NORTH);
+        JPanel contentPane = new JPanel();
+        contentPane.setLayout(new BorderLayout());
+        setContentPane(contentPane);
 
         referenceSearchPanel = new SearchPanel();
         referenceSearchPanel.addSearchListener(this);
 
+        categoriesTreePanel = new CategoriesTreePanel();
+        categoriesTreePanel.addCategorySelectionListener(this);
+
         // JSplitPane ammette solo due pannelli
         // noi ne abbiamo tre, quindi dobbiamo creare due JSplitPane
-        JSplitPane subSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, setupCategoriesPanel(), setupReferencesPanel());
+        JSplitPane subSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, categoriesTreePanel, setupReferencesPanel());
         subSplitPane.setResizeWeight(0.15);
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, subSplitPane, referenceSearchPanel);
         splitPane.setResizeWeight(0.8);
+        splitPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         contentPane.add(splitPane, BorderLayout.CENTER);
     }
@@ -162,218 +147,115 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         });
     }
 
-    private JPanel setupCategoriesPanel() {
-        JPanel categoriesPanel = new JPanel();
-
-        categoriesPanel.setLayout(new BorderLayout(5, 5));
-        categoriesPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-
-        JToolBar toolbar = new JToolBar();
-        toolbar.setFloatable(false);
-        categoriesPanel.add(toolbar, BorderLayout.NORTH);
-
-        createCategoryButton = new JButton(new ImageIcon("images/folder_add.png"));
-        createCategoryButton.setToolTipText("Crea nuova categoria");
-        createCategoryButton.setEnabled(false);
-        createCategoryButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String name = getCategoryNameFromUser("Nuova categoria");
-
-                if (name != null) {
-                    Category parent = categoriesTreePanel.getSelectedCategory();
-                    Category newCategory = new Category(name, parent);
-                    controller.addCategory(newCategory);
-                }
-            }
-        });
-        toolbar.add(createCategoryButton);
-
-        updateCategoryButton = new JButton(new ImageIcon("images/folder_edit.png"));
-        updateCategoryButton.setToolTipText("Modifica categoria selezionata");
-        updateCategoryButton.setEnabled(false);
-        updateCategoryButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                Category selectedCategory = categoriesTreePanel.getSelectedCategory();
-
-                if (selectedCategory != null) {
-                    String newName = getCategoryNameFromUser(selectedCategory.getName());
-
-                    if (newName != null)
-                        controller.updateCategory(selectedCategory, newName);
-                }
-            }
-        });
-        toolbar.add(updateCategoryButton);
-
-        removeCategoryButton = new JButton(new ImageIcon("images/folder_delete.png"));
-        removeCategoryButton.setToolTipText("Elimina categoria selezionata");
-        removeCategoryButton.setEnabled(false);
-        removeCategoryButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                Category selectedCategory = categoriesTreePanel.getSelectedCategory();
-
-                if (selectedCategory != null && askConfirmToUser("Elimina categoria", "Sicuro di voler eliminare questa categoria?"))
-                    controller.removeCategory(selectedCategory);
-            }
-        });
-        toolbar.add(removeCategoryButton);
-
-        categoriesTreePanel = new CategoriesTreePanel();
-        categoriesTreePanel.addCategorySelectionListener(this);
-
-        categoriesPanel.add(categoriesTreePanel, BorderLayout.CENTER);
-
-        return categoriesPanel;
-    }
-
-    private JPanel setupReferencesPanel() {
-        JPanel referencePanel = new JPanel();
-
-        referencePanel.setLayout(new BorderLayout(5, 5));
-        referencePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-
-        JToolBar toolbar = new JToolBar();
-        toolbar.setFloatable(false);
-        referencePanel.add(toolbar, BorderLayout.NORTH);
-
-        createReferenceButton = setupCreateReferenceButton();
-        toolbar.add(createReferenceButton);
-
-        updateReferenceButton = new JButton(new ImageIcon("images/file_edit.png"));
-        updateReferenceButton.setToolTipText("Modifica riferimento");
-        updateReferenceButton.setEnabled(false); // all'inizio teniamolo disattivato
-        updateReferenceButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                changeSelectedReference();
-            }
-        });
-        toolbar.add(updateReferenceButton);
-
-        removeReferenceButton = new JButton(new ImageIcon("images/file_remove.png"));
-        removeReferenceButton.setToolTipText("Elimina riferimento");
-        removeReferenceButton.setEnabled(false); // all'inizio teniamolo disattivato
-        removeReferenceButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                BibliographicReference selectedReference = referenceListPanel.getSelectedReference();
-
-                if (selectedReference != null && askConfirmToUser("Elimina riferimento", "Vuoi eliminare questo riferimento?")) {
-                    controller.removeReference(selectedReference);
-                }
-            }
-        });
-        toolbar.add(removeReferenceButton);
+    private JSplitPane setupReferencesPanel() {
+        referenceListPanel = new ReferenceListPanel();
+        referenceListPanel.addReferenceSelectionListener(this);
 
         referenceInfoTextArea = new JTextArea();
         referenceInfoTextArea.setRows(10);
         referenceInfoTextArea.setEditable(false);
         JScrollPane referenceInfoScrollPane = new JScrollPane(referenceInfoTextArea);
 
-        referenceListPanel = new ReferenceListPanel();
-        referenceListPanel.addReferenceSelectionListener(this);
-
         JSplitPane referenceSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, referenceListPanel, referenceInfoScrollPane);
         referenceSplitPane.setDividerSize(10);
         referenceSplitPane.setResizeWeight(0.6f);
 
-        referencePanel.add(referenceSplitPane, BorderLayout.CENTER);
-
-        return referencePanel;
+        return referenceSplitPane;
     }
 
-    private JPanel setupUserInfoPanel() {
-        JPanel userInfoPanel = new JPanel();
+    private JMenuBar setupMenuBar() {
+        JMenuBar menuBar = new JMenuBar();
 
-        Color darkGray = Color.decode("#24292f");
+        menuBar.add(setupCategoriesMenu());
+        menuBar.add(setupReferencesMenu());
+        menuBar.add(Box.createHorizontalGlue());
 
-        userInfoPanel.setLayout(new BorderLayout(5, 0));
-        userInfoPanel.setBorder(new EmptyBorder(15, 15, 15, 15));
-        userInfoPanel.setBackground(darkGray);
-
-        userLabel = new JLabel();
-        userLabel.setForeground(Color.WHITE);
-        userLabel.setIcon(new ImageIcon("images/bookmark_light.png"));
-
-        setNameToDisplay(null);
-        userInfoPanel.add(userLabel, BorderLayout.WEST);
-
-        logoutButton = new JButton(new ImageIcon("images/logout_white.png"));
-        logoutButton.setToolTipText("Esci");
-        logoutButton.setHorizontalAlignment(SwingConstants.RIGHT);
-        logoutButton.setBackground(darkGray);
+        JButton logoutButton = new JButton("Esci");
         logoutButton.setBorderPainted(false);
-        logoutButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                controller.logout();
-            }
-        });
+        logoutButton.addActionListener((e) -> controller.logout());
+        menuBar.add(logoutButton);
 
-        userInfoPanel.add(logoutButton, BorderLayout.EAST);
-
-        return userInfoPanel;
+        return menuBar;
     }
 
-    private PopupButton setupCreateReferenceButton() {
-        PopupButton createReferenceButton = new PopupButton(new ImageIcon("images/file_add.png"));
-        createReferenceButton.setToolTipText("Crea riferimento");
+    private JMenu setupCategoriesMenu() {
+        JMenu categoriesMenu = new JMenu("Categorie");
+
+        createCategoryButton = new JMenuItem("Aggiungi categoria");
+        createCategoryButton.setIcon(new ImageIcon("images/folder_add.png"));
+        createCategoryButton.setEnabled(false);
+        createCategoryButton.setToolTipText("Aggiunge una nuova categoria come sottocategoria di quella selezionata.");
+        createCategoryButton.addActionListener((e) -> createCategory());
+        categoriesMenu.add(createCategoryButton);
+
+        updateCategoryButton = new JMenuItem("Modifica categoria");
+        updateCategoryButton.setIcon(new ImageIcon("images/folder_edit.png"));
+        updateCategoryButton.setEnabled(false);
+        updateCategoryButton.setToolTipText("Modifica la categoria selezionata.");
+        updateCategoryButton.addActionListener((e) -> changeSelectedCategory());
+        categoriesMenu.add(updateCategoryButton);
+
+        removeCategoryButton = new JMenuItem("Elimina categoria");
+        removeCategoryButton.setIcon(new ImageIcon("images/folder_delete.png"));
+        removeCategoryButton.setEnabled(false);
+        removeCategoryButton.setToolTipText("Rimuovi la categoria selezionata e tutte le sue sottocategorie.\nI riferimenti contenuti in esse non verranno eliminati.");
+        removeCategoryButton.addActionListener((e) -> removeSelectedCategory());
+        categoriesMenu.add(removeCategoryButton);
+
+        return categoriesMenu;
+    }
+
+    private JMenu setupReferencesMenu() {
+        // TODO: aggiungi icone
+
+        JMenu referencesMenu = new JMenu("Riferimenti");
+
+        JMenu createReferenceMenu = new JMenu("Aggiungi riferimento");
+        createReferenceMenu.setIcon(new ImageIcon("images/file_add.png"));
+        createReferenceMenu.setToolTipText("Crea un nuovo riferimento.");
+        referencesMenu.add(createReferenceMenu);
 
         JMenuItem articleOption = new JMenuItem("Articolo");
-        articleOption.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                controller.openArticleEditor(null);
-            }
-        });
-        createReferenceButton.add(articleOption);
+        articleOption.addActionListener((e) -> controller.openArticleEditor(null));
+        createReferenceMenu.add(articleOption);
 
         JMenuItem bookOption = new JMenuItem("Libro");
-        bookOption.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                controller.openBookEditor(null);
-            }
-        });
-        createReferenceButton.add(bookOption);
+        bookOption.addActionListener((e) -> controller.openBookEditor(null));
+        createReferenceMenu.add(bookOption);
 
         JMenuItem thesisOption = new JMenuItem("Tesi");
-        thesisOption.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                controller.openThesisEditor(null);
-            }
-        });
-        createReferenceButton.add(thesisOption);
-        createReferenceButton.addSeparator();
+        thesisOption.addActionListener((e) -> controller.openThesisEditor(null));
+        createReferenceMenu.add(thesisOption);
+
+        createReferenceMenu.addSeparator();
 
         JMenuItem websiteOption = new JMenuItem("Sito web");
-        websiteOption.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                controller.openWebsiteEditor(null);
-            }
-        });
-        createReferenceButton.add(websiteOption);
+        createReferenceMenu.add(websiteOption);
 
         JMenuItem sourceCodeOption = new JMenuItem("Codice sorgente");
-        sourceCodeOption.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                controller.openSourceCodeEditor(null);
-            }
-        });
-        createReferenceButton.add(sourceCodeOption);
+        createReferenceMenu.add(sourceCodeOption);
 
         JMenuItem imageOption = new JMenuItem("Immagine");
-        imageOption.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                controller.openImageEditor(null);
-            }
-        });
-        createReferenceButton.add(imageOption);
+        createReferenceMenu.add(imageOption);
 
         JMenuItem videoOption = new JMenuItem("Video");
-        videoOption.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                controller.openVideoEditor(null);
-            }
-        });
-        createReferenceButton.add(videoOption);
+        createReferenceMenu.add(videoOption);
 
-        return createReferenceButton;
+        updateReferenceButton = new JMenuItem("Modifica riferimento");
+        updateReferenceButton.setIcon(new ImageIcon("images/file_edit.png"));
+        updateReferenceButton.setEnabled(false);
+        updateReferenceButton.setToolTipText("Modifica il riferimento selezionato.");
+        updateReferenceButton.addActionListener((e) -> changeSelectedReference());
+        referencesMenu.add(updateReferenceButton);
+
+        removeReferenceButton = new JMenuItem("Elimina riferimento");
+        removeReferenceButton.setIcon(new ImageIcon("images/file_remove.png"));
+        removeReferenceButton.setEnabled(false);
+        removeReferenceButton.setToolTipText("Elimina il riferimento selezionato.");
+        removeReferenceButton.addActionListener((e) -> removeSelectedReference());
+        referencesMenu.add(removeReferenceButton);
+
+        return referencesMenu;
     }
 
     @Override
@@ -421,6 +303,34 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         filterShownReferences(lastReferenceCriteriaUsed);
     }
 
+    private void createCategory() {
+        String name = getCategoryNameFromUser("Nuova categoria");
+
+        if (name != null) {
+            Category parent = categoriesTreePanel.getSelectedCategory();
+            Category newCategory = new Category(name, parent);
+            controller.addCategory(newCategory);
+        }
+    }
+
+    private void changeSelectedCategory() {
+        Category selectedCategory = categoriesTreePanel.getSelectedCategory();
+
+        if (selectedCategory != null) {
+            String newName = getCategoryNameFromUser(selectedCategory.getName());
+
+            if (newName != null)
+                controller.updateCategory(selectedCategory, newName);
+        }
+    }
+
+    private void removeSelectedCategory() {
+        Category selectedCategory = categoriesTreePanel.getSelectedCategory();
+
+        if (selectedCategory != null && askConfirmToUser("Elimina categoria", "Sicuro di voler eliminare questa categoria?"))
+            controller.removeCategory(selectedCategory);
+    }
+
     private void changeSelectedReference() {
         BibliographicReference selectedReference = referenceListPanel.getSelectedReference();
 
@@ -441,6 +351,13 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
             controller.openVideoEditor((Video) selectedReference);
         else if (selectedReference instanceof Website)
             controller.openWebsiteEditor((Website) selectedReference);
+    }
+
+    private void removeSelectedReference() {
+        BibliographicReference selectedReference = referenceListPanel.getSelectedReference();
+
+        if (selectedReference != null && askConfirmToUser("Elimina riferimento", "Vuoi eliminare questo riferimento?"))
+            controller.removeReference(selectedReference);
     }
 
     private String getCategoryNameFromUser(String defaultName) {
