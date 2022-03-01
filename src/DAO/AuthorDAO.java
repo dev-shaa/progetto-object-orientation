@@ -3,7 +3,6 @@ package DAO;
 import java.util.Collection;
 import java.util.List;
 import Entities.Author;
-import Entities.References.BibliographicReference;
 import Exceptions.Database.AuthorDatabaseException;
 
 /**
@@ -24,11 +23,11 @@ public interface AuthorDAO {
 	/**
 	 * Restituisce gli autori di un riferimento.
 	 * 
-	 * @param reference
-	 *            riferimenti di cui trovare gli autori
+	 * @param referenceID
+	 *            identificativo del riferimento di cui trovare gli autori
 	 * @return lista con gli autori del riferimento
 	 * @throws AuthorDatabaseException
 	 *             se il recupero non va a buon fine
 	 */
-	public List<Author> get(BibliographicReference reference) throws AuthorDatabaseException;
+	public List<Author> get(int referenceID) throws AuthorDatabaseException;
 }

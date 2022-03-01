@@ -2,7 +2,6 @@ package DAO;
 
 import java.util.List;
 import Entities.*;
-import Entities.References.BibliographicReference;
 import Exceptions.Database.CategoryDatabaseException;
 
 /**
@@ -52,11 +51,11 @@ public interface CategoryDAO {
     /**
      * Ottiene gli ID di tutte le categorie a cui è associato un riferimento.
      * 
-     * @param reference
-     *            riferimento associato di cui trovare le categorie
+     * @param referenceID
+     *            identificativo del riferimento di cui trovare le categorie
      * @return lista contenente gli ID delle categorie associate
      * @throws CategoryDatabaseException
      *             se il recupero degli ID dal database non va a buon fine
      */
-    public List<Integer> getIDs(BibliographicReference reference) throws CategoryDatabaseException;
+    public List<Integer> getIDs(int referenceID) throws CategoryDatabaseException;
 }

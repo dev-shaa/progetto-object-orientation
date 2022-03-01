@@ -280,18 +280,6 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         save(website, insertCommandGetter, updateCommandGetter);
     }
 
-    /**
-     * Salva un riferimento nel database.
-     * 
-     * @param reference
-     *            riferimento da salvare
-     * @param insertCommandGetterForSubclass
-     *            funzione per ottenere il comando di inserimento di una sottoclasse, dato un certo ID
-     * @param updateCommandGetterForSubclass
-     *            funzione per ottenere il comando di modifica di una sottoclasse, dato un certo ID
-     * @throws ReferenceDatabaseException
-     *             se si verifica un errore
-     */
     private void save(BibliographicReference reference, Function<Integer, String> insertCommandGetterForSubclass, Function<Integer, String> updateCommandGetterForSubclass) throws ReferenceDatabaseException {
         if (reference == null)
             return;

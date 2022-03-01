@@ -4,7 +4,6 @@ import java.sql.*;
 import java.util.*;
 import Controller.ConnectionController;
 import Entities.Author;
-import Entities.References.BibliographicReference;
 import Exceptions.Database.AuthorDatabaseException;
 import Exceptions.Database.DatabaseConnectionException;
 
@@ -82,21 +81,12 @@ public class AuthorDAOPostgreSQL implements AuthorDAO {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws IllegalArgumentException
-     *             se {@code reference == null}
-     */
     @Override
-    public List<Author> get(BibliographicReference reference) throws AuthorDatabaseException {
-        if (reference == null)
-            throw new IllegalArgumentException("reference can't be null");
-
+    public List<Author> get(int referenceID) throws AuthorDatabaseException {
         Connection connection = null;
         Statement statement = null;
         ResultSet resultSet = null;
-        String query = "select * from author_reference_association join author on author = id where reference = " + reference.getID();
+        String query = "select * from author_reference_association join author on author = id where reference = " + referenceID;
 
         try {
             connection = ConnectionController.getConnection();

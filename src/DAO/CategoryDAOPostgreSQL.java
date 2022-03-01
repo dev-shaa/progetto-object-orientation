@@ -3,14 +3,8 @@ package DAO;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-
+import java.sql.*;
 import Controller.ConnectionController;
-import Entities.References.BibliographicReference;
 import Entities.*;
 import Exceptions.Database.CategoryDatabaseException;
 import Exceptions.Database.DatabaseConnectionException;
@@ -231,24 +225,12 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws IllegalArgumentException
-     *             se {@code reference == null} o se {@code reference} non ha un ID
-     */
     @Override
-    public List<Integer> getIDs(BibliographicReference reference) throws CategoryDatabaseException {
-        if (reference == null)
-            throw new IllegalArgumentException("reference can't be null");
-
-        if (reference.getID() == null)
-            throw new IllegalArgumentException("reference doesn't have an ID");
-
+    public List<Integer> getIDs(int referenceID) throws CategoryDatabaseException {
         Connection connection = null;
         Statement statement = null;
         ResultSet resultSet = null;
-        String query = "select category from category_reference_association where reference = " + reference.getID();
+        String query = "select category from category_reference_association where reference = " + referenceID;
 
         try {
             connection = ConnectionController.getConnection();

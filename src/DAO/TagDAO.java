@@ -1,9 +1,8 @@
 package DAO;
 
+import java.util.Collection;
 import java.util.List;
-
 import Entities.Tag;
-import Entities.References.BibliographicReference;
 import Exceptions.Database.TagDatabaseException;
 
 /**
@@ -12,23 +11,25 @@ import Exceptions.Database.TagDatabaseException;
 public interface TagDAO {
 
     /**
-     * Salva le parole associate a un riferimento nel database.
+     * Salva delle parole chiave associate a un riferimento nel database.
      * 
-     * @param reference
-     *            riferimenti di cui salvare le parole chiave
+     * @param referenceID
+     *            identificativo del riferimento
+     * @param tags
+     *            parole chiave da salvare
      * @throws TagDatabaseException
      *             se l'inserimento non va a buon fine
      */
-    public void saveTagsOf(BibliographicReference reference) throws TagDatabaseException;
+    public void save(int referenceID, Collection<? extends Tag> tags) throws TagDatabaseException;
 
     /**
      * Restituisce tutte le parole chiave associate a un riferimento.
      * 
-     * @param reference
-     *            riferimento di cui recuperare le parole chiave
+     * @param referenceID
+     *            identificativo del riferimento di cui recuperare le parole chiave
      * @return lista con le parole chiave del riferimento
      * @throws TagDatabaseException
      *             se il recupero non va a buon fine
      */
-    public List<Tag> getTagsOf(BibliographicReference reference) throws TagDatabaseException;
+    public List<Tag> getAll(int referenceID) throws TagDatabaseException;
 }

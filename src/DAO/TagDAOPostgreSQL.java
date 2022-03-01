@@ -2,10 +2,10 @@ package DAO;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import Controller.ConnectionController;
 import Entities.Tag;
-import Entities.References.BibliographicReference;
 import Exceptions.Database.DatabaseConnectionException;
 import Exceptions.Database.TagDatabaseException;
 
@@ -16,19 +16,9 @@ import Exceptions.Database.TagDatabaseException;
  */
 public class TagDAOPostgreSQL implements TagDAO {
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws IllegalArgumentException
-     *             se {@code reference == null}
-     * @implNote se al riferimento non sono associate parole chiave, non esegue nulla
-     */
     @Override
-    public void saveTagsOf(BibliographicReference reference) throws TagDatabaseException {
-        if (reference == null)
-            throw new IllegalArgumentException("reference can't be null");
-
-        if (reference.getTags().isEmpty())
+    public void save(int referenceID, Collection<? extends Tag> tags) throws TagDatabaseException {
+        if (tags == null || tags.isEmpty())
             return;
 
         Connection connection = null;
@@ -48,11 +38,11 @@ public class TagDAOPostgreSQL implements TagDAO {
             tagRemoveStatement = connection.prepareStatement(tagRemoveCommand);
             tagInsertStatement = connection.prepareStatement(tagInsertCommand);
 
-            tagRemoveStatement.setInt(1, reference.getID());
+            tagRemoveStatement.setInt(1, referenceID);
             tagRemoveStatement.executeUpdate();
 
-            tagInsertStatement.setInt(2, reference.getID());
-            for (Tag tag : reference.getTags()) {
+            tagInsertStatement.setInt(2, referenceID);
+            for (Tag tag : tags) {
                 tagInsertStatement.setString(1, tag.getName());
                 tagInsertStatement.executeUpdate();
             }
@@ -85,24 +75,12 @@ public class TagDAOPostgreSQL implements TagDAO {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws IllegalArgumentException
-     *             se {@code reference == null} o se {@code reference} non ha un ID
-     */
     @Override
-    public List<Tag> getTagsOf(BibliographicReference reference) throws TagDatabaseException {
-        if (reference == null)
-            throw new IllegalArgumentException("reference can't be null");
-
-        if (reference.getID() == null)
-            throw new IllegalArgumentException("reference doesn't have an ID");
-
+    public List<Tag> getAll(int referenceID) throws TagDatabaseException {
         Connection connection = null;
         Statement statement = null;
         ResultSet resultSet = null;
-        String command = "select name from tag where reference = " + reference.getID();
+        String command = "select name from tag where reference = " + referenceID;
 
         try {
             connection = ConnectionController.getConnection();
@@ -133,7 +111,6 @@ public class TagDAOPostgreSQL implements TagDAO {
                 // non fare niente
             }
         }
-
     }
 
 }
