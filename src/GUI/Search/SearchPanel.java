@@ -12,6 +12,7 @@ import Exceptions.Input.InvalidInputException;
 import GUI.Authors.AuthorInputField;
 import GUI.Tags.TagInputField;
 import GUI.Utilities.CheckboxTree.PopupCheckboxTree;
+import Utilities.MessageDisplayer;
 import Utilities.Tree.CustomTreeModel;
 
 /**
@@ -135,7 +136,7 @@ public class SearchPanel extends JPanel {
                     fireSearchEvent(search);
                     clear();
                 } catch (InvalidInputException ex) {
-                    JOptionPane.showMessageDialog(null, ex.getMessage());
+                    MessageDisplayer.showErrorMessage("Errore ricerca", ex.getMessage());
                 }
             }
         });

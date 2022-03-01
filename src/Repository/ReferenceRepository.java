@@ -263,7 +263,7 @@ public class ReferenceRepository {
         try {
             authorDAO.save(reference.getAuthors());
             daoSave.execute();
-            tagDAO.saveTagsOf(reference);
+            tagDAO.save(reference.getID(), reference.getTags());
             saveToLocal(reference);
         } catch (Exception e) {
             throw new ReferenceDatabaseException(e.getMessage());
@@ -276,8 +276,8 @@ public class ReferenceRepository {
 
             for (BibliographicReference reference : references) {
                 reference.setCategories(categoryRepository.get(reference));
-                reference.setAuthors(authorDAO.get(reference));
-                reference.setTags(tagDAO.getTagsOf(reference));
+                reference.setAuthors(authorDAO.get(reference.getID()));
+                reference.setTags(tagDAO.getAll(reference.getID()));
             }
 
             needToRetrieveFromDatabase = false;

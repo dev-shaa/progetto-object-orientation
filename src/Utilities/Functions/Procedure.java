@@ -10,7 +10,7 @@ public interface Procedure {
      * Chiama la procedura.
      * 
      * @throws Exception
-     *             se non si è in grado di eseguire l'operazione
+     *             se non è possibile eseguire l'operazione
      */
     public void execute() throws Exception;
 }

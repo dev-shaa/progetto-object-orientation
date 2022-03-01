@@ -40,7 +40,7 @@ public class ArticleEditor extends PublicationEditor<Article> {
         super.setupSecondaryFields();
 
         ISSN = new JTextField();
-        addFieldComponent(ISSN, "ISSN", "Codice identificativo ISSN dell'articolo.");
+        addFieldComponent(ISSN, "ISSN", "Codice identificativo ISSN dell'articolo.\nEsempio: \"0123-4567\".");
     }
 
     @Override

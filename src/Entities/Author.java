@@ -135,7 +135,7 @@ public class Author {
      *             se la stringa di input non rispetta il pattern del codice ORCID
      */
     public void setORCID(String ORCID) {
-        if (ORCID != null && !ORCID.isEmpty() && !ORCID.isBlank())
+        if (ORCID == null || ORCID.isEmpty() || ORCID.isBlank())
             this.ORCID = null;
         else if (ORCID_PATTERN.matcher(ORCID).matches())
             this.ORCID = ORCID.trim();
