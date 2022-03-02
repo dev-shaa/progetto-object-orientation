@@ -2,7 +2,6 @@ package GUI.References.List;
 
 import Entities.References.*;
 import java.util.Collection;
-
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
@@ -69,7 +68,6 @@ public class ReferenceListPanel extends JScrollPane {
 
     /**
      * Aggiunge un listener all'evento di selezione di un riferimento.
-     * Se {@code listener == null} o se è già registrato all'evento, non succede niente.
      * 
      * @param listener
      *            listener da aggiungere

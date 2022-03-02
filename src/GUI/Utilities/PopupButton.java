@@ -47,6 +47,7 @@ public class PopupButton extends JButton {
      */
     public PopupButton(String text, Icon icon) {
         super(text, icon);
+
         popupMenu = new JPopupMenu();
         addActionListener((e) -> openPopup());
     }
@@ -66,13 +67,6 @@ public class PopupButton extends JButton {
     @Override
     public void removeAll() {
         popupMenu.removeAll();
-    }
-
-    /**
-     * Aggiunge un separatore al menu popup.
-     */
-    public void addSeparator() {
-        popupMenu.addSeparator();
     }
 
     /**
