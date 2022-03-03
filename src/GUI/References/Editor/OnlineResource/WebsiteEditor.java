@@ -5,6 +5,7 @@ import Entities.References.BibliographicReference;
 import Entities.References.OnlineResources.Website;
 import Exceptions.Input.InvalidInputException;
 import Utilities.Tree.CustomTreeModel;
+import io.codeworth.panelmatic.PanelBuilder;
 
 import java.util.Collection;
 
@@ -34,8 +35,8 @@ public class WebsiteEditor extends OnlineResourceEditor<Website> {
     }
 
     @Override
-    protected void setupSecondaryFields() {
-        super.setupSecondaryFields();
+    protected void setupSecondaryFields(PanelBuilder panelBuilder) {
+        super.setupSecondaryFields(panelBuilder);
     }
 
     @Override

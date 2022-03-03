@@ -4,17 +4,19 @@ import Entities.*;
 import Entities.References.*;
 import GUI.Authors.AuthorInputField;
 import GUI.Tags.TagInputField;
-import GUI.Utilities.CheckboxTree.PopupCheckboxTree;
 import Utilities.MessageDisplayer;
 import Utilities.Tree.CustomTreeModel;
+import Utilities.Tree.CheckboxTree.CheckboxTree;
+import io.codeworth.panelmatic.PanelBuilder;
+import io.codeworth.panelmatic.PanelMatic;
+import io.codeworth.panelmatic.componentbehavior.Modifiers;
 import Exceptions.Input.InvalidAuthorInputException;
 import Exceptions.Input.InvalidInputException;
-import java.awt.*;
-import java.awt.event.*;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import javax.swing.*;
+import java.awt.*;
 import javax.swing.event.EventListenerList;
 import com.toedter.calendar.JDateChooser;
 
@@ -28,7 +30,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     private JTextArea description;
     private JDateChooser pubblicationDate;
     private JComboBox<ReferenceLanguage> language;
-    private PopupCheckboxTree<Category> categories;
+    private CheckboxTree<Category> categoriesCheckboxTree;
     private DefaultListModel<BibliographicReference> referenceListModel;
     private JList<BibliographicReference> relatedReferencesList;
     private TagInputField tags;
@@ -39,9 +41,6 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     private Collection<? extends BibliographicReference> references;
 
     private EventListenerList creationListeners = new EventListenerList();
-
-    private final Dimension maximumSize = new Dimension(Integer.MAX_VALUE, 24);
-    private final float alignment = Container.LEFT_ALIGNMENT;
 
     /**
      * Crea una nuova finestra di dialogo per la creazione o modifica di un riferimento,
@@ -67,15 +66,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     public ReferenceEditor(String title, CustomTreeModel<Category> categoriesTree, Collection<? extends BibliographicReference> references) {
         super();
 
-        setTitle(title);
-        setModal(true);
-        setSize(500, 700);
-        setResizable(false);
-        setLocationRelativeTo(null);
-
-        setupBaseFields();
-        setDefaultValues();
-
+        setup(title);
         setCategoriesTree(categoriesTree);
         setReferences(references);
     }
@@ -87,7 +78,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      *            albero delle categorie
      */
     public void setCategoriesTree(CustomTreeModel<Category> categoriesTree) {
-        categories.setTreeModel(categoriesTree);
+        categoriesCheckboxTree.setModel(categoriesTree);
     }
 
     /**
@@ -132,36 +123,59 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         super.setVisible(b);
     }
 
+    private void setup(String title) {
+        setTitle(title);
+        setModal(true);
+        setSize(500, 700);
+        setResizable(false);
+        setLocationRelativeTo(null);
+
+        setupBaseFields();
+        setDefaultValues();
+    }
+
     private void setupBaseFields() {
-        fieldPanel = new JPanel();
-        fieldPanel.setLayout(new BoxLayout(fieldPanel, BoxLayout.PAGE_AXIS));
-        fieldPanel.setBorder(BorderFactory.createEmptyBorder(50, 30, 50, 30));
+        fieldPanel = new JPanel(new BorderLayout());
+        fieldPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        setContentPane(fieldPanel);
 
-        setContentPane(new JScrollPane(fieldPanel));
+        PanelBuilder panelBuilder = PanelMatic.begin(fieldPanel);
 
-        title = new JTextField();
-        addFieldComponent(title, "Titolo (obbligatorio)", "Titolo univoco del riferimento.");
+        title = new JTextField(BibliographicReference.TITLE_MAX_LENGTH);
+        title.setToolTipText("Titolo univoco del riferimento.");
+        panelBuilder.add(new JLabel("Titolo (obbligatorio)"));
+        panelBuilder.add(title);
 
         tags = new TagInputField();
-        addFieldComponent(tags, "Parole chiave", null);
+        panelBuilder.add(new JLabel("Parole chiave"));
+        panelBuilder.add(tags);
 
         DOI = new JTextField();
-        addFieldComponent(DOI, "DOI", "Codice identificativo DOI del riferimento.\nEsempio: \"10.1234/567.89\".");
+        DOI.setToolTipText("Codice identificativo DOI del riferimento.\nEsempio: \"10.1234/567.89\".");
+        panelBuilder.add(new JLabel("DOI"));
+        panelBuilder.add(DOI);
 
         authors = new AuthorInputField();
-        addFieldComponent(authors, "Autori", null);
-
-        categories = new PopupCheckboxTree<>();
-        addFieldComponent(categories, "Categorie", "Categorie a cui deve essere associato questo riferimento.");
+        panelBuilder.add(new JLabel("Autori"));
+        panelBuilder.add(authors);
 
         pubblicationDate = new JDateChooser();
-        addFieldComponent(pubblicationDate, "Data di pubblicazione", "Data di pubblicazione del riferimento.");
+        panelBuilder.add(new JLabel("Data di pubblicazione"));
+        panelBuilder.add(pubblicationDate);
 
         language = new JComboBox<>(ReferenceLanguage.values());
-        addFieldComponent(language, "Lingua", "Lingua del riferimento.");
+        language.setToolTipText("Lingua del riferimento");
+        panelBuilder.add(new JLabel("Lingua"));
+        panelBuilder.add(language);
 
-        // gli altri campi li mettiamo prima della descrizione e del tasto di conferma
-        setupSecondaryFields();
+        setupSecondaryFields(panelBuilder);
+
+        categoriesCheckboxTree = new CheckboxTree<>();
+        categoriesCheckboxTree.setRootVisible(false);
+        JScrollPane categoriesScrollPane = new JScrollPane(categoriesCheckboxTree);
+        panelBuilder.add(new JLabel("Categorie"));
+        panelBuilder.add(categoriesScrollPane, Modifiers.GROW);
+        // addFieldComponent(categoriesScrollPane, "Categorie", "Categorie a cui deve essere associato questo riferimento.", new Dimension(Integer.MAX_VALUE, 32));
 
         referenceListModel = new DefaultListModel<>();
         relatedReferencesList = new JList<>(referenceListModel);
@@ -169,69 +183,37 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         relatedReferencesList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         relatedReferencesList.setVisibleRowCount(5);
         JScrollPane listScrollPane = new JScrollPane(relatedReferencesList);
-        addFieldComponent(listScrollPane, "Rimandi", null);
 
-        JLabel descriptionLabel = new JLabel("Descrizione");
-        descriptionLabel.setMaximumSize(maximumSize);
-        descriptionLabel.setAlignmentX(alignment);
-        fieldPanel.add(descriptionLabel);
+        panelBuilder.add(new JLabel("Rimandi"));
+        panelBuilder.add(listScrollPane, Modifiers.GROW);
 
         description = new JTextArea(10, 1);
         description.setLineWrap(true);
-        description.setAlignmentX(alignment);
-        fieldPanel.add(description);
-        fieldPanel.add(Box.createVerticalStrut(20));
+        panelBuilder.add(new JLabel("Descrizione"));
+        panelBuilder.add(description, Modifiers.GROW);
 
         JButton confirmButton = new JButton("Salva riferimento");
-        confirmButton.setAlignmentX(alignment);
-        confirmButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    T newReference = createNewReference();
-                    fireReferenceCreationEvent(newReference);
-                } catch (InvalidInputException | IllegalArgumentException ex) {
-                    MessageDisplayer.showErrorMessage("Parametri inseriti non validi", ex.getMessage());
-                }
-            }
-        });
+        confirmButton.addActionListener((e) -> onConfirmButton());
+        panelBuilder.add(confirmButton, Modifiers.L_CENTER);
 
-        fieldPanel.add(confirmButton);
+        panelBuilder.get();
     }
 
     /**
      * Prepara i campi necessari per la creazione di un riferimento.
      */
-    protected void setupSecondaryFields() {
+    protected void setupSecondaryFields(PanelBuilder panelBuilder) {
         // serve solo come funzione per override e aggiungere altri componenti
         // non serve metterla come abstract perchè magari non si vogliono aggiungere altri componenti
     }
 
-    /**
-     * Aggiunge un componente, un'etichetta e un tooltip nel pannello dove sono presenti i campi di input.
-     * Le dimensioni e l'allineamento sono impostate automaticamente.
-     * 
-     * @param component
-     *            componente da aggiungere
-     * @param label
-     *            etichetta del componente
-     * @param tooltip
-     *            tooltip del componente
-     */
-    protected void addFieldComponent(JComponent component, String label, String tooltip) {
-        JLabel labelField = new JLabel(label);
-        labelField.setMaximumSize(maximumSize);
-        labelField.setAlignmentX(alignment);
-
-        component.setMaximumSize(maximumSize);
-        component.setAlignmentX(alignment);
-
-        if (tooltip != null)
-            component.setToolTipText(tooltip);
-
-        fieldPanel.add(labelField);
-        fieldPanel.add(component);
-        fieldPanel.add(Box.createVerticalStrut(10));
+    private void onConfirmButton() {
+        try {
+            T newReference = createNewReference();
+            fireReferenceCreationEvent(newReference);
+        } catch (InvalidInputException | IllegalArgumentException ex) {
+            MessageDisplayer.showErrorMessage("Parametri inseriti non validi", ex.getMessage());
+        }
     }
 
     /**
@@ -396,11 +378,11 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
             return;
 
         for (Category category : categories)
-            this.categories.getCheckboxTree().selectItem(category);
+            this.categoriesCheckboxTree.selectItem(category);
     }
 
     private List<Category> getCategoryValues() {
-        return categories.getCheckboxTree().getSelectedItems();
+        return categoriesCheckboxTree.getSelectedItems();
     }
 
     private void setRelatedReferences(List<BibliographicReference> references) {

@@ -6,7 +6,11 @@ import Entities.References.PhysicalResources.Publication;
 import Exceptions.Input.InvalidInputException;
 import GUI.References.Editor.ReferenceEditor;
 import Utilities.Tree.CustomTreeModel;
+import io.codeworth.panelmatic.PanelBuilder;
+
 import java.util.Collection;
+
+import javax.swing.JLabel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
@@ -46,17 +50,21 @@ public abstract class PublicationEditor<T extends Publication> extends Reference
     }
 
     @Override
-    protected void setupSecondaryFields() {
-        super.setupSecondaryFields();
+    protected void setupSecondaryFields(PanelBuilder panelBuilder) {
+        // TODO:
+        super.setupSecondaryFields(panelBuilder);
 
         pageCount = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
-        addFieldComponent(pageCount, "Pagine", "Numero di pagine della pubblicazione.");
+        pageCount.setToolTipText("Numero di pagine della pubblicazione.");
+        panelBuilder.add(new JLabel("Pagine"));
+        panelBuilder.add(pageCount);
 
         URL = new JTextField();
-        addFieldComponent(URL, "URL", "URL della pubblicazione.");
-
         publisher = new JTextField();
-        addFieldComponent(publisher, "Editore", "Editore della pubblicazione.");
+
+        // addFieldComponent(pageCount, "Pagine", );
+        // addFieldComponent(URL, "URL", "URL della pubblicazione.");
+        // addFieldComponent(publisher, "Editore", "Editore della pubblicazione.");
     }
 
     @Override

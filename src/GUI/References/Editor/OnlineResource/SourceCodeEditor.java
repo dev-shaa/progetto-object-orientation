@@ -6,6 +6,8 @@ import Entities.References.BibliographicReference;
 import Entities.References.OnlineResources.ProgrammingLanguage;
 import Exceptions.Input.InvalidInputException;
 import Utilities.Tree.CustomTreeModel;
+import io.codeworth.panelmatic.PanelBuilder;
+
 import java.util.Collection;
 import javax.swing.JComboBox;
 
@@ -37,12 +39,18 @@ public class SourceCodeEditor extends OnlineResourceEditor<SourceCode> {
     }
 
     @Override
-    protected void setupSecondaryFields() {
-        super.setupSecondaryFields();
-
-        programmingLanguage = new JComboBox<>(ProgrammingLanguage.values());
-        addFieldComponent(programmingLanguage, "Linguaggio", "Linguaggio di programmazione del codice.");
+    protected void setupSecondaryFields(PanelBuilder panelBuilder) {
+        // TODO Auto-generated method stub
+        super.setupSecondaryFields(panelBuilder);
     }
+
+    // @Override
+    // protected void setupSecondaryFields() {
+    // super.setupSecondaryFields();
+
+    // programmingLanguage = new JComboBox<>(ProgrammingLanguage.values());
+    // addFieldComponent(programmingLanguage, "Linguaggio", "Linguaggio di programmazione del codice.");
+    // }
 
     @Override
     protected void setDefaultValues() {

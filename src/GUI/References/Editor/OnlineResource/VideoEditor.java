@@ -5,6 +5,7 @@ import Entities.References.BibliographicReference;
 import Entities.References.OnlineResources.Video;
 import Exceptions.Input.InvalidInputException;
 import Utilities.Tree.CustomTreeModel;
+import io.codeworth.panelmatic.PanelBuilder;
 
 import java.util.Collection;
 import javax.swing.JSpinner;
@@ -61,20 +62,19 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
     }
 
     @Override
-    protected void setupSecondaryFields() {
-        super.setupSecondaryFields();
+    protected void setupSecondaryFields(PanelBuilder panelBuilder) {
+        // TODO Auto-generated method stub
+        super.setupSecondaryFields(panelBuilder);
 
         width = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
-        addFieldComponent(width, "Larghezza", "Largezza del video.");
-
         height = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
-        addFieldComponent(height, "Altezza", "Altezza del video.");
-
         frameRate = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
-        addFieldComponent(frameRate, "Frequenza", "Numero di fotogrammi al secondo del video.");
-
         duration = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
-        addFieldComponent(duration, "Durata", "Durata del video (in secondi).");
+
+        // addFieldComponent(width, "Larghezza", "Largezza del video.");
+        // addFieldComponent(height, "Altezza", "Altezza del video.");
+        // addFieldComponent(frameRate, "Frequenza", "Numero di fotogrammi al secondo del video.");
+        // addFieldComponent(duration, "Durata", "Durata del video (in secondi).");
     }
 
     @Override

@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Random;
-
 import Exceptions.Database.DatabaseConnectionException;
 
 /**
@@ -45,6 +44,11 @@ public class ConnectionController {
 		}
 	}
 
+	/**
+	 * TODO: commenta
+	 * 
+	 * @return
+	 */
 	public static int beginTransaction() {
 		if (!isTransactionActive) {
 			transactionConnectionKey = createKey();
@@ -54,6 +58,11 @@ public class ConnectionController {
 		return transactionConnectionKey;
 	}
 
+	/**
+	 * TODO: commenta
+	 * 
+	 * @param key
+	 */
 	public static void closeTransaction(int key) {
 		try {
 			if (isTransactionActive && key == transactionConnectionKey && transactionConnection != null) {
@@ -66,6 +75,11 @@ public class ConnectionController {
 		}
 	}
 
+	/**
+	 * TODO: commenta
+	 * 
+	 * @param key
+	 */
 	public static void rollbackTransaction(int key) {
 		try {
 			if (isTransactionActive && key == transactionConnectionKey && transactionConnection != null)

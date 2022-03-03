@@ -10,15 +10,15 @@ import Entities.Tag;
  */
 public class TagInputField extends JTextField {
 
-    private final String separator = ",";
-    private final String tooltip = "Parole chiave associate al riferimento, separate da una virgola.\nNon fa distinzioni tra maiuscolo e minuscolo.\nEsempio: \"programmazione, object orientation\"";
-
     /**
      * Crea un nuovo {@code TagInputField}.
      */
     public TagInputField() {
         super();
-        setToolTipText(tooltip);
+
+        setToolTipText("Parole chiave associate al riferimento, separate da una virgola."
+                + "\nNon fa distinzioni tra maiuscolo e minuscolo." +
+                "\nEsempio: \"programmazione, object orientation\"");
     }
 
     /**
@@ -42,7 +42,7 @@ public class TagInputField extends JTextField {
      * @return lista di tag
      */
     public ArrayList<Tag> getTags() {
-        String[] inputText = getText().split(separator);
+        String[] inputText = getText().split(",");
 
         ArrayList<Tag> tags = new ArrayList<>(inputText.length);
 

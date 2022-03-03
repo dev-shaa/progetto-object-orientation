@@ -5,6 +5,8 @@ import Entities.References.BibliographicReference;
 import Entities.References.PhysicalResources.Article;
 import Exceptions.Input.InvalidInputException;
 import Utilities.Tree.CustomTreeModel;
+import io.codeworth.panelmatic.PanelBuilder;
+
 import java.util.Collection;
 import javax.swing.JTextField;
 
@@ -36,11 +38,12 @@ public class ArticleEditor extends PublicationEditor<Article> {
     }
 
     @Override
-    protected void setupSecondaryFields() {
-        super.setupSecondaryFields();
+    protected void setupSecondaryFields(PanelBuilder panelBuilder) {
+        // TODO Auto-generated method stub
+        super.setupSecondaryFields(panelBuilder);
 
         ISSN = new JTextField();
-        addFieldComponent(ISSN, "ISSN", "Codice identificativo ISSN dell'articolo.\nEsempio: \"0123-4567\".");
+        // addFieldComponent(ISSN, "ISSN", "Codice identificativo ISSN dell'articolo.\nEsempio: \"0123-4567\".");
     }
 
     @Override

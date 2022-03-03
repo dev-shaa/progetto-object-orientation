@@ -86,7 +86,7 @@ public class AuthorDAOPostgreSQL implements AuthorDAO {
         CustomConnection connection = null;
         Statement statement = null;
         ResultSet resultSet = null;
-        String query = "select * from author_reference_association join author on author = id where reference = " + referenceID;
+        String query = "select * from authorship join author on author = id where reference = " + referenceID;
 
         try {
             connection = ConnectionController.getConnection();

@@ -5,12 +5,12 @@ import Entities.References.BibliographicReference;
 import Entities.References.OnlineResources.*;
 import Entities.References.OnlineResources.Image;
 import Entities.References.PhysicalResources.*;
-import GUI.Categories.CategoriesTreePanel;
-import GUI.Categories.CategorySelectionListener;
 import GUI.References.List.*;
 import GUI.Search.*;
 import Utilities.Criteria.*;
-import Utilities.Tree.CustomTreeModel;
+import Utilities.Table.CustomTable;
+import Utilities.Table.CustomTableSelectionListener;
+import Utilities.Tree.*;
 import Controller.Controller;
 
 import java.awt.*;
@@ -19,13 +19,14 @@ import java.util.Collection;
 import java.util.List;
 import java.awt.BorderLayout;
 import javax.swing.*;
+import javax.swing.tree.TreeSelectionModel;
 
 /**
  * Pagina principale dell'applicativo.
  * <p>
  * Mostra e offre opzioni per gestire le categorie e i riferimenti dell'utente.
  */
-public class Homepage extends JFrame implements CategorySelectionListener, ReferenceSelectionListener, SearchListener {
+public class Homepage extends JFrame implements CustomTreeItemSelectionListener<Category>, CustomTableSelectionListener<BibliographicReference>, SearchListener {
 
     private Controller controller;
 
@@ -35,8 +36,8 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
     private JMenuItem updateReferenceButton;
     private JMenuItem removeReferenceButton;
 
-    private CategoriesTreePanel categoriesTreePanel;
-    private ReferenceListPanel referenceListPanel;
+    private CustomTree<Category> categoriesTree;
+    private CustomTable<BibliographicReference> referencesTable;
     private SearchPanel referenceSearchPanel;
     private JTextArea referenceInfoTextArea;
 
@@ -75,9 +76,10 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
     @Override
     public void setVisible(boolean b) {
         if (b) {
-            referenceListPanel.clear();
+            referencesTable.clear();
             referenceSearchPanel.clear();
             referenceInfoTextArea.setText(null);
+            categoriesTree.expandAllRows();
             setLocationRelativeTo(null);
         }
 
@@ -87,12 +89,12 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
     /**
      * Imposta l'albero delle categorie dell'utente da mostrare.
      * 
-     * @param categoriesTree
+     * @param categoriesTreeModel
      *            albero delle categorie
      */
-    public void setCategoriesTreeModel(CustomTreeModel<Category> categoriesTree) {
-        categoriesTreePanel.setTreeModel(categoriesTree);
-        referenceSearchPanel.setCategoriesTree(categoriesTree);
+    public void setCategoriesTreeModel(CustomTreeModel<Category> categoriesTreeModel) {
+        categoriesTree.setModel(categoriesTreeModel);
+        referenceSearchPanel.setCategoriesTree(categoriesTreeModel);
     }
 
     /**
@@ -120,12 +122,9 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         referenceSearchPanel = new SearchPanel();
         referenceSearchPanel.addSearchListener(this);
 
-        categoriesTreePanel = new CategoriesTreePanel();
-        categoriesTreePanel.addCategorySelectionListener(this);
-
         // JSplitPane ammette solo due pannelli
         // noi ne abbiamo tre, quindi dobbiamo creare due JSplitPane
-        JSplitPane subSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, categoriesTreePanel, setupReferencesPanel());
+        JSplitPane subSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, setupCategoriesPanel(), setupReferencesPanel());
         subSplitPane.setResizeWeight(0.15);
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, subSplitPane, referenceSearchPanel);
@@ -147,16 +146,28 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         });
     }
 
+    private JScrollPane setupCategoriesPanel() {
+        categoriesTree = new CustomTree<Category>(null);
+        categoriesTree.setEditable(false);
+        categoriesTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+        categoriesTree.addItemSelectionListener(this);
+
+        return new JScrollPane(categoriesTree);
+    }
+
     private JSplitPane setupReferencesPanel() {
-        referenceListPanel = new ReferenceListPanel();
-        referenceListPanel.addReferenceSelectionListener(this);
+        JScrollPane scrollPane = new JScrollPane();
+        referencesTable = new CustomTable<>(new ReferenceTableModel());
+        referencesTable.setAutoCreateRowSorter(true);
+        referencesTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        referencesTable.addItemSelectionListener(this);
+        scrollPane.setViewportView(referencesTable);
 
         referenceInfoTextArea = new JTextArea();
         referenceInfoTextArea.setRows(10);
         referenceInfoTextArea.setEditable(false);
-        JScrollPane referenceInfoScrollPane = new JScrollPane(referenceInfoTextArea);
 
-        JSplitPane referenceSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, referenceListPanel, referenceInfoScrollPane);
+        JSplitPane referenceSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollPane, new JScrollPane(referenceInfoTextArea));
         referenceSplitPane.setDividerSize(10);
         referenceSplitPane.setResizeWeight(0.6f);
 
@@ -230,15 +241,19 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         createReferenceMenu.addSeparator();
 
         JMenuItem websiteOption = new JMenuItem("Sito web");
+        websiteOption.addActionListener((e) -> controller.openWebsiteEditor(null));
         createReferenceMenu.add(websiteOption);
 
         JMenuItem sourceCodeOption = new JMenuItem("Codice sorgente");
+        sourceCodeOption.addActionListener((e) -> controller.openSourceCodeEditor(null));
         createReferenceMenu.add(sourceCodeOption);
 
         JMenuItem imageOption = new JMenuItem("Immagine");
+        imageOption.addActionListener((e) -> controller.openImageEditor(null));
         createReferenceMenu.add(imageOption);
 
         JMenuItem videoOption = new JMenuItem("Video");
+        videoOption.addActionListener((e) -> controller.openVideoEditor(null));
         createReferenceMenu.add(videoOption);
 
         updateReferenceButton = new JMenuItem("Modifica riferimento");
@@ -259,37 +274,8 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
     }
 
     @Override
-    public void onCategorySelection(Category category) {
-        createCategoryButton.setEnabled(true);
-        updateCategoryButton.setEnabled(category != null);
-        removeCategoryButton.setEnabled(category != null);
-
-        filterShownReferences(new ReferenceCriteriaCategory(category));
-    }
-
-    @Override
-    public void onCategoryDeselection() {
-        createCategoryButton.setEnabled(false);
-        updateCategoryButton.setEnabled(false);
-        removeCategoryButton.setEnabled(false);
-
-        referenceListPanel.clear();
-        referenceInfoTextArea.setText(null);
-    }
-
-    @Override
-    public void onReferenceSelection(BibliographicReference reference) {
-        referenceInfoTextArea.setText(reference == null ? null : reference.getInfo());
-
-        // se non è selezionato un riferimento, disattiviamo i pulsanti di modifica e rimozione
-        boolean shouldButtonsBeEnabled = reference != null;
-        updateReferenceButton.setEnabled(shouldButtonsBeEnabled);
-        removeReferenceButton.setEnabled(shouldButtonsBeEnabled);
-    }
-
-    @Override
     public void onSearch(Search search) {
-        categoriesTreePanel.clearSelection();
+        categoriesTree.clearSelection();
         filterShownReferences(new ReferenceCriteriaSearch(search));
     }
 
@@ -307,14 +293,14 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
         String name = getCategoryNameFromUser("Nuova categoria");
 
         if (name != null) {
-            Category parent = categoriesTreePanel.getSelectedCategory();
+            Category parent = categoriesTree.getSelectedItem();
             Category newCategory = new Category(name, parent);
             controller.addCategory(newCategory);
         }
     }
 
     private void changeSelectedCategory() {
-        Category selectedCategory = categoriesTreePanel.getSelectedCategory();
+        Category selectedCategory = categoriesTree.getSelectedItem();
 
         if (selectedCategory != null) {
             String newName = getCategoryNameFromUser(selectedCategory.getName());
@@ -325,14 +311,14 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
     }
 
     private void removeSelectedCategory() {
-        Category selectedCategory = categoriesTreePanel.getSelectedCategory();
+        Category selectedCategory = categoriesTree.getSelectedItem();
 
         if (selectedCategory != null && askConfirmToUser("Elimina categoria", "Sicuro di voler eliminare questa categoria?"))
             controller.removeCategory(selectedCategory);
     }
 
     private void changeSelectedReference() {
-        BibliographicReference selectedReference = referenceListPanel.getSelectedReference();
+        BibliographicReference selectedReference = referencesTable.getSelectedItem();
 
         if (selectedReference == null)
             return;
@@ -354,7 +340,7 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
     }
 
     private void removeSelectedReference() {
-        BibliographicReference selectedReference = referenceListPanel.getSelectedReference();
+        BibliographicReference selectedReference = referencesTable.getSelectedItem();
 
         if (selectedReference != null && askConfirmToUser("Elimina riferimento", "Vuoi eliminare questo riferimento?"))
             controller.removeReference(selectedReference);
@@ -374,8 +360,37 @@ public class Homepage extends JFrame implements CategorySelectionListener, Refer
             throw new IllegalArgumentException("criteria can't be null");
 
         List<? extends BibliographicReference> filteredReferences = criteria.filter(references);
-        referenceListPanel.setReferences(filteredReferences);
+        referencesTable.setItems(filteredReferences);
         lastReferenceCriteriaUsed = criteria;
+    }
+
+    @Override
+    public void onTreeItemSelection(Category selectedCategory) {
+        createCategoryButton.setEnabled(true);
+        updateCategoryButton.setEnabled(selectedCategory != null);
+        removeCategoryButton.setEnabled(selectedCategory != null);
+
+        filterShownReferences(new ReferenceCriteriaCategory(selectedCategory));
+    }
+
+    @Override
+    public void onTreeItemDeselection() {
+        createCategoryButton.setEnabled(false);
+        updateCategoryButton.setEnabled(false);
+        removeCategoryButton.setEnabled(false);
+
+        referencesTable.clear();
+        referenceInfoTextArea.setText(null);
+    }
+
+    @Override
+    public void onTableItemSelection(BibliographicReference selectedReference) {
+        referenceInfoTextArea.setText(selectedReference == null ? null : selectedReference.getInfo());
+
+        // se non è selezionato un riferimento, disattiviamo i pulsanti di modifica e rimozione
+        boolean shouldButtonsBeEnabled = selectedReference != null;
+        updateReferenceButton.setEnabled(shouldButtonsBeEnabled);
+        removeReferenceButton.setEnabled(shouldButtonsBeEnabled);
     }
 
 }

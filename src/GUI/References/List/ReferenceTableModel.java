@@ -1,49 +1,26 @@
 package GUI.References.List;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import javax.swing.table.AbstractTableModel;
+import java.util.List;
+
 import Entities.References.BibliographicReference;
+import Utilities.Table.CustomTableModel;
 
-/**
- * {@code TableModel} non modificabile per gestire i riferimenti.
- * <p>
- * Ha quattro colonne, indicanti il titolo, gli autori, la data di pubblicazione e le citazioni ricevute dei riferimenti.
- */
-public class ReferenceTableModel extends AbstractTableModel {
+public class ReferenceTableModel extends CustomTableModel<BibliographicReference> {
 
-    private ArrayList<BibliographicReference> references;
-    private final String[] columnNames = { "Titolo", "Autori", "Data di pubblicazione", "Citazioni ricevute" };
+    private ArrayList<String> columns;
 
-    /**
-     * Crea un nuovo modello vuoto.
-     */
     public ReferenceTableModel() {
-        super();
-        this.references = new ArrayList<>();
-    }
-
-    @Override
-    public String getColumnName(int index) {
-        if (index >= 0 && index < columnNames.length)
-            return columnNames[index];
-        else
-            return super.getColumnName(index);
-    }
-
-    @Override
-    public int getRowCount() {
-        return references.size();
-    }
-
-    @Override
-    public int getColumnCount() {
-        return columnNames.length;
+        columns = new ArrayList<>(4);
+        columns.add("Titolo");
+        columns.add("Autori");
+        columns.add("Data di pubblicazione");
+        columns.add("Citazioni ricevute");
     }
 
     @Override
     public Object getValueAt(int row, int column) {
-        BibliographicReference reference = getReferenceAt(row);
+        BibliographicReference reference = get(row);
 
         switch (column) {
             case 0:
@@ -60,59 +37,8 @@ public class ReferenceTableModel extends AbstractTableModel {
     }
 
     @Override
-    public boolean isCellEditable(int row, int column) {
-        return false;
-    }
-
-    /**
-     * Imposta i riferimenti da mostrare nella tabella.
-     * <p>
-     * Se {@code references == null}, ha lo stesso effetto di {@link #clear()}.
-     * 
-     * @param references
-     *            riferimenti da mostrare
-     */
-    public void setReferences(Collection<? extends BibliographicReference> references) {
-        this.references.clear();
-
-        if (references != null)
-            this.references.addAll(references);
-
-        fireTableDataChanged();
-    }
-
-    /**
-     * Rimuove il riferimento presente all'indice di riga indicato.
-     * 
-     * @param row
-     *            indice della riga da rimuovere
-     * @throws IndexOutOfBoundsException
-     *             se l'indice di riga non è compreso tra gli estremi della tabella
-     */
-    public void removeReferenceAt(int row) {
-        references.remove(row);
-        fireTableRowsDeleted(row, row);
-    }
-
-    /**
-     * Restituisce il riferimento presente all'indice di riga indicato.
-     * 
-     * @param row
-     *            indice della riga del riferimento da recuperare
-     * @return riferimento alla riga indicata
-     * @throws IndexOutOfBoundsException
-     *             se l'indice di riga non è compreso tra gli estremi della tabella
-     */
-    public BibliographicReference getReferenceAt(int row) {
-        return references.get(row);
-    }
-
-    /**
-     * Rimuove tutti i riferimenti dalla tabella.
-     */
-    public void clear() {
-        references.clear();
-        fireTableDataChanged();
+    public List<String> getColumns() {
+        return columns;
     }
 
 }

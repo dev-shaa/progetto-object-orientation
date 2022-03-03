@@ -159,7 +159,7 @@ public class CategoryRepository {
         if (needToRetrieveFromDatabase)
             retrieveFromDatabase();
 
-        List<Integer> ids = categoryDAO.getIDs(reference.getID());
+        List<Integer> ids = categoryDAO.getCategoriesIDFor(reference.getID());
         ArrayList<Category> categories = new ArrayList<>();
 
         for (Integer id : ids)

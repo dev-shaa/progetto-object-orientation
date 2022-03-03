@@ -2,6 +2,8 @@ package Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import Controller.ConnectionController;
 import DAO.*;
 import Entities.References.*;
 import Entities.References.OnlineResources.*;
@@ -260,13 +262,18 @@ public class ReferenceRepository {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
+        int transactionKey = ConnectionController.beginTransaction();
+
         try {
             authorDAO.save(reference.getAuthors());
             daoSave.execute();
             tagDAO.save(reference.getID(), reference.getTags());
             saveToLocal(reference);
         } catch (Exception e) {
+            ConnectionController.rollbackTransaction(transactionKey);
             throw new ReferenceDatabaseException(e.getMessage());
+        } finally {
+            ConnectionController.closeTransaction(transactionKey);
         }
     }
 

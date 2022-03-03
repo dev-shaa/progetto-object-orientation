@@ -34,7 +34,7 @@ public class Search {
      */
     public Search(Date from, Date to, Collection<? extends Tag> tags, Collection<? extends Category> categories, Collection<? extends Author> authors) throws EmptySearchException {
         if (areAllTermsNull(from, to, tags, categories, authors))
-            throw new EmptySearchException("Almeno un elemento di ricerca deve essere specificato");
+            throw new EmptySearchException("Almeno un elemento di ricerca deve essere specificato.");
 
         this.from = from;
         this.to = to;

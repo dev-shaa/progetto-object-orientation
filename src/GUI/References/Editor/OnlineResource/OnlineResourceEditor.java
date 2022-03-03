@@ -6,7 +6,7 @@ import Entities.References.OnlineResources.OnlineResource;
 import Exceptions.Input.InvalidInputException;
 import GUI.References.Editor.ReferenceEditor;
 import Utilities.Tree.CustomTreeModel;
-
+import io.codeworth.panelmatic.PanelBuilder;
 import java.util.Collection;
 import javax.swing.JTextField;
 
@@ -43,11 +43,12 @@ public abstract class OnlineResourceEditor<T extends OnlineResource> extends Ref
     }
 
     @Override
-    protected void setupSecondaryFields() {
-        super.setupSecondaryFields();
+    protected void setupSecondaryFields(PanelBuilder panelBuilder) {
+        super.setupSecondaryFields(panelBuilder);
 
-        URL = new JTextField();
-        addFieldComponent(URL, "URL (obbligatorio)", "URL della risorsa online.");
+        URL = new JTextField(OnlineResource.URL_MAX_LENGTH);
+        URL.setToolTipText("URL della risorsa online.");
+        panelBuilder.add("URL", URL);
     }
 
     @Override

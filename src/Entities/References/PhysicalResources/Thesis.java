@@ -8,8 +8,8 @@ public class Thesis extends Publication {
     private String university;
     private String faculty;
 
-    private final int UNIVERSITY_MAX_LENGTH = 128;
-    private final int FACULTY_MAX_LENGTH = 128;
+    public static final int UNIVERSITY_MAX_LENGTH = 128;
+    public static final int FACULTY_MAX_LENGTH = 128;
 
     /**
      * Crea un nuovo riferimento a una tesi con il titolo indicato.

@@ -227,11 +227,11 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
     }
 
     @Override
-    public List<Integer> getIDs(int referenceID) throws CategoryDatabaseException {
+    public List<Integer> getCategoriesIDFor(int referenceID) throws CategoryDatabaseException {
         CustomConnection connection = null;
         Statement statement = null;
         ResultSet resultSet = null;
-        String query = "select category from category_reference_association where reference = " + referenceID;
+        String query = "select category from reference_grouping where reference = " + referenceID;
 
         try {
             connection = ConnectionController.getConnection();

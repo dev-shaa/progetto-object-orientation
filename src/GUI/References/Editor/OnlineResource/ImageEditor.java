@@ -5,6 +5,7 @@ import Entities.References.BibliographicReference;
 import Entities.References.OnlineResources.Image;
 import Exceptions.Input.InvalidInputException;
 import Utilities.Tree.CustomTreeModel;
+import io.codeworth.panelmatic.PanelBuilder;
 
 import java.util.Collection;
 import javax.swing.JSpinner;
@@ -39,14 +40,16 @@ public class ImageEditor extends OnlineResourceEditor<Image> {
     }
 
     @Override
-    protected void setupSecondaryFields() {
-        super.setupSecondaryFields();
+    protected void setupSecondaryFields(PanelBuilder panelBuilder) {
+        super.setupSecondaryFields(panelBuilder);
 
         width = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
-        addFieldComponent(width, "Larghezza", "Larghezza dell'immagine.");
+        width.setToolTipText("Larghezza dell'immagine.");
+        panelBuilder.add("Larghezza", width);
 
         height = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
-        addFieldComponent(height, "Altezza", "Altezza dell'immagine.");
+        height.setToolTipText("Altezza dell'immagine.");
+        panelBuilder.add("Altezza", height);
     }
 
     @Override

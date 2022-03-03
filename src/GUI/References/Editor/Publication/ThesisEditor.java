@@ -5,8 +5,11 @@ import Entities.References.BibliographicReference;
 import Entities.References.PhysicalResources.Thesis;
 import Exceptions.Input.InvalidInputException;
 import Utilities.Tree.CustomTreeModel;
+import io.codeworth.panelmatic.PanelBuilder;
 
 import java.util.Collection;
+
+import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 /**
@@ -38,14 +41,18 @@ public class ThesisEditor extends PublicationEditor<Thesis> {
     }
 
     @Override
-    protected void setupSecondaryFields() {
-        super.setupSecondaryFields();
+    protected void setupSecondaryFields(PanelBuilder panelBuilder) {
+        super.setupSecondaryFields(panelBuilder);
 
-        university = new JTextField();
-        addFieldComponent(university, "Università", "Università della tesi.");
+        university = new JTextField(Thesis.UNIVERSITY_MAX_LENGTH);
+        university.setToolTipText("Università della tesi.");
+        panelBuilder.add(new JLabel("Università"));
+        panelBuilder.add(university);
 
-        faculty = new JTextField();
-        addFieldComponent(faculty, "Facoltà", "Facoltà dell'università.");
+        faculty = new JTextField(Thesis.FACULTY_MAX_LENGTH);
+        faculty.setToolTipText("Facoltà dell'università.");
+        panelBuilder.add(new JLabel("Facoltà"));
+        panelBuilder.add(faculty);
     }
 
     @Override

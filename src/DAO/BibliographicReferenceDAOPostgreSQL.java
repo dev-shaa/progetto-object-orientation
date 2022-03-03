@@ -374,8 +374,8 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         PreparedStatement removeStatement = null;
         PreparedStatement insertStatement = null;
 
-        String relatedReferenceRemoveCommand = "delete from related_references where quoted_by = ?";
-        String relatedReferenceInsertCommand = "insert into related_references values(?, ?)";
+        String relatedReferenceRemoveCommand = "delete from quotations where quoted_by = ?";
+        String relatedReferenceInsertCommand = "insert into quotations(quoted_by, quotes) values(?, ?)";
 
         try {
             removeStatement = connection.prepareStatement(relatedReferenceRemoveCommand);
@@ -400,8 +400,8 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
     private void insertCategories(CustomConnection connection, int id, Collection<Category> categories) throws SQLException {
         PreparedStatement removeStatement = null;
         PreparedStatement insertStatement = null;
-        String removeCommand = "delete from category_reference_association where reference = ?";
-        String insertCommand = "insert into category_reference_association values(?, ?)";
+        String removeCommand = "delete from reference_grouping where reference = ?";
+        String insertCommand = "insert into reference_grouping(category, reference) values(?, ?)";
 
         try {
             removeStatement = connection.prepareStatement(removeCommand);
@@ -427,8 +427,8 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
     private void insertAuthors(CustomConnection connection, int id, Collection<Author> authors) throws SQLException {
         PreparedStatement removeStatement = null;
         PreparedStatement insertStatement = null;
-        String removeCommand = "delete from author_reference_association where reference = ?";
-        String insertCommand = "insert into author_reference_association values(?, ?)";
+        String removeCommand = "delete from authorship where reference = ?";
+        String insertCommand = "insert into authorship(reference, author) values(?, ?)";
 
         try {
             removeStatement = connection.prepareStatement(removeCommand);
@@ -636,7 +636,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         if (statement == null || reference == null || reference.getID() == null)
             throw new IllegalArgumentException();
 
-        String relatedReferencesQuery = "select quotes from related_references where quoted_by = " + reference.getID();
+        String relatedReferencesQuery = "select quotes from quotations where quoted_by = " + reference.getID();
         ArrayList<Integer> relatedReferencesIDs = new ArrayList<>();
 
         resultSet = statement.executeQuery(relatedReferencesQuery);

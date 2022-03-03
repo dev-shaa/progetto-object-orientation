@@ -10,9 +10,12 @@ import Exceptions.Input.EmptySearchException;
 import Exceptions.Input.InvalidInputException;
 import GUI.Authors.AuthorInputField;
 import GUI.Tags.TagInputField;
-import GUI.Utilities.CheckboxTree.PopupCheckboxTree;
 import Utilities.MessageDisplayer;
 import Utilities.Tree.CustomTreeModel;
+import Utilities.Tree.CheckboxTree.CheckboxTree;
+import io.codeworth.panelmatic.PanelBuilder;
+import io.codeworth.panelmatic.PanelMatic;
+import io.codeworth.panelmatic.componentbehavior.Modifiers;
 
 /**
  * Pannello per la ricerca dei riferimenti per parole chiave, autori, categorie e data.
@@ -21,16 +24,11 @@ public class SearchPanel extends JPanel {
 
     private TagInputField tags;
     private AuthorInputField authors;
-    private PopupCheckboxTree<Category> categories;
+    private CheckboxTree<Category> categories;
     private JDateChooser dateFrom;
     private JDateChooser dateTo;
-    private JButton searchButton;
-    private JPanel searchPanel;
 
     private EventListenerList searchListeners;
-
-    private final Dimension maximumSize = new Dimension(Integer.MAX_VALUE, 24);
-    private final float alignment = Container.LEFT_ALIGNMENT;
 
     /**
      * Crea un pannello per la ricerca di riferimenti.
@@ -58,7 +56,10 @@ public class SearchPanel extends JPanel {
      *            albero delle categorie selezionabili
      */
     public void setCategoriesTree(CustomTreeModel<Category> categoriesTree) {
-        categories.setTreeModel(categoriesTree);
+        categories.setModel(categoriesTree);
+
+        for (int i = 0; i < categories.getRowCount(); i++)
+            categories.expandRow(i);
     }
 
     /**
@@ -67,7 +68,7 @@ public class SearchPanel extends JPanel {
     public void clear() {
         tags.clear();
         authors.clear();
-        categories.getCheckboxTree().clearSelection();
+        categories.clearSelection();
         dateFrom.setDate(null);
         dateTo.setDate(null);
     }
@@ -93,45 +94,46 @@ public class SearchPanel extends JPanel {
     }
 
     private void setup(CustomTreeModel<Category> treeModel) {
-        setLayout(new BorderLayout(5, 5));
-        setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        setLayout(new BorderLayout());
 
-        searchPanel = new JPanel();
-        searchPanel.setLayout(new BoxLayout(searchPanel, BoxLayout.PAGE_AXIS));
+        JPanel panel = new JPanel();
 
-        JScrollPane scrollPane = new JScrollPane(searchPanel);
+        JScrollPane scrollPane = new JScrollPane(panel);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
 
+        add(scrollPane);
+
+        PanelBuilder panelBuilder = PanelMatic.begin(panel);
+
         tags = new TagInputField();
-        addFieldComponent("Parole chiave", tags, null);
+        panelBuilder.add(new JLabel("Parole chiave"));
+        panelBuilder.add(tags);
 
         authors = new AuthorInputField();
-        JLabel authorLabel = new JLabel("Autori");
-        authorLabel.setMaximumSize(maximumSize);
-        authorLabel.setAlignmentX(alignment);
-        authors.setAlignmentX(alignment);
-        searchPanel.add(authorLabel);
-        searchPanel.add(authors);
+        panelBuilder.add(new JLabel("Autori"));
+        panelBuilder.add(authors);
 
-        categories = new PopupCheckboxTree<>();
-        addFieldComponent("Categorie", categories, "Seleziona le categorie in cui cercare il riferimento.");
+        categories = new CheckboxTree<>(treeModel);
+        categories.setRootVisible(false);
+        panelBuilder.add(new JLabel("Categorie"));
+        panelBuilder.add(new JScrollPane(categories));
 
         dateFrom = new JDateChooser();
-        addFieldComponent("Da", dateFrom, "Data di inizio dell'intervallo di ricerca.");
+        panelBuilder.add(new JLabel("Da"));
+        panelBuilder.add(dateFrom);
 
         dateTo = new JDateChooser();
-        addFieldComponent("A", dateTo, "Data di fine dell'intervallo di ricerca.");
+        panelBuilder.add(new JLabel("A"));
+        panelBuilder.add(dateTo);
 
-        searchPanel.add(Box.createVerticalStrut(32));
+        panelBuilder.addFlexibleSpace();
 
-        searchButton = new JButton("Cerca");
-        searchButton.setIcon(new ImageIcon("images/search.png"));
-        searchButton.setAlignmentX(JButton.LEFT_ALIGNMENT);
-        searchButton.setMaximumSize(new Dimension(100, 32));
+        JButton searchButton = new JButton("Cerca");
         searchButton.addActionListener((e) -> search());
-        searchPanel.add(searchButton);
+        panelBuilder.add(searchButton, Modifiers.L_END, Modifiers.P_FEET);
 
-        add(scrollPane, BorderLayout.CENTER);
+        panelBuilder.addFlexibleSpace();
+        panelBuilder.get();
     }
 
     private void search() {
@@ -151,24 +153,8 @@ public class SearchPanel extends JPanel {
             listener.onSearch(search);
     }
 
-    private void addFieldComponent(String label, JComponent component, String tooltip) {
-        JLabel labelField = new JLabel(label);
-        labelField.setMaximumSize(maximumSize);
-        labelField.setAlignmentX(alignment);
-        searchPanel.add(labelField);
-
-        component.setMaximumSize(maximumSize);
-        component.setAlignmentX(alignment);
-
-        if (tooltip != null)
-            component.setToolTipText(tooltip);
-
-        searchPanel.add(component);
-        searchPanel.add(Box.createVerticalStrut(5));
-    }
-
     private Search getSearch() throws EmptySearchException, InvalidInputException {
-        return new Search(dateFrom.getDate(), dateTo.getDate(), tags.getTags(), categories.getCheckboxTree().getSelectedItems(), authors.getAuthors());
+        return new Search(dateFrom.getDate(), dateTo.getDate(), tags.getTags(), categories.getSelectedItems(), authors.getAuthors());
     }
 
 }

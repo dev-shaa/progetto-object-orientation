@@ -9,7 +9,7 @@ public abstract class OnlineResource extends BibliographicReference {
 
     private String URL;
 
-    private final int URL_MAX_LENGTH = 256;
+    public static final int URL_MAX_LENGTH = 256;
 
     /**
      * Crea un nuovo riferimento a una risorsa online con il titolo e l'url indicati.

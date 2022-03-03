@@ -26,8 +26,8 @@ public abstract class BibliographicReference {
     private List<BibliographicReference> relatedReferences;
     private int quotationCount;
 
-    private final int TITLE_MAX_LENGTH = 256;
-    private final int DESCRIPTION_MAX_LENGTH = 1024;
+    public static final int TITLE_MAX_LENGTH = 256;
+    public static final int DESCRIPTION_MAX_LENGTH = 1024;
     private final Pattern DOI_PATTERN = Pattern.compile("^ *10\\.[0-9]{4,}\\/\\w{1,}(\\.\\w{1,})* *$");
     private final DateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
 

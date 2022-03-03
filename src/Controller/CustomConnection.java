@@ -39,22 +39,42 @@ public class CustomConnection {
         this.key = key;
     }
 
-    /** */
+    /**
+     * 
+     * @return
+     * @throws SQLException
+     */
     public Statement createStatement() throws SQLException {
         return connection.createStatement();
     }
 
     /**
      * 
+     * @param sql
+     * @return
+     * @throws SQLException
      */
     public PreparedStatement prepareStatement(String sql) throws SQLException {
         return connection.prepareStatement(sql);
     }
 
+    /**
+     * 
+     * @param sql
+     * @param arg1
+     * @return
+     * @throws SQLException
+     */
     public PreparedStatement prepareStatement(String sql, int arg1) throws SQLException {
         return connection.prepareStatement(sql, arg1);
     }
 
+    /**
+     * TODO: commenta
+     * 
+     * @param autoCommit
+     * @throws SQLException
+     */
     public void setAutoCommit(boolean autoCommit) throws SQLException {
         connection.setAutoCommit(autoCommit);
     }
@@ -69,13 +89,18 @@ public class CustomConnection {
             connection.close();
     }
 
-    /** */
+    /**
+     * Annulla tutte le modifiche eseguite nella transazione corrente.
+     * 
+     * @throws SQLException
+     */
     public void rollback() throws SQLException {
         if (!needsKey)
             connection.rollback();
     }
 
     /**
+     * Annulla tutte le modifiche eseguite nella transazione corrente.
      * 
      * @param key
      * @throws SQLException

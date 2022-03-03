@@ -11,8 +11,9 @@ public class Author {
     private String name;
     private String ORCID;
 
-    private final int NAME_MAX_LENGTH = 256;
-    private final Pattern ORCID_PATTERN = Pattern.compile("^ *[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9x] *$");
+    public static final int NAME_MAX_LENGTH = 256;
+    public static final int ORCID_LENGTH = 20;
+    public static final Pattern ORCID_PATTERN = Pattern.compile("^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9x]$");
 
     /**
      * Crea un nuovo autore con il nome e l'ORCID dati.
