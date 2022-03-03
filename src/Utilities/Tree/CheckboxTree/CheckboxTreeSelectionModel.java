@@ -1,4 +1,4 @@
-package GUI.Utilities.CheckboxTree;
+package Utilities.Tree.CheckboxTree;
 
 import java.util.ArrayList;
 import java.util.Enumeration;

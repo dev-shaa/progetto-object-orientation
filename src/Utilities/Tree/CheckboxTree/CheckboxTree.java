@@ -1,4 +1,4 @@
-package GUI.Utilities.CheckboxTree;
+package Utilities.Tree.CheckboxTree;
 
 import java.util.ArrayList;
 import javax.swing.JTree;
@@ -12,6 +12,13 @@ import Utilities.Tree.CustomTreeNode;
 public class CheckboxTree<T extends Object> extends JTree {
 
     private CustomTreeModel<T> treeModel;
+
+    /**
+     * Crea un nuovo {@code CheckboxTree} senza un modello.
+     */
+    public CheckboxTree() {
+        this(null);
+    }
 
     /**
      * Crea un nuovo {@code CheckboxTree} con il modello indicato.
