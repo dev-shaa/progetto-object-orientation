@@ -13,8 +13,8 @@ public class CustomTable<T extends Object> extends JTable {
 
     public CustomTable(CustomTableModel<T> tableModel) {
         super(tableModel);
-
         this.tableModel = tableModel;
+
         getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -27,11 +27,6 @@ public class CustomTable<T extends Object> extends JTable {
     public void setModel(CustomTableModel<T> tableModel) {
         super.setModel(tableModel);
         this.tableModel = tableModel;
-    }
-
-    @Override
-    public CustomTableModel<T> getModel() {
-        return tableModel;
     }
 
     public void setItems(Collection<? extends T> items) {

@@ -118,6 +118,8 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
 
             if (referenceToChange != null)
                 referenceListModel.removeElement(referenceToChange);
+
+            categoriesCheckboxTree.expandAllRows();
         }
 
         super.setVisible(b);

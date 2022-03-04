@@ -10,6 +10,10 @@ public abstract class CustomTableModel<T extends Object> extends AbstractTableMo
 
     private ArrayList<T> items = new ArrayList<>();
 
+    public CustomTableModel() {
+        super();
+    }
+
     @Override
     public String getColumnName(int index) {
         if (index >= 0 && index < getColumnCount())

@@ -11,6 +11,8 @@ public class ReferenceTableModel extends CustomTableModel<BibliographicReference
     private ArrayList<String> columns;
 
     public ReferenceTableModel() {
+        super();
+
         columns = new ArrayList<>(4);
         columns.add("Titolo");
         columns.add("Autori");

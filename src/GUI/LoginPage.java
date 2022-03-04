@@ -49,9 +49,14 @@ public class LoginPage extends JFrame {
 		this.controller = controller;
 	}
 
-	/**
-	 * Inizializza la schermata.
-	 */
+	@Override
+	public void setVisible(boolean b) {
+		if (b)
+			clear();
+
+		super.setVisible(b);
+	}
+
 	private void setup() {
 		setTitle("Login");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -69,9 +74,6 @@ public class LoginPage extends JFrame {
 		setupButtons();
 	}
 
-	/**
-	 * Inizializza il campo del nome utente.
-	 */
 	private void setupUsernameField() {
 		JLabel usernameLabel = new JLabel("Nome Utente", JLabel.RIGHT);
 		usernameLabel.setBounds(34, 64, 96, 24);
@@ -82,9 +84,6 @@ public class LoginPage extends JFrame {
 		getContentPane().add(usernameField);
 	}
 
-	/**
-	 * Inizializza il campo della password.
-	 */
 	private void setupPasswordField() {
 		JLabel passwordLabel = new JLabel("Password", JLabel.RIGHT);
 		passwordLabel.setBounds(34, 143, 96, 24);
@@ -95,9 +94,6 @@ public class LoginPage extends JFrame {
 		getContentPane().add(passwordField);
 	}
 
-	/**
-	 * Inizializza i pulsanti per registrarsi e accedere.
-	 */
 	private void setupButtons() {
 		JButton registerButton = new JButton("Registrati");
 		registerButton.setBounds(214, 213, 85, 24);
@@ -118,9 +114,11 @@ public class LoginPage extends JFrame {
 		getContentPane().add(accessButton);
 	}
 
-	/**
-	 * Esegue la registrazione.
-	 */
+	private void clear() {
+		usernameField.setText(null);
+		passwordField.setText(null);
+	}
+
 	private void register() {
 		try {
 			User user = getUserFromFields();
@@ -130,9 +128,6 @@ public class LoginPage extends JFrame {
 		}
 	}
 
-	/**
-	 * Esegue l'accesso.
-	 */
 	private void login() {
 		try {
 			User user = getUserFromFields();
@@ -142,13 +137,6 @@ public class LoginPage extends JFrame {
 		}
 	}
 
-	/**
-	 * Crea un utente a partire dall'input inserito dall'utente.
-	 * 
-	 * @return utente che prova ad accedere o registrarsi
-	 * @throws IllegalArgumentException
-	 *             se il nome o la password inseriti non sono validi
-	 */
 	private User getUserFromFields() throws InvalidInputException {
 		try {
 			String username = usernameField.getText();

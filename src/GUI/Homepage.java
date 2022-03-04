@@ -156,18 +156,16 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
     }
 
     private JSplitPane setupReferencesPanel() {
-        JScrollPane scrollPane = new JScrollPane();
         referencesTable = new CustomTable<>(new ReferenceTableModel());
         referencesTable.setAutoCreateRowSorter(true);
         referencesTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         referencesTable.addItemSelectionListener(this);
-        scrollPane.setViewportView(referencesTable);
 
         referenceInfoTextArea = new JTextArea();
         referenceInfoTextArea.setRows(10);
         referenceInfoTextArea.setEditable(false);
 
-        JSplitPane referenceSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollPane, new JScrollPane(referenceInfoTextArea));
+        JSplitPane referenceSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(referencesTable), new JScrollPane(referenceInfoTextArea));
         referenceSplitPane.setDividerSize(10);
         referenceSplitPane.setResizeWeight(0.6f);
 

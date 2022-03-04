@@ -120,7 +120,6 @@ public class AuthorInputField extends JPanel {
         });
 
         add(authorPanel);
-        add(Box.createVerticalStrut(10));
     }
 
     /**
@@ -159,8 +158,8 @@ public class AuthorInputField extends JPanel {
             }
         });
 
-        add(authorPanel);
         add(spacing);
+        add(authorPanel);
     }
 
     /**
