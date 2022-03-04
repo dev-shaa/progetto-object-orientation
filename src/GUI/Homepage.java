@@ -5,12 +5,19 @@ import Entities.References.BibliographicReference;
 import Entities.References.OnlineResources.*;
 import Entities.References.OnlineResources.Image;
 import Entities.References.PhysicalResources.*;
-import GUI.References.List.*;
-import GUI.Search.*;
+import Exceptions.Input.InvalidInputException;
+import GUI.Authors.AuthorInputField;
+import GUI.References.ReferenceTableModel;
+import GUI.Tags.TagInputField;
+import Utilities.MessageDisplayer;
 import Utilities.Criteria.*;
 import Utilities.Table.CustomTable;
 import Utilities.Table.CustomTableSelectionListener;
 import Utilities.Tree.*;
+import Utilities.Tree.CheckboxTree.CheckboxTree;
+import io.codeworth.panelmatic.PanelBuilder;
+import io.codeworth.panelmatic.PanelMatic;
+import io.codeworth.panelmatic.componentbehavior.Modifiers;
 import Controller.Controller;
 
 import java.awt.*;
@@ -21,12 +28,14 @@ import java.awt.BorderLayout;
 import javax.swing.*;
 import javax.swing.tree.TreeSelectionModel;
 
+import com.toedter.calendar.JDateChooser;
+
 /**
  * Pagina principale dell'applicativo.
  * <p>
  * Mostra e offre opzioni per gestire le categorie e i riferimenti dell'utente.
  */
-public class Homepage extends JFrame implements CustomTreeItemSelectionListener<Category>, CustomTableSelectionListener<BibliographicReference>, SearchListener {
+public class Homepage extends JFrame implements CustomTreeItemSelectionListener<Category>, CustomTableSelectionListener<BibliographicReference> {
 
     private Controller controller;
 
@@ -38,8 +47,13 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
 
     private CustomTree<Category> categoriesTree;
     private CustomTable<BibliographicReference> referencesTable;
-    private SearchPanel referenceSearchPanel;
     private JTextArea referenceInfoTextArea;
+
+    private TagInputField tagsSearchField;
+    private AuthorInputField authorsSearchField;
+    private CheckboxTree<Category> categoriesSearchField;
+    private JDateChooser dateFromSearchField;
+    private JDateChooser dateToSearchField;
 
     private Collection<? extends BibliographicReference> references;
     private Criteria<BibliographicReference> lastReferenceCriteriaUsed;
@@ -60,13 +74,8 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
 
     @Override
     public void setVisible(boolean b) {
-        if (b) {
-            referencesTable.clear();
-            referenceSearchPanel.clear();
-            referenceInfoTextArea.setText(null);
-            categoriesTree.expandAllRows();
-            setLocationRelativeTo(null);
-        }
+        if (b)
+            reset();
 
         super.setVisible(b);
     }
@@ -94,7 +103,7 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
      */
     public void setCategoriesTreeModel(CustomTreeModel<Category> categoriesTreeModel) {
         categoriesTree.setModel(categoriesTreeModel);
-        referenceSearchPanel.setCategoriesTree(categoriesTreeModel);
+        categoriesSearchField.setModel(categoriesTreeModel);
     }
 
     /**
@@ -117,7 +126,29 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
         filterShownReferences(lastReferenceCriteriaUsed);
     }
 
-    // #region GUI
+    /**
+     * Reimposta la pagina.
+     */
+    public void reset() {
+        referencesTable.clear();
+        resetSearchField();
+        referenceInfoTextArea.setText(null);
+        categoriesTree.expandAllRows();
+        setLocationRelativeTo(null);
+    }
+
+    /**
+     * Reimposta i campi di ricerca.
+     */
+    public void resetSearchField() {
+        tagsSearchField.clear();
+        authorsSearchField.clear();
+        categoriesSearchField.clearSelection();
+        dateFromSearchField.setDate(null);
+        dateFromSearchField.setDate(null);
+    }
+
+    // #region SETUP
 
     private void setup() {
         setTitle("Pagina principale");
@@ -131,15 +162,12 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
         contentPane.setLayout(new BorderLayout());
         setContentPane(contentPane);
 
-        referenceSearchPanel = new SearchPanel();
-        referenceSearchPanel.addSearchListener(this);
-
         // JSplitPane ammette solo due pannelli
         // noi ne abbiamo tre, quindi dobbiamo creare due JSplitPane
         JSplitPane subSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, setupCategoriesPanel(), setupReferencesPanel());
         subSplitPane.setResizeWeight(0.15);
 
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, subSplitPane, referenceSearchPanel);
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, subSplitPane, setupSearchPanel());
         splitPane.setResizeWeight(0.8);
         splitPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
@@ -182,6 +210,51 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
         referenceSplitPane.setResizeWeight(0.6f);
 
         return referenceSplitPane;
+    }
+
+    private JScrollPane setupSearchPanel() {
+        setLayout(new BorderLayout());
+
+        JPanel panel = new JPanel();
+
+        JScrollPane scrollPane = new JScrollPane(panel);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+
+        add(scrollPane);
+
+        PanelBuilder panelBuilder = PanelMatic.begin(panel);
+
+        tagsSearchField = new TagInputField();
+        panelBuilder.add(new JLabel("Parole chiave"));
+        panelBuilder.add(tagsSearchField);
+
+        authorsSearchField = new AuthorInputField();
+        panelBuilder.add(new JLabel("Autori"));
+        panelBuilder.add(authorsSearchField);
+
+        categoriesSearchField = new CheckboxTree<>();
+        categoriesSearchField.setRootVisible(false);
+        panelBuilder.add(new JLabel("Categorie"));
+        panelBuilder.add(new JScrollPane(categoriesSearchField));
+
+        dateFromSearchField = new JDateChooser();
+        panelBuilder.add(new JLabel("Da"));
+        panelBuilder.add(dateFromSearchField);
+
+        dateToSearchField = new JDateChooser();
+        panelBuilder.add(new JLabel("A"));
+        panelBuilder.add(dateToSearchField);
+
+        panelBuilder.addFlexibleSpace();
+
+        JButton searchButton = new JButton("Cerca");
+        searchButton.addActionListener((e) -> search());
+        panelBuilder.add(searchButton, Modifiers.L_END, Modifiers.P_FEET);
+
+        panelBuilder.addFlexibleSpace();
+        panelBuilder.get();
+
+        return scrollPane;
     }
 
     private JMenuBar setupMenuBar() {
@@ -387,10 +460,20 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
         removeReferenceButton.setEnabled(shouldButtonsBeEnabled);
     }
 
-    @Override
-    public void onSearch(Search search) {
-        categoriesTree.clearSelection();
-        filterShownReferences(new ReferenceCriteriaSearch(search));
+    private void search() {
+        try {
+            Search search = new Search(dateFromSearchField.getDate(),
+                    dateToSearchField.getDate(),
+                    tagsSearchField.getTags(),
+                    categoriesSearchField.getSelectedItems(),
+                    authorsSearchField.getAuthors());
+
+            categoriesTree.clearSelection();
+            filterShownReferences(new ReferenceCriteriaSearch(search));
+            resetSearchField();
+        } catch (InvalidInputException ex) {
+            MessageDisplayer.showErrorMessage("Errore ricerca", ex.getMessage());
+        }
     }
 
 }

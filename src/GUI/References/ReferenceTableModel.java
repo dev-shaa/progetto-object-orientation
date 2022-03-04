@@ -1,4 +1,4 @@
-package GUI.References.List;
+package GUI.References;
 
 import java.util.ArrayList;
 import java.util.List;
