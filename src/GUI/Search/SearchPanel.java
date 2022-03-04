@@ -138,8 +138,7 @@ public class SearchPanel extends JPanel {
 
     private void search() {
         try {
-            Search search = getSearch();
-            fireSearchEvent(search);
+            fireSearchEvent(getSearch());
             clear();
         } catch (InvalidInputException ex) {
             MessageDisplayer.showErrorMessage("Errore ricerca", ex.getMessage());

@@ -2,23 +2,15 @@ package GUI.Authors;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
 import Entities.Author;
 import Exceptions.Input.InvalidAuthorInputException;
+import Utilities.TextField.MultipleTextField;
 
 /**
  * Un pannello che permette all'utente di inserire degli autori.
  */
-public class AuthorInputField extends JPanel {
+public class AuthorInputField extends MultipleTextField {
 
-    private JTextField firstAuthorField;
-    private ArrayList<JTextField> otherAuthorsFields;
-
-    private final Dimension maximumTextFieldSize = new Dimension(Integer.MAX_VALUE, 24);
-    private final ImageIcon addAuthorIcon = new ImageIcon("images/button_add.png");
-    private final ImageIcon removeAuthorIcon = new ImageIcon("images/button_remove.png");
     private final String textTooltip = "Un autore del riferimento."
             + "\nÈ possibile specificare l'ORCID mettendolo tra parentesi quadre."
             + "\nEsempio: \"Mario Rossi [0000-0000-0000-0000]\"";
@@ -29,9 +21,7 @@ public class AuthorInputField extends JPanel {
     public AuthorInputField() {
         super();
 
-        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-        addFirstAuthorField();
-        otherAuthorsFields = new ArrayList<>();
+        setToolTipText(textTooltip);
     }
 
     /**
@@ -43,17 +33,16 @@ public class AuthorInputField extends JPanel {
      *            autori da mostrare
      */
     public void setAuthors(List<Author> authors) {
-        clear();
+        if (authors == null || authors.isEmpty()) {
+            clear();
+        } else {
+            ArrayList<String> authorsAsString = new ArrayList<>(authors.size());
 
-        if (authors == null || authors.isEmpty())
-            return;
+            for (Author author : authors)
+                authorsAsString.add(getStringFromAuthor(author));
 
-        firstAuthorField.setText(getStringFromAuthor(authors.get(0))); // il primo campo dobbiamo impostarlo a parte
-
-        for (int i = 1; i < authors.size(); i++)
-            addAuthorField(authors.get(i));
-
-        revalidate();
+            setInitialValues(authorsAsString);
+        }
     }
 
     /**
@@ -64,14 +53,11 @@ public class AuthorInputField extends JPanel {
      *             se l'utente ha inserito dei valori errati
      */
     public ArrayList<Author> getAuthors() throws InvalidAuthorInputException {
-        ArrayList<Author> authors = new ArrayList<>(otherAuthorsFields.size() + 1); // +1 perchè c'è il campo iniziale
+        ArrayList<String> values = getValues();
+        ArrayList<Author> authors = new ArrayList<>(values.size());
 
-        Author firstAuthor = getAuthorFromString(firstAuthorField.getText());
-        if (firstAuthor != null)
-            authors.add(firstAuthor);
-
-        for (JTextField authorField : otherAuthorsFields) {
-            Author author = getAuthorFromString(authorField.getText());
+        for (String value : values) {
+            Author author = getAuthorFromString(value);
 
             if (author != null && !authors.contains(author))
                 authors.add(author);
@@ -81,97 +67,6 @@ public class AuthorInputField extends JPanel {
         return authors;
     }
 
-    /**
-     * Reimposta tutti i campi.
-     */
-    public void clear() {
-        otherAuthorsFields.clear();
-        removeAll();
-        addFirstAuthorField();
-        revalidate();
-    }
-
-    /**
-     * Aggiunge il primo campo obbligatorio.
-     * <p>
-     * Cambia dagli altri perchè non ha un pulsante per rimuoverlo,
-     * ma per aggiungere gli altri.
-     */
-    private void addFirstAuthorField() {
-        JPanel authorPanel = new JPanel(new BorderLayout(0, 0));
-        authorPanel.setMaximumSize(maximumTextFieldSize);
-
-        firstAuthorField = new JTextField();
-        firstAuthorField.setToolTipText(textTooltip);
-
-        JButton addButton = new JButton(addAuthorIcon);
-        addButton.setToolTipText("Aggiungi autore");
-
-        authorPanel.add(firstAuthorField, BorderLayout.CENTER);
-        authorPanel.add(addButton, BorderLayout.EAST);
-
-        JPanel thisPanel = this;
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                addAuthorField(null);
-                thisPanel.revalidate();
-            }
-        });
-
-        add(authorPanel);
-    }
-
-    /**
-     * Aggiunge un altro campo per un autore.
-     * 
-     * @param author
-     *            eventuale autore di cui impostare il nome
-     */
-    private void addAuthorField(Author author) {
-        JPanel authorPanel = new JPanel(new BorderLayout(0, 0));
-        authorPanel.setMaximumSize(maximumTextFieldSize);
-
-        JTextField textField = new JTextField();
-        textField.setToolTipText(textTooltip);
-
-        if (author != null)
-            textField.setText(getStringFromAuthor(author));
-
-        JButton removeButton = new JButton(removeAuthorIcon);
-        removeButton.setToolTipText("Rimuovi autore");
-
-        Component spacing = Box.createVerticalStrut(10);
-
-        authorPanel.add(textField, BorderLayout.CENTER);
-        authorPanel.add(removeButton, BorderLayout.EAST);
-        otherAuthorsFields.add(textField);
-
-        JPanel thisPanel = this;
-        removeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                otherAuthorsFields.remove(textField);
-                thisPanel.remove(authorPanel);
-                thisPanel.remove(spacing);
-                thisPanel.revalidate();
-            }
-        });
-
-        add(spacing);
-        add(authorPanel);
-    }
-
-    /**
-     * Restituisce un autore a partire da una stringa.
-     * 
-     * @param string
-     *            stringa di input
-     * @return
-     *         autore con il nome e l'orcid indicati nella stringa
-     * @throws InvalidAuthorInputException
-     *             se la stringa di input non è valida per creare un autore
-     */
     private Author getAuthorFromString(String string) throws InvalidAuthorInputException {
         if (string == null || string.isEmpty() || string.isBlank())
             return null;
@@ -194,13 +89,6 @@ public class AuthorInputField extends JPanel {
         }
     }
 
-    /**
-     * Recupera una stringa valida per il campo di input da un autore.
-     * 
-     * @param author
-     *            autore da convertire
-     * @return una stringa valida per l'input, {@code null} se {@code author == null}
-     */
     private String getStringFromAuthor(Author author) {
         if (author == null)
             return null;

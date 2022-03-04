@@ -58,6 +58,19 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
         setup();
     }
 
+    @Override
+    public void setVisible(boolean b) {
+        if (b) {
+            referencesTable.clear();
+            referenceSearchPanel.clear();
+            referenceInfoTextArea.setText(null);
+            categoriesTree.expandAllRows();
+            setLocationRelativeTo(null);
+        }
+
+        super.setVisible(b);
+    }
+
     /**
      * Imposta il controller della pagina principale.
      * 
@@ -71,19 +84,6 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
             throw new IllegalArgumentException("controller can't be null");
 
         this.controller = controller;
-    }
-
-    @Override
-    public void setVisible(boolean b) {
-        if (b) {
-            referencesTable.clear();
-            referenceSearchPanel.clear();
-            referenceInfoTextArea.setText(null);
-            categoriesTree.expandAllRows();
-            setLocationRelativeTo(null);
-        }
-
-        super.setVisible(b);
     }
 
     /**
@@ -106,6 +106,18 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
     public void setReferences(Collection<? extends BibliographicReference> references) {
         this.references = references;
     }
+
+    /**
+     * Ricarica gli ultimi riferimenti mostrati.
+     */
+    public void reloadReferences() {
+        if (lastReferenceCriteriaUsed == null)
+            return;
+
+        filterShownReferences(lastReferenceCriteriaUsed);
+    }
+
+    // #region GUI
 
     private void setup() {
         setTitle("Pagina principale");
@@ -215,8 +227,6 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
     }
 
     private JMenu setupReferencesMenu() {
-        // TODO: aggiungi icone
-
         JMenu referencesMenu = new JMenu("Riferimenti");
 
         JMenu createReferenceMenu = new JMenu("Aggiungi riferimento");
@@ -271,21 +281,7 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
         return referencesMenu;
     }
 
-    @Override
-    public void onSearch(Search search) {
-        categoriesTree.clearSelection();
-        filterShownReferences(new ReferenceCriteriaSearch(search));
-    }
-
-    /**
-     * Ricarica gli ultimi riferimenti mostrati.
-     */
-    public void reloadReferences() {
-        if (lastReferenceCriteriaUsed == null)
-            return;
-
-        filterShownReferences(lastReferenceCriteriaUsed);
-    }
+    // #endregion
 
     private void createCategory() {
         String name = getCategoryNameFromUser("Nuova categoria");
@@ -389,6 +385,12 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
         boolean shouldButtonsBeEnabled = selectedReference != null;
         updateReferenceButton.setEnabled(shouldButtonsBeEnabled);
         removeReferenceButton.setEnabled(shouldButtonsBeEnabled);
+    }
+
+    @Override
+    public void onSearch(Search search) {
+        categoriesTree.clearSelection();
+        filterShownReferences(new ReferenceCriteriaSearch(search));
     }
 
 }

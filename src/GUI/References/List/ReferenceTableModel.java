@@ -2,14 +2,21 @@ package GUI.References.List;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import Entities.References.BibliographicReference;
 import Utilities.Table.CustomTableModel;
 
+/**
+ * Modello di tabella per mostrare riferimenti bibliografici.
+ * <p>
+ * Mostra quattro colonne: titolo, autori, data di pubblicazione e numero di citazioni ricevute.
+ */
 public class ReferenceTableModel extends CustomTableModel<BibliographicReference> {
 
     private ArrayList<String> columns;
 
+    /**
+     * Crea un nuovo modello.
+     */
     public ReferenceTableModel() {
         super();
 
