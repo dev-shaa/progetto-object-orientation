@@ -109,6 +109,8 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     @Override
     public void setVisible(boolean b) {
         if (b) {
+            setReferenceValues(referenceToChange);
+
             // i rimandi selezionabili sono tutti tranne il riferimento da cambiare
             referenceListModel.clear();
 
@@ -124,18 +126,13 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         super.setVisible(b);
     }
 
-    private void setup(String title) {
-        setTitle(title);
+    private void setup(String windowTitle) {
+        setTitle(windowTitle);
         setModal(true);
         setSize(500, 700);
         setResizable(false);
         setLocationRelativeTo(null);
 
-        setupBaseFields();
-        setDefaultValues();
-    }
-
-    private void setupBaseFields() {
         JPanel fieldPanel = new JPanel();
         fieldPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         add(new JScrollPane(fieldPanel));
@@ -193,7 +190,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         panelBuilder.add(description, Modifiers.GROW);
 
         JButton confirmButton = new JButton("Salva riferimento");
-        confirmButton.addActionListener((e) -> onConfirmButton());
+        confirmButton.addActionListener(e -> onConfirmButton());
         panelBuilder.add(confirmButton, Modifiers.L_CENTER);
 
         panelBuilder.get();
@@ -211,8 +208,8 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         try {
             T newReference = createNewReference();
             fireReferenceCreationEvent(newReference);
-        } catch (InvalidInputException | IllegalArgumentException ex) {
-            MessageDisplayer.showErrorMessage("Parametri inseriti non validi", ex.getMessage());
+        } catch (InvalidInputException | IllegalArgumentException e) {
+            MessageDisplayer.showErrorMessage("Parametri inseriti non validi", e.getMessage());
         }
     }
 
@@ -287,6 +284,8 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      */
     protected abstract T getNewInstance();
 
+    // #region LISTENER
+
     /**
      * Aggiunge un ascoltatore all'evento di creazione di un riferimento.
      * 
@@ -314,6 +313,8 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         for (ReferenceEditorListener<T> listener : listeners)
             listener.onReferenceCreation(newReference);
     }
+
+    // #endregion
 
     // #region VALUES GETTER/SETTER
 
