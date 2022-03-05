@@ -61,8 +61,8 @@ public class LoginPage extends JFrame {
 		setLocationRelativeTo(null);
 		setResizable(false);
 
-		usernameField = new JTextField(); // FIXME: aggiungi lunghezza massima
-		passwordField = new JPasswordField();
+		usernameField = new JTextField(User.NAME_MAX_LENGTH);
+		passwordField = new JPasswordField(User.PASSWORD_MAX_LENGTH);
 
 		JButton registerButton = new JButton("Registrati");
 		registerButton.addActionListener(e -> register());

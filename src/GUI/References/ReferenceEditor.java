@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import javax.swing.*;
-import java.awt.*;
 import javax.swing.event.EventListenerList;
 import com.toedter.calendar.JDateChooser;
 
@@ -36,7 +35,6 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     private JList<BibliographicReference> relatedReferencesList;
     private TagInputField tags;
     private AuthorInputField authors;
-    private JPanel fieldPanel;
 
     private T referenceToChange;
     private Collection<? extends BibliographicReference> references;
@@ -138,9 +136,9 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     }
 
     private void setupBaseFields() {
-        fieldPanel = new JPanel(new BorderLayout());
+        JPanel fieldPanel = new JPanel();
         fieldPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        setContentPane(fieldPanel);
+        add(new JScrollPane(fieldPanel));
 
         PanelBuilder panelBuilder = PanelMatic.begin(fieldPanel);
 
@@ -178,7 +176,6 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         JScrollPane categoriesScrollPane = new JScrollPane(categoriesCheckboxTree);
         panelBuilder.add(new JLabel("Categorie"));
         panelBuilder.add(categoriesScrollPane, Modifiers.GROW);
-        // addFieldComponent(categoriesScrollPane, "Categorie", "Categorie a cui deve essere associato questo riferimento.", new Dimension(Integer.MAX_VALUE, 32));
 
         referenceListModel = new DefaultListModel<>();
         relatedReferencesList = new JList<>(referenceListModel);

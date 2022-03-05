@@ -67,6 +67,9 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
         super.setupSecondaryFields(panelBuilder);
 
         width = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
+        width.setToolTipText("Larghezza del video.");
+        panelBuilder.add("Larghezza", width);
+
         height = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
         frameRate = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
         duration = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));

@@ -8,8 +8,8 @@ public class User {
     private String name;
     private String password;
 
-    private final int NAME_MAX_LENGTH = 128;
-    private final int PASSWORD_MAX_LENGTH = 64;
+    public static final int NAME_MAX_LENGTH = 128;
+    public static final int PASSWORD_MAX_LENGTH = 64;
 
     /**
      * Crea un nuovo utente con il nome e la password indicati.

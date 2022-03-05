@@ -21,8 +21,8 @@ public class CustomTable<T extends Object> extends JTable {
      *            modello della tabella da usare
      */
     public CustomTable(CustomTableModel<T> tableModel) {
-        super(tableModel);
-        this.tableModel = tableModel;
+        super();
+        setModel(tableModel);
 
         getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -53,7 +53,8 @@ public class CustomTable<T extends Object> extends JTable {
      *            elementi da mostrare
      */
     public void setItems(Collection<? extends T> items) {
-        tableModel.setItems(items);
+        if (tableModel != null)
+            tableModel.setItems(items);
     }
 
     /**
@@ -63,8 +64,9 @@ public class CustomTable<T extends Object> extends JTable {
      */
     public void removeSelectedItem() {
         try {
-            tableModel.removeAt(getSelectedIndex());
-        } catch (IndexOutOfBoundsException e) {
+            if (tableModel != null)
+                tableModel.removeAt(getSelectedIndex());
+        } catch (Exception e) {
             // non fare nulla
         }
     }
@@ -77,7 +79,7 @@ public class CustomTable<T extends Object> extends JTable {
     public T getSelectedItem() {
         try {
             return tableModel.getAt(getSelectedIndex());
-        } catch (IndexOutOfBoundsException e) {
+        } catch (Exception e) {
             return null;
         }
     }
@@ -86,7 +88,8 @@ public class CustomTable<T extends Object> extends JTable {
      * Rimuove tutti gli elementi della tabella.
      */
     public void clear() {
-        tableModel.clear();
+        if (tableModel != null)
+            tableModel.clear();
     }
 
     /**
