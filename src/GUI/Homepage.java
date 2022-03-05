@@ -146,7 +146,7 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
         dateFromSearchField.setDate(null);
     }
 
-    // #region SETUPa
+    // #region SETUP
 
     private void setup() {
         setTitle("Pagina principale");
@@ -154,11 +154,10 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
         setSize(800, 600);
         setupCloseOperation();
 
-        setJMenuBar(setupMenuBar());
-
-        JPanel contentPane = new JPanel();
-        contentPane.setLayout(new BorderLayout());
+        JPanel contentPane = new JPanel(new BorderLayout());
         setContentPane(contentPane);
+
+        setJMenuBar(setupMenuBar());
 
         // JSplitPane ammette solo due pannelli
         // noi ne abbiamo tre, quindi dobbiamo creare due JSplitPane

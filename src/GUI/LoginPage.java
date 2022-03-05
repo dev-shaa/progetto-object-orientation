@@ -4,16 +4,13 @@ import Controller.Controller;
 import Entities.*;
 import Exceptions.Input.InvalidInputException;
 import Utilities.MessageDisplayer;
-
+import io.codeworth.panelmatic.PanelMatic;
+import io.codeworth.panelmatic.componentbehavior.Modifiers;
+import io.codeworth.panelmatic.util.Groupings;
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
- * Pagina di accesso dell'applicativo.
- * <p>
- * Offre la possibilità di registrarsi o accedere.
+ * Pagina di accesso dell'applicazione.
  */
 public class LoginPage extends JFrame {
 
@@ -60,58 +57,29 @@ public class LoginPage extends JFrame {
 	private void setup() {
 		setTitle("Login");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setSize(450, 300);
 		setLocationRelativeTo(null);
 		setResizable(false);
 
+		usernameField = new JTextField(); // FIXME: aggiungi lunghezza massima
+		passwordField = new JPasswordField();
+
+		JButton registerButton = new JButton("Registrati");
+		registerButton.addActionListener(e -> register());
+
+		JButton loginButton = new JButton("Accedi");
+		loginButton.addActionListener(e -> login());
+
 		JPanel contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(null);
+		contentPane.setBorder(BorderFactory.createEmptyBorder(80, 50, 20, 50));
 		setContentPane(contentPane);
 
-		setupUsernameField();
-		setupPasswordField();
-		setupButtons();
-	}
-
-	private void setupUsernameField() {
-		JLabel usernameLabel = new JLabel("Nome Utente", JLabel.RIGHT);
-		usernameLabel.setBounds(34, 64, 96, 24);
-		getContentPane().add(usernameLabel);
-
-		usernameField = new JTextField();
-		usernameField.setBounds(140, 64, 250, 24);
-		getContentPane().add(usernameField);
-	}
-
-	private void setupPasswordField() {
-		JLabel passwordLabel = new JLabel("Password", JLabel.RIGHT);
-		passwordLabel.setBounds(34, 143, 96, 24);
-		getContentPane().add(passwordLabel);
-
-		passwordField = new JPasswordField();
-		passwordField.setBounds(140, 143, 250, 24);
-		getContentPane().add(passwordField);
-	}
-
-	private void setupButtons() {
-		JButton registerButton = new JButton("Registrati");
-		registerButton.setBounds(214, 213, 85, 24);
-		registerButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				register();
-			}
-		});
-		getContentPane().add(registerButton);
-
-		JButton accessButton = new JButton("Accedi");
-		accessButton.setBounds(330, 213, 85, 24);
-		accessButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				login();
-			}
-		});
-		getContentPane().add(accessButton);
+		PanelMatic.begin(contentPane)
+				.add("Nome", usernameField)
+				.addFlexibleSpace()
+				.add("Password", passwordField)
+				.add(Groupings.lineGroup(registerButton, loginButton), Modifiers.GROW, Modifiers.L_END, Modifiers.P_FEET)
+				.get();
 	}
 
 	private void clear() {
