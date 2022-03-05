@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
- * TODO: commenta
+ * Un wrapper di {@code Connection} che permette di specificare una chiave per poterla chiudere, eseguire commit o rollback
  */
 public class CustomConnection {
 
@@ -15,10 +15,12 @@ public class CustomConnection {
     private int key;
 
     /**
-     * TODO: commenta
+     * Crea una nuova connessione che non ha bisogno di chiavi per chiuderla.
      * 
      * @param connection
+     *            connessione vera da usare
      * @throws IllegalArgumentException
+     *             se {@code connection == null}
      */
     public CustomConnection(Connection connection) {
         if (connection == null)
@@ -29,10 +31,14 @@ public class CustomConnection {
     }
 
     /**
-     * TODO: commenta
+     * Crea una nuova connessione per cui è necessario specificare una chiave per chiuderla.
      * 
      * @param connection
+     *            connessione vera da usare
      * @param key
+     *            chiave della connessione
+     * @throws IllegalArgumentException
+     *             se {@code connection == null}
      */
     public CustomConnection(Connection connection, int key) {
         this(connection);
@@ -85,9 +91,10 @@ public class CustomConnection {
     }
 
     /**
-     * TODO: commenta
+     * Chiude la connessione, se non è necessaria una chiave.
      * 
      * @throws SQLException
+     *             se si verifica un errore di database
      */
     public void close() throws SQLException {
         if (!needsKey)
@@ -95,10 +102,12 @@ public class CustomConnection {
     }
 
     /**
-     * TODO: commenta
+     * Chiude la connessione, se non è necessaria una chiave o se la chiave di input è esatta.
      * 
      * @param key
+     *            chiave da controllare
      * @throws SQLException
+     *             se si verifica un errore di database
      */
     public void close(int key) throws SQLException {
         if (!needsKey || this.key == key)

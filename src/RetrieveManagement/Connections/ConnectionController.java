@@ -15,8 +15,8 @@ public class ConnectionController {
 	private final String connectionPassword = "tarallo";
 
 	private boolean isTransactionActive = false;
-	private CustomConnection transactionConnection;
 	private int transactionConnectionKey;
+	private CustomConnection currentTransactionConnection;
 
 	private static ConnectionController instance;
 
@@ -70,10 +70,10 @@ public class ConnectionController {
 	 */
 	public void closeTransaction(int key) {
 		try {
-			if (isTransactionActive && key == transactionConnectionKey && transactionConnection != null) {
-				transactionConnection.close(key);
+			if (isTransactionActive && key == transactionConnectionKey && currentTransactionConnection != null) {
+				currentTransactionConnection.close(key);
 				isTransactionActive = false;
-				transactionConnection = null;
+				currentTransactionConnection = null;
 			}
 		} catch (Exception e) {
 			// non fare niente
@@ -81,27 +81,28 @@ public class ConnectionController {
 	}
 
 	/**
-	 * TODO: commenta
+	 * Esegue il rollback della transazione.
 	 * 
 	 * @param key
+	 *            chiave della transazione
 	 */
 	public void rollbackTransaction(int key) {
 		try {
-			if (isTransactionActive && key == transactionConnectionKey && transactionConnection != null)
-				transactionConnection.rollback(key);
-		} catch (Exception e) {
+			if (isTransactionActive && key == transactionConnectionKey && currentTransactionConnection != null)
+				currentTransactionConnection.rollback(key);
+		} catch (SQLException e) {
 			// non fare niente
 		}
 	}
 
 	private CustomConnection getTransactionConnection() throws SQLException {
-		if (transactionConnection == null) {
+		if (currentTransactionConnection == null) {
 			Connection connection = createConnection();
-			transactionConnection = new CustomConnection(connection, transactionConnectionKey);
-			transactionConnection.setAutoCommit(false);
+			currentTransactionConnection = new CustomConnection(connection, transactionConnectionKey);
+			currentTransactionConnection.setAutoCommit(false);
 		}
 
-		return transactionConnection;
+		return currentTransactionConnection;
 	}
 
 	private Connection createConnection() throws SQLException {
