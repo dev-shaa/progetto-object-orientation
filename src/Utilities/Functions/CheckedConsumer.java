@@ -4,15 +4,15 @@ package Utilities.Functions;
  * Rappresenta un'operazione che accetta un input e non restituisce un valore, con la possibilità di lanciare un eccezione controllata.
  */
 @FunctionalInterface
-public interface CheckedConsumer<T> {
+public interface CheckedConsumer<T, E extends Exception> {
 
     /**
      * Chiama la procedura.
      * 
      * @param argument
      *            valore di input
-     * @throws Exception
-     *             se non si è in grado di eseguire l'operazione
+     * @throws E
+     *             se non è possibile eseguire l'operazione
      */
-    public void call(T argument) throws Exception;
+    public void call(T argument) throws E;
 }

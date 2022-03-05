@@ -1,5 +1,4 @@
 import javax.swing.SwingUtilities;
-
 import Controller.Controller;
 
 /**
@@ -7,10 +6,6 @@ import Controller.Controller;
  */
 public class Driver {
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new Controller();
-            }
-        });
+        SwingUtilities.invokeLater(() -> new Controller());
     }
 }
