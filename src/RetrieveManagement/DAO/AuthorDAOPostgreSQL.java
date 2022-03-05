@@ -2,7 +2,6 @@ package RetrieveManagement.DAO;
 
 import java.sql.*;
 import java.util.*;
-
 import Entities.Author;
 import RetrieveManagement.Connections.ConnectionController;
 import RetrieveManagement.Connections.CustomConnection;

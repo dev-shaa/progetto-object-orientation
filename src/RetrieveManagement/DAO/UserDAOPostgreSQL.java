@@ -1,7 +1,6 @@
 package RetrieveManagement.DAO;
 
 import java.sql.*;
-
 import Entities.User;
 import Exceptions.Database.UserDatabaseException;
 import RetrieveManagement.Connections.ConnectionController;
