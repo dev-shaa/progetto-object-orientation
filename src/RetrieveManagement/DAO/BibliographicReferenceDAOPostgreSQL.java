@@ -1,17 +1,17 @@
-package DAO;
+package RetrieveManagement.DAO;
 
 import java.sql.*;
 import java.util.*;
 import java.util.Date;
 import java.util.function.Function;
 
-import Controller.ConnectionController;
-import Controller.CustomConnection;
 import Entities.*;
 import Entities.References.*;
 import Entities.References.OnlineResources.*;
 import Entities.References.PhysicalResources.*;
 import Exceptions.Database.ReferenceDatabaseException;
+import RetrieveManagement.Connections.ConnectionController;
+import RetrieveManagement.Connections.CustomConnection;
 
 /**
  * Implementazione dell'interfaccia BibliographicReferenceDAO per database relazionali PostgreSQL.
@@ -48,7 +48,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         HashMap<BibliographicReference, Collection<Integer>> referenceToRelatedReferencesIDs = new HashMap<>();
 
         try {
-            connection = ConnectionController.getConnection();
+            connection = ConnectionController.getInstance().getConnection();
             statement = connection.createStatement();
 
             allReferences.addAll(getArticles(statement, resultSet));
@@ -120,7 +120,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         String command = "delete from bibliographic_reference where id = " + reference.getID();
 
         try {
-            connection = ConnectionController.getConnection();
+            connection = ConnectionController.getInstance().getConnection();
             statement = connection.createStatement();
             statement.executeUpdate(command);
         } catch (Exception e) {
@@ -301,7 +301,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
             referenceInsertCommand = "update bibliographic_reference set owner = ?, title = ?, doi = ?, description = ?, language = " + language + ", pubblication_date = ? where id = " + reference.getID();
 
         try {
-            connection = ConnectionController.getConnection();
+            connection = ConnectionController.getInstance().getConnection();
 
             // vogliamo che sia una transazione per evitare che il programma non sia coordinato con il database
             connection.setAutoCommit(false);

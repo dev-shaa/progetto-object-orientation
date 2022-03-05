@@ -2,14 +2,15 @@ package Controller;
 
 import javax.swing.*;
 import com.formdev.flatlaf.*;
-import DAO.*;
+
 import GUI.*;
 import GUI.References.ReferenceEditor;
 import GUI.References.ReferenceEditorListener;
 import GUI.References.Publication.*;
+import RetrieveManagement.DAO.*;
+import RetrieveManagement.Repositories.CategoryRepository;
+import RetrieveManagement.Repositories.ReferenceRepository;
 import GUI.References.OnlineResource.*;
-import Repository.CategoryRepository;
-import Repository.ReferenceRepository;
 import Utilities.MessageDisplayer;
 import Utilities.Functions.CheckedConsumer;
 import Entities.*;
@@ -135,6 +136,7 @@ public class Controller {
             homepage.setVisible(true);
             loginPage.setVisible(false);
         } catch (Exception e) {
+            e.printStackTrace();
             MessageDisplayer.showErrorMessage("Errore apertura", "Impossibile caricare i dati dell'utente.");
         }
     }

@@ -1,12 +1,11 @@
-package DAO;
+package RetrieveManagement.DAO;
 
 import java.sql.*;
 import java.util.*;
-import Controller.ConnectionController;
-import Controller.CustomConnection;
+
 import Entities.Author;
-import Exceptions.Database.AuthorDatabaseException;
-import Exceptions.Database.DatabaseConnectionException;
+import RetrieveManagement.Connections.ConnectionController;
+import RetrieveManagement.Connections.CustomConnection;
 
 /**
  * Implementazione dell'interfaccia AuthorDAO per database relazionali PostgreSQL.
@@ -16,7 +15,7 @@ import Exceptions.Database.DatabaseConnectionException;
 public class AuthorDAOPostgreSQL implements AuthorDAO {
 
     @Override
-    public void save(Collection<? extends Author> authors) throws AuthorDatabaseException {
+    public void save(Collection<? extends Author> authors) throws SQLException {
         if (authors == null || authors.isEmpty())
             return;
 
@@ -35,7 +34,7 @@ public class AuthorDAOPostgreSQL implements AuthorDAO {
         String retrieveIDCommand = "select id from author where lower(name) = lower(?) and orcid is not distinct from ?";
 
         try {
-            connection = ConnectionController.getConnection();
+            connection = ConnectionController.getInstance().getConnection();
 
             insertStatement = connection.prepareStatement(insertCommand);
             retrieveIDStatement = connection.prepareStatement(retrieveIDCommand);
@@ -54,42 +53,33 @@ public class AuthorDAOPostgreSQL implements AuthorDAO {
             }
 
             connection.commit();
-        } catch (SQLException | DatabaseConnectionException e) {
-            try {
-                connection.rollback();
-            } catch (SQLException ex) {
-                // non fare niente
-            }
-
-            throw new AuthorDatabaseException("Impossibile salvare gli autori.");
+        } catch (SQLException e) {
+            connection.rollback();
+            throw e;
         } finally {
-            try {
-                if (idResultSet != null)
-                    idResultSet.close();
+            if (idResultSet != null)
+                idResultSet.close();
 
-                if (retrieveIDStatement != null)
-                    retrieveIDStatement.close();
+            if (retrieveIDStatement != null)
+                retrieveIDStatement.close();
 
-                if (insertStatement != null)
-                    insertStatement.close();
+            if (insertStatement != null)
+                insertStatement.close();
 
-                if (connection != null)
-                    connection.close();
-            } catch (SQLException e) {
-                // non fare niente
-            }
+            if (connection != null)
+                connection.close();
         }
     }
 
     @Override
-    public List<Author> get(int referenceID) throws AuthorDatabaseException {
+    public List<Author> get(int referenceID) throws SQLException {
         CustomConnection connection = null;
         Statement statement = null;
         ResultSet resultSet = null;
         String query = "select * from authorship join author on author = id where reference = " + referenceID;
 
         try {
-            connection = ConnectionController.getConnection();
+            connection = ConnectionController.getInstance().getConnection();
             statement = connection.createStatement();
             resultSet = statement.executeQuery(query);
 
@@ -105,21 +95,15 @@ public class AuthorDAOPostgreSQL implements AuthorDAO {
 
             authors.trimToSize();
             return authors;
-        } catch (SQLException | DatabaseConnectionException e) {
-            throw new AuthorDatabaseException("Impossibile recuperare gli autori.");
         } finally {
-            try {
-                if (resultSet != null)
-                    resultSet.close();
+            if (resultSet != null)
+                resultSet.close();
 
-                if (statement != null)
-                    statement.close();
+            if (statement != null)
+                statement.close();
 
-                if (connection != null)
-                    connection.close();
-            } catch (SQLException e) {
-                // non fare niente
-            }
+            if (connection != null)
+                connection.close();
         }
     }
 

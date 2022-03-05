@@ -1,9 +1,9 @@
-package DAO;
+package RetrieveManagement.DAO;
 
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import Entities.Author;
-import Exceptions.Database.AuthorDatabaseException;
 
 /**
  * Interfaccia che deve essere implementata per gestire la parte di database relativo agli autori.
@@ -15,10 +15,10 @@ public interface AuthorDAO {
 	 * 
 	 * @param authors
 	 *            autori da salvare
-	 * @throws AuthorDatabaseException
+	 * @throws SQLException
 	 *             se il salvataggio non va a buon fine
 	 */
-	public void save(Collection<? extends Author> authors) throws AuthorDatabaseException;
+	public void save(Collection<? extends Author> authors) throws SQLException;
 
 	/**
 	 * Restituisce gli autori di un riferimento.
@@ -26,8 +26,8 @@ public interface AuthorDAO {
 	 * @param referenceID
 	 *            identificativo del riferimento di cui trovare gli autori
 	 * @return lista con gli autori del riferimento
-	 * @throws AuthorDatabaseException
+	 * @throws SQLException
 	 *             se il recupero non va a buon fine
 	 */
-	public List<Author> get(int referenceID) throws AuthorDatabaseException;
+	public List<Author> get(int referenceID) throws SQLException;
 }

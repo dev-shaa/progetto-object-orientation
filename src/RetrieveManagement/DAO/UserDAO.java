@@ -1,4 +1,4 @@
-package DAO;
+package RetrieveManagement.DAO;
 
 import Entities.User;
 import Exceptions.Database.UserDatabaseException;

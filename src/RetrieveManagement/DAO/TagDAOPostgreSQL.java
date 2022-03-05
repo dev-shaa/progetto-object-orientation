@@ -1,14 +1,13 @@
-package DAO;
+package RetrieveManagement.DAO;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import Controller.ConnectionController;
-import Controller.CustomConnection;
+
 import Entities.Tag;
-import Exceptions.Database.DatabaseConnectionException;
-import Exceptions.Database.TagDatabaseException;
+import RetrieveManagement.Connections.ConnectionController;
+import RetrieveManagement.Connections.CustomConnection;
 
 /**
  * Implementazione dell'interfaccia TagDAO per database relazionali PostgreSQL.
@@ -18,7 +17,7 @@ import Exceptions.Database.TagDatabaseException;
 public class TagDAOPostgreSQL implements TagDAO {
 
     @Override
-    public void save(int referenceID, Collection<? extends Tag> tags) throws TagDatabaseException {
+    public void save(int referenceID, Collection<? extends Tag> tags) throws SQLException {
         if (tags == null || tags.isEmpty())
             return;
 
@@ -33,7 +32,7 @@ public class TagDAOPostgreSQL implements TagDAO {
         String tagInsertCommand = "insert into tag values(?, ?)";
 
         try {
-            connection = ConnectionController.getConnection();
+            connection = ConnectionController.getInstance().getConnection();
             connection.setAutoCommit(false);
 
             tagRemoveStatement = connection.prepareStatement(tagRemoveCommand);
@@ -49,42 +48,33 @@ public class TagDAOPostgreSQL implements TagDAO {
             }
 
             connection.commit();
-        } catch (SQLException | DatabaseConnectionException e) {
-            try {
-                connection.rollback();
-            } catch (Exception r) {
-                // non fare niente
-            }
-
-            throw new TagDatabaseException("Impossibile salvare parole chiave.");
+        } catch (SQLException e) {
+            connection.rollback();
+            throw e;
         } finally {
-            try {
-                if (resultSet != null)
-                    resultSet.close();
+            if (resultSet != null)
+                resultSet.close();
 
-                if (tagInsertStatement != null)
-                    tagInsertStatement.close();
+            if (tagInsertStatement != null)
+                tagInsertStatement.close();
 
-                if (tagRemoveStatement != null)
-                    tagRemoveStatement.close();
+            if (tagRemoveStatement != null)
+                tagRemoveStatement.close();
 
-                if (connection != null)
-                    connection.close();
-            } catch (Exception e) {
-                // non fare niente
-            }
+            if (connection != null)
+                connection.close();
         }
     }
 
     @Override
-    public List<Tag> getAll(int referenceID) throws TagDatabaseException {
+    public List<Tag> getAll(int referenceID) throws SQLException {
         CustomConnection connection = null;
         Statement statement = null;
         ResultSet resultSet = null;
         String command = "select name from tag where reference = " + referenceID;
 
         try {
-            connection = ConnectionController.getConnection();
+            connection = ConnectionController.getInstance().getConnection();
             statement = connection.createStatement();
             resultSet = statement.executeQuery(command);
 
@@ -96,21 +86,15 @@ public class TagDAOPostgreSQL implements TagDAO {
             tags.trimToSize();
 
             return tags;
-        } catch (SQLException | DatabaseConnectionException e) {
-            throw new TagDatabaseException("Impossibile recuperare le parole chiave del riferimento.");
         } finally {
-            try {
-                if (resultSet != null)
-                    resultSet.close();
+            if (resultSet != null)
+                resultSet.close();
 
-                if (statement != null)
-                    statement.close();
+            if (statement != null)
+                statement.close();
 
-                if (connection != null)
-                    connection.close();
-            } catch (SQLException e) {
-                // non fare niente
-            }
+            if (connection != null)
+                connection.close();
         }
     }
 

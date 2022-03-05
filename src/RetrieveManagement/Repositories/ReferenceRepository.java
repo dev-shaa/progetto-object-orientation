@@ -1,14 +1,15 @@
-package Repository;
+package RetrieveManagement.Repositories;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import Controller.ConnectionController;
-import DAO.*;
 import Entities.References.*;
 import Entities.References.OnlineResources.*;
 import Entities.References.PhysicalResources.*;
 import Exceptions.Database.*;
+import RetrieveManagement.Connections.ConnectionController;
+import RetrieveManagement.DAO.*;
 import Utilities.Functions.Procedure;
 
 /**
@@ -262,7 +263,7 @@ public class ReferenceRepository {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
-        int transactionKey = ConnectionController.beginTransaction();
+        int transactionKey = ConnectionController.getInstance().beginTransaction();
 
         try {
             authorDAO.save(reference.getAuthors());
@@ -270,10 +271,10 @@ public class ReferenceRepository {
             tagDAO.save(reference.getID(), reference.getTags());
             saveToLocal(reference);
         } catch (Exception e) {
-            ConnectionController.rollbackTransaction(transactionKey);
+            ConnectionController.getInstance().rollbackTransaction(transactionKey);
             throw new ReferenceDatabaseException(e.getMessage());
         } finally {
-            ConnectionController.closeTransaction(transactionKey);
+            ConnectionController.getInstance().closeTransaction(transactionKey);
         }
     }
 
@@ -288,7 +289,7 @@ public class ReferenceRepository {
             }
 
             needToRetrieveFromDatabase = false;
-        } catch (DatabaseException e) {
+        } catch (SQLException | CategoryDatabaseException e) {
             throw new ReferenceDatabaseException(e.getMessage());
         }
     }

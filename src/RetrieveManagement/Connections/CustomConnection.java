@@ -1,4 +1,4 @@
-package Controller;
+package RetrieveManagement.Connections;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
- * 
+ * TODO: commenta
  */
 public class CustomConnection {
 
@@ -15,6 +15,7 @@ public class CustomConnection {
     private int key;
 
     /**
+     * TODO: commenta
      * 
      * @param connection
      * @throws IllegalArgumentException
@@ -28,6 +29,7 @@ public class CustomConnection {
     }
 
     /**
+     * TODO: commenta
      * 
      * @param connection
      * @param key
@@ -40,6 +42,7 @@ public class CustomConnection {
     }
 
     /**
+     * TODO: commenta
      * 
      * @return
      * @throws SQLException
@@ -49,6 +52,7 @@ public class CustomConnection {
     }
 
     /**
+     * TODO: commenta
      * 
      * @param sql
      * @return
@@ -59,6 +63,7 @@ public class CustomConnection {
     }
 
     /**
+     * TODO: commenta
      * 
      * @param sql
      * @param arg1
@@ -79,11 +84,22 @@ public class CustomConnection {
         connection.setAutoCommit(autoCommit);
     }
 
+    /**
+     * TODO: commenta
+     * 
+     * @throws SQLException
+     */
     public void close() throws SQLException {
         if (!needsKey)
             connection.close();
     }
 
+    /**
+     * TODO: commenta
+     * 
+     * @param key
+     * @throws SQLException
+     */
     public void close(int key) throws SQLException {
         if (!needsKey || this.key == key)
             connection.close();
@@ -93,6 +109,7 @@ public class CustomConnection {
      * Annulla tutte le modifiche eseguite nella transazione corrente.
      * 
      * @throws SQLException
+     *             TODO: commenta
      */
     public void rollback() throws SQLException {
         if (!needsKey)
@@ -101,6 +118,7 @@ public class CustomConnection {
 
     /**
      * Annulla tutte le modifiche eseguite nella transazione corrente.
+     * TODO: commenta
      * 
      * @param key
      * @throws SQLException
@@ -124,9 +142,12 @@ public class CustomConnection {
     }
 
     /**
+     * Effettua tutti i cambiamenti della transazione dal precedente commit o rollback.
      * 
      * @param key
+     *            chiave della transazione
      * @throws SQLException
+     *             se si verifica un errore di accesso al database
      */
     public void commit(int key) throws SQLException {
         if (!needsKey || this.key == key)

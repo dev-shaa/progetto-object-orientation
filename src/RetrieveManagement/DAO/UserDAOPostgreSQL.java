@@ -1,11 +1,11 @@
-package DAO;
+package RetrieveManagement.DAO;
 
 import java.sql.*;
-import Controller.ConnectionController;
-import Controller.CustomConnection;
+
 import Entities.User;
-import Exceptions.Database.DatabaseConnectionException;
 import Exceptions.Database.UserDatabaseException;
+import RetrieveManagement.Connections.ConnectionController;
+import RetrieveManagement.Connections.CustomConnection;
 
 /**
  * Implementazione dell'interfaccia {@code UserDAO} per database relazionali PostgreSQL.
@@ -30,14 +30,14 @@ public class UserDAOPostgreSQL implements UserDAO {
 		String command = "insert into user_app(name, password) values(?, ?)";
 
 		try {
-			connection = ConnectionController.getConnection();
+			connection = ConnectionController.getInstance().getConnection();
 			statement = connection.prepareStatement(command);
 
 			statement.setString(1, user.getName());
 			statement.setString(2, user.getPassword());
 
 			statement.executeUpdate();
-		} catch (SQLException | DatabaseConnectionException e) {
+		} catch (SQLException e) {
 			throw new UserDatabaseException("Impossibile registrare l'utente.");
 		} finally {
 			try {
@@ -69,7 +69,7 @@ public class UserDAOPostgreSQL implements UserDAO {
 		String query = "select * from user_app where name = ? and password = ?";
 
 		try {
-			connection = ConnectionController.getConnection();
+			connection = ConnectionController.getInstance().getConnection();
 			statement = connection.prepareStatement(query);
 
 			statement.setString(1, user.getName());
@@ -78,7 +78,7 @@ public class UserDAOPostgreSQL implements UserDAO {
 			resultSet = statement.executeQuery();
 
 			return resultSet.next();
-		} catch (SQLException | DatabaseConnectionException e) {
+		} catch (SQLException e) {
 			throw new UserDatabaseException("Impossibile controllare se l'utente esiste.");
 		} finally {
 			try {

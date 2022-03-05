@@ -1,12 +1,14 @@
-package Repository;
+package RetrieveManagement.Repositories;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import DAO.CategoryDAO;
+
 import Entities.Category;
 import Entities.References.BibliographicReference;
 import Exceptions.Database.CategoryDatabaseException;
+import RetrieveManagement.DAO.CategoryDAO;
 import Utilities.Tree.CustomTreeModel;
 import Utilities.Tree.CustomTreeNode;
 
@@ -60,22 +62,21 @@ public class CategoryRepository {
      * 
      * @param category
      *            categoria da salvare
-     * @throws IllegalArgumentException
-     *             se {@code category == null}
      * @throws CategoryDatabaseException
      *             se il salvataggio non va a buon fine
      */
     public void save(Category category) throws CategoryDatabaseException {
-        if (category == null)
-            throw new IllegalArgumentException("category can't be null");
+        try {
+            categoryDAO.save(category);
+            idToCategory.put(category.getID(), category);
 
-        categoryDAO.save(category);
-        idToCategory.put(category.getID(), category);
-
-        if (treeModel != null) {
-            CustomTreeNode<Category> node = new CustomTreeNode<Category>(category);
-            CustomTreeNode<Category> parentNode = treeModel.findNode(category.getParent());
-            treeModel.add(node, parentNode);
+            if (treeModel != null) {
+                CustomTreeNode<Category> node = new CustomTreeNode<Category>(category);
+                CustomTreeNode<Category> parentNode = treeModel.findNode(category.getParent());
+                treeModel.add(node, parentNode);
+            }
+        } catch (SQLException e) {
+            throw new CategoryDatabaseException("Impossibile salvare la categoria.");
         }
     }
 
@@ -96,14 +97,15 @@ public class CategoryRepository {
             throw new IllegalArgumentException("category can't be null");
 
         String oldName = category.getName();
-        category.setName(newName); // se il nome non è valido lancia una IllegalArgumentException
 
         try {
+            category.setName(newName);
             categoryDAO.update(category);
-        } catch (CategoryDatabaseException e) {
+        } catch (Exception e) {
             category.setName(oldName);
-            throw e;
+            throw new CategoryDatabaseException("Impossibile aggiornare la categoria.");
         }
+
     }
 
     /**
@@ -111,20 +113,19 @@ public class CategoryRepository {
      * 
      * @param category
      *            categoria da rimuovere
-     * @throws IllegalArgumentException
-     *             se {@code category} non ha un id associato
      * @throws CategoryDatabaseException
      *             se la rimozione non va a buon fine
      */
     public void remove(Category category) throws CategoryDatabaseException {
-        if (category == null)
-            return;
+        try {
+            categoryDAO.remove(category);
+            idToCategory.remove(category.getID());
 
-        categoryDAO.remove(category);
-        idToCategory.remove(category.getID());
-
-        if (treeModel != null)
-            treeModel.remove(treeModel.findNode(category));
+            if (treeModel != null)
+                treeModel.remove(treeModel.findNode(category));
+        } catch (Exception e) {
+            throw new CategoryDatabaseException("Impossibile eliminare la categoria.");
+        }
     }
 
     /**
@@ -140,10 +141,14 @@ public class CategoryRepository {
      *             se il recupero delle categorie dal database non va a buon fine
      */
     public List<Category> getAll() throws CategoryDatabaseException {
-        if (needToRetrieveFromDatabase)
-            retrieveFromDatabase();
+        try {
+            if (needToRetrieveFromDatabase)
+                retrieveFromDatabase();
 
-        return categories;
+            return categories;
+        } catch (Exception e) {
+            throw new CategoryDatabaseException("Impossibile recuperare le categorie dell'utente.");
+        }
     }
 
     /**
@@ -156,17 +161,21 @@ public class CategoryRepository {
      *             se il recupero delle categorie non va a buon fine
      */
     public List<Category> get(BibliographicReference reference) throws CategoryDatabaseException {
-        if (needToRetrieveFromDatabase)
-            retrieveFromDatabase();
+        try {
+            if (needToRetrieveFromDatabase)
+                retrieveFromDatabase();
 
-        List<Integer> ids = categoryDAO.getCategoriesIDFor(reference.getID());
-        ArrayList<Category> categories = new ArrayList<>();
+            List<Integer> ids = categoryDAO.getCategoriesIDFor(reference.getID());
+            ArrayList<Category> categories = new ArrayList<>();
 
-        for (Integer id : ids)
-            categories.add(idToCategory.get(id));
+            for (Integer id : ids)
+                categories.add(idToCategory.get(id));
 
-        categories.trimToSize();
-        return categories;
+            categories.trimToSize();
+            return categories;
+        } catch (SQLException e) {
+            throw new CategoryDatabaseException("Impossibile recuperare le categorie associate al riferimento.");
+        }
     }
 
     /**
@@ -215,7 +224,7 @@ public class CategoryRepository {
         treeNeedsUpdate = true;
     }
 
-    private void retrieveFromDatabase() throws CategoryDatabaseException {
+    private void retrieveFromDatabase() throws SQLException {
         idToCategory.clear();
         categories = categoryDAO.getAll();
 
