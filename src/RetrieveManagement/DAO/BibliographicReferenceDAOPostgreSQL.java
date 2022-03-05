@@ -9,9 +9,9 @@ import Entities.*;
 import Entities.References.*;
 import Entities.References.OnlineResources.*;
 import Entities.References.PhysicalResources.*;
-import Exceptions.Database.ReferenceDatabaseException;
 import RetrieveManagement.Connections.ConnectionController;
 import RetrieveManagement.Connections.CustomConnection;
+import Utilities.Functions.CheckedFunction;
 
 /**
  * Implementazione dell'interfaccia BibliographicReferenceDAO per database relazionali PostgreSQL.
@@ -38,7 +38,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
     }
 
     @Override
-    public List<BibliographicReference> getAll() throws ReferenceDatabaseException {
+    public ArrayList<BibliographicReference> getAll() throws SQLException {
         CustomConnection connection = null;
         Statement statement = null;
         ResultSet resultSet = null;
@@ -82,21 +82,15 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
 
             allReferences.trimToSize();
             return allReferences;
-        } catch (Exception e) {
-            throw new ReferenceDatabaseException("Impossibile recuperare i riferimenti dell'utente.");
         } finally {
-            try {
-                if (resultSet != null)
-                    resultSet.close();
+            if (resultSet != null)
+                resultSet.close();
 
-                if (statement != null)
-                    statement.close();
+            if (statement != null)
+                statement.close();
 
-                if (connection != null)
-                    connection.close();
-            } catch (SQLException e) {
-                // non fare niente
-            }
+            if (connection != null)
+                connection.close();
         }
 
     }
@@ -108,7 +102,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
      *             se {@code reference == null} o se {@code reference} non ha un ID
      */
     @Override
-    public void remove(BibliographicReference reference) throws ReferenceDatabaseException {
+    public void remove(BibliographicReference reference) throws SQLException {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
@@ -123,23 +117,19 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
             connection = ConnectionController.getInstance().getConnection();
             statement = connection.createStatement();
             statement.executeUpdate(command);
-        } catch (Exception e) {
-            throw new ReferenceDatabaseException("Impossibile rimuovere il riferimento.");
         } finally {
-            try {
-                if (statement != null)
-                    statement.close();
+            if (statement != null)
+                statement.close();
 
-                if (connection != null)
-                    connection.close();
-            } catch (Exception e) {
-                // non fare niente
-            }
+            if (connection != null)
+                connection.close();
         }
     }
 
+    // #region SAVE
+
     @Override
-    public void save(Article article) throws ReferenceDatabaseException {
+    public void save(Article article) throws SQLException {
         if (article == null)
             return;
 
@@ -160,7 +150,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
     }
 
     @Override
-    public void save(Book book) throws ReferenceDatabaseException {
+    public void save(Book book) throws SQLException {
         if (book == null)
             return;
 
@@ -181,7 +171,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
     }
 
     @Override
-    public void save(Thesis thesis) throws ReferenceDatabaseException {
+    public void save(Thesis thesis) throws SQLException {
         if (thesis == null)
             return;
 
@@ -203,7 +193,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
     }
 
     @Override
-    public void save(Image image) throws ReferenceDatabaseException {
+    public void save(Image image) throws SQLException {
         if (image == null)
             return;
 
@@ -223,7 +213,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
     }
 
     @Override
-    public void save(Video video) throws ReferenceDatabaseException {
+    public void save(Video video) throws SQLException {
         if (video == null)
             return;
 
@@ -245,7 +235,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
     }
 
     @Override
-    public void save(SourceCode sourceCode) throws ReferenceDatabaseException {
+    public void save(SourceCode sourceCode) throws SQLException {
         if (sourceCode == null)
             return;
 
@@ -264,7 +254,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
     }
 
     @Override
-    public void save(Website website) throws ReferenceDatabaseException {
+    public void save(Website website) throws SQLException {
         if (website == null)
             return;
 
@@ -281,7 +271,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         save(website, insertCommandGetter, updateCommandGetter);
     }
 
-    private void save(BibliographicReference reference, Function<Integer, String> insertCommandGetterForSubclass, Function<Integer, String> updateCommandGetterForSubclass) throws ReferenceDatabaseException {
+    private void save(BibliographicReference reference, Function<Integer, String> insertCommandGetterForSubclass, Function<Integer, String> updateCommandGetterForSubclass) throws SQLException {
         if (reference == null)
             return;
 
@@ -343,30 +333,21 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
             // l'id lo mettiamo alla fine, in questo modo siamo sicuri che sia andato tutto bene prima
             // e quindi abbiamo un id valido
             reference.setID(referenceID);
-        } catch (Exception e) {
-            try {
-                connection.rollback();
-            } catch (Exception r) {
-                // non fare niente
-            }
-
-            throw new ReferenceDatabaseException("Impossibile aggiungere nuovo riferimento.");
+        } catch (SQLException e) {
+            connection.rollback();
+            throw e;
         } finally {
-            try {
-                if (resultSet != null)
-                    resultSet.close();
+            if (resultSet != null)
+                resultSet.close();
 
-                if (referenceSubclassStatement != null)
-                    referenceSubclassStatement.close();
+            if (referenceSubclassStatement != null)
+                referenceSubclassStatement.close();
 
-                if (referenceStatement != null)
-                    referenceStatement.close();
+            if (referenceStatement != null)
+                referenceStatement.close();
 
-                if (connection != null)
-                    connection.close();
-            } catch (Exception e) {
-                // non fare niente
-            }
+            if (connection != null)
+                connection.close();
         }
     }
 
@@ -451,191 +432,141 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         }
     }
 
-    private List<Article> getArticles(Statement statement, ResultSet resultSet) throws SQLException {
-        String referenceQuery = "select * from bibliographic_reference natural join article where owner = '" + user.getName() + "'";
+    // #endregion
 
-        resultSet = statement.executeQuery(referenceQuery);
+    // #region GETTER
 
-        ArrayList<Article> articles = new ArrayList<>();
+    private ArrayList<Article> getArticles(Statement statement, ResultSet resultSet) throws SQLException {
+        CheckedFunction<ResultSet, Article, SQLException> getArticleFromResultSet = (set) -> {
+            Article article = new Article(set.getString("title"));
+            article.setID(set.getInt("id"));
+            article.setDOI(set.getString("doi"));
+            article.setPubblicationDate(set.getDate("pubblication_date"));
+            article.setDescription(set.getString("description"));
+            article.setLanguage(ReferenceLanguage.getFromString(set.getString("language")));
+            article.setISSN(set.getString("issn"));
+            article.setPageCount(set.getInt("page_count"));
+            article.setURL(set.getString("url"));
+            article.setPublisher(set.getString("publisher"));
+            return article;
+        };
 
-        while (resultSet.next()) {
-            Article article = new Article(resultSet.getString("title"));
-            article.setID(resultSet.getInt("id"));
-            article.setDOI(resultSet.getString("doi"));
-            article.setPubblicationDate(resultSet.getDate("pubblication_date"));
-            article.setDescription(resultSet.getString("description"));
-            article.setLanguage(ReferenceLanguage.getFromString(resultSet.getString("language")));
-            article.setISSN(resultSet.getString("issn"));
-            article.setPageCount(resultSet.getInt("page_count"));
-            article.setURL(resultSet.getString("url"));
-            article.setPublisher(resultSet.getString("publisher"));
-
-            articles.add(article);
-        }
-
-        articles.trimToSize();
-
-        return articles;
+        return getReferences(statement, resultSet, "article", getArticleFromResultSet);
     }
 
-    private List<Book> getBooks(Statement statement, ResultSet resultSet) throws SQLException {
-        String referenceQuery = "select * from bibliographic_reference natural join book where owner = '" + user.getName() + "'";
+    private ArrayList<Book> getBooks(Statement statement, ResultSet resultSet) throws SQLException {
+        CheckedFunction<ResultSet, Book, SQLException> getBookFromResultSet = (set) -> {
+            Book book = new Book(set.getString("title"));
+            book.setID(set.getInt("id"));
+            book.setDOI(set.getString("doi"));
+            book.setPubblicationDate(set.getDate("pubblication_date"));
+            book.setDescription(set.getString("description"));
+            book.setLanguage(ReferenceLanguage.getFromString(set.getString("language")));
+            book.setISBN(set.getString("isbn"));
+            book.setPageCount(set.getInt("page_count"));
+            book.setURL(set.getString("url"));
+            book.setPublisher(set.getString("publisher"));
+            return book;
+        };
 
-        resultSet = statement.executeQuery(referenceQuery);
-
-        ArrayList<Book> books = new ArrayList<>();
-
-        while (resultSet.next()) {
-            Book book = new Book(resultSet.getString("title"));
-            book.setID(resultSet.getInt("id"));
-            book.setDOI(resultSet.getString("doi"));
-            book.setPubblicationDate(resultSet.getDate("pubblication_date"));
-            book.setDescription(resultSet.getString("description"));
-            book.setLanguage(ReferenceLanguage.getFromString(resultSet.getString("language")));
-            book.setISBN(resultSet.getString("isbn"));
-            book.setPageCount(resultSet.getInt("page_count"));
-            book.setURL(resultSet.getString("url"));
-            book.setPublisher(resultSet.getString("publisher"));
-
-            books.add(book);
-        }
-
-        books.trimToSize();
-
-        return books;
+        return getReferences(statement, resultSet, "book", getBookFromResultSet);
     }
 
-    private List<Thesis> getThesis(Statement statement, ResultSet resultSet) throws SQLException {
-        String referenceQuery = "select * from bibliographic_reference natural join thesis where owner = '" + user.getName() + "'";
+    private ArrayList<Thesis> getThesis(Statement statement, ResultSet resultSet) throws SQLException {
+        CheckedFunction<ResultSet, Thesis, SQLException> getThesisFromResultSet = (set) -> {
+            Thesis thesis = new Thesis(set.getString("title"));
+            thesis.setID(set.getInt("id"));
+            thesis.setDOI(set.getString("doi"));
+            thesis.setPubblicationDate(set.getDate("pubblication_date"));
+            thesis.setDescription(set.getString("description"));
+            thesis.setLanguage(ReferenceLanguage.getFromString(set.getString("language")));
+            thesis.setUniversity(set.getString("university"));
+            thesis.setFaculty(set.getString("faculty"));
+            thesis.setPageCount(set.getInt("page_count"));
+            thesis.setURL(set.getString("url"));
+            thesis.setPublisher(set.getString("publisher"));
+            return thesis;
+        };
 
-        resultSet = statement.executeQuery(referenceQuery);
-
-        ArrayList<Thesis> theses = new ArrayList<>();
-
-        while (resultSet.next()) {
-            Thesis thesis = new Thesis(resultSet.getString("title"));
-            thesis.setID(resultSet.getInt("id"));
-            thesis.setDOI(resultSet.getString("doi"));
-            thesis.setPubblicationDate(resultSet.getDate("pubblication_date"));
-            thesis.setDescription(resultSet.getString("description"));
-            thesis.setLanguage(ReferenceLanguage.getFromString(resultSet.getString("language")));
-            thesis.setUniversity(resultSet.getString("university"));
-            thesis.setFaculty(resultSet.getString("faculty"));
-            thesis.setPageCount(resultSet.getInt("page_count"));
-            thesis.setURL(resultSet.getString("url"));
-            thesis.setPublisher(resultSet.getString("publisher"));
-
-            theses.add(thesis);
-        }
-
-        theses.trimToSize();
-
-        return theses;
+        return getReferences(statement, resultSet, "thesis", getThesisFromResultSet);
     }
 
-    private List<Website> getWebsites(Statement statement, ResultSet resultSet) throws SQLException {
-        String referenceQuery = "select * from bibliographic_reference natural join website where owner = '" + user.getName() + "'";
+    private ArrayList<Website> getWebsites(Statement statement, ResultSet resultSet) throws SQLException {
+        CheckedFunction<ResultSet, Website, SQLException> getImageFromResultSet = (set) -> {
+            Website website = new Website(set.getString("title"), set.getString("url"));
+            website.setID(set.getInt("id"));
+            website.setDOI(set.getString("doi"));
+            website.setPubblicationDate(set.getDate("pubblication_date"));
+            website.setDescription(set.getString("description"));
+            website.setLanguage(ReferenceLanguage.getFromString(set.getString("language")));
+            return website;
+        };
 
-        resultSet = statement.executeQuery(referenceQuery);
-
-        ArrayList<Website> websites = new ArrayList<>();
-
-        while (resultSet.next()) {
-            Website website = new Website(resultSet.getString("title"), resultSet.getString("url"));
-            website.setID(resultSet.getInt("id"));
-            website.setDOI(resultSet.getString("doi"));
-            website.setPubblicationDate(resultSet.getDate("pubblication_date"));
-            website.setDescription(resultSet.getString("description"));
-            website.setLanguage(ReferenceLanguage.getFromString(resultSet.getString("language")));
-
-            websites.add(website);
-        }
-
-        websites.trimToSize();
-
-        return websites;
+        return getReferences(statement, resultSet, "website", getImageFromResultSet);
     }
 
-    private List<Image> getImages(Statement statement, ResultSet resultSet) throws SQLException {
-        String referenceQuery = "select * from bibliographic_reference natural join image where owner = '" + user.getName() + "'";
+    private ArrayList<Image> getImages(Statement statement, ResultSet resultSet) throws SQLException {
+        CheckedFunction<ResultSet, Image, SQLException> getImageFromResultSet = (set) -> {
+            Image image = new Image(set.getString("title"), set.getString("url"));
+            image.setID(set.getInt("id"));
+            image.setDOI(set.getString("doi"));
+            image.setPubblicationDate(set.getDate("pubblication_date"));
+            image.setDescription(set.getString("description"));
+            image.setLanguage(ReferenceLanguage.getFromString(set.getString("language")));
+            image.setWidth(set.getInt("width"));
+            image.setHeight(set.getInt("height"));
+            return image;
+        };
 
-        resultSet = statement.executeQuery(referenceQuery);
-
-        ArrayList<Image> images = new ArrayList<>();
-
-        while (resultSet.next()) {
-            Image image = new Image(resultSet.getString("title"), resultSet.getString("url"));
-            image.setID(resultSet.getInt("id"));
-            image.setDOI(resultSet.getString("doi"));
-            image.setPubblicationDate(resultSet.getDate("pubblication_date"));
-            image.setDescription(resultSet.getString("description"));
-            image.setLanguage(ReferenceLanguage.getFromString(resultSet.getString("language")));
-            image.setWidth(resultSet.getInt("width"));
-            image.setHeight(resultSet.getInt("height"));
-
-            images.add(image);
-        }
-
-        images.trimToSize();
-
-        return images;
+        return getReferences(statement, resultSet, "image", getImageFromResultSet);
     }
 
-    private List<Video> getVideos(Statement statement, ResultSet resultSet) throws SQLException {
-        String referenceQuery = "select * from bibliographic_reference natural join video where owner = '" + user.getName() + "'";
+    private ArrayList<Video> getVideos(Statement statement, ResultSet resultSet) throws SQLException {
+        CheckedFunction<ResultSet, Video, SQLException> foo = (set) -> {
+            Video video = new Video(set.getString("title"), set.getString("url"));
+            video.setID(set.getInt("id"));
+            video.setDOI(set.getString("doi"));
+            video.setPubblicationDate(set.getDate("pubblication_date"));
+            video.setDescription(set.getString("description"));
+            video.setLanguage(ReferenceLanguage.getFromString(set.getString("language")));
+            video.setWidth(set.getInt("width"));
+            video.setHeight(set.getInt("height"));
+            video.setFrameRate(set.getInt("framerate"));
+            video.setDuration(set.getInt("duration"));
+            return video;
+        };
 
-        resultSet = statement.executeQuery(referenceQuery);
-
-        ArrayList<Video> videos = new ArrayList<>();
-
-        while (resultSet.next()) {
-            Video video = new Video(resultSet.getString("title"), resultSet.getString("url"));
-            video.setID(resultSet.getInt("id"));
-            video.setDOI(resultSet.getString("doi"));
-            video.setPubblicationDate(resultSet.getDate("pubblication_date"));
-            video.setDescription(resultSet.getString("description"));
-            video.setLanguage(ReferenceLanguage.getFromString(resultSet.getString("language")));
-            video.setWidth(resultSet.getInt("width"));
-            video.setHeight(resultSet.getInt("height"));
-            video.setFrameRate(resultSet.getInt("framerate"));
-            video.setDuration(resultSet.getInt("duration"));
-
-            videos.add(video);
-        }
-
-        videos.trimToSize();
-
-        return videos;
+        return getReferences(statement, resultSet, "video", foo);
     }
 
-    private List<SourceCode> getSourceCodes(Statement statement, ResultSet resultSet) throws SQLException {
-        String referenceQuery = "select * from bibliographic_reference natural join source_code where owner = '" + user.getName() + "'";
+    private ArrayList<SourceCode> getSourceCodes(Statement statement, ResultSet resultSet) throws SQLException {
+        CheckedFunction<ResultSet, SourceCode, SQLException> foo = (set) -> {
+            SourceCode sourceCode = new SourceCode(set.getString("title"), set.getString("url"));
+            sourceCode.setID(set.getInt("id"));
+            sourceCode.setDOI(set.getString("doi"));
+            sourceCode.setPubblicationDate(set.getDate("pubblication_date"));
+            sourceCode.setDescription(set.getString("description"));
+            sourceCode.setLanguage(ReferenceLanguage.getFromString(set.getString("language")));
+            sourceCode.setProgrammingLanguage(ProgrammingLanguage.getFromString(set.getString("programming_language")));
+            return sourceCode;
+        };
 
+        return getReferences(statement, resultSet, "source_code", foo);
+    }
+
+    private <T> ArrayList<T> getReferences(Statement statement, ResultSet resultSet, String tableName, CheckedFunction<ResultSet, T, SQLException> getterFromResultSet) throws SQLException {
+        String referenceQuery = "select * from bibliographic_reference natural join " + tableName + " where owner = '" + user.getName() + "'";
         resultSet = statement.executeQuery(referenceQuery);
 
-        ArrayList<SourceCode> sourceCodes = new ArrayList<>();
+        ArrayList<T> references = new ArrayList<>();
 
-        while (resultSet.next()) {
-            SourceCode sourceCode = new SourceCode(resultSet.getString("title"), resultSet.getString("url"));
-            sourceCode.setID(resultSet.getInt("id"));
-            sourceCode.setDOI(resultSet.getString("doi"));
-            sourceCode.setPubblicationDate(resultSet.getDate("pubblication_date"));
-            sourceCode.setDescription(resultSet.getString("description"));
-            sourceCode.setLanguage(ReferenceLanguage.getFromString(resultSet.getString("language")));
-            sourceCode.setProgrammingLanguage(ProgrammingLanguage.getFromString(resultSet.getString("programming_language")));
+        while (resultSet.next())
+            references.add(getterFromResultSet.call(resultSet));
 
-            sourceCodes.add(sourceCode);
-        }
-
-        sourceCodes.trimToSize();
-
-        return sourceCodes;
+        return references;
     }
 
     private List<Integer> getRelatedReferencesIDs(Statement statement, ResultSet resultSet, BibliographicReference reference) throws SQLException {
-        if (statement == null || reference == null || reference.getID() == null)
-            throw new IllegalArgumentException();
-
         String relatedReferencesQuery = "select quotes from quotations where quoted_by = " + reference.getID();
         ArrayList<Integer> relatedReferencesIDs = new ArrayList<>();
 
@@ -647,6 +578,8 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
         relatedReferencesIDs.trimToSize();
         return relatedReferencesIDs;
     }
+
+    // #endregion
 
     // #region UTILITIES
 
