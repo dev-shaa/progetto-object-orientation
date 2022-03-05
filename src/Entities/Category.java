@@ -9,7 +9,7 @@ public class Category {
     private String name;
     private Category parent;
 
-    private final int NAME_MAX_LENGTH = 64;
+    public static final int NAME_MAX_LENGTH = 64;
 
     /**
      * Crea una categoria con un nome e nessun genitore.

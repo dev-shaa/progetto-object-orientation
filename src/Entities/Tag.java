@@ -7,7 +7,7 @@ public class Tag {
 
     private String name;
 
-    private final int NAME_MAX_LENGTH = 128;
+    public static final int NAME_MAX_LENGTH = 128;
 
     /**
      * Crea una nuova parola chiave.

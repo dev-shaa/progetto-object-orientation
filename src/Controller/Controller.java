@@ -24,6 +24,7 @@ public class Controller {
 
     private LoginPage loginPage;
     private Homepage homepage;
+
     private ArticleEditor articleEditor;
     private BookEditor bookEditor;
     private ThesisEditor thesisEditor;
@@ -32,7 +33,6 @@ public class Controller {
     private VideoEditor videoEditor;
     private WebsiteEditor websiteEditor;
 
-    private User user;
     private CategoryRepository categoryRepository;
     private ReferenceRepository referenceRepository;
 
@@ -57,15 +57,7 @@ public class Controller {
         }
     }
 
-    private void setUser(User user) {
-        if (user == null)
-            throw new IllegalArgumentException("user non può essere nullo.");
-
-        this.user = user;
-        setupRepositories();
-    }
-
-    private void setupRepositories() {
+    private void setupRepositories(User user) {
         CategoryDAO categoryDAO = new CategoryDAOPostgreSQL(user);
         BibliographicReferenceDAO referenceDAO = new BibliographicReferenceDAOPostgreSQL(user);
         AuthorDAO authorDAO = new AuthorDAOPostgreSQL();
@@ -90,7 +82,7 @@ public class Controller {
             userDAO.register(user);
             openHomePage(user);
         } catch (Exception e) {
-            homepage.showErrorMessage("Errore registrazione", e.getMessage());
+            loginPage.showErrorMessage("Errore registrazione", e.getMessage());
         }
     }
 
@@ -129,14 +121,15 @@ public class Controller {
 
     private void openHomePage(User user) {
         try {
-            setUser(user);
+            setupRepositories(user);
+
             homepage.setCategoriesTreeModel(categoryRepository.getTree());
             homepage.setReferences(referenceRepository.getAll());
             homepage.setVisible(true);
             loginPage.setVisible(false);
         } catch (Exception e) {
             e.printStackTrace();
-            loginPage.showErrorMessage("Errore apertura", "Impossibile caricare i dati dell'utente.");
+            loginPage.showErrorMessage("Errore apertura", e.getMessage());
         }
     }
 
@@ -251,10 +244,11 @@ public class Controller {
 
         try {
             editor.setCategoriesTree(categoryRepository.getTree());
-            editor.setReferences(referenceRepository.getAll());
+            editor.setReferencesToPickAsQuotation(referenceRepository.getAll());
             editor.setReferenceToChange(referenceToChange);
             editor.setVisible(true);
         } catch (Exception e) {
+            e.printStackTrace();
             editor.showErrorMessage("Impossibile aprire editor riferimenti", "Si è verificato un errore nell'apertura dell'editor.");
         }
     }

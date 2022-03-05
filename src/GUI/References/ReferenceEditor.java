@@ -66,7 +66,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
 
         setup(title);
         setCategoriesTree(categoriesTree);
-        setReferences(references);
+        setReferencesToPickAsQuotation(references);
     }
 
     /**
@@ -85,9 +85,8 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      * @param references
      *            possibili rimandi
      */
-    public void setReferences(Collection<? extends BibliographicReference> references) {
+    public void setReferencesToPickAsQuotation(Collection<? extends BibliographicReference> references) {
         this.references = references;
-
     }
 
     /**
@@ -98,17 +97,15 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      */
     public void setReferenceToChange(T referenceToChange) {
         this.referenceToChange = referenceToChange;
-
-        if (referenceToChange == null)
-            setDefaultValues();
-        else
-            setReferenceValues(referenceToChange);
     }
 
     @Override
     public void setVisible(boolean b) {
         if (b) {
-            setReferenceValues(referenceToChange);
+            if (referenceToChange == null)
+                setDefaultValues();
+            else
+                setReferenceValues(referenceToChange);
 
             // i rimandi selezionabili sono tutti tranne il riferimento da cambiare
             referenceListModel.clear();
@@ -200,7 +197,6 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      */
     protected void setupSecondaryFields(PanelBuilder panelBuilder) {
         // serve solo come funzione per override e aggiungere altri componenti
-        // non serve metterla come abstract perchè magari non si vogliono aggiungere altri componenti
     }
 
     private void onConfirmButton() {
@@ -234,11 +230,6 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      *            riferimento di cui impostare i campi
      */
     protected void setReferenceValues(T reference) {
-        if (reference == null) {
-            setDefaultValues();
-            return;
-        }
-
         setTitleValue(reference.getTitle());
         setPubblicationDateValue(reference.getPubblicationDate());
         setDOIValue(reference.getDOI());
