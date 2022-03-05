@@ -1,4 +1,4 @@
-package GUI.References.Editor.Publication;
+package GUI.References.Publication;
 
 import Entities.Category;
 import Entities.References.BibliographicReference;

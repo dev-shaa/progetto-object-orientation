@@ -88,7 +88,7 @@ public abstract class CustomTableModel<T extends Object> extends AbstractTableMo
      *             se {@code row < 0 || row > getRowCount()}
      * @return elemento da recuperare
      */
-    public T get(int row) {
+    public T getAt(int row) {
         return items.get(row);
     }
 

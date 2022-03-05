@@ -1,4 +1,4 @@
-package GUI.References.Editor.OnlineResource;
+package GUI.References.OnlineResource;
 
 import Entities.References.OnlineResources.SourceCode;
 import Entities.Category;
@@ -10,6 +10,7 @@ import io.codeworth.panelmatic.PanelBuilder;
 
 import java.util.Collection;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 
 /**
  * Finestra di dialogo per la creazione o modifica di un riferimento a del codice sorgente.
@@ -40,17 +41,14 @@ public class SourceCodeEditor extends OnlineResourceEditor<SourceCode> {
 
     @Override
     protected void setupSecondaryFields(PanelBuilder panelBuilder) {
-        // TODO Auto-generated method stub
         super.setupSecondaryFields(panelBuilder);
+
+        programmingLanguage = new JComboBox<>(ProgrammingLanguage.values());
+        programmingLanguage.setToolTipText("Linguaggio di programmazione del codice.");
+
+        panelBuilder.add(new JLabel("Linguaggio"));
+        panelBuilder.add(programmingLanguage);
     }
-
-    // @Override
-    // protected void setupSecondaryFields() {
-    // super.setupSecondaryFields();
-
-    // programmingLanguage = new JComboBox<>(ProgrammingLanguage.values());
-    // addFieldComponent(programmingLanguage, "Linguaggio", "Linguaggio di programmazione del codice.");
-    // }
 
     @Override
     protected void setDefaultValues() {

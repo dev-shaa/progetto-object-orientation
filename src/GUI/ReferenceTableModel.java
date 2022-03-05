@@ -1,4 +1,4 @@
-package GUI.References;
+package GUI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +29,7 @@ public class ReferenceTableModel extends CustomTableModel<BibliographicReference
 
     @Override
     public Object getValueAt(int row, int column) {
-        BibliographicReference reference = get(row);
+        BibliographicReference reference = getAt(row);
 
         switch (column) {
             case 0:

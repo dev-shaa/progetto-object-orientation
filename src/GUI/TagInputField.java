@@ -1,4 +1,4 @@
-package GUI.Tags;
+package GUI;
 
 import java.util.ArrayList;
 import java.util.List;

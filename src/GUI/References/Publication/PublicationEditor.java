@@ -1,10 +1,10 @@
-package GUI.References.Editor.Publication;
+package GUI.References.Publication;
 
 import Entities.Category;
 import Entities.References.BibliographicReference;
 import Entities.References.PhysicalResources.Publication;
 import Exceptions.Input.InvalidInputException;
-import GUI.References.Editor.ReferenceEditor;
+import GUI.References.ReferenceEditor;
 import Utilities.Tree.CustomTreeModel;
 import io.codeworth.panelmatic.PanelBuilder;
 

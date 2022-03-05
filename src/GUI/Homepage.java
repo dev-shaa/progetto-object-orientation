@@ -6,9 +6,6 @@ import Entities.References.OnlineResources.*;
 import Entities.References.OnlineResources.Image;
 import Entities.References.PhysicalResources.*;
 import Exceptions.Input.InvalidInputException;
-import GUI.Authors.AuthorInputField;
-import GUI.References.ReferenceTableModel;
-import GUI.Tags.TagInputField;
 import Utilities.MessageDisplayer;
 import Utilities.Criteria.*;
 import Utilities.Table.CustomTable;
@@ -55,7 +52,7 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
     private JDateChooser dateFromSearchField;
     private JDateChooser dateToSearchField;
 
-    private Collection<? extends BibliographicReference> references;
+    private Collection<? extends BibliographicReference> allReferences;
     private Criteria<BibliographicReference> lastReferenceCriteriaUsed;
 
     /**
@@ -113,7 +110,7 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
      *            riferimenti dell'utente
      */
     public void setReferences(Collection<? extends BibliographicReference> references) {
-        this.references = references;
+        this.allReferences = references;
     }
 
     /**
@@ -131,9 +128,9 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
      */
     public void reset() {
         referencesTable.clear();
-        resetSearchField();
         referenceInfoTextArea.setText(null);
         categoriesTree.expandAllRows();
+        resetSearchField();
         setLocationRelativeTo(null);
     }
 
@@ -144,11 +141,12 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
         tagsSearchField.clear();
         authorsSearchField.clear();
         categoriesSearchField.clearSelection();
+        categoriesSearchField.expandAllRows();
         dateFromSearchField.setDate(null);
         dateFromSearchField.setDate(null);
     }
 
-    // #region SETUP
+    // #region SETUPa
 
     private void setup() {
         setTitle("Pagina principale");
@@ -190,7 +188,7 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
         categoriesTree = new CustomTree<Category>(null);
         categoriesTree.setEditable(false);
         categoriesTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-        categoriesTree.addItemSelectionListener(this);
+        categoriesTree.addTreeItemSelectionListener(this);
 
         return new JScrollPane(categoriesTree);
     }
@@ -213,14 +211,10 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
     }
 
     private JScrollPane setupSearchPanel() {
-        setLayout(new BorderLayout());
-
         JPanel panel = new JPanel();
 
         JScrollPane scrollPane = new JScrollPane(panel);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
-
-        add(scrollPane);
 
         PanelBuilder panelBuilder = PanelMatic.begin(panel);
 
@@ -234,6 +228,7 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
 
         categoriesSearchField = new CheckboxTree<>();
         categoriesSearchField.setRootVisible(false);
+        categoriesSearchField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 128));
         panelBuilder.add(new JLabel("Categorie"));
         panelBuilder.add(new JScrollPane(categoriesSearchField));
 
@@ -363,6 +358,7 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
             Category parent = categoriesTree.getSelectedItem();
             Category newCategory = new Category(name, parent);
             controller.addCategory(newCategory);
+            categoriesSearchField.expandAllRows();
         }
     }
 
@@ -372,8 +368,10 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
         if (selectedCategory != null) {
             String newName = getCategoryNameFromUser(selectedCategory.getName());
 
-            if (newName != null)
-                controller.updateCategory(selectedCategory, newName);
+            if (newName != null) {
+                controller.updateCategory(selectedCategory, newName); // FIXME: non viene aggiornato l'albero della ricerca
+                categoriesSearchField.expandAllRows();
+            }
         }
     }
 
@@ -426,7 +424,7 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
         if (criteria == null)
             throw new IllegalArgumentException("criteria can't be null");
 
-        List<? extends BibliographicReference> filteredReferences = criteria.filter(references);
+        List<? extends BibliographicReference> filteredReferences = criteria.filter(allReferences);
         referencesTable.setItems(filteredReferences);
         lastReferenceCriteriaUsed = criteria;
     }

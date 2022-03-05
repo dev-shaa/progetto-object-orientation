@@ -1,4 +1,4 @@
-package GUI.References.Editor.OnlineResource;
+package GUI.References.OnlineResource;
 
 import Entities.Category;
 import Entities.References.BibliographicReference;

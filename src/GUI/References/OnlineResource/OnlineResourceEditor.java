@@ -1,10 +1,10 @@
-package GUI.References.Editor.OnlineResource;
+package GUI.References.OnlineResource;
 
 import Entities.Category;
 import Entities.References.BibliographicReference;
 import Entities.References.OnlineResources.OnlineResource;
 import Exceptions.Input.InvalidInputException;
-import GUI.References.Editor.ReferenceEditor;
+import GUI.References.ReferenceEditor;
 import Utilities.Tree.CustomTreeModel;
 import io.codeworth.panelmatic.PanelBuilder;
 import java.util.Collection;

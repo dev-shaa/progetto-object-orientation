@@ -1,9 +1,7 @@
-package GUI.References.Editor;
+package GUI.References;
 
 import Entities.*;
 import Entities.References.*;
-import GUI.Authors.AuthorInputField;
-import GUI.Tags.TagInputField;
 import Utilities.MessageDisplayer;
 import Utilities.Tree.CustomTreeModel;
 import Utilities.Tree.CheckboxTree.CheckboxTree;
@@ -12,6 +10,9 @@ import io.codeworth.panelmatic.PanelMatic;
 import io.codeworth.panelmatic.componentbehavior.Modifiers;
 import Exceptions.Input.InvalidAuthorInputException;
 import Exceptions.Input.InvalidInputException;
+import GUI.AuthorInputField;
+import GUI.TagInputField;
+
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -300,7 +301,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     }
 
     /**
-     * Rimuove un ascoltatore dall'veneto di creazione di un riferimento.
+     * Rimuove un ascoltatore dall'evento di creazione di un riferimento.
      * 
      * @param listener
      *            ascoltatore da rimuovere

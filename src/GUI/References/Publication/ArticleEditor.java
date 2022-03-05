@@ -1,4 +1,4 @@
-package GUI.References.Editor.Publication;
+package GUI.References.Publication;
 
 import Entities.Category;
 import Entities.References.BibliographicReference;
@@ -8,6 +8,8 @@ import Utilities.Tree.CustomTreeModel;
 import io.codeworth.panelmatic.PanelBuilder;
 
 import java.util.Collection;
+
+import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 /**
@@ -39,11 +41,12 @@ public class ArticleEditor extends PublicationEditor<Article> {
 
     @Override
     protected void setupSecondaryFields(PanelBuilder panelBuilder) {
-        // TODO Auto-generated method stub
         super.setupSecondaryFields(panelBuilder);
 
         ISSN = new JTextField();
-        // addFieldComponent(ISSN, "ISSN", "Codice identificativo ISSN dell'articolo.\nEsempio: \"0123-4567\".");
+        ISSN.setToolTipText("Codice identificativo ISSN dell'articolo.\nEsempio: \"0123-4567\".");
+        panelBuilder.add(new JLabel("ISSN"));
+        panelBuilder.add(ISSN);
     }
 
     @Override

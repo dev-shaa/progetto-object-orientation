@@ -15,7 +15,7 @@ public abstract class Criteria<T extends Object> {
      *            elementi da filtrare
      * @return lista di elementi filtrati (assicurato non nulla)
      */
-    public ArrayList<T> filter(Collection<? extends T> items) {
+    public final ArrayList<T> filter(Collection<? extends T> items) {
         if (items == null)
             return new ArrayList<>(0);
 
