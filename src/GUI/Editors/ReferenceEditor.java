@@ -1,4 +1,4 @@
-package GUI.References;
+package GUI.Editors;
 
 import Entities.*;
 import Entities.References.*;

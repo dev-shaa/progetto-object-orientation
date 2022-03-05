@@ -1,4 +1,4 @@
-package GUI.References;
+package GUI.Editors;
 
 import java.util.EventListener;
 import Entities.References.BibliographicReference;
