@@ -28,6 +28,11 @@ public class ConnectionController {
 		}
 	}
 
+	/**
+	 * Restituisce l'istanza di questa classe.
+	 * 
+	 * @return istanza di questa classe
+	 */
 	public static ConnectionController getInstance() {
 		if (instance == null)
 			instance = new ConnectionController();
@@ -35,6 +40,15 @@ public class ConnectionController {
 		return instance;
 	}
 
+	/**
+	 * Ottiene una connessione al database.
+	 * <p>
+	 * Se è attiva una transazione, restituisce la connessione attiva.
+	 * 
+	 * @return connessione al database
+	 * @throws SQLException
+	 *             se si verifica un errore di accesso al database
+	 */
 	public CustomConnection getConnection() throws SQLException {
 		CustomConnection connection;
 

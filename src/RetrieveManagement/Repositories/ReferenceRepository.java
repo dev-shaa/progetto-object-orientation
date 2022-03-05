@@ -3,7 +3,6 @@ package RetrieveManagement.Repositories;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 import Entities.References.*;
 import Entities.References.OnlineResources.*;
 import Entities.References.PhysicalResources.*;
@@ -152,13 +151,17 @@ public class ReferenceRepository {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
-        referenceDAO.remove(reference);
-        references.remove(reference);
+        try {
+            referenceDAO.remove(reference);
+            references.remove(reference);
 
-        for (BibliographicReference referenceQuotingThis : references)
-            referenceQuotingThis.getRelatedReferences().remove(reference);
+            for (BibliographicReference referenceQuotingThis : references)
+                referenceQuotingThis.getRelatedReferences().remove(reference);
 
-        decreaseQuotationCountForRelatedReferencesOf(reference);
+            decreaseQuotationCountForRelatedReferencesOf(reference);
+        } catch (Exception e) {
+            throw new ReferenceDatabaseException("Impossibile rimuovere riferimento.", e);
+        }
     }
 
     /**
@@ -259,7 +262,7 @@ public class ReferenceRepository {
         save(website, () -> referenceDAO.save(website));
     }
 
-    private void save(BibliographicReference reference, Procedure daoSave) throws ReferenceDatabaseException {
+    private void save(BibliographicReference reference, Procedure<SQLException> daoSave) throws ReferenceDatabaseException {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 
@@ -267,12 +270,12 @@ public class ReferenceRepository {
 
         try {
             authorDAO.save(reference.getAuthors());
-            daoSave.execute();
+            daoSave.call();
             tagDAO.save(reference.getID(), reference.getTags());
             saveToLocal(reference);
         } catch (Exception e) {
             ConnectionController.getInstance().rollbackTransaction(transactionKey);
-            throw new ReferenceDatabaseException(e.getMessage());
+            throw new ReferenceDatabaseException("Impossibile salvare il riferimento.", e);
         } finally {
             ConnectionController.getInstance().closeTransaction(transactionKey);
         }
@@ -283,14 +286,14 @@ public class ReferenceRepository {
             references = referenceDAO.getAll();
 
             for (BibliographicReference reference : references) {
-                reference.setCategories(categoryRepository.get(reference));
+                reference.setCategories(categoryRepository.get(reference.getID()));
                 reference.setAuthors(authorDAO.get(reference.getID()));
                 reference.setTags(tagDAO.getAll(reference.getID()));
             }
 
             needToRetrieveFromDatabase = false;
         } catch (SQLException | CategoryDatabaseException e) {
-            throw new ReferenceDatabaseException(e.getMessage());
+            throw new ReferenceDatabaseException("Impossibile recuperare i riferimenti dal database", e);
         }
     }
 

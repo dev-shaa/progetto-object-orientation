@@ -4,9 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import Entities.Category;
-import Entities.References.BibliographicReference;
 import Exceptions.Database.CategoryDatabaseException;
 import RetrieveManagement.DAO.CategoryDAO;
 import Utilities.Tree.CustomTreeModel;
@@ -76,7 +74,7 @@ public class CategoryRepository {
                 treeModel.add(node, parentNode);
             }
         } catch (SQLException e) {
-            throw new CategoryDatabaseException("Impossibile salvare la categoria.");
+            throw new CategoryDatabaseException("Impossibile salvare la categoria.", e);
         }
     }
 
@@ -103,7 +101,7 @@ public class CategoryRepository {
             categoryDAO.update(category);
         } catch (Exception e) {
             category.setName(oldName);
-            throw new CategoryDatabaseException("Impossibile aggiornare la categoria.");
+            throw new CategoryDatabaseException("Impossibile aggiornare la categoria.", e);
         }
 
     }
@@ -124,7 +122,7 @@ public class CategoryRepository {
             if (treeModel != null)
                 treeModel.remove(treeModel.findNode(category));
         } catch (Exception e) {
-            throw new CategoryDatabaseException("Impossibile eliminare la categoria.");
+            throw new CategoryDatabaseException("Impossibile eliminare la categoria.", e);
         }
     }
 
@@ -147,25 +145,25 @@ public class CategoryRepository {
 
             return categories;
         } catch (Exception e) {
-            throw new CategoryDatabaseException("Impossibile recuperare le categorie dell'utente.");
+            throw new CategoryDatabaseException("Impossibile recuperare le categorie dell'utente.", e);
         }
     }
 
     /**
      * Recupera tutte le categorie associate al riferimento bibliografico.
      * 
-     * @param reference
-     *            riferimento di cui recuperare le categorie
+     * @param referenceID
+     *            identificativo riferimento di cui recuperare le categorie
      * @return lista con le categorie associate al riferimento
      * @throws CategoryDatabaseException
      *             se il recupero delle categorie non va a buon fine
      */
-    public List<Category> get(BibliographicReference reference) throws CategoryDatabaseException {
+    public List<Category> get(int referenceID) throws CategoryDatabaseException {
         try {
             if (needToRetrieveFromDatabase)
                 retrieveFromDatabase();
 
-            List<Integer> ids = categoryDAO.getCategoriesIDFor(reference.getID());
+            List<Integer> ids = categoryDAO.getCategoriesIDFor(referenceID);
             ArrayList<Category> categories = new ArrayList<>();
 
             for (Integer id : ids)
@@ -174,7 +172,7 @@ public class CategoryRepository {
             categories.trimToSize();
             return categories;
         } catch (SQLException e) {
-            throw new CategoryDatabaseException("Impossibile recuperare le categorie associate al riferimento.");
+            throw new CategoryDatabaseException("Impossibile recuperare le categorie associate al riferimento.", e);
         }
     }
 
