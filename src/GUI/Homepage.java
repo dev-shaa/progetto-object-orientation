@@ -6,7 +6,6 @@ import Entities.References.OnlineResources.*;
 import Entities.References.OnlineResources.Image;
 import Entities.References.PhysicalResources.*;
 import Exceptions.Input.InvalidInputException;
-import Utilities.MessageDisplayer;
 import Utilities.Criteria.*;
 import Utilities.Table.CustomTable;
 import Utilities.Table.CustomTableSelectionListener;
@@ -16,7 +15,6 @@ import io.codeworth.panelmatic.PanelBuilder;
 import io.codeworth.panelmatic.PanelMatic;
 import io.codeworth.panelmatic.componentbehavior.Modifiers;
 import Controller.Controller;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Collection;
@@ -24,7 +22,6 @@ import java.util.List;
 import java.awt.BorderLayout;
 import javax.swing.*;
 import javax.swing.tree.TreeSelectionModel;
-
 import com.toedter.calendar.JDateChooser;
 
 /**
@@ -144,6 +141,18 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
         categoriesSearchField.expandAllRows();
         dateFromSearchField.setDate(null);
         dateFromSearchField.setDate(null);
+    }
+
+    /**
+     * Mostra un messaggio di errore.
+     * 
+     * @param title
+     *            titolo della finestra di dialogo
+     * @param message
+     *            messaggio da mostrare
+     */
+    public void showErrorMessage(String title, String message) {
+        JOptionPane.showMessageDialog(this, message, title, JOptionPane.ERROR_MESSAGE);
     }
 
     // #region SETUP
@@ -468,8 +477,8 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
             categoriesTree.clearSelection();
             filterShownReferences(new ReferenceCriteriaSearch(search));
             resetSearchField();
-        } catch (InvalidInputException ex) {
-            MessageDisplayer.showErrorMessage("Errore ricerca", ex.getMessage());
+        } catch (InvalidInputException e) {
+            showErrorMessage("Errore ricerca", e.getMessage());
         }
     }
 

@@ -2,7 +2,6 @@ package GUI.References;
 
 import Entities.*;
 import Entities.References.*;
-import Utilities.MessageDisplayer;
 import Utilities.Tree.CustomTreeModel;
 import Utilities.Tree.CheckboxTree.CheckboxTree;
 import io.codeworth.panelmatic.PanelBuilder;
@@ -209,7 +208,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
             T newReference = createNewReference();
             fireReferenceCreationEvent(newReference);
         } catch (InvalidInputException | IllegalArgumentException e) {
-            MessageDisplayer.showErrorMessage("Parametri inseriti non validi", e.getMessage());
+            showErrorMessage("Parametri inseriti non validi", e.getMessage());
         }
     }
 
@@ -283,6 +282,18 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
      * @return istanza vuota da riempire, non nulla
      */
     protected abstract T getNewInstance();
+
+    /**
+     * Mostra un messaggio di errore.
+     * 
+     * @param title
+     *            titolo della finestra di dialogo
+     * @param message
+     *            messaggio da mostrare
+     */
+    public void showErrorMessage(String title, String message) {
+        JOptionPane.showMessageDialog(this, message, title, JOptionPane.ERROR_MESSAGE);
+    }
 
     // #region LISTENER
 

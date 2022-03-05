@@ -3,7 +3,6 @@ package GUI;
 import Controller.Controller;
 import Entities.*;
 import Exceptions.Input.InvalidInputException;
-import Utilities.MessageDisplayer;
 import io.codeworth.panelmatic.PanelMatic;
 import io.codeworth.panelmatic.componentbehavior.Modifiers;
 import io.codeworth.panelmatic.util.Groupings;
@@ -92,7 +91,7 @@ public class LoginPage extends JFrame {
 			User user = getUserFromFields();
 			controller.register(user);
 		} catch (InvalidInputException e) {
-			MessageDisplayer.showErrorMessage("Errore registrazione", e.getMessage());
+			showErrorMessage("Errore registrazione", e.getMessage());
 		}
 	}
 
@@ -101,7 +100,7 @@ public class LoginPage extends JFrame {
 			User user = getUserFromFields();
 			controller.login(user);
 		} catch (InvalidInputException e) {
-			MessageDisplayer.showErrorMessage("Errore accesso", e.getMessage());
+			showErrorMessage("Errore accesso", e.getMessage());
 		}
 	}
 
@@ -113,6 +112,18 @@ public class LoginPage extends JFrame {
 		} catch (IllegalArgumentException e) {
 			throw new InvalidInputException(e.getMessage());
 		}
+	}
+
+	/**
+	 * Mostra un messaggio di errore.
+	 * 
+	 * @param title
+	 *            titolo della finestra di dialogo
+	 * @param message
+	 *            messaggio da mostrare
+	 */
+	public void showErrorMessage(String title, String message) {
+		JOptionPane.showMessageDialog(this, message, title, JOptionPane.ERROR_MESSAGE);
 	}
 
 }

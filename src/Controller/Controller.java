@@ -2,7 +2,6 @@ package Controller;
 
 import javax.swing.*;
 import com.formdev.flatlaf.*;
-
 import GUI.*;
 import GUI.References.ReferenceEditor;
 import GUI.References.ReferenceEditorListener;
@@ -11,12 +10,12 @@ import RetrieveManagement.DAO.*;
 import RetrieveManagement.Repositories.CategoryRepository;
 import RetrieveManagement.Repositories.ReferenceRepository;
 import GUI.References.OnlineResource.*;
-import Utilities.MessageDisplayer;
 import Utilities.Functions.CheckedConsumer;
 import Entities.*;
 import Entities.References.BibliographicReference;
 import Entities.References.OnlineResources.*;
 import Entities.References.PhysicalResources.*;
+import Exceptions.Database.DatabaseException;
 
 /**
  * Controller dell'applicazione.
@@ -91,7 +90,7 @@ public class Controller {
             userDAO.register(user);
             openHomePage(user);
         } catch (Exception e) {
-            MessageDisplayer.showErrorMessage("Errore registrazione", e.getMessage());
+            homepage.showErrorMessage("Errore registrazione", e.getMessage());
         }
     }
 
@@ -110,9 +109,9 @@ public class Controller {
             if (userDAO.doesUserExist(user))
                 openHomePage(user);
             else
-                MessageDisplayer.showErrorMessage("Errore accesso", "Impossibile accedere: nome o password errati.");
+                loginPage.showErrorMessage("Errore accesso", "Impossibile accedere: nome o password errati.");
         } catch (Exception e) {
-            MessageDisplayer.showErrorMessage("Errore accesso", e.getMessage());
+            loginPage.showErrorMessage("Errore accesso", e.getMessage());
         }
     }
 
@@ -137,7 +136,7 @@ public class Controller {
             loginPage.setVisible(false);
         } catch (Exception e) {
             e.printStackTrace();
-            MessageDisplayer.showErrorMessage("Errore apertura", "Impossibile caricare i dati dell'utente.");
+            loginPage.showErrorMessage("Errore apertura", "Impossibile caricare i dati dell'utente.");
         }
     }
 
@@ -150,7 +149,7 @@ public class Controller {
     public void openArticleEditor(Article article) {
         if (articleEditor == null) {
             articleEditor = new ArticleEditor();
-            setupReferenceEditor(articleEditor, (x) -> referenceRepository.save(x));
+            setupReferenceEditor(articleEditor, x -> referenceRepository.save(x));
         }
 
         openReferenceEditor(articleEditor, article);
@@ -165,7 +164,7 @@ public class Controller {
     public void openBookEditor(Book book) {
         if (bookEditor == null) {
             bookEditor = new BookEditor();
-            setupReferenceEditor(bookEditor, (x) -> referenceRepository.save(x));
+            setupReferenceEditor(bookEditor, x -> referenceRepository.save(x));
         }
 
         openReferenceEditor(bookEditor, book);
@@ -180,7 +179,7 @@ public class Controller {
     public void openThesisEditor(Thesis thesis) {
         if (thesisEditor == null) {
             thesisEditor = new ThesisEditor();
-            setupReferenceEditor(thesisEditor, (x) -> referenceRepository.save(x));
+            setupReferenceEditor(thesisEditor, x -> referenceRepository.save(x));
         }
 
         openReferenceEditor(thesisEditor, thesis);
@@ -195,7 +194,7 @@ public class Controller {
     public void openSourceCodeEditor(SourceCode sourceCode) {
         if (sourceCodeEditor == null) {
             sourceCodeEditor = new SourceCodeEditor();
-            setupReferenceEditor(sourceCodeEditor, (x) -> referenceRepository.save(x));
+            setupReferenceEditor(sourceCodeEditor, x -> referenceRepository.save(x));
         }
 
         openReferenceEditor(sourceCodeEditor, sourceCode);
@@ -210,7 +209,7 @@ public class Controller {
     public void openImageEditor(Image image) {
         if (imageEditor == null) {
             imageEditor = new ImageEditor();
-            setupReferenceEditor(imageEditor, (x) -> referenceRepository.save(x));
+            setupReferenceEditor(imageEditor, x -> referenceRepository.save(x));
         }
 
         openReferenceEditor(imageEditor, image);
@@ -225,7 +224,7 @@ public class Controller {
     public void openVideoEditor(Video video) {
         if (videoEditor == null) {
             videoEditor = new VideoEditor();
-            setupReferenceEditor(videoEditor, (x) -> referenceRepository.save(x));
+            setupReferenceEditor(videoEditor, x -> referenceRepository.save(x));
         }
 
         openReferenceEditor(videoEditor, video);
@@ -240,7 +239,7 @@ public class Controller {
     public void openWebsiteEditor(Website website) {
         if (websiteEditor == null) {
             websiteEditor = new WebsiteEditor();
-            setupReferenceEditor(websiteEditor, (x) -> referenceRepository.save(x));
+            setupReferenceEditor(websiteEditor, x -> referenceRepository.save(x));
         }
 
         openReferenceEditor(websiteEditor, website);
@@ -256,11 +255,11 @@ public class Controller {
             editor.setReferenceToChange(referenceToChange);
             editor.setVisible(true);
         } catch (Exception e) {
-            MessageDisplayer.showErrorMessage("Impossibile aprire editor riferimenti", "Si è verificato un errore nell'apertura dell'editor.");
+            editor.showErrorMessage("Impossibile aprire editor riferimenti", "Si è verificato un errore nell'apertura dell'editor.");
         }
     }
 
-    private <T extends BibliographicReference> void setupReferenceEditor(ReferenceEditor<T> editor, CheckedConsumer<T> saveMethod) {
+    private <T extends BibliographicReference> void setupReferenceEditor(ReferenceEditor<T> editor, CheckedConsumer<T, DatabaseException> saveMethod) {
         if (editor == null || saveMethod == null)
             throw new IllegalArgumentException();
 
@@ -271,8 +270,8 @@ public class Controller {
                     saveMethod.call(newReference);
                     editor.setVisible(false);
                     homepage.reloadReferences();
-                } catch (Exception e) {
-                    MessageDisplayer.showErrorMessage("Salvataggio non riuscito", e.getMessage());
+                } catch (DatabaseException e) {
+                    editor.showErrorMessage("Salvataggio non riuscito", e.getMessage());
                 }
             }
         });
@@ -291,7 +290,7 @@ public class Controller {
             referenceRepository.remove(reference);
             homepage.reloadReferences();
         } catch (Exception e) {
-            MessageDisplayer.showErrorMessage("Errore rimozione riferimento", e.getMessage());
+            homepage.showErrorMessage("Errore rimozione riferimento", e.getMessage());
         }
     }
 
@@ -305,7 +304,7 @@ public class Controller {
         try {
             categoryRepository.save(category);
         } catch (Exception e) {
-            MessageDisplayer.showErrorMessage("Errore salvataggio categoria", e.getMessage());
+            homepage.showErrorMessage("Errore salvataggio categoria", e.getMessage());
         }
     }
 
@@ -321,7 +320,7 @@ public class Controller {
         try {
             categoryRepository.update(category, newName);
         } catch (Exception e) {
-            MessageDisplayer.showErrorMessage("Errore modifica categoria", e.getMessage());
+            homepage.showErrorMessage("Errore modifica categoria", e.getMessage());
         }
     }
 
@@ -337,7 +336,7 @@ public class Controller {
             referenceRepository.forceNextRetrievalFromDatabase();
             homepage.setReferences(referenceRepository.getAll());
         } catch (Exception e) {
-            MessageDisplayer.showErrorMessage("Errore rimozione categoria", e.getMessage());
+            homepage.showErrorMessage("Errore rimozione categoria", e.getMessage());
         }
     }
 
