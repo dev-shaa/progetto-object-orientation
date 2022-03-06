@@ -59,33 +59,40 @@ public class CustomConnection {
     }
 
     /**
-     * TODO: commenta
+     * Crea un {@code PreparedStatement}.
      * 
      * @param sql
-     * @return
+     *            query da preparare
+     * @return un nuovo {@code PreparedStatement}
      * @throws SQLException
+     *             se si verifica un errore di accesso al database
      */
     public PreparedStatement prepareStatement(String sql) throws SQLException {
         return connection.prepareStatement(sql);
     }
 
     /**
-     * TODO: commenta
+     * Crea un {@code PreparedStatement}.
      * 
      * @param sql
+     *            query da preparare
      * @param arg1
-     * @return
+     *            parametri opzionali
+     * @return un nuovo {@code PreparedStatement}
      * @throws SQLException
+     *             se si verifica un errore di accesso al database
      */
     public PreparedStatement prepareStatement(String sql, int arg1) throws SQLException {
         return connection.prepareStatement(sql, arg1);
     }
 
     /**
-     * TODO: commenta
+     * Imposta la modalità di commmit.
      * 
      * @param autoCommit
+     *            se dovrebbe eseguire il commit automaticamente
      * @throws SQLException
+     *             se si verifica un errore di accesso al database
      */
     public void setAutoCommit(boolean autoCommit) throws SQLException {
         connection.setAutoCommit(autoCommit);

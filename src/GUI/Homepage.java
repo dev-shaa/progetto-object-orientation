@@ -215,11 +215,9 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
         return referenceSplitPane;
     }
 
-    private JScrollPane setupSearchPanel() {
+    private JPanel setupSearchPanel() {
+        // FIXME:
         JPanel panel = new JPanel();
-
-        JScrollPane scrollPane = new JScrollPane(panel);
-        scrollPane.setBorder(BorderFactory.createEmptyBorder());
 
         PanelBuilder panelBuilder = PanelMatic.begin(panel);
 
@@ -233,9 +231,8 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
 
         categoriesSearchField = new CheckboxTree<>();
         categoriesSearchField.setRootVisible(false);
-        categoriesSearchField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 128));
         panelBuilder.add(new JLabel("Categorie"));
-        panelBuilder.add(new JScrollPane(categoriesSearchField));
+        panelBuilder.add(new JScrollPane(categoriesSearchField), Modifiers.GROW);
 
         dateFromSearchField = new JDateChooser();
         panelBuilder.add(new JLabel("Da"));
@@ -244,17 +241,15 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
         dateToSearchField = new JDateChooser();
         panelBuilder.add(new JLabel("A"));
         panelBuilder.add(dateToSearchField);
-
         panelBuilder.addFlexibleSpace();
 
         JButton searchButton = new JButton("Cerca");
         searchButton.addActionListener(e -> search());
         panelBuilder.add(searchButton, Modifiers.L_END, Modifiers.P_FEET);
-
         panelBuilder.addFlexibleSpace();
         panelBuilder.get();
 
-        return scrollPane;
+        return panel;
     }
 
     private JMenuBar setupMenuBar() {

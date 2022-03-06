@@ -107,7 +107,6 @@ public class CategoryRepository {
             category.setName(oldName);
             throw new CategoryDatabaseException("Impossibile aggiornare la categoria.", e);
         }
-
     }
 
     /**

@@ -53,6 +53,18 @@ public class LoginPage extends JFrame {
 		super.setVisible(b);
 	}
 
+	/**
+	 * Mostra un messaggio di errore.
+	 * 
+	 * @param title
+	 *            titolo della finestra di dialogo
+	 * @param message
+	 *            messaggio da mostrare
+	 */
+	public void showErrorMessage(String title, String message) {
+		JOptionPane.showMessageDialog(this, message, title, JOptionPane.ERROR_MESSAGE);
+	}
+
 	private void setup() {
 		setTitle("Login");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -112,18 +124,6 @@ public class LoginPage extends JFrame {
 		} catch (IllegalArgumentException e) {
 			throw new InvalidInputException(e.getMessage());
 		}
-	}
-
-	/**
-	 * Mostra un messaggio di errore.
-	 * 
-	 * @param title
-	 *            titolo della finestra di dialogo
-	 * @param message
-	 *            messaggio da mostrare
-	 */
-	public void showErrorMessage(String title, String message) {
-		JOptionPane.showMessageDialog(this, message, title, JOptionPane.ERROR_MESSAGE);
 	}
 
 }
