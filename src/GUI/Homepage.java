@@ -2,9 +2,6 @@ package GUI;
 
 import Entities.*;
 import Entities.References.BibliographicReference;
-import Entities.References.OnlineResources.*;
-import Entities.References.OnlineResources.Image;
-import Entities.References.PhysicalResources.*;
 import Exceptions.Input.InvalidInputException;
 import Utilities.Criteria.*;
 import Utilities.Table.CustomTable;
@@ -388,25 +385,7 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
     }
 
     private void changeSelectedReference() {
-        BibliographicReference selectedReference = referencesTable.getSelectedItem();
-
-        if (selectedReference == null)
-            return;
-
-        if (selectedReference instanceof Article)
-            controller.openArticleEditor((Article) selectedReference);
-        else if (selectedReference instanceof Book)
-            controller.openBookEditor((Book) selectedReference);
-        else if (selectedReference instanceof Image)
-            controller.openImageEditor((Image) selectedReference);
-        else if (selectedReference instanceof SourceCode)
-            controller.openSourceCodeEditor((SourceCode) selectedReference);
-        else if (selectedReference instanceof Thesis)
-            controller.openThesisEditor((Thesis) selectedReference);
-        else if (selectedReference instanceof Video)
-            controller.openVideoEditor((Video) selectedReference);
-        else if (selectedReference instanceof Website)
-            controller.openWebsiteEditor((Website) selectedReference);
+        controller.openCorrectEditorForReference(referencesTable.getSelectedItem());
     }
 
     private void removeSelectedReference() {
@@ -467,14 +446,14 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
 
     private void search() {
         try {
-            Search search = new Search(dateFromSearchField.getDate(),
+            ReferenceCriteriaSearch search = new ReferenceCriteriaSearch(dateFromSearchField.getDate(),
                     dateToSearchField.getDate(),
                     tagsSearchField.getTags(),
                     categoriesSearchField.getSelectedItems(),
                     authorsSearchField.getAuthors());
 
             categoriesTree.clearSelection();
-            filterShownReferences(new ReferenceCriteriaSearch(search));
+            filterShownReferences(search);
             resetSearchField();
         } catch (InvalidInputException e) {
             showErrorMessage("Errore ricerca", e.getMessage());

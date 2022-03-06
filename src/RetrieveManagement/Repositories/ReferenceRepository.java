@@ -9,7 +9,7 @@ import Entities.References.PhysicalResources.*;
 import Exceptions.Database.*;
 import RetrieveManagement.Connections.ConnectionController;
 import RetrieveManagement.DAO.*;
-import Utilities.Functions.Procedure;
+import Utilities.Functions.CheckedProcedure;
 
 /**
  * Repository per gestire il recupero, l'inserimento, la rimozione e la modifica di riferimenti.
@@ -262,7 +262,7 @@ public class ReferenceRepository {
         save(website, () -> referenceDAO.save(website));
     }
 
-    private void save(BibliographicReference reference, Procedure<SQLException> daoSave) throws ReferenceDatabaseException {
+    private void save(BibliographicReference reference, CheckedProcedure<SQLException> daoSave) throws ReferenceDatabaseException {
         if (reference == null)
             throw new IllegalArgumentException("reference can't be null");
 

@@ -20,21 +20,16 @@ import Utilities.Functions.CheckedFunction;
  */
 public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferenceDAO {
 
-    private User user;
+    private String username;
 
     /**
      * Crea una nuova classe DAO per interfacciarsi al database PostgreSQL relativo ai riferimenti dell'utente.
      * 
-     * @param user
-     *            l'utente che accede al database
-     * @throws IllegalArgumentException
-     *             se {@code user == null}
+     * @param username
+     *            il nome dell'utente di cui si devono gestire i riferimenti
      */
-    public BibliographicReferenceDAOPostgreSQL(User user) {
-        if (user == null)
-            throw new IllegalArgumentException("user non può essere null");
-
-        this.user = user;
+    public BibliographicReferenceDAOPostgreSQL(String userName) {
+        this.username = userName;
     }
 
     @Override
@@ -298,7 +293,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
 
             referenceStatement = connection.prepareStatement(referenceInsertCommand, Statement.RETURN_GENERATED_KEYS);
 
-            referenceStatement.setString(1, user.getName());
+            referenceStatement.setString(1, username);
             referenceStatement.setString(2, reference.getTitle());
             referenceStatement.setString(3, reference.getDOI());
             referenceStatement.setString(4, reference.getDescription());
@@ -555,7 +550,7 @@ public class BibliographicReferenceDAOPostgreSQL implements BibliographicReferen
     }
 
     private <T> ArrayList<T> getReferences(Statement statement, ResultSet resultSet, String tableName, CheckedFunction<ResultSet, T, SQLException> getterFromResultSet) throws SQLException {
-        String referenceQuery = "select * from bibliographic_reference natural join " + tableName + " where owner = '" + user.getName() + "'";
+        String referenceQuery = "select * from bibliographic_reference natural join " + tableName + " where owner = '" + username + "'";
         resultSet = statement.executeQuery(referenceQuery);
 
         ArrayList<T> references = new ArrayList<>();

@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 import Entities.Author;
 import Entities.Category;
-import Entities.Search;
 import Entities.Tag;
 import Entities.References.BibliographicReference;
 
@@ -14,7 +13,11 @@ import Entities.References.BibliographicReference;
  */
 public class ReferenceCriteriaSearch extends Criteria<BibliographicReference> {
 
-    private Search search;
+    private Date from;
+    private Date to;
+    private Collection<? extends Tag> tags;
+    private Collection<? extends Author> authors;
+    private Collection<? extends Category> categories;
 
     /**
      * Crea un nuovo filtro di ricerca per i riferimenti.
@@ -24,19 +27,23 @@ public class ReferenceCriteriaSearch extends Criteria<BibliographicReference> {
      * @throws IllegalArgumentException
      *             se {@code search == null}
      */
-    public ReferenceCriteriaSearch(Search search) {
-        if (search == null)
-            throw new IllegalArgumentException("search non può essere null.");
+    public ReferenceCriteriaSearch(Date from, Date to, Collection<? extends Tag> tags, Collection<? extends Category> categories, Collection<? extends Author> authors) {
+        if (areAllTermsNull(from, to, tags, categories, authors))
+            throw new IllegalArgumentException("Gli elementi di una ricerca non possono essere tutti nulli.");
 
-        this.search = search;
+        this.from = from;
+        this.to = to;
+        this.tags = tags;
+        this.categories = categories;
+        this.authors = authors;
     }
 
     @Override
     protected boolean doesItemMatch(BibliographicReference reference) {
-        return wasReferencePublishedBetween(reference, search.getFrom(), search.getTo())
-                && wasReferenceWrittenBy(reference, search.getAuthors())
-                && isReferenceTaggedWith(reference, search.getTags())
-                && isReferenceContainedIn(reference, search.getCategories());
+        return wasReferencePublishedBetween(reference, from, to)
+                && wasReferenceWrittenBy(reference, authors)
+                && isReferenceTaggedWith(reference, tags)
+                && isReferenceContainedIn(reference, categories);
     }
 
     private boolean wasReferencePublishedAfter(BibliographicReference reference, Date date) {
@@ -80,6 +87,10 @@ public class ReferenceCriteriaSearch extends Criteria<BibliographicReference> {
     private boolean isReferenceContainedIn(BibliographicReference reference, Collection<? extends Category> categories) {
         List<Category> referenceCategories = reference.getCategories();
         return (categories == null && referenceCategories.isEmpty()) || referenceCategories.containsAll(categories);
+    }
+
+    private boolean areAllTermsNull(Date from, Date to, Collection<? extends Tag> tags, Collection<? extends Category> categories, Collection<? extends Author> authors) {
+        return from == null && to == null && (tags == null || tags.isEmpty()) && (categories == null || categories.isEmpty()) && (authors == null || authors.isEmpty());
     }
 
 }

@@ -58,8 +58,8 @@ public class Controller {
     }
 
     private void setupRepositories(User user) {
-        CategoryDAO categoryDAO = new CategoryDAOPostgreSQL(user);
-        BibliographicReferenceDAO referenceDAO = new BibliographicReferenceDAOPostgreSQL(user);
+        CategoryDAO categoryDAO = new CategoryDAOPostgreSQL(user.getName());
+        BibliographicReferenceDAO referenceDAO = new BibliographicReferenceDAOPostgreSQL(user.getName());
         AuthorDAO authorDAO = new AuthorDAOPostgreSQL();
         TagDAO tagDAO = new TagDAOPostgreSQL();
 
@@ -236,6 +236,34 @@ public class Controller {
         }
 
         openReferenceEditor(websiteEditor, website);
+    }
+
+    /**
+     * Apre automaticamente l'editor esatto per modificare il riferimento passato.
+     * <p>
+     * Se {@code referenceToChange == null}, non succede nulla.
+     * 
+     * @param referenceToChange
+     *            riferimento da modificare
+     */
+    public void openCorrectEditorForReference(BibliographicReference referenceToChange) {
+        if (referenceToChange == null)
+            return;
+
+        if (referenceToChange instanceof Article)
+            openArticleEditor((Article) referenceToChange);
+        else if (referenceToChange instanceof Book)
+            openBookEditor((Book) referenceToChange);
+        else if (referenceToChange instanceof Image)
+            openImageEditor((Image) referenceToChange);
+        else if (referenceToChange instanceof SourceCode)
+            openSourceCodeEditor((SourceCode) referenceToChange);
+        else if (referenceToChange instanceof Thesis)
+            openThesisEditor((Thesis) referenceToChange);
+        else if (referenceToChange instanceof Video)
+            openVideoEditor((Video) referenceToChange);
+        else if (referenceToChange instanceof Website)
+            openWebsiteEditor((Website) referenceToChange);
     }
 
     private <T extends BibliographicReference> void openReferenceEditor(ReferenceEditor<T> editor, T referenceToChange) {

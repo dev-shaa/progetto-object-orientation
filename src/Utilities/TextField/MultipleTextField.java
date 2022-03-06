@@ -17,13 +17,43 @@ public class MultipleTextField extends JPanel {
     private final ImageIcon addIcon = new ImageIcon("images/button_add.png");
     private final ImageIcon removeIcon = new ImageIcon("images/button_remove.png");
     private final Dimension maximumTextFieldSize = new Dimension(Integer.MAX_VALUE, 24);
+
     private String tooltip;
+    private int maximumLength;
 
     /**
      * Crea un nuovo pannello con un solo campo.
      */
     public MultipleTextField() {
-        super();
+        this(null);
+    }
+
+    /**
+     * Crea un nuovo pannello con un solo campo, con il tooltip indicato.
+     * 
+     * @param tooltip
+     *            testo da mostrare come tooltip
+     */
+    public MultipleTextField(String tooltip) {
+        this(tooltip, Integer.MAX_VALUE);
+    }
+
+    /**
+     * Crea un nuovo pannello con un solo campo, con il tooltip indicato e la lunghezza massima specificata.
+     * 
+     * @param tooltip
+     *            testo da mostrare come tooltip
+     * @param maximumLength
+     *            lunghezza massima del testo
+     * @throws IllegalArgumentException
+     *             se {@code maximumLength < 0}
+     */
+    public MultipleTextField(String tooltip, int maximumLength) {
+        if (maximumLength < 0)
+            throw new IllegalArgumentException("maximumLength can't be less than 0");
+
+        this.tooltip = tooltip;
+        this.maximumLength = maximumLength;
 
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         addFirstField();
@@ -90,16 +120,33 @@ public class MultipleTextField extends JPanel {
         tooltip = text;
 
         firstField.setToolTipText(tooltip);
-
         for (JTextField field : otherFields)
             field.setToolTipText(tooltip);
+    }
+
+    /**
+     * Imposta la lunghezza massima del testo.
+     * 
+     * @param length
+     *            lunghezza massima
+     * @throws IllegalArgumentException
+     *             se {@code length < 0}
+     */
+    public void setMaximumLength(int length) {
+        maximumLength = length;
+
+        firstField.setColumns(length);
+        for (JTextField field : otherFields)
+            field.setColumns(length);
+
+        revalidate();
     }
 
     private void addFirstField() {
         JPanel firstFieldPanel = new JPanel(new BorderLayout(0, 0));
         firstFieldPanel.setMaximumSize(maximumTextFieldSize);
 
-        firstField = new JTextField();
+        firstField = new JTextField(maximumLength);
         firstField.setToolTipText(tooltip);
 
         JButton addButton = new JButton(addIcon);
@@ -123,7 +170,7 @@ public class MultipleTextField extends JPanel {
         JPanel fieldPanel = new JPanel(new BorderLayout(0, 0));
         fieldPanel.setMaximumSize(maximumTextFieldSize);
 
-        JTextField textField = new JTextField();
+        JTextField textField = new JTextField(maximumLength);
         textField.setToolTipText(tooltip);
         textField.setText(initialValue);
 

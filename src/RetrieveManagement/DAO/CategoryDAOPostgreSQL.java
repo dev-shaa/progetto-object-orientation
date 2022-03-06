@@ -16,21 +16,16 @@ import RetrieveManagement.Connections.CustomConnection;
  */
 public class CategoryDAOPostgreSQL implements CategoryDAO {
 
-    private User user;
+    private String username;
 
     /**
      * Crea una nuova classe DAO per interfacciarsi al database PostgreSQL relativo alle categorie dell'utente.
      * 
-     * @param user
-     *            l'utente che accede al database
-     * @throws IllegalArgumentException
-     *             se {@code user == null}
+     * @param username
+     *            il nome dell'utente di cui si devono gestire i riferimenti
      */
-    public CategoryDAOPostgreSQL(User user) {
-        if (user == null)
-            throw new IllegalArgumentException("user can't be null");
-
-        this.user = user;
+    public CategoryDAOPostgreSQL(String username) {
+        this.username = username;
     }
 
     @Override
@@ -54,7 +49,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
 
             statement = connection.prepareStatement(command, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, category.getName());
-            statement.setString(2, user.getName());
+            statement.setString(2, username);
             statement.executeUpdate();
 
             resultSet = statement.getGeneratedKeys();
@@ -154,7 +149,7 @@ public class CategoryDAOPostgreSQL implements CategoryDAO {
         try {
             connection = ConnectionController.getInstance().getConnection();
             statement = connection.prepareStatement(query);
-            statement.setString(1, user.getName());
+            statement.setString(1, username);
             resultSet = statement.executeQuery();
 
             HashMap<Integer, Category> idToCategory = new HashMap<>();
