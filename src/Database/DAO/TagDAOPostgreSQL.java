@@ -1,13 +1,13 @@
-package RetrieveManagement.DAO;
+package Database.DAO;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import Database.Connections.ConnectionController;
+import Database.Connections.CustomConnection;
 import Entities.Tag;
-import RetrieveManagement.Connections.ConnectionController;
-import RetrieveManagement.Connections.CustomConnection;
 
 /**
  * Implementazione dell'interfaccia TagDAO per database relazionali PostgreSQL.

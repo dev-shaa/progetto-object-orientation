@@ -1,10 +1,11 @@
-package RetrieveManagement.DAO;
+package Database.DAO;
 
 import java.sql.*;
+
+import Database.Connections.ConnectionController;
+import Database.Connections.CustomConnection;
 import Entities.User;
 import Exceptions.Database.UserDatabaseException;
-import RetrieveManagement.Connections.ConnectionController;
-import RetrieveManagement.Connections.CustomConnection;
 
 /**
  * Implementazione dell'interfaccia {@code UserDAO} per database relazionali PostgreSQL.

@@ -1,10 +1,11 @@
-package RetrieveManagement.DAO;
+package Database.DAO;
 
 import java.sql.*;
 import java.util.*;
+
+import Database.Connections.ConnectionController;
+import Database.Connections.CustomConnection;
 import Entities.Author;
-import RetrieveManagement.Connections.ConnectionController;
-import RetrieveManagement.Connections.CustomConnection;
 
 /**
  * Implementazione dell'interfaccia AuthorDAO per database relazionali PostgreSQL.

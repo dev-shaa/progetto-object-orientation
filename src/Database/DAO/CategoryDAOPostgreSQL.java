@@ -1,13 +1,15 @@
-package RetrieveManagement.DAO;
+package Database.DAO;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import Database.Connections.ConnectionController;
+import Database.Connections.CustomConnection;
+
 import java.sql.*;
 
 import Entities.*;
-import RetrieveManagement.Connections.ConnectionController;
-import RetrieveManagement.Connections.CustomConnection;
 
 /**
  * Implementazione dell'interfaccia CategoryDAO per database relazionali PostgreSQL.

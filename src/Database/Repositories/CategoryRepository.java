@@ -1,12 +1,13 @@
-package RetrieveManagement.Repositories;
+package Database.Repositories;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import Database.DAO.CategoryDAO;
 import Entities.Category;
 import Exceptions.Database.CategoryDatabaseException;
-import RetrieveManagement.DAO.CategoryDAO;
 import Utilities.Tree.CustomTreeModel;
 import Utilities.Tree.CustomTreeNode;
 

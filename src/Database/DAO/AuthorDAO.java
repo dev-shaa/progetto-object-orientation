@@ -1,4 +1,4 @@
-package RetrieveManagement.DAO;
+package Database.DAO;
 
 import java.sql.SQLException;
 import java.util.Collection;

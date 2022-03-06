@@ -1,14 +1,15 @@
-package RetrieveManagement.Repositories;
+package Database.Repositories;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import Database.Connections.ConnectionController;
+import Database.DAO.*;
 import Entities.References.*;
 import Entities.References.OnlineResources.*;
 import Entities.References.PhysicalResources.*;
 import Exceptions.Database.*;
-import RetrieveManagement.Connections.ConnectionController;
-import RetrieveManagement.DAO.*;
 import Utilities.Functions.CheckedProcedure;
 
 /**

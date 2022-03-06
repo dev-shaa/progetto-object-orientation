@@ -2,14 +2,15 @@ package Controller;
 
 import javax.swing.*;
 import com.formdev.flatlaf.*;
+
+import Database.DAO.*;
+import Database.Repositories.CategoryRepository;
+import Database.Repositories.ReferenceRepository;
 import GUI.*;
 import GUI.Editors.ReferenceEditor;
 import GUI.Editors.ReferenceEditorListener;
 import GUI.Editors.OnlineResource.*;
 import GUI.Editors.Publication.*;
-import RetrieveManagement.DAO.*;
-import RetrieveManagement.Repositories.CategoryRepository;
-import RetrieveManagement.Repositories.ReferenceRepository;
 import Utilities.Functions.CheckedConsumer;
 import Entities.*;
 import Entities.References.BibliographicReference;

@@ -1,4 +1,4 @@
-package RetrieveManagement.Connections;
+package Database.Connections;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

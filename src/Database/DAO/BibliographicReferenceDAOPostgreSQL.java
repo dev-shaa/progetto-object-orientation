@@ -1,16 +1,16 @@
-package RetrieveManagement.DAO;
+package Database.DAO;
 
 import java.sql.*;
 import java.util.*;
 import java.util.Date;
 import java.util.function.Function;
 
+import Database.Connections.ConnectionController;
+import Database.Connections.CustomConnection;
 import Entities.*;
 import Entities.References.*;
 import Entities.References.OnlineResources.*;
 import Entities.References.PhysicalResources.*;
-import RetrieveManagement.Connections.ConnectionController;
-import RetrieveManagement.Connections.CustomConnection;
 import Utilities.Functions.CheckedFunction;
 
 /**
