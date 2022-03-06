@@ -2,7 +2,6 @@ package GUI;
 
 import Entities.*;
 import Entities.References.BibliographicReference;
-import Exceptions.Input.InvalidInputException;
 import Utilities.Criteria.*;
 import Utilities.Table.CustomTable;
 import Utilities.Table.CustomTableSelectionListener;
@@ -216,7 +215,6 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
     }
 
     private JPanel setupSearchPanel() {
-        // FIXME:
         JPanel panel = new JPanel();
 
         PanelBuilder panelBuilder = PanelMatic.begin(panel);
@@ -232,7 +230,10 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
         categoriesSearchField = new CheckboxTree<>();
         categoriesSearchField.setRootVisible(false);
         panelBuilder.add(new JLabel("Categorie"));
-        panelBuilder.add(new JScrollPane(categoriesSearchField), Modifiers.GROW);
+        JPanel categoriesPanel = new JPanel(new BorderLayout());
+        JScrollPane categoriesScrollPane = new JScrollPane(categoriesSearchField);
+        categoriesPanel.add(categoriesScrollPane); // questa cosa è orribile ma java swing non vuole saperne di posizionarsi bene altrimenti
+        panelBuilder.add(categoriesPanel, Modifiers.GROW);
 
         dateFromSearchField = new JDateChooser();
         panelBuilder.add(new JLabel("Da"));
@@ -450,7 +451,7 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
             categoriesTree.clearSelection();
             filterShownReferences(search);
             resetSearchField();
-        } catch (InvalidInputException e) {
+        } catch (Exception e) {
             showErrorMessage("Errore ricerca", e.getMessage());
         }
     }
