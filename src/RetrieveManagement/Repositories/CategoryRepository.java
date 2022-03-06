@@ -99,6 +99,9 @@ public class CategoryRepository {
         try {
             category.setName(newName);
             categoryDAO.update(category);
+
+            if (treeModel != null)
+                treeModel.reload();
         } catch (Exception e) {
             category.setName(oldName);
             throw new CategoryDatabaseException("Impossibile aggiornare la categoria.", e);

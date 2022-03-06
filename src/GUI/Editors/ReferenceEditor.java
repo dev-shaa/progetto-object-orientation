@@ -12,6 +12,7 @@ import Exceptions.Input.InvalidInputException;
 import GUI.AuthorInputField;
 import GUI.TagInputField;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -131,7 +132,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
 
         JPanel fieldPanel = new JPanel();
         fieldPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        add(new JScrollPane(fieldPanel));
+        setContentPane(new JScrollPane(fieldPanel));
 
         PanelBuilder panelBuilder = PanelMatic.begin(fieldPanel);
 
@@ -203,7 +204,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         try {
             T newReference = createNewReference();
             fireReferenceCreationEvent(newReference);
-        } catch (InvalidInputException | IllegalArgumentException e) {
+        } catch (Exception e) {
             showErrorMessage("Parametri inseriti non validi", e.getMessage());
         }
     }
@@ -384,7 +385,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
             this.categoriesCheckboxTree.selectItem(category);
     }
 
-    private List<Category> getCategoryValues() {
+    private ArrayList<Category> getCategoryValues() {
         return categoriesCheckboxTree.getSelectedItems();
     }
 

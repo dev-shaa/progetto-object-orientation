@@ -103,11 +103,11 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
     /**
      * Imposta tutti i riferimenti dell'utente da mostrare.
      * 
-     * @param references
+     * @param allReferences
      *            riferimenti dell'utente
      */
-    public void setReferences(Collection<? extends BibliographicReference> references) {
-        this.allReferences = references;
+    public void setAllReferences(Collection<? extends BibliographicReference> allReferences) {
+        this.allReferences = allReferences;
     }
 
     /**
@@ -251,7 +251,7 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
         panelBuilder.addFlexibleSpace();
 
         JButton searchButton = new JButton("Cerca");
-        searchButton.addActionListener((e) -> search());
+        searchButton.addActionListener(e -> search());
         panelBuilder.add(searchButton, Modifiers.L_END, Modifiers.P_FEET);
 
         panelBuilder.addFlexibleSpace();
@@ -269,7 +269,7 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
 
         JButton logoutButton = new JButton("Esci");
         logoutButton.setBorderPainted(false);
-        logoutButton.addActionListener((e) -> controller.logout());
+        logoutButton.addActionListener(e -> controller.logout());
         menuBar.add(logoutButton);
 
         return menuBar;
@@ -278,25 +278,22 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
     private JMenu setupCategoriesMenu() {
         JMenu categoriesMenu = new JMenu("Categorie");
 
-        createCategoryButton = new JMenuItem("Aggiungi categoria");
-        createCategoryButton.setIcon(new ImageIcon("images/folder_add.png"));
+        createCategoryButton = new JMenuItem("Aggiungi categoria", new ImageIcon("images/folder_add.png"));
         createCategoryButton.setEnabled(false);
         createCategoryButton.setToolTipText("Aggiunge una nuova categoria come sottocategoria di quella selezionata.");
-        createCategoryButton.addActionListener((e) -> createCategory());
+        createCategoryButton.addActionListener(e -> createCategory());
         categoriesMenu.add(createCategoryButton);
 
-        updateCategoryButton = new JMenuItem("Modifica categoria");
-        updateCategoryButton.setIcon(new ImageIcon("images/folder_edit.png"));
+        updateCategoryButton = new JMenuItem("Modifica categoria", new ImageIcon("images/folder_edit.png"));
         updateCategoryButton.setEnabled(false);
         updateCategoryButton.setToolTipText("Modifica la categoria selezionata.");
-        updateCategoryButton.addActionListener((e) -> changeSelectedCategory());
+        updateCategoryButton.addActionListener(e -> changeSelectedCategory());
         categoriesMenu.add(updateCategoryButton);
 
-        removeCategoryButton = new JMenuItem("Elimina categoria");
-        removeCategoryButton.setIcon(new ImageIcon("images/folder_delete.png"));
+        removeCategoryButton = new JMenuItem("Elimina categoria", new ImageIcon("images/folder_delete.png"));
         removeCategoryButton.setEnabled(false);
         removeCategoryButton.setToolTipText("Rimuovi la categoria selezionata e tutte le sue sottocategorie.\nI riferimenti contenuti in esse non verranno eliminati.");
-        removeCategoryButton.addActionListener((e) -> removeSelectedCategory());
+        removeCategoryButton.addActionListener(e -> removeSelectedCategory());
         categoriesMenu.add(removeCategoryButton);
 
         return categoriesMenu;
@@ -311,47 +308,45 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
         referencesMenu.add(createReferenceMenu);
 
         JMenuItem articleOption = new JMenuItem("Articolo");
-        articleOption.addActionListener((e) -> controller.openArticleEditor(null));
+        articleOption.addActionListener(e -> controller.openArticleEditor(null));
         createReferenceMenu.add(articleOption);
 
         JMenuItem bookOption = new JMenuItem("Libro");
-        bookOption.addActionListener((e) -> controller.openBookEditor(null));
+        bookOption.addActionListener(e -> controller.openBookEditor(null));
         createReferenceMenu.add(bookOption);
 
         JMenuItem thesisOption = new JMenuItem("Tesi");
-        thesisOption.addActionListener((e) -> controller.openThesisEditor(null));
+        thesisOption.addActionListener(e -> controller.openThesisEditor(null));
         createReferenceMenu.add(thesisOption);
 
         createReferenceMenu.addSeparator();
 
         JMenuItem websiteOption = new JMenuItem("Sito web");
-        websiteOption.addActionListener((e) -> controller.openWebsiteEditor(null));
+        websiteOption.addActionListener(e -> controller.openWebsiteEditor(null));
         createReferenceMenu.add(websiteOption);
 
         JMenuItem sourceCodeOption = new JMenuItem("Codice sorgente");
-        sourceCodeOption.addActionListener((e) -> controller.openSourceCodeEditor(null));
+        sourceCodeOption.addActionListener(e -> controller.openSourceCodeEditor(null));
         createReferenceMenu.add(sourceCodeOption);
 
         JMenuItem imageOption = new JMenuItem("Immagine");
-        imageOption.addActionListener((e) -> controller.openImageEditor(null));
+        imageOption.addActionListener(e -> controller.openImageEditor(null));
         createReferenceMenu.add(imageOption);
 
         JMenuItem videoOption = new JMenuItem("Video");
-        videoOption.addActionListener((e) -> controller.openVideoEditor(null));
+        videoOption.addActionListener(e -> controller.openVideoEditor(null));
         createReferenceMenu.add(videoOption);
 
-        updateReferenceButton = new JMenuItem("Modifica riferimento");
-        updateReferenceButton.setIcon(new ImageIcon("images/file_edit.png"));
+        updateReferenceButton = new JMenuItem("Modifica riferimento", new ImageIcon("images/file_edit.png"));
         updateReferenceButton.setEnabled(false);
         updateReferenceButton.setToolTipText("Modifica il riferimento selezionato.");
-        updateReferenceButton.addActionListener((e) -> changeSelectedReference());
+        updateReferenceButton.addActionListener(e -> changeSelectedReference());
         referencesMenu.add(updateReferenceButton);
 
-        removeReferenceButton = new JMenuItem("Elimina riferimento");
-        removeReferenceButton.setIcon(new ImageIcon("images/file_remove.png"));
+        removeReferenceButton = new JMenuItem("Elimina riferimento", new ImageIcon("images/file_remove.png"));
         removeReferenceButton.setEnabled(false);
         removeReferenceButton.setToolTipText("Elimina il riferimento selezionato.");
-        removeReferenceButton.addActionListener((e) -> removeSelectedReference());
+        removeReferenceButton.addActionListener(e -> removeSelectedReference());
         referencesMenu.add(removeReferenceButton);
 
         return referencesMenu;
@@ -377,7 +372,9 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
             String newName = getCategoryNameFromUser(selectedCategory.getName());
 
             if (newName != null) {
-                controller.updateCategory(selectedCategory, newName); // FIXME: non viene aggiornato l'albero della ricerca
+                controller.updateCategory(selectedCategory, newName);
+
+                categoriesTree.expandAllRows();
                 categoriesSearchField.expandAllRows();
             }
         }
@@ -440,8 +437,10 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
     @Override
     public void onTreeItemSelection(Category selectedCategory) {
         createCategoryButton.setEnabled(true);
-        updateCategoryButton.setEnabled(selectedCategory != null);
-        removeCategoryButton.setEnabled(selectedCategory != null);
+
+        boolean shouldButtonsBeEnabled = selectedCategory != null;
+        updateCategoryButton.setEnabled(shouldButtonsBeEnabled);
+        removeCategoryButton.setEnabled(shouldButtonsBeEnabled);
 
         filterShownReferences(new ReferenceCriteriaCategory(selectedCategory));
     }

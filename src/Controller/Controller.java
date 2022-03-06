@@ -124,7 +124,7 @@ public class Controller {
             setupRepositories(user);
 
             homepage.setCategoriesTreeModel(categoryRepository.getTree());
-            homepage.setReferences(referenceRepository.getAll());
+            homepage.setAllReferences(referenceRepository.getAll());
             homepage.setVisible(true);
             loginPage.setVisible(false);
         } catch (Exception e) {
@@ -328,7 +328,7 @@ public class Controller {
         try {
             categoryRepository.remove(category);
             referenceRepository.forceNextRetrievalFromDatabase();
-            homepage.setReferences(referenceRepository.getAll());
+            homepage.setAllReferences(referenceRepository.getAll());
         } catch (Exception e) {
             homepage.showErrorMessage("Errore rimozione categoria", e.getMessage());
         }

@@ -48,10 +48,11 @@ public class CustomConnection {
     }
 
     /**
-     * TODO: commenta
+     * Crea uno {@code Statement}.
      * 
-     * @return
+     * @return un nuovo {@code Statement}
      * @throws SQLException
+     *             se si verifica un errore di accesso al database
      */
     public Statement createStatement() throws SQLException {
         return connection.createStatement();
@@ -116,9 +117,11 @@ public class CustomConnection {
 
     /**
      * Annulla tutte le modifiche eseguite nella transazione corrente.
+     * <p>
+     * Se questa connessione ha bisogno di una chiave, non effettua nulla.
      * 
      * @throws SQLException
-     *             TODO: commenta
+     *             se si verifica un errore di accesso al database
      */
     public void rollback() throws SQLException {
         if (!needsKey)
@@ -126,11 +129,12 @@ public class CustomConnection {
     }
 
     /**
-     * Annulla tutte le modifiche eseguite nella transazione corrente.
-     * TODO: commenta
+     * Annulla tutte le modifiche eseguite nella transazione corrente, se non è necessaria una chiave o se la chiave di input è esatta.
      * 
      * @param key
+     *            chiave da controllare
      * @throws SQLException
+     *             se si verifica un errore di accesso al database
      */
     public void rollback(int key) throws SQLException {
         if (!needsKey || this.key == key)
@@ -151,7 +155,7 @@ public class CustomConnection {
     }
 
     /**
-     * Effettua tutti i cambiamenti della transazione dal precedente commit o rollback.
+     * Effettua tutti i cambiamenti della transazione dal precedente commit o rollback, se non è necessaria o se la chiave di input è esatta.
      * 
      * @param key
      *            chiave della transazione
