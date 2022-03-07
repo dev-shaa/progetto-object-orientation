@@ -9,6 +9,7 @@ public class Article extends Publication {
 
     private String ISSN;
 
+    public static final int ISSN_LENGTH = 9;
     private final Pattern ISSN_PATTERN = Pattern.compile("^ *[0-9]{4}-[0-9]{3}[0-9xX] *$");
 
     /**
@@ -38,7 +39,7 @@ public class Article extends Publication {
         else if (ISSN_PATTERN.matcher(ISSN).matches())
             this.ISSN = ISSN.trim();
         else
-            throw new IllegalArgumentException("Il codice ISSN non valido.");
+            throw new IllegalArgumentException("Il codice ISSN non è valido.");
     }
 
     /**

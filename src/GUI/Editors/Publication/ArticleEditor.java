@@ -43,7 +43,7 @@ public class ArticleEditor extends PublicationEditor<Article> {
     protected void setupSecondaryFields(PanelBuilder panelBuilder) {
         super.setupSecondaryFields(panelBuilder);
 
-        ISSN = new JTextField();
+        ISSN = new JTextField(Article.ISSN_LENGTH);
         ISSN.setToolTipText("Codice identificativo ISSN dell'articolo.\nEsempio: \"0123-4567\".");
         panelBuilder.add(new JLabel("ISSN"));
         panelBuilder.add(ISSN);

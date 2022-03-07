@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import javax.swing.*;
+import java.awt.BorderLayout;
 import javax.swing.event.EventListenerList;
 import com.toedter.calendar.JDateChooser;
 
@@ -130,9 +131,11 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         setResizable(false);
         setLocationRelativeTo(null);
 
-        JPanel fieldPanel = new JPanel();
+        JPanel contentPane = new JPanel(new BorderLayout());
+        JPanel fieldPanel = new JPanel(new BorderLayout());
+        contentPane.add(new JScrollPane(fieldPanel));
         fieldPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        setContentPane(new JScrollPane(fieldPanel));
+        setContentPane(contentPane);
 
         PanelBuilder panelBuilder = PanelMatic.begin(fieldPanel);
 
@@ -167,9 +170,11 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
 
         categoriesCheckboxTree = new CheckboxTree<>();
         categoriesCheckboxTree.setRootVisible(false);
+        JPanel categoriesPanel = new JPanel(new BorderLayout());
         JScrollPane categoriesScrollPane = new JScrollPane(categoriesCheckboxTree);
+        categoriesPanel.add(categoriesScrollPane);
         panelBuilder.add(new JLabel("Categorie"));
-        panelBuilder.add(categoriesScrollPane, Modifiers.GROW);
+        panelBuilder.add(categoriesPanel);
 
         referenceListModel = new DefaultListModel<>();
         relatedReferencesList = new JList<>(referenceListModel);
@@ -177,14 +182,16 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         relatedReferencesList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         relatedReferencesList.setVisibleRowCount(5);
         JScrollPane listScrollPane = new JScrollPane(relatedReferencesList);
+        JPanel referenceListPanel = new JPanel(new BorderLayout());
+        referenceListPanel.add(listScrollPane);
 
         panelBuilder.add(new JLabel("Rimandi"));
-        panelBuilder.add(listScrollPane, Modifiers.GROW);
+        panelBuilder.add(referenceListPanel);
 
         description = new JTextArea(10, 1);
         description.setLineWrap(true);
         panelBuilder.add(new JLabel("Descrizione"));
-        panelBuilder.add(description, Modifiers.GROW);
+        panelBuilder.add(description);
 
         JButton confirmButton = new JButton("Salva riferimento");
         confirmButton.addActionListener(e -> onConfirmButton());

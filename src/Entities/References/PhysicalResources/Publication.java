@@ -11,8 +11,8 @@ public abstract class Publication extends BibliographicReference {
     private String URL;
     private String publisher;
 
-    private final int URL_MAX_LENGTH = 256;
-    private final int PUBLISHER_MAX_LENGTH = 128;
+    public static final int URL_MAX_LENGTH = 256;
+    public static final int PUBLISHER_MAX_LENGTH = 128;
 
     /**
      * Crea un nuovo riferimento a una pubblicazione con il titolo indicato.

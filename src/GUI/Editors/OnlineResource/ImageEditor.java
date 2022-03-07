@@ -8,6 +8,8 @@ import Utilities.Tree.CustomTreeModel;
 import io.codeworth.panelmatic.PanelBuilder;
 
 import java.util.Collection;
+
+import javax.swing.JLabel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
@@ -45,11 +47,13 @@ public class ImageEditor extends OnlineResourceEditor<Image> {
 
         width = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
         width.setToolTipText("Larghezza dell'immagine.");
-        panelBuilder.add("Larghezza", width);
+        panelBuilder.add(new JLabel("Larghezza"));
+        panelBuilder.add(width);
 
         height = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
         height.setToolTipText("Altezza dell'immagine.");
-        panelBuilder.add("Altezza", height);
+        panelBuilder.add(new JLabel("Altezza"));
+        panelBuilder.add(height);
     }
 
     @Override

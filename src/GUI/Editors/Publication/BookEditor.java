@@ -43,7 +43,7 @@ public class BookEditor extends PublicationEditor<Book> {
     protected void setupSecondaryFields(PanelBuilder panelBuilder) {
         super.setupSecondaryFields(panelBuilder);
 
-        ISBN = new JTextField(13);
+        ISBN = new JTextField(Book.ISBN_LENGTH);
         ISBN.setToolTipText("Codice identificativo ISBN dell'articolo.");
         panelBuilder.add(new JLabel("ISBN"));
         panelBuilder.add(ISBN);
