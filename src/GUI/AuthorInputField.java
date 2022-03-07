@@ -83,7 +83,7 @@ public class AuthorInputField extends MultipleTextField {
         try {
             return new Author(name, orcid);
         } catch (IllegalArgumentException e) {
-            throw new InvalidAuthorInputException("L'ORCID inserito non è valido.");
+            throw new InvalidAuthorInputException("L'ORCID inserito non è valido.", e);
         }
     }
 

@@ -3,6 +3,7 @@ package GUI;
 import java.util.ArrayList;
 import java.util.List;
 import Entities.Tag;
+import Exceptions.Input.InvalidTagInputException;
 import Utilities.TextField.MultipleTextField;
 
 /**
@@ -44,24 +45,30 @@ public class TagInputField extends MultipleTextField {
      * Restituisce i tag inseriti dall'utente.
      *
      * @return lista di tag
+     * @throws InvalidTagInputException
+     *             se i tag inseriti non sono validi
      */
-    public ArrayList<Tag> getTags() {
+    public ArrayList<Tag> getTags() throws InvalidTagInputException {
         ArrayList<String> values = getValues();
         ArrayList<Tag> tags = new ArrayList<>(values.size());
 
-        for (String value : values) {
-            if (value.isEmpty() || value.isBlank() || value.isEmpty())
-                continue;
+        try {
+            for (String value : values) {
+                if (value.isEmpty() || value.isBlank() || value.isEmpty())
+                    continue;
 
-            Tag tag = new Tag(value);
+                Tag tag = new Tag(value);
 
-            // non mettiamo ripetizioni
-            if (!tags.contains(tag))
-                tags.add(tag);
+                // non mettiamo ripetizioni
+                if (!tags.contains(tag))
+                    tags.add(tag);
+            }
+
+            tags.trimToSize();
+            return tags;
+        } catch (Exception e) {
+            throw new InvalidTagInputException("I tag inseriti non sono validi.", e);
         }
-
-        tags.trimToSize();
-        return tags;
     }
 
 }
