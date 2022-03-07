@@ -31,10 +31,7 @@ public class Thesis extends Publication {
      *            università della tesi
      */
     public void setUniversity(String university) {
-        if (isUniversityValid(university))
-            this.university = university;
-        else
-            throw new IllegalArgumentException("La facoltà non può essere più lunga di " + FACULTY_MAX_LENGTH + " caratteri.");
+        this.university = getNullOrValidString(university, UNIVERSITY_MAX_LENGTH, "L'università");
     }
 
     /**
@@ -54,10 +51,7 @@ public class Thesis extends Publication {
      *            facoltà della tesi
      */
     public void setFaculty(String faculty) {
-        if (isFacultyValid(faculty))
-            this.faculty = faculty;
-        else
-            throw new IllegalArgumentException("La facoltà non può essere più lunga di " + FACULTY_MAX_LENGTH + " caratteri.");
+        this.faculty = getNullOrValidString(faculty, FACULTY_MAX_LENGTH, "La facoltà");
     }
 
     /**
@@ -75,14 +69,6 @@ public class Thesis extends Publication {
         return super.getInfo()
                 + "\nUniversità: " + (getUniversity() == null ? "" : getUniversity())
                 + "\nFacoltà: " + (getFaculty() == null ? "" : getFaculty());
-    }
-
-    private boolean isUniversityValid(String university) {
-        return university == null || university.length() <= UNIVERSITY_MAX_LENGTH;
-    }
-
-    private boolean isFacultyValid(String faculty) {
-        return faculty == null || faculty.length() <= FACULTY_MAX_LENGTH;
     }
 
 }

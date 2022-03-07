@@ -59,10 +59,7 @@ public abstract class Publication extends BibliographicReference {
      *            URL del riferimento
      */
     public void setURL(String url) {
-        if (isURLValid(url))
-            this.URL = url;
-        else
-            throw new IllegalArgumentException("L'url non può essere più lungo di " + URL_MAX_LENGTH + " caratteri.");
+        this.URL = getNullOrValidString(url, URL_MAX_LENGTH, "L'URL");
     }
 
     /**
@@ -82,10 +79,7 @@ public abstract class Publication extends BibliographicReference {
      *            editore della pubblicazione
      */
     public void setPublisher(String publisher) {
-        if (isPublisherValid(publisher))
-            this.publisher = publisher;
-        else
-            throw new IllegalArgumentException("L'editore non può essere più lungo di " + PUBLISHER_MAX_LENGTH + " caratteri.");
+        this.publisher = getNullOrValidString(publisher, PUBLISHER_MAX_LENGTH, "L'editore");
     }
 
     /**
@@ -104,14 +98,6 @@ public abstract class Publication extends BibliographicReference {
                 + "\nPagine: " + (getPageCount() == 0 ? "" : getPageCount())
                 + "\nURL: " + (getURL() == null ? "" : getURL())
                 + "\nEditore: " + (getPublisher() == null ? "" : getPublisher());
-    }
-
-    private boolean isURLValid(String url) {
-        return url == null || url.length() <= URL_MAX_LENGTH;
-    }
-
-    private boolean isPublisherValid(String publisher) {
-        return publisher == null || publisher.length() <= PUBLISHER_MAX_LENGTH;
     }
 
 }

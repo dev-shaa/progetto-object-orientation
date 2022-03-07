@@ -110,10 +110,8 @@ public class Category {
      *             se il nome è nullo, vuoto o più lungo di {@link #NAME_MAX_LENGTH}
      */
     public void setName(String name) {
-        name = name.trim();
-
         if (isNameValid(name))
-            this.name = name;
+            this.name = name.trim();
         else
             throw new IllegalArgumentException("Il nome non può essere nullo o più lungo di " + NAME_MAX_LENGTH + " caratteri.");
     }
@@ -174,7 +172,7 @@ public class Category {
     }
 
     private boolean isNameValid(String name) {
-        return name != null && !name.isEmpty() && !name.isBlank() && name.length() <= NAME_MAX_LENGTH;
+        return name != null && !name.isEmpty() && !name.isBlank() && name.trim().length() <= NAME_MAX_LENGTH;
     }
 
 }

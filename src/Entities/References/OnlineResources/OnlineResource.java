@@ -37,10 +37,7 @@ public abstract class OnlineResource extends BibliographicReference {
      *             se l'url è nullo, vuoto o più lungo di {@link #URL_MAX_LENGTH}
      */
     public void setURL(String url) {
-        if (isURLValid(url))
-            this.URL = url;
-        else
-            throw new IllegalArgumentException("L'URL di una risorsa online non può essere vuoto o più lungo di " + URL_MAX_LENGTH + " caratteri.");
+        this.URL = getNullOrValidString(url, URL_MAX_LENGTH, "L'URL");
     }
 
     /**
@@ -57,10 +54,6 @@ public abstract class OnlineResource extends BibliographicReference {
     public String getInfo() {
         return super.getInfo()
                 + "\nURL: " + getURL();
-    }
-
-    private boolean isURLValid(String url) {
-        return !isStringNullOrEmpty(url) && url.length() <= URL_MAX_LENGTH;
     }
 
 }

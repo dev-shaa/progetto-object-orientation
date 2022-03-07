@@ -71,7 +71,7 @@ public class Tag {
      * @return {@code true} se il nome non è nullo, vuoto o più lungo di {@link #NAME_MAX_LENGTH}
      */
     private boolean isNameValid(String name) {
-        return name != null && !name.isEmpty() && !name.isBlank() && name.length() <= NAME_MAX_LENGTH;
+        return name != null && !name.isEmpty() && !name.isBlank() && name.trim().length() <= NAME_MAX_LENGTH;
     }
 
 }

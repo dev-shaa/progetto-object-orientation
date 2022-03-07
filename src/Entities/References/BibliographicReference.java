@@ -80,7 +80,7 @@ public abstract class BibliographicReference {
      */
     public void setTitle(String title) {
         if (isTitleValid(title))
-            this.title = title;
+            this.title = title.trim();
         else
             throw new IllegalArgumentException("Il titolo non può essere vuoto o più lungo di " + TITLE_MAX_LENGTH + " caratteri.");
     }
@@ -124,10 +124,13 @@ public abstract class BibliographicReference {
     public void setDOI(String DOI) {
         if (isStringNullOrEmpty(DOI))
             this.DOI = null;
-        else if (DOI_PATTERN.matcher(DOI).matches())
-            this.DOI = DOI.trim();
-        else
-            throw new IllegalArgumentException("Il DOI non è valido");
+        else {
+            DOI = DOI.trim();
+            if (DOI_PATTERN.matcher(DOI).matches())
+                this.DOI = DOI;
+            else
+                throw new IllegalArgumentException("Il DOI non è valido.");
+        }
     }
 
     /**
@@ -149,12 +152,7 @@ public abstract class BibliographicReference {
      *             se la lunghezza della descrizione è maggiore di 1024 caratteri
      */
     public void setDescription(String description) {
-        description = description.trim();
-
-        if (!isDescriptionValid(description))
-            throw new IllegalArgumentException("Il titolo non può essere vuoto o più lungo di " + DESCRIPTION_MAX_LENGTH + " caratteri.");
-
-        this.description = description;
+        this.description = getNullOrValidString(description, DESCRIPTION_MAX_LENGTH, "La descrizione");
     }
 
     /**
@@ -380,12 +378,21 @@ public abstract class BibliographicReference {
         return name == null || name.isEmpty() || name.isBlank();
     }
 
-    private boolean isTitleValid(String title) {
-        return !isStringNullOrEmpty(title) && title.length() <= TITLE_MAX_LENGTH;
+    protected String getNullOrValidString(String input, int maxLength, String inputName) {
+        if (isStringNullOrEmpty(input))
+            return null;
+        else {
+            input = input.trim();
+
+            if (input.length() <= maxLength)
+                return input;
+            else
+                throw new IllegalArgumentException(inputName + " non può essere superare i " + maxLength + " caratteri.");
+        }
     }
 
-    private boolean isDescriptionValid(String description) {
-        return description == null || description.length() <= DESCRIPTION_MAX_LENGTH;
+    private boolean isTitleValid(String title) {
+        return !isStringNullOrEmpty(title) && title.trim().length() <= TITLE_MAX_LENGTH;
     }
 
 }

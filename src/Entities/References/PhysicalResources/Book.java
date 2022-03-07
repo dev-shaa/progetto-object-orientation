@@ -31,10 +31,14 @@ public class Book extends Publication {
     public void setISBN(String ISBN) {
         if (isStringNullOrEmpty(ISBN))
             this.ISBN = null;
-        else if (ISBN.length() == ISBN_LENGTH)
-            this.ISBN = ISBN;
-        else
-            throw new IllegalArgumentException("Il codice ISBN non è valido.");
+        else {
+            ISBN = ISBN.trim();
+
+            if (ISBN.length() == ISBN_LENGTH)
+                this.ISBN = ISBN;
+            else
+                throw new IllegalArgumentException("Il codice ISBN non è valido.");
+        }
     }
 
     /**
