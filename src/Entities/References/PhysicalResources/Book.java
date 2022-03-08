@@ -7,7 +7,7 @@ public class Book extends Publication {
 
     private String ISBN;
 
-    public static final int ISBN_LENGTH = 9;
+    public static final int ISBN_LENGTH = 13;
 
     /**
      * Crea un nuovo riferimento a un libro con il titolo indicato.
