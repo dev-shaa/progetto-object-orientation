@@ -106,11 +106,6 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     @Override
     public void setVisible(boolean b) {
         if (b) {
-            if (referenceToChange == null)
-                setDefaultValues();
-            else
-                setReferenceValues(referenceToChange);
-
             // i rimandi selezionabili sono tutti tranne il riferimento da cambiare
             referenceListModel.clear();
 
@@ -119,6 +114,11 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
 
             if (referenceToChange != null)
                 referenceListModel.removeElement(referenceToChange);
+
+            if (referenceToChange == null)
+                setDefaultValues();
+            else
+                setReferenceValues(referenceToChange);
 
             categoriesCheckboxTree.expandAllRows();
         }

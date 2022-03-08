@@ -12,8 +12,6 @@ import Utilities.Tree.CustomTreeNode;
  */
 public class CheckboxTree<T extends Object> extends CustomTree<T> {
 
-    private CustomTreeModel<T> treeModel;
-
     /**
      * Crea un nuovo {@code CheckboxTree} senza un modello.
      */
@@ -61,13 +59,13 @@ public class CheckboxTree<T extends Object> extends CustomTree<T> {
      *            elemento da selezionare
      */
     public void selectItem(T item) {
-        if (treeModel == null)
+        if (getModel() == null)
             return;
 
-        CustomTreeNode<T> node = treeModel.findNode(item);
+        CustomTreeNode<T> node = getModel().findNode(item);
 
         if (node != null) {
-            TreePath path = new TreePath(treeModel.getPathToRoot(node));
+            TreePath path = new TreePath(getModel().getPathToRoot(node));
             getSelectionModel().addSelectionPath(path);
         }
     }
