@@ -452,6 +452,7 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
             filterShownReferences(search);
             resetSearchField();
         } catch (Exception e) {
+            e.printStackTrace();
             showErrorMessage("Errore ricerca", e.getMessage());
         }
     }

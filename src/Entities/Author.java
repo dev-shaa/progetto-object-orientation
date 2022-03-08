@@ -81,6 +81,13 @@ public class Author {
         return thisName.equalsIgnoreCase(otherName) && thisORCID.equals(otherORCID);
     }
 
+    public boolean isSimilar(Author author) {
+        if (author == null)
+            return false;
+
+        return getName().equalsIgnoreCase(author.getName()) && (author.getORCID() == null || author.getORCID().equalsIgnoreCase(getORCID()));
+    }
+
     /**
      * Imposta l'identificativo dell'autore.
      * 
