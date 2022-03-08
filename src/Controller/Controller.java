@@ -294,6 +294,7 @@ public class Controller {
                     editor.setVisible(false);
                     homepage.reloadReferences();
                 } catch (DatabaseException e) {
+                    e.printStackTrace();
                     editor.showErrorMessage("Salvataggio non riuscito", e.getMessage());
                 }
             }

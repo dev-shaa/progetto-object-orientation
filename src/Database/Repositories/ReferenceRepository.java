@@ -274,6 +274,7 @@ public class ReferenceRepository {
             daoSave.call();
             tagDAO.save(reference.getID(), reference.getTags());
             saveToLocal(reference);
+            ConnectionController.getInstance().commitTransaction(transactionKey);
         } catch (Exception e) {
             ConnectionController.getInstance().rollbackTransaction(transactionKey);
             throw new ReferenceDatabaseException("Impossibile salvare il riferimento.", e);

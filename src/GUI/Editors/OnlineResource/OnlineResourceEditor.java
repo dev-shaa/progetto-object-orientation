@@ -50,7 +50,7 @@ public abstract class OnlineResourceEditor<T extends OnlineResource> extends Ref
 
         URL = new JTextField(OnlineResource.URL_MAX_LENGTH);
         URL.setToolTipText("URL della risorsa online.");
-        panelBuilder.add(new JLabel("URL"));
+        panelBuilder.add(new JLabel("URL (obbligatorio)"));
         panelBuilder.add(URL);
     }
 
