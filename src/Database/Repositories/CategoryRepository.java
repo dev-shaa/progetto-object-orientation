@@ -74,7 +74,7 @@ public class CategoryRepository {
                 CustomTreeNode<Category> parentNode = treeModel.findNode(category.getParent());
                 treeModel.add(node, parentNode);
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new CategoryDatabaseException("Impossibile salvare la categoria.", e);
         }
     }

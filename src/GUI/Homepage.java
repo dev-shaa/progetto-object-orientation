@@ -349,12 +349,16 @@ public class Homepage extends JFrame implements CustomTreeItemSelectionListener<
 
     private void createCategory() {
         String name = getCategoryNameFromUser("Nuova categoria");
+        if (name == null)
+            return;
 
-        if (name != null) {
+        try {
             Category parent = categoriesTree.getSelectedItem();
             Category newCategory = new Category(name, parent);
             controller.addCategory(newCategory);
             categoriesSearchField.expandAllRows();
+        } catch (IllegalArgumentException e) {
+            showErrorMessage("Errore creazione categoria", e.getMessage());
         }
     }
 

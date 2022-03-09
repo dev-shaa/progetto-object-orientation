@@ -15,9 +15,7 @@ public class TagInputField extends MultipleTextField {
      * Crea un nuovo {@code TagInputField}.
      */
     public TagInputField() {
-        super("Parole chiave associate al riferimento, separate da una virgola."
-                + "\nNon fa distinzioni tra maiuscolo e minuscolo."
-                + "\nEsempio: \"programmazione, object orientation\"", Tag.NAME_MAX_LENGTH);
+        super("Parola chiave associata al riferimento.", Tag.NAME_MAX_LENGTH);
     }
 
     /**
