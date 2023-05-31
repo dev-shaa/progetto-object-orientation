@@ -45,7 +45,6 @@ public class SourceCodeEditor extends OnlineResourceEditor<SourceCode> {
 
         programmingLanguage = new JComboBox<>(ProgrammingLanguage.values());
         programmingLanguage.setToolTipText("Linguaggio di programmazione del codice.");
-
         panelBuilder.add(new JLabel("Linguaggio"));
         panelBuilder.add(programmingLanguage);
     }

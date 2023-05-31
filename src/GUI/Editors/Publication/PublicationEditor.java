@@ -51,7 +51,6 @@ public abstract class PublicationEditor<T extends Publication> extends Reference
 
     @Override
     protected void setupSecondaryFields(PanelBuilder panelBuilder) {
-        // TODO:
         super.setupSecondaryFields(panelBuilder);
 
         pageCount = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
@@ -59,12 +58,15 @@ public abstract class PublicationEditor<T extends Publication> extends Reference
         panelBuilder.add(new JLabel("Pagine"));
         panelBuilder.add(pageCount);
 
-        URL = new JTextField();
-        publisher = new JTextField();
+        URL = new JTextField(Publication.URL_MAX_LENGTH);
+        URL.setToolTipText("URL della pubblicazione.");
+        panelBuilder.add(new JLabel("URL"));
+        panelBuilder.add(URL);
 
-        // addFieldComponent(pageCount, "Pagine", );
-        // addFieldComponent(URL, "URL", "URL della pubblicazione.");
-        // addFieldComponent(publisher, "Editore", "Editore della pubblicazione.");
+        publisher = new JTextField(Publication.PUBLISHER_MAX_LENGTH);
+        publisher.setToolTipText("Editore della pubblicazione.");
+        panelBuilder.add(new JLabel("Editore"));
+        panelBuilder.add(publisher);
     }
 
     @Override

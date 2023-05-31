@@ -81,6 +81,13 @@ public class Author {
         return thisName.equalsIgnoreCase(otherName) && thisORCID.equals(otherORCID);
     }
 
+    public boolean isSimilar(Author author) {
+        if (author == null)
+            return false;
+
+        return getName().equalsIgnoreCase(author.getName()) && (author.getORCID() == null || author.getORCID().equalsIgnoreCase(getORCID()));
+    }
+
     /**
      * Imposta l'identificativo dell'autore.
      * 
@@ -136,12 +143,15 @@ public class Author {
      *             se la stringa di input non rispetta il pattern del codice ORCID
      */
     public void setORCID(String ORCID) {
-        if (ORCID == null || ORCID.isEmpty() || ORCID.isBlank())
+        if (ORCID == null || ORCID.isEmpty() || ORCID.isBlank()) {
             this.ORCID = null;
-        else if (ORCID_PATTERN.matcher(ORCID).matches())
-            this.ORCID = ORCID.trim();
-        else
-            throw new IllegalArgumentException("Il codice ORCID non rispetta il pattern corretto.");
+        } else {
+            ORCID = ORCID.trim();
+            if (ORCID_PATTERN.matcher(ORCID).matches())
+                this.ORCID = ORCID;
+            else
+                throw new IllegalArgumentException("Il codice ORCID non rispetta il pattern corretto.");
+        }
     }
 
     /**

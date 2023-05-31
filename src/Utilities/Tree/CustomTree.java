@@ -81,7 +81,7 @@ public class CustomTree<T extends Object> extends JTree {
     /**
      * Restituisce l'elemento del nodo attualmente selezionato.
      * 
-     * @return elemento selezionato ({@code} null se non è selezionato nulla)
+     * @return elemento selezionato ({@code null} se non è selezionato nulla)
      */
     public T getSelectedItem() {
         CustomTreeNode<T> selectedNode = getSelectedNode();

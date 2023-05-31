@@ -122,7 +122,7 @@ public class LoginPage extends JFrame {
 			String password = new String(passwordField.getPassword());
 			return new User(username, password);
 		} catch (IllegalArgumentException e) {
-			throw new InvalidInputException(e.getMessage());
+			throw new InvalidInputException(e.getMessage(), e);
 		}
 	}
 

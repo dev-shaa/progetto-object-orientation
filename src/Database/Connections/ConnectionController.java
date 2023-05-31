@@ -95,6 +95,21 @@ public class ConnectionController {
 	}
 
 	/**
+	 * Esegue il commit della transazione.
+	 * 
+	 * @param key
+	 *            chiave della transazione
+	 */
+	public void commitTransaction(int key) {
+		try {
+			if (isTransactionActive && key == transactionConnectionKey && currentTransactionConnection != null)
+				currentTransactionConnection.commit(key);
+		} catch (SQLException e) {
+			// non fare niente
+		}
+	}
+
+	/**
 	 * Esegue il rollback della transazione.
 	 * 
 	 * @param key

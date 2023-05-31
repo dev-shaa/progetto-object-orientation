@@ -7,6 +7,8 @@ public class Book extends Publication {
 
     private String ISBN;
 
+    public static final int ISBN_LENGTH = 13;
+
     /**
      * Crea un nuovo riferimento a un libro con il titolo indicato.
      * 
@@ -29,8 +31,14 @@ public class Book extends Publication {
     public void setISBN(String ISBN) {
         if (isStringNullOrEmpty(ISBN))
             this.ISBN = null;
-        else
-            this.ISBN = ISBN;
+        else {
+            ISBN = ISBN.trim();
+
+            if (ISBN.length() == ISBN_LENGTH)
+                this.ISBN = ISBN;
+            else
+                throw new IllegalArgumentException("Il codice ISBN non è valido.");
+        }
     }
 
     /**

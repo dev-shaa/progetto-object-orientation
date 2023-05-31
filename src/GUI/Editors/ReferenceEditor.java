@@ -9,14 +9,17 @@ import io.codeworth.panelmatic.PanelMatic;
 import io.codeworth.panelmatic.componentbehavior.Modifiers;
 import Exceptions.Input.InvalidAuthorInputException;
 import Exceptions.Input.InvalidInputException;
+import Exceptions.Input.InvalidTagInputException;
 import GUI.AuthorInputField;
 import GUI.TagInputField;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+
 import javax.swing.event.EventListenerList;
 import com.toedter.calendar.JDateChooser;
 
@@ -103,11 +106,6 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
     @Override
     public void setVisible(boolean b) {
         if (b) {
-            if (referenceToChange == null)
-                setDefaultValues();
-            else
-                setReferenceValues(referenceToChange);
-
             // i rimandi selezionabili sono tutti tranne il riferimento da cambiare
             referenceListModel.clear();
 
@@ -116,6 +114,11 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
 
             if (referenceToChange != null)
                 referenceListModel.removeElement(referenceToChange);
+
+            if (referenceToChange == null)
+                setDefaultValues();
+            else
+                setReferenceValues(referenceToChange);
 
             categoriesCheckboxTree.expandAllRows();
         }
@@ -131,9 +134,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         setLocationRelativeTo(null);
 
         JPanel fieldPanel = new JPanel();
-        fieldPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        setContentPane(new JScrollPane(fieldPanel));
-
+        fieldPanel.setBorder(BorderFactory.createEmptyBorder(30, 30, 50, 30));
         PanelBuilder panelBuilder = PanelMatic.begin(fieldPanel);
 
         title = new JTextField(BibliographicReference.TITLE_MAX_LENGTH);
@@ -159,7 +160,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         panelBuilder.add(pubblicationDate);
 
         language = new JComboBox<>(ReferenceLanguage.values());
-        language.setToolTipText("Lingua del riferimento");
+        language.setToolTipText("Lingua del riferimento.");
         panelBuilder.add(new JLabel("Lingua"));
         panelBuilder.add(language);
 
@@ -167,9 +168,11 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
 
         categoriesCheckboxTree = new CheckboxTree<>();
         categoriesCheckboxTree.setRootVisible(false);
+        JPanel categoriesPanel = new JPanel(new BorderLayout());
         JScrollPane categoriesScrollPane = new JScrollPane(categoriesCheckboxTree);
+        categoriesPanel.add(categoriesScrollPane);
         panelBuilder.add(new JLabel("Categorie"));
-        panelBuilder.add(categoriesScrollPane, Modifiers.GROW);
+        panelBuilder.add(categoriesPanel, Modifiers.GROW);
 
         referenceListModel = new DefaultListModel<>();
         relatedReferencesList = new JList<>(referenceListModel);
@@ -177,12 +180,15 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         relatedReferencesList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         relatedReferencesList.setVisibleRowCount(5);
         JScrollPane listScrollPane = new JScrollPane(relatedReferencesList);
+        JPanel referenceListPanel = new JPanel(new BorderLayout());
+        referenceListPanel.add(listScrollPane);
 
         panelBuilder.add(new JLabel("Rimandi"));
-        panelBuilder.add(listScrollPane, Modifiers.GROW);
+        panelBuilder.add(referenceListPanel, Modifiers.GROW);
 
         description = new JTextArea(10, 1);
         description.setLineWrap(true);
+        description.setToolTipText("Breve descrizione testuale del riferimento.");
         panelBuilder.add(new JLabel("Descrizione"));
         panelBuilder.add(description, Modifiers.GROW);
 
@@ -191,6 +197,9 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         panelBuilder.add(confirmButton, Modifiers.L_CENTER);
 
         panelBuilder.get();
+        fieldPanel.setPreferredSize(new Dimension(500, fieldPanel.getPreferredSize().height));
+
+        setContentPane(new JScrollPane(fieldPanel));
     }
 
     /**
@@ -357,7 +366,7 @@ public abstract class ReferenceEditor<T extends BibliographicReference> extends 
         this.tags.setTags(tags);
     }
 
-    private List<Tag> getTagValues() {
+    private List<Tag> getTagValues() throws InvalidTagInputException {
         return tags.getTags();
     }
 

@@ -8,6 +8,8 @@ import Utilities.Tree.CustomTreeModel;
 import io.codeworth.panelmatic.PanelBuilder;
 
 import java.util.Collection;
+
+import javax.swing.JLabel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
@@ -63,21 +65,27 @@ public class VideoEditor extends OnlineResourceEditor<Video> {
 
     @Override
     protected void setupSecondaryFields(PanelBuilder panelBuilder) {
-        // TODO Auto-generated method stub
         super.setupSecondaryFields(panelBuilder);
 
         width = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
         width.setToolTipText("Larghezza del video.");
-        panelBuilder.add("Larghezza", width);
+        panelBuilder.add(new JLabel("Larghezza"));
+        panelBuilder.add(width);
 
         height = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
-        frameRate = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
-        duration = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
+        height.setToolTipText("Altezza del video.");
+        panelBuilder.add(new JLabel("Altezza"));
+        panelBuilder.add(height);
 
-        // addFieldComponent(width, "Larghezza", "Largezza del video.");
-        // addFieldComponent(height, "Altezza", "Altezza del video.");
-        // addFieldComponent(frameRate, "Frequenza", "Numero di fotogrammi al secondo del video.");
-        // addFieldComponent(duration, "Durata", "Durata del video (in secondi).");
+        frameRate = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
+        frameRate.setToolTipText("Numero di fotogrammi al secondo del video.");
+        panelBuilder.add(new JLabel("Frequenza"));
+        panelBuilder.add(frameRate);
+
+        duration = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
+        duration.setToolTipText("Durata del video in secondi.");
+        panelBuilder.add(new JLabel("Durata"));
+        panelBuilder.add(duration);
     }
 
     @Override

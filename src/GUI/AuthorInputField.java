@@ -11,17 +11,15 @@ import Utilities.TextField.MultipleTextField;
  */
 public class AuthorInputField extends MultipleTextField {
 
-    private final String textTooltip = "Un autore del riferimento."
-            + "\nÈ possibile specificare l'ORCID mettendolo tra parentesi quadre."
-            + "\nEsempio: \"Mario Rossi [0000-0000-0000-0000]\"";
-
     /**
      * Crea un nuovo {@code AuthorInputField} con un solo campo iniziale.
      */
     public AuthorInputField() {
         super();
 
-        setToolTipText(textTooltip);
+        setToolTipText("Un autore del riferimento."
+                + "\nÈ possibile specificare l'ORCID mettendolo tra parentesi quadre."
+                + "\nEsempio: \"Mario Rossi [0000-0000-0000-0000]\"");
     }
 
     /**
@@ -85,7 +83,7 @@ public class AuthorInputField extends MultipleTextField {
         try {
             return new Author(name, orcid);
         } catch (IllegalArgumentException e) {
-            throw new InvalidAuthorInputException("L'ORCID inserito non è valido.");
+            throw new InvalidAuthorInputException("L'ORCID inserito non è valido.", e);
         }
     }
 
